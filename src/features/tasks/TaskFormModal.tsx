@@ -77,16 +77,28 @@ export const TaskFormModal: React.FC<TaskFormModalProps> = ({
         .map((t) => t.trim())
         .filter(Boolean);
 
-      const parentType = selectedProjectId ? 'project' : taskToEdit?.parentType;
-      const parentId = selectedProjectId ? selectedProjectId : taskToEdit?.parentId;
+      let parentType: 'project' | 'assignment' | 'goal' | undefined = taskToEdit ? taskToEdit.parentType : defaultParentType;
+      let parentId: string | undefined = taskToEdit ? taskToEdit.parentId : defaultParentId;
+
+      if (selectedProjectId) {
+        parentType = 'project';
+        parentId = selectedProjectId;
+      } else if (parentType === 'project') {
+        parentType = undefined;
+        parentId = undefined;
+      }
 
       if (taskToEdit) {
         const isCompletingNow = status === 'done' && taskToEdit.status !== 'done';
         const isReopeningNow = status !== 'done' && taskToEdit.status === 'done';
 
         let completedAt = taskToEdit.completedAt;
-        if (isCompletingNow) completedAt = now;
-        else if (isReopeningNow) completedAt = undefined;
+        if (isCompletingNow) {
+          completedAt = now;
+          await db.focusSelections.where('taskId').equals(taskToEdit.id).delete();
+        } else if (isReopeningNow) {
+          completedAt = undefined;
+        }
 
         await db.tasks.update(taskToEdit.id, {
           title: title.trim(),

@@ -121,9 +121,14 @@ export function OverviewPage() {
 
   const focus = async (id: string) => {
     try {
-      await db.transaction('rw', db.focusSelections, async () => {
+      await db.transaction('rw', [db.focusSelections, db.tasks], async () => {
         const chosen = await db.focusSelections.where('effectiveLocalDate').equals(today).toArray();
-        if (chosen.length >= 3 || chosen.some((s) => s.taskId === id)) return;
+        const allTasks = await db.tasks.toArray();
+        const activeFocus = chosen.filter((s) => {
+          const t = allTasks.find((task) => task.id === s.taskId);
+          return t && t.status !== 'done';
+        });
+        if (activeFocus.length >= 3 || chosen.some((s) => s.taskId === id)) return;
         await db.focusSelections.add({
           id: `${today}_${id}`,
           taskId: id,

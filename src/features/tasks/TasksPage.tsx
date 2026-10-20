@@ -82,10 +82,15 @@ export const TasksPage: React.FC = () => {
       animateTaskCompletion(e.currentTarget);
     }
 
-    await db.tasks.update(task.id, {
-      status: nextStatus,
-      completedAt,
-      updatedAt: new Date().toISOString(),
+    await db.transaction('rw', [db.tasks, db.focusSelections], async () => {
+      await db.tasks.update(task.id, {
+        status: nextStatus,
+        completedAt,
+        updatedAt: new Date().toISOString(),
+      });
+      if (nextStatus === 'done') {
+        await db.focusSelections.where('taskId').equals(task.id).delete();
+      }
     });
 
     success(nextStatus === 'done' ? 'Task completed' : 'Task reopened');

@@ -107,10 +107,15 @@ export const ProjectDetailPage: React.FC = () => {
   const handleToggleTask = async (task: Task) => {
     const nextStatus = task.status === 'done' ? 'todo' : 'done';
     const completedAt = nextStatus === 'done' ? new Date().toISOString() : undefined;
-    await db.tasks.update(task.id, {
-      status: nextStatus,
-      completedAt,
-      updatedAt: new Date().toISOString(),
+    await db.transaction('rw', [db.tasks, db.focusSelections], async () => {
+      await db.tasks.update(task.id, {
+        status: nextStatus,
+        completedAt,
+        updatedAt: new Date().toISOString(),
+      });
+      if (nextStatus === 'done') {
+        await db.focusSelections.where('taskId').equals(task.id).delete();
+      }
     });
     success('Task updated', `"${task.title}" is now ${nextStatus === 'done' ? 'completed' : 'todo'}.`);
   };

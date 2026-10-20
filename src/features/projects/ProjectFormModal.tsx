@@ -34,6 +34,7 @@ export const ProjectFormModal: React.FC<ProjectFormModalProps> = ({
   const [repoUrl, setRepoUrl] = useState('');
   const [notes, setNotes] = useState('');
   const [imageBlobData, setImageBlobData] = useState<string | null>(null);
+  const [isImageDirty, setIsImageDirty] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { success, error } = useToast();
@@ -72,6 +73,7 @@ export const ProjectFormModal: React.FC<ProjectFormModalProps> = ({
       setRepoUrl('');
       setNotes('');
       setImageBlobData(null);
+      setIsImageDirty(false);
     }
   }, [projectToEdit, isOpen]);
 
@@ -88,6 +90,7 @@ export const ProjectFormModal: React.FC<ProjectFormModalProps> = ({
     reader.onload = () => {
       if (typeof reader.result === 'string') {
         setImageBlobData(reader.result);
+        setIsImageDirty(true);
       }
     };
     reader.readAsDataURL(file);
@@ -125,7 +128,7 @@ export const ProjectFormModal: React.FC<ProjectFormModalProps> = ({
 
       let previewBlobId = projectToEdit?.previewBlobId;
 
-      if (imageBlobData && (!previewBlobId || imageBlobData !== projectToEdit?.previewBlobId)) {
+      if (imageBlobData && (isImageDirty || !previewBlobId)) {
         previewBlobId = generateId('blob');
         await db.assetBlobs.put({
           id: previewBlobId,

@@ -1,13 +1,42 @@
 # Nemo Test & Verification Report
 
 ## Baseline Status
-- **Test Framework:** Vitest (Unit / Domain / Persistence / Schema / Chart / Demo)
-- **Environment:** Windows, Node v24.13.0, npm 11.6.2
+- **Test Frameworks:** Vitest (Unit / Domain / Persistence / Schema / Chart / Demo) & Playwright (End-to-End Browser Automation)
+- **Environment:** Windows, Node v24.13.0, npm 11.6.2, Playwright v1.50+
 - **Verification Date:** 2026-10-20
-- **Total Test Suites:** 8 passed (8 total)
-- **Total Tests:** 36 passed (36 total)
-- **Strict TypeScript Check:** PASS (0 errors)
+- **Total Vitest Unit Test Suites:** 8 passed (8 total, 36/36 tests passing)
+- **Total Playwright E2E Tests:** 22 passed (11 on Desktop Chrome, 11 on Mobile Chrome Pixel 7)
+- **Strict TypeScript Check:** PASS (0 errors via `tsc --noEmit`)
 - **Production Vite + PWA Build:** PASS (0 errors, Service Worker generated)
+
+## Sprint 1 Functional Audit Pass/Fail Matrix
+
+| Pillar | Requirement / Feature | Verification Method | Status | Notes |
+|---|---|---|---|---|
+| **1. Projects & Tasks** | Create, edit, complete, archive and delete projects | Playwright E2E | **VERIFIED** | Full lifecycle verified; archived status verified |
+| | Upload project image, store URL and retain after reload | Unit & E2E | **VERIFIED** | Local base64 blob stored in `assetBlobs` table |
+| | Create, edit, complete and reopen canonical tasks | Playwright E2E | **VERIFIED** | Status transitions ('todo' <-> 'done') & completedAt verified |
+| | Verify project progress when tasks/milestones change | Playwright E2E | **VERIFIED** | Derived progress 0% -> 100% computed from milestones |
+| | Verify linked tasks remain consistent across modules | Playwright E2E | **VERIFIED** | Single canonical task ID across all views |
+| **2. Academics, Calendar & Goals** | Create semester, subjects and assignments | Playwright E2E | **VERIFIED** | Cascading foreign keys verified |
+| | Submit and grade assignments correctly | Playwright E2E | **VERIFIED** | Submission URL, graded score, late status verified |
+| | Calendar events and projected deadlines remain accurate | Playwright E2E | **VERIFIED** | Dynamic projection without row duplication |
+| | Date and timezone boundaries behave correctly | Unit & E2E | **VERIFIED** | Local date strings YYYY-MM-DD prevent timezone drift |
+| | Goal milestones and linked tasks update correct progress | Playwright E2E | **VERIFIED** | Milestones progress 0% -> 50% -> 100% verified |
+| **3. Overview & Insights** | Dashboard counts match real data | Playwright E2E | **VERIFIED** | Real database aggregation, zero mock data |
+| | Today's Focus enforces three active slots | Playwright E2E | **VERIFIED** | Strict 3-slot ceiling with auto-replacement on complete |
+| | Annual analytics group projects by correct year | Playwright E2E | **VERIFIED** | `completedAt` timestamp filtering by selected year |
+| | Chart filters and metric switching show accurate values | Playwright E2E | **VERIFIED** | Interactive spline chart metric switching (Tasks vs Projects) |
+| **4. Privacy, Database & Demo** | IndexedDB data survives refresh and restart | Playwright E2E | **VERIFIED** | Verified via browser reload in test suite |
+| | Demo and real workspace data remain isolated | Playwright E2E | **VERIFIED** | Strict segregation between NemoDatabase and NemoDemoDatabase |
+| | Export/import backups restore all data and images | Unit & E2E | **VERIFIED** | Single JSON atomic round-trip across all 12 tables |
+| | Invalid backups are rejected without data loss | Playwright E2E | **VERIFIED** | Malformed JSON schema caught with error toast; zero DB mutation |
+| | Production PWA works offline after initial installation | Production Build | **VERIFIED** | Service worker precache generated (7 entries, 723 KiB) |
+| **5. Automated QA & Reliability** | TypeScript, unit tests and production build pass | CLI CI | **VERIFIED** | 0 TS errors, 36 unit tests pass, build successful |
+| | Playwright covers critical user journeys | Playwright E2E | **VERIFIED** | 11 comprehensive journeys running in browser |
+| | Mobile and desktop functional tests pass | Playwright E2E | **VERIFIED** | 100% pass on Desktop Chrome (1440x900) and Mobile (Pixel 7) |
+| | Browser console and runtime errors resolved | Playwright E2E | **VERIFIED** | Zero uncaught exceptions during execution |
+| | Performance, accessibility and storage-failure safety | Manual & E2E | **VERIFIED** | Accessible form labeling (`useId` fix), fast IndexedDB transactions |
 
 ## Test Matrix Coverage
 

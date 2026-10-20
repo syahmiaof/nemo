@@ -238,13 +238,38 @@ export const AcademicsPage: React.FC = () => {
   const handleDeleteItem = async () => {
     if (!itemToDelete) return;
     if (itemToDelete.type === 'semester') {
-      await db.semesters.delete(itemToDelete.id);
+      await db.transaction('rw', [db.semesters, db.subjects, db.assignments, db.tasks], async () => {
+        const subjectsInSem = await db.subjects.where('semesterId').equals(itemToDelete.id).toArray();
+        for (const s of subjectsInSem) {
+          const assignmentsInSub = await db.assignments.where('subjectId').equals(s.id).toArray();
+          for (const a of assignmentsInSub) {
+            await db.tasks.where('parentId').equals(a.id).delete();
+          }
+          await db.assignments.where('subjectId').equals(s.id).delete();
+        }
+        await db.subjects.where('semesterId').equals(itemToDelete.id).delete();
+        await db.semesters.delete(itemToDelete.id);
+      });
+      if (selectedSemesterId === itemToDelete.id) {
+        setSelectedSemesterId('');
+      }
     } else if (itemToDelete.type === 'subject') {
-      await db.subjects.delete(itemToDelete.id);
-      await db.assignments.where('subjectId').equals(itemToDelete.id).delete();
+      await db.transaction('rw', [db.subjects, db.assignments, db.tasks], async () => {
+        const assignmentsInSub = await db.assignments.where('subjectId').equals(itemToDelete.id).toArray();
+        for (const a of assignmentsInSub) {
+          await db.tasks.where('parentId').equals(a.id).delete();
+        }
+        await db.assignments.where('subjectId').equals(itemToDelete.id).delete();
+        await db.subjects.delete(itemToDelete.id);
+      });
+      if (selectedSubjectId === itemToDelete.id) {
+        setSelectedSubjectId('');
+      }
     } else if (itemToDelete.type === 'assignment') {
-      await db.assignments.delete(itemToDelete.id);
-      await db.tasks.where('parentId').equals(itemToDelete.id).delete();
+      await db.transaction('rw', [db.assignments, db.tasks], async () => {
+        await db.tasks.where('parentId').equals(itemToDelete.id).delete();
+        await db.assignments.delete(itemToDelete.id);
+      });
     }
     setItemToDelete(null);
     success('Item deleted');

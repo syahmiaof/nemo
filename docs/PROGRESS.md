@@ -32,9 +32,13 @@
 | M2.2 | Top Navigation Single-Layer Elastic Pill | Interface Engineer | M2.1 | verified | Precision bounding-box GSAP indicator; zero text clipping or squishing across all tabs | 2026-10-20 |
 | M2.3 | Overview Re-architecture (58:42 Flagship) | Interface Engineer | M2.2 | verified | Organic Catmull-Rom spline, 3 tactile pastel focus cards, weekly donut gauge, 3-column desk | 2026-10-20 |
 | M2.4 | Visual Verification & Comparative Evidence | QA / Director | M2.3 | verified | Side-by-side screenshots captured at 1440x900 (`docs/reference/evidence/nemo-overview-final-1440.png`) | 2026-10-20 |
+| FA1.1 | Sprint 1: Functional Audit & Edge-Case Rectification | Principal Engineer | S6.1 | verified | Fixed Today's Focus orphan slots, Academic cascade delete, Standalone task unlinking, Textarea accessibility useId | 2026-10-20 |
+| FA1.2 | Sprint 1: Playwright E2E Integration Suite | QA Lead | FA1.1 | verified | 11 critical user journeys implemented, covering Projects, Tasks, Academics, Calendar, Goals, Insights, Demo & Backup | 2026-10-20 |
+| FA1.3 | Sprint 1: Multi-Viewport Reliability Verification | QA Lead | FA1.2 | verified | 100% pass rate across Desktop Chrome (11/11) & Mobile Chrome Pixel 7 (11/11); Vitest 36/36 pass; 0 TS errors | 2026-10-20 |
 
 ## Active Blockers
-- None.
+- None. All 25 requirements across the 5 functional pillars verified working.
 
 ## Verified Release State
-- Tavola Motion Forensics & High-Fidelity Reconstruction successfully integrated, tested, and verified on branch `codex/tavola-reconstruction`.
+- **Sprint 1: Functional Audit & System Repair** is COMPLETE and fully verified.
+- Production branch: `sprint1-functional-audit`. All features operating local-first with zero cloud dependencies.

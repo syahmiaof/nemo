@@ -88,13 +88,16 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
         });
         success('Project created', `"${title.trim()}" created.`);
       } else if (itemType === 'assignment') {
-        if (!selectedSubjectId && subjects.length > 0) {
-          // Default to first subject if none selected
+        const targetSubjectId = selectedSubjectId || subjects[0]?.id;
+        if (!targetSubjectId) {
+          error('Subject required', 'Please create a subject in Academics before creating assignments.');
+          setIsSubmitting(false);
+          return;
         }
         const id = generateId('assign');
         await db.assignments.add({
           id,
-          subjectId: selectedSubjectId || (subjects[0]?.id ?? 'default_subject'),
+          subjectId: targetSubjectId,
           title: title.trim(),
           description: description.trim() || undefined,
           status: 'not_started',
