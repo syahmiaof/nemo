@@ -9,6 +9,8 @@ interface AuthContextValue {
   session: Session | null;
   isLoading: boolean;
   isApprovedOwner: boolean;
+  signInWithPassword: (password: string) => Promise<{ success: boolean; error?: string }>;
+  updatePassword: (newPassword: string) => Promise<{ success: boolean; error?: string }>;
   signInWithEmailOtp: (email: string) => Promise<{ success: boolean; error?: string }>;
   verifyEmailOtp: (email: string, token: string) => Promise<{ success: boolean; error?: string }>;
   signOut: () => Promise<void>;
@@ -88,6 +90,66 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       subscription.unsubscribe();
     };
   }, []);
+
+  const signInWithPassword = async (
+    password: string
+  ): Promise<{ success: boolean; error?: string }> => {
+    if (!isSupabaseConfigured) {
+      return { success: false, error: 'Supabase is not configured.' };
+    }
+
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: APPROVED_OWNER_EMAIL,
+        password: password.trim(),
+      });
+
+      if (error) {
+        return { success: false, error: 'Kata laluan salah. Sila semak semula kata laluan anda.' };
+      }
+
+      if (data.user?.email) {
+        const approved = await checkOwnerApproval(data.user.email);
+        if (!approved) {
+          await supabase.auth.signOut();
+          return {
+            success: false,
+            error: 'Akses ditolak: Bukan akaun pemilik yang dibenarkan.',
+          };
+        }
+        setIsApprovedOwner(true);
+        syncEngine.setAuthenticatedUser(data.user.id, data.user.email);
+        setIsAuthModalOpen(false);
+      }
+
+      return { success: true };
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Ralat log masuk';
+      return { success: false, error: message };
+    }
+  };
+
+  const updatePassword = async (
+    newPassword: string
+  ): Promise<{ success: boolean; error?: string }> => {
+    if (!isSupabaseConfigured || !user) {
+      return { success: false, error: 'Sila log masuk terlebih dahulu.' };
+    }
+
+    try {
+      const { error } = await supabase.auth.updateUser({
+        password: newPassword.trim(),
+      });
+
+      if (error) {
+        return { success: false, error: error.message };
+      }
+      return { success: true };
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Gagal menukar kata laluan';
+      return { success: false, error: message };
+    }
+  };
 
   const signInWithEmailOtp = async (email: string): Promise<{ success: boolean; error?: string }> => {
     if (!isSupabaseConfigured) {
@@ -178,6 +240,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       session,
       isLoading,
       isApprovedOwner,
+      signInWithPassword,
+      updatePassword,
       signInWithEmailOtp,
       verifyEmailOtp,
       signOut,
