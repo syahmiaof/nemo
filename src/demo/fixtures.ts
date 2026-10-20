@@ -105,7 +105,7 @@ export function createDemoFixtures(anchor = new Date()): FixtureData {
     const status = historical || (projectIndex < 6 && stageIndex < projectIndex % 4 + 1) ? 'done'
       : projectIndex < 6 && stageIndex === projectIndex % 4 + 1 ? 'in_progress' : 'todo';
     const dueOffset = stageIndex * 2 + projectIndex - 7;
-    const finish = historical ? new Date(project.completedAt!) : dateAt(-Math.max(1, 8 - stageIndex));
+    const finish = historical ? new Date(project.completedAt!) : dateAt(-((projectIndex * 2 + stageIndex) % 7));
     if (historical) finish.setDate(finish.getDate() - (7 - stageIndex) * 3);
     const due = historical ? localDate(finish) : date(dueOffset);
     return {

@@ -19,6 +19,15 @@ export function AppShell() {
   const [quickAdd,setQuickAdd] = useState(false);
   const [online,setOnline] = useState(navigator.onLine);
   const [modeError,setModeError] = useState('');
+  const [timeStr, setTimeStr] = useState(() =>
+    new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
+  );
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeStr(new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }));
+    }, 15000);
+    return () => clearInterval(timer);
+  }, []);
   const settings = useLiveQuery(() => db.settings.get('default'), []);
   const demo = getWorkspaceMode() === 'demo';
   useEffect(() => {
@@ -40,6 +49,10 @@ export function AppShell() {
         <Link to="/overview" className="wordmark" aria-label="Nemo overview"><span className="brand-mark"><svg width="26" height="26" viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M7 25V7L25 25V7" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/><circle cx="25" cy="7" r="3" fill="currentColor"/></svg></span><span>nemo.</span></Link>
         <div className="header-navigation"><TavolaTabs tabs={navTabs}/></div>
         <div className="header-tools">
+          <div className="header-time-pill hidden xl:inline-flex" title="Local System Time">
+            <span className="live-pulse" />
+            <span>{timeStr}</span>
+          </div>
           <button type="button" className="icon-button" onClick={() => setQuickAdd(true)} aria-label="Quick Add"><Plus size={21}/></button>
           <button type="button" className="icon-button theme-tool" onClick={() => {void db.settings.update('default',{theme:settings?.theme === 'light' ? 'dark':'light'}).catch(() => setModeError('Theme could not be saved.'));}} aria-label="Toggle theme">{settings?.theme === 'light' ? <Moon size={19}/>:<Sun size={19}/>}</button>
           <Link to="/settings" className="profile-button" aria-label="Profile and settings">{(settings?.displayName || 'N').slice(0,1).toUpperCase()}</Link>

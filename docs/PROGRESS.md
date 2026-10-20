@@ -28,6 +28,10 @@
 | M1.5 | Nested Tavola-Style Settings System | Interface Engineer | M1.2 | verified | `SettingsPage.tsx` with multi-section tabs, theme preview cards | 2026-10-20 |
 | M1.6 | Isolated Demo Mode Experience | Architecture Engineer | S1.1 | verified | `src/demo/`, `DemoWorkspacePanel.tsx` with 18 projects, 150 tasks | 2026-10-20 |
 | M1.7 | Release Verification & Test Suite | Quality Reviewer | All | verified | 36 passed unit tests, 0 TypeScript errors, 711 KiB PWA build | 2026-10-20 |
+| M2.1 | Visual Fidelity Recovery & Gap Audit | Quality Director | M1.7 | verified | `docs/reference/NEMO_VS_TAVOLA_GAP_AUDIT.md` comprehensive forensic comparison | 2026-10-20 |
+| M2.2 | Top Navigation Single-Layer Elastic Pill | Interface Engineer | M2.1 | verified | Precision bounding-box GSAP indicator; zero text clipping or squishing across all tabs | 2026-10-20 |
+| M2.3 | Overview Re-architecture (58:42 Flagship) | Interface Engineer | M2.2 | verified | Organic Catmull-Rom spline, 3 tactile pastel focus cards, weekly donut gauge, 3-column desk | 2026-10-20 |
+| M2.4 | Visual Verification & Comparative Evidence | QA / Director | M2.3 | verified | Side-by-side screenshots captured at 1440x900 (`docs/reference/evidence/nemo-overview-final-1440.png`) | 2026-10-20 |
 
 ## Active Blockers
 - None.
