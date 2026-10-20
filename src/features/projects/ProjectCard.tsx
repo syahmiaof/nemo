@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Calendar, Layers } from 'lucide-react';
 import { PriorityBadge, StatusBadge } from '@/components/ui/Badge';
@@ -42,14 +42,23 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
   // 1. If milestones exist, use completed/total milestones and label basis
   // 2. Otherwise if tasks exist, use completed/total tasks and label basis
   // 3. Otherwise show "No progress data"
-  const projectMilestones = milestones.filter((m) => m.ownerType === 'project' && m.ownerId === project.id);
-  const projectTasks = tasks.filter((t) => t.parentType === 'project' && t.parentId === project.id);
+  const projectMilestones = useMemo(() => {
+    return milestones.every((m) => (m.ownerId || (m as any).projectId) === project.id)
+      ? milestones
+      : milestones.filter((m) => (m.ownerType === 'project' && m.ownerId === project.id) || (m as any).projectId === project.id);
+  }, [milestones, project.id]);
+
+  const projectTasks = useMemo(() => {
+    return tasks.every((t) => (t.parentId || (t as any).projectId) === project.id)
+      ? tasks
+      : tasks.filter((t) => (t.parentType === 'project' && t.parentId === project.id) || (t as any).projectId === project.id);
+  }, [tasks, project.id]);
 
   let progressPercent: number | null = null;
   let progressLabel = 'No progress data';
 
   if (projectMilestones.length > 0) {
-    const completed = projectMilestones.filter((m) => m.completedAt).length;
+    const completed = projectMilestones.filter((m) => m.completedAt || (m as any).completed).length;
     progressPercent = Math.round((completed / projectMilestones.length) * 100);
     progressLabel = `${completed}/${projectMilestones.length} milestones (${progressPercent}%)`;
   } else if (projectTasks.length > 0) {

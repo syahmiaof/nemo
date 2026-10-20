@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo, useEffect, useDeferredValue } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { Plus, LayoutGrid, List, Search, FolderGit2 } from 'lucide-react';
 import { db } from '@/db/nemoDb';
@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/Input';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { ProjectCard } from './ProjectCard';
 import { ProjectFormModal } from './ProjectFormModal';
-import type { ProjectStatus } from '@/domain/types';
+import type { ProjectStatus, Milestone, Task } from '@/domain/types';
 
 export const ProjectsPage: React.FC = () => {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
@@ -15,31 +15,77 @@ export const ProjectsPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const PAGE_SIZE = 24;
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+
   const projects = useLiveQuery(() => db.projects.toArray(), []) || [];
   const milestones = useLiveQuery(() => db.milestones.toArray(), []) || [];
   const tasks = useLiveQuery(() => db.tasks.toArray(), []) || [];
 
-  const filteredProjects = projects.filter((project) => {
-    // Tab filter
-    if (activeTab === 'archived') {
-      if (!project.archivedAt) return false;
-    } else {
-      if (project.archivedAt) return false;
-      if (activeTab !== 'all' && project.status !== activeTab) return false;
+  // Reset pagination on tab or search change
+  useEffect(() => {
+    setVisibleCount(PAGE_SIZE);
+  }, [activeTab, searchQuery]);
+
+  // Index milestones and tasks by project in a single O(M + T) pass to avoid O(P * (M + T)) nested loops
+  const { milestonesByProject, tasksByProject } = useMemo(() => {
+    const mMap = new Map<string, Milestone[]>();
+    const tMap = new Map<string, Task[]>();
+
+    for (let i = 0; i < milestones.length; i++) {
+      const m = milestones[i];
+      const pid = m.ownerId || (m as any).projectId;
+      if (pid) {
+        const arr = mMap.get(pid);
+        if (arr) arr.push(m);
+        else mMap.set(pid, [m]);
+      }
     }
 
-    // Search query
-    if (searchQuery.trim()) {
-      const q = searchQuery.toLowerCase();
-      const matchTitle = project.title.toLowerCase().includes(q);
-      const matchCat = project.category?.toLowerCase().includes(q);
-      const matchStack = project.techStack.some((t) => t.toLowerCase().includes(q));
-      const matchTags = project.tags.some((t) => t.toLowerCase().includes(q));
-      if (!matchTitle && !matchCat && !matchStack && !matchTags) return false;
+    for (let i = 0; i < tasks.length; i++) {
+      const t = tasks[i];
+      const pid = t.parentId || (t as any).projectId;
+      if (pid) {
+        const arr = tMap.get(pid);
+        if (arr) arr.push(t);
+        else tMap.set(pid, [t]);
+      }
     }
 
-    return true;
-  });
+    return { milestonesByProject: mMap, tasksByProject: tMap };
+  }, [milestones, tasks]);
+
+  // Non-blocking search typing
+  const deferredSearch = useDeferredValue(searchQuery);
+
+  const filteredProjects = useMemo(() => {
+    const q = deferredSearch.trim().toLowerCase();
+
+    return projects.filter((project) => {
+      // Tab filter
+      if (activeTab === 'archived') {
+        if (!project.archivedAt) return false;
+      } else {
+        if (project.archivedAt) return false;
+        if (activeTab !== 'all' && project.status !== activeTab) return false;
+      }
+
+      // Search query
+      if (q) {
+        const matchTitle = project.title.toLowerCase().includes(q);
+        const matchCat = project.category?.toLowerCase().includes(q);
+        const matchStack = project.techStack.some((t) => t.toLowerCase().includes(q));
+        const matchTags = project.tags.some((t) => t.toLowerCase().includes(q));
+        if (!matchTitle && !matchCat && !matchStack && !matchTags) return false;
+      }
+
+      return true;
+    });
+  }, [projects, activeTab, deferredSearch]);
+
+  const visibleProjects = useMemo(() => {
+    return filteredProjects.slice(0, visibleCount);
+  }, [filteredProjects, visibleCount]);
 
   const tabOptions = [
     { key: 'all', label: 'All Active' },
@@ -139,22 +185,36 @@ export const ProjectsPage: React.FC = () => {
           onAction={searchQuery ? undefined : () => setIsModalOpen(true)}
         />
       ) : (
-        <div
-          className={
-            viewMode === 'grid'
-              ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5'
-              : 'space-y-3'
-          }
-        >
-          {filteredProjects.map((project) => (
-            <ProjectCard
-              key={project.id}
-              project={project}
-              milestones={milestones}
-              tasks={tasks}
-              viewMode={viewMode}
-            />
-          ))}
+        <div className="space-y-6">
+          <div
+            className={
+              viewMode === 'grid'
+                ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5'
+                : 'space-y-3'
+            }
+          >
+            {visibleProjects.map((project) => (
+              <ProjectCard
+                key={project.id}
+                project={project}
+                milestones={milestonesByProject.get(project.id) || []}
+                tasks={tasksByProject.get(project.id) || []}
+                viewMode={viewMode}
+              />
+            ))}
+          </div>
+
+          {filteredProjects.length > visibleCount && (
+            <div className="pt-2 text-center">
+              <button
+                type="button"
+                onClick={() => setVisibleCount((prev) => prev + PAGE_SIZE)}
+                className="px-4 py-2 text-xs font-medium rounded-xl bg-white/[0.06] hover:bg-white/[0.1] text-content-secondary hover:text-content-primary transition-all border border-white/10 shadow-sm"
+              >
+                Load more projects (Showing {visibleProjects.length} of {filteredProjects.length})
+              </button>
+            </div>
+          )}
         </div>
       )}
 

@@ -44,28 +44,55 @@ export function OverviewPage() {
       [today]
     ) || [];
 
-  const open = tasks.filter((t) => t.status !== 'done');
-  const active = projects.filter((p) => p.status === 'in_progress' && !p.archivedAt);
-  const completed = tasks.filter((t) => t.status === 'done');
-  const overdue = open.filter((t) => t.dueDate && t.dueDate < today);
-  const focused = selections
-    .map((s) => tasks.find((t) => t.id === s.taskId))
-    .filter((t): t is Task => !!t && t.status !== 'done');
+  const { open, active, completed, overdue, focused, nextTasks, academic, recentCompleted } = useMemo(() => {
+    const taskMap = new Map<string, Task>();
+    const openList: Task[] = [];
+    const completedList: Task[] = [];
+    const overdueList: Task[] = [];
 
-  const nextTasks = [...open]
-    .sort((a, b) => (a.dueDate || '9999').localeCompare(b.dueDate || '9999'))
-    .slice(0, 4);
+    for (let i = 0; i < tasks.length; i++) {
+      const t = tasks[i];
+      taskMap.set(t.id, t);
+      if (t.status === 'done') {
+        completedList.push(t);
+      } else {
+        openList.push(t);
+        if (t.dueDate && t.dueDate < today) {
+          overdueList.push(t);
+        }
+      }
+    }
 
-  const academic = assignments
-    .filter((a) => a.status !== 'submitted' && a.status !== 'graded' && a.dueDate)
-    .sort((a, b) => a.dueDate!.localeCompare(b.dueDate!))
-    .slice(0, 3);
+    const activeList = projects.filter((p) => p.status === 'in_progress' && !p.archivedAt);
+    const focusedList = selections
+      .map((s) => taskMap.get(s.taskId))
+      .filter((t): t is Task => !!t && t.status !== 'done');
 
-  // Recently completed items for the activity feed
-  const recentCompleted = [...completed]
-    .filter((t) => t.completedAt)
-    .sort((a, b) => (b.completedAt || '').localeCompare(a.completedAt || ''))
-    .slice(0, 4);
+    const next = [...openList]
+      .sort((a, b) => (a.dueDate || '9999').localeCompare(b.dueDate || '9999'))
+      .slice(0, 4);
+
+    const acad = assignments
+      .filter((a) => a.status !== 'submitted' && a.status !== 'graded' && a.dueDate)
+      .sort((a, b) => a.dueDate!.localeCompare(b.dueDate!))
+      .slice(0, 3);
+
+    const recent = [...completedList]
+      .filter((t) => t.completedAt)
+      .sort((a, b) => (b.completedAt || '').localeCompare(a.completedAt || ''))
+      .slice(0, 4);
+
+    return {
+      open: openList,
+      active: activeList,
+      completed: completedList,
+      overdue: overdueList,
+      focused: focusedList,
+      nextTasks: next,
+      academic: acad,
+      recentCompleted: recent,
+    };
+  }, [tasks, projects, assignments, selections, today]);
 
   // Trend data for the Tavola Spline Chart
   const trend = useMemo(() => {

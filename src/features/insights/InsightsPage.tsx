@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { BarChart3, FolderKanban, CheckCircle2, BookOpen, ArrowUpRight } from 'lucide-react';
 import { db } from '@/db/nemoDb';
@@ -21,33 +21,103 @@ export const InsightsPage: React.FC = () => {
   const projects = data?.projects ?? [];
   const tasks = data?.tasks ?? [];
   const assignments = data?.assignments ?? [];
-  const years = new Set([currentYear, selectedYear]);
-  for (const item of [...projects, ...tasks]) {
-    for (const timestamp of [item.createdAt, item.completedAt]) {
-      if (timestamp) {
-        const year = new Date(timestamp).getFullYear();
-        if (Number.isFinite(year)) years.add(year);
+  const {
+    years,
+    values,
+    comparison,
+    total,
+    previousTotal,
+    difference,
+    bestMonth,
+    activeProjects,
+    createdInYear,
+    done,
+    inProgress,
+    toDo,
+    overdue,
+    completionRate,
+    doneAngle,
+    progressAngle,
+    submitted,
+    graded,
+  } = useMemo(() => {
+    const yrs = new Set([currentYear, selectedYear]);
+    for (let i = 0; i < projects.length; i++) {
+      const item = projects[i];
+      if (item.createdAt) {
+        const y = new Date(item.createdAt).getFullYear();
+        if (Number.isFinite(y)) yrs.add(y);
+      }
+      if (item.completedAt) {
+        const y = new Date(item.completedAt).getFullYear();
+        if (Number.isFinite(y)) yrs.add(y);
       }
     }
-  }
-  const dates = (series === 'tasks' ? tasks : projects).map((item) => item.completedAt);
-  const values = monthlyCounts(dates, selectedYear);
-  const comparison = monthlyCounts(dates, selectedYear - 1);
-  const total = values.reduce((sum, value) => sum + value, 0);
-  const previousTotal = comparison.reduce((sum, value) => sum + value, 0);
-  const difference = total - previousTotal;
-  const bestMonth = values.indexOf(Math.max(...values));
-  const activeProjects = projects.filter((project) => project.status === 'in_progress' && !project.archivedAt).length;
-  const createdInYear = monthlyCounts(projects.map((project) => project.createdAt), selectedYear).reduce((sum, value) => sum + value, 0);
-  const done = tasks.filter((task) => task.status === 'done').length;
-  const inProgress = tasks.filter((task) => task.status === 'in_progress').length;
-  const toDo = tasks.length - done - inProgress;
-  const overdue = tasks.filter((task) => task.status !== 'done' && isOverdue(task.dueDate)).length;
-  const completionRate = tasks.length ? Math.round(done / tasks.length * 100) : 0;
-  const doneAngle = tasks.length ? done / tasks.length * 360 : 0;
-  const progressAngle = tasks.length ? inProgress / tasks.length * 360 : 0;
-  const submitted = assignments.filter((assignment) => assignment.status === 'submitted' || assignment.status === 'graded').length;
-  const graded = assignments.filter((assignment) => assignment.status === 'graded').length;
+    for (let i = 0; i < tasks.length; i++) {
+      const item = tasks[i];
+      if (item.createdAt) {
+        const y = new Date(item.createdAt).getFullYear();
+        if (Number.isFinite(y)) yrs.add(y);
+      }
+      if (item.completedAt) {
+        const y = new Date(item.completedAt).getFullYear();
+        if (Number.isFinite(y)) yrs.add(y);
+      }
+    }
+
+    const dates = (series === 'tasks' ? tasks : projects).map((item) => item.completedAt);
+    const vals = monthlyCounts(dates, selectedYear);
+    const comp = monthlyCounts(dates, selectedYear - 1);
+    const tot = vals.reduce((sum, value) => sum + value, 0);
+    const prevTot = comp.reduce((sum, value) => sum + value, 0);
+    const diff = tot - prevTot;
+    const bestM = vals.indexOf(Math.max(...vals));
+    const activeProj = projects.filter((project) => project.status === 'in_progress' && !project.archivedAt).length;
+    const createdY = monthlyCounts(projects.map((project) => project.createdAt), selectedYear).reduce((sum, value) => sum + value, 0);
+
+    let dCount = 0;
+    let pCount = 0;
+    let oCount = 0;
+    for (let i = 0; i < tasks.length; i++) {
+      const t = tasks[i];
+      if (t.status === 'done') dCount++;
+      else if (t.status === 'in_progress') pCount++;
+      if (t.status !== 'done' && isOverdue(t.dueDate)) oCount++;
+    }
+    const tdCount = tasks.length - dCount - pCount;
+    const cRate = tasks.length ? Math.round((dCount / tasks.length) * 100) : 0;
+    const dAngle = tasks.length ? (dCount / tasks.length) * 360 : 0;
+    const pAngle = tasks.length ? (pCount / tasks.length) * 360 : 0;
+
+    let sCount = 0;
+    let gCount = 0;
+    for (let i = 0; i < assignments.length; i++) {
+      const a = assignments[i];
+      if (a.status === 'submitted' || a.status === 'graded') sCount++;
+      if (a.status === 'graded') gCount++;
+    }
+
+    return {
+      years: yrs,
+      values: vals,
+      comparison: comp,
+      total: tot,
+      previousTotal: prevTot,
+      difference: diff,
+      bestMonth: bestM,
+      activeProjects: activeProj,
+      createdInYear: createdY,
+      done: dCount,
+      inProgress: pCount,
+      toDo: tdCount,
+      overdue: oCount,
+      completionRate: cRate,
+      doneAngle: dAngle,
+      progressAngle: pAngle,
+      submitted: sCount,
+      graded: gCount,
+    };
+  }, [projects, tasks, assignments, currentYear, selectedYear, series]);
 
   return (
     <div className="insights-page">

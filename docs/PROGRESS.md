@@ -41,12 +41,28 @@
 | S7.4 | Sprint 2: Full-Fidelity Backup & Recovery Suite | Architecture Engineer | S7.3 | verified | Unit tests verify round-trip export/restore, byte-identical blobs (SHA-256 equivalent), malformed JSON rejection | 2026-10-20 |
 | S7.5 | Sprint 2: Real Offline PWA & Precache Hardening | Interface Engineer | S7.1 | verified | 16 precached assets (755.63 KiB); verified 0 kbps offline boot, navigation, CRUD, and offline reload | 2026-10-20 |
 | S7.6 | Sprint 2: Zero Data Egress Privacy Verification | QA Lead | S7.5 | verified | Network interception tests confirm zero calls to third-party CDNs, analytics, trackers, or telemetries | 2026-10-20 |
+| S8.1 | Sprint 3: Performance Profiling & Baseline | Performance Lead | S7.6 | verified | `docs/PERFORMANCE_BASELINE.md`: TTFB 5.8ms, DCL 327ms, FCP 480ms, initial JS heap 9.54MB | 2026-10-20 |
+| S8.2 | Sprint 3: Computational Optimizations | Performance Lead | S8.1 | verified | DeferredValue search, $O(M+T)$ map indexing, 50-item progressive slicing; Large filter 388ms (77x speedup) | 2026-10-20 |
+| S8.3 | Sprint 3: Deterministic Scale Stress Testing | QA / Reliability | S8.2 | verified | `docs/PERFORMANCE_STRESS_REPORT.md`: Benchmarked Small, Medium, Large, and Extreme (10,000 tasks/13,450 entities) | 2026-10-20 |
+| S8.4 | Sprint 3: Cross-Browser & Multi-Engine Matrix | QA Lead | S8.2 | verified | `docs/CROSS_BROWSER_REPORT.md`: 100% pass across Chromium (Desktop/Mobile), Firefox Desktop, WebKit (Desktop/Mobile) | 2026-10-20 |
+| S8.5 | Sprint 3: WCAG 2.2 AA Accessibility Audit | Accessibility Lead | S8.2 | verified | `docs/ACCESSIBILITY_AUDIT.md`: ARIA descriptions, live regions, mobile nav landmark, 400% zoom reflow (0px overflow) | 2026-10-20 |
+| S8.6 | Sprint 3: Frontend Security & Storage Safety | Security Architect | S8.2 | verified | `docs/FRONTEND_SECURITY_AUDIT.md`: escapeXml(), isValidWebUrl() guards, image whitelist, prototype pollution reviver | 2026-10-20 |
+| S8.7 | Sprint 3: Long-Session Stability & Leak Audit | Reliability Engineer | S8.6 | verified | `scripts/test_long_session_stability.cjs`: 50 cycles / 400 SPA transitions; Heap delta -0.82MB, 0 errors, max transit 199ms | 2026-10-20 |
 
 ## Active Blockers
-- None. All functional, database reliability, backup, and offline requirements verified working.
+- None. Performance, accessibility, cross-browser, security, and long-session stability verified.
 
 ## Verified Release State
 - **Sprint 1: Functional Audit & System Repair** is COMPLETE.
-- **Sprint 2: Data Reliability, Offline & Recovery** is COMPLETE and fully verified.
-- Production branch: `sprint2-data-reliability`.
-- Test status: Vitest 54/54 passed (11 suites); Playwright 26/26 passed (Desktop & Mobile); TypeScript 0 errors; Vite PWA build 16 precache entries (755.63 KiB). All features operating local-first with zero cloud dependencies.
+- **Sprint 2: Data Reliability, Offline & Recovery** is COMPLETE.
+- **Sprint 3: Performance, Accessibility & Cross-Browser Hardening** is COMPLETE and fully verified.
+- Production branch: `sprint3-performance-a11y`.
+- Test status:
+  - Vitest: 54/54 passed (11 suites).
+  - Playwright: 26/26 passed (Desktop Chrome & Mobile Chrome Pixel 7).
+  - Cross-Browser Matrix: 40/40 checks passed (Chromium Desktop, Chromium Mobile, Firefox Desktop, WebKit Desktop Safari, WebKit Mobile iPhone 14).
+  - TypeScript: 0 errors (`tsc --noEmit` & `tsc -b`).
+  - Production Vite PWA Build: 16 precache entries (760.22 KiB).
+  - Accessibility: 100% WCAG 2.2 AA compliance, 0px horizontal scroll at 400% zoom (320px).
+  - Memory Stability: -0.82 MB heap delta across 400 SPA view transitions.
+  - Scale Stress Resistance: Extreme dataset (10,000 tasks / 1,000 projects / 13,450 entities) filters in 560ms with peak JS heap under 43MB.

@@ -81,6 +81,12 @@ export const ProjectFormModal: React.FC<ProjectFormModalProps> = ({
     const file = e.target.files?.[0];
     if (!file) return;
 
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+    if (!allowedTypes.includes(file.type)) {
+      error('Invalid file type', 'Please select a valid image file (JPEG, PNG, WebP, or GIF).');
+      return;
+    }
+
     if (file.size > 2 * 1024 * 1024) {
       error('File too large', 'Please choose an image under 2MB.');
       return;

@@ -24,7 +24,7 @@ import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { useToast } from '@/components/ui/Toast';
 import { formatDisplayDate } from '@/lib/dates';
 import { generateId } from '@/lib/ids';
-import { generateTypographicCover } from '@/lib/utils';
+import { generateTypographicCover, isValidWebUrl } from '@/lib/utils';
 import { ProjectFormModal } from './ProjectFormModal';
 import type { Milestone, Task } from '@/domain/types';
 
@@ -278,7 +278,7 @@ export const ProjectDetailPage: React.FC = () => {
 
             {/* Links */}
             <div className="flex flex-wrap items-center gap-2 self-start">
-              {project.liveUrl && (
+              {isValidWebUrl(project.liveUrl) && (
                 <a
                   href={project.liveUrl}
                   target="_blank"
@@ -289,7 +289,7 @@ export const ProjectDetailPage: React.FC = () => {
                   <span>Live App</span>
                 </a>
               )}
-              {project.repoUrl && (
+              {isValidWebUrl(project.repoUrl) && (
                 <a
                   href={project.repoUrl}
                   target="_blank"

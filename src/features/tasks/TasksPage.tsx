@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo, useEffect, useDeferredValue } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import {
   CheckSquare,
@@ -32,6 +32,9 @@ export const TasksPage: React.FC = () => {
   const [taskToEdit, setTaskToEdit] = useState<Task | null>(null);
   const [taskToDelete, setTaskToDelete] = useState<Task | null>(null);
 
+  const PAGE_SIZE = 50;
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+
   const { success } = useToast();
   const todayStr = getTodayLocalDateString();
 
@@ -40,39 +43,86 @@ export const TasksPage: React.FC = () => {
   const assignments = useLiveQuery(() => db.assignments.toArray(), []) || [];
   const goals = useLiveQuery(() => db.goals.toArray(), []) || [];
 
-  // Project map for quick parent lookup
-  const projectMap = new Map(projects.map((p) => [p.id, p.title]));
-  const assignmentMap = new Map(assignments.map((a) => [a.id, a.title]));
-  const goalMap = new Map(goals.map((g) => [g.id, g.title]));
+  // Reset pagination when active filter or search changes
+  useEffect(() => {
+    setVisibleCount(PAGE_SIZE);
+  }, [activeFilter, searchQuery]);
 
-  // Filtering logic
-  const filteredTasks = tasks.filter((task) => {
-    // Status/Date tabs
-    if (activeFilter === 'done') {
-      if (task.status !== 'done') return false;
-    } else {
-      if (task.status === 'done' && activeFilter !== 'all') return false;
+  // Single-pass computation of tab badge counts and parent lookup maps (O(N))
+  const { filterTabs, projectMap, assignmentMap, goalMap } = useMemo(() => {
+    let allCount = 0;
+    let todayCount = 0;
+    let upcomingCount = 0;
+    let overdueCount = 0;
+    let doneCount = 0;
 
-      if (activeFilter === 'today') {
-        if (task.dueDate !== todayStr) return false;
-      } else if (activeFilter === 'upcoming') {
-        if (!task.dueDate || !isUpcoming(task.dueDate, 7) || task.dueDate === todayStr) return false;
-      } else if (activeFilter === 'overdue') {
-        if (!task.dueDate || !isOverdue(task.dueDate)) return false;
+    for (let i = 0; i < tasks.length; i++) {
+      const t = tasks[i];
+      if (t.status === 'done') {
+        doneCount++;
+      } else {
+        allCount++;
+        if (t.dueDate === todayStr) {
+          todayCount++;
+        } else if (t.dueDate) {
+          if (isUpcoming(t.dueDate, 7)) upcomingCount++;
+          else if (isOverdue(t.dueDate)) overdueCount++;
+        }
       }
     }
 
-    // Search query
-    if (searchQuery.trim()) {
-      const q = searchQuery.toLowerCase();
-      const matchTitle = task.title.toLowerCase().includes(q);
-      const matchNotes = task.notes?.toLowerCase().includes(q);
-      const matchTags = task.tags.some((t) => t.toLowerCase().includes(q));
-      if (!matchTitle && !matchNotes && !matchTags) return false;
-    }
+    return {
+      filterTabs: [
+        { key: 'all', label: 'All Tasks', count: allCount },
+        { key: 'today', label: 'Due Today', count: todayCount },
+        { key: 'upcoming', label: 'Upcoming', count: upcomingCount },
+        { key: 'overdue', label: 'Overdue', count: overdueCount },
+        { key: 'done', label: 'Completed', count: doneCount },
+      ],
+      projectMap: new Map(projects.map((p) => [p.id, p.title])),
+      assignmentMap: new Map(assignments.map((a) => [a.id, a.title])),
+      goalMap: new Map(goals.map((g) => [g.id, g.title])),
+    };
+  }, [tasks, projects, assignments, goals, todayStr]);
 
-    return true;
-  });
+  // Use deferred value for search filtering to maintain 60fps responsive typing
+  const deferredSearch = useDeferredValue(searchQuery);
+
+  // Memoized filtering logic
+  const filteredTasks = useMemo(() => {
+    const q = deferredSearch.trim().toLowerCase();
+
+    return tasks.filter((task) => {
+      // Status/Date tabs
+      if (activeFilter === 'done') {
+        if (task.status !== 'done') return false;
+      } else {
+        if (task.status === 'done' && activeFilter !== 'all') return false;
+
+        if (activeFilter === 'today') {
+          if (task.dueDate !== todayStr) return false;
+        } else if (activeFilter === 'upcoming') {
+          if (!task.dueDate || !isUpcoming(task.dueDate, 7) || task.dueDate === todayStr) return false;
+        } else if (activeFilter === 'overdue') {
+          if (!task.dueDate || !isOverdue(task.dueDate)) return false;
+        }
+      }
+
+      // Search query
+      if (q) {
+        const matchTitle = task.title.toLowerCase().includes(q);
+        const matchNotes = task.notes?.toLowerCase().includes(q);
+        const matchTags = task.tags.some((t) => t.toLowerCase().includes(q));
+        if (!matchTitle && !matchNotes && !matchTags) return false;
+      }
+
+      return true;
+    });
+  }, [tasks, activeFilter, deferredSearch, todayStr]);
+
+  const visibleTasks = useMemo(() => {
+    return filteredTasks.slice(0, visibleCount);
+  }, [filteredTasks, visibleCount]);
 
   const handleToggleTask = async (task: Task, e: React.MouseEvent<HTMLButtonElement>) => {
     const nextStatus = task.status === 'done' ? 'todo' : 'done';
@@ -93,14 +143,6 @@ export const TasksPage: React.FC = () => {
     setTaskToDelete(null);
     success('Task deleted');
   };
-
-  const filterTabs = [
-    { key: 'all', label: 'All Tasks', count: tasks.filter((t) => t.status !== 'done').length },
-    { key: 'today', label: 'Due Today', count: tasks.filter((t) => t.dueDate === todayStr && t.status !== 'done').length },
-    { key: 'upcoming', label: 'Upcoming', count: tasks.filter((t) => t.dueDate && isUpcoming(t.dueDate, 7) && t.dueDate !== todayStr && t.status !== 'done').length },
-    { key: 'overdue', label: 'Overdue', count: tasks.filter((t) => t.dueDate && isOverdue(t.dueDate) && t.status !== 'done').length },
-    { key: 'done', label: 'Completed', count: tasks.filter((t) => t.status === 'done').length },
-  ];
 
   return (
     <div className="space-y-6 animate-in fade-in duration-200">
@@ -181,7 +223,7 @@ export const TasksPage: React.FC = () => {
         />
       ) : (
         <div className="space-y-2.5">
-          {filteredTasks.map((task) => {
+          {visibleTasks.map((task) => {
             const isDone = task.status === 'done';
             const isTaskOverdue = task.dueDate && isOverdue(task.dueDate) && !isDone;
 
@@ -291,6 +333,18 @@ export const TasksPage: React.FC = () => {
               </div>
             );
           })}
+
+          {filteredTasks.length > visibleCount && (
+            <div className="pt-3 text-center">
+              <button
+                type="button"
+                onClick={() => setVisibleCount((prev) => prev + PAGE_SIZE)}
+                className="px-4 py-2 text-xs font-medium rounded-xl bg-white/[0.06] hover:bg-white/[0.1] text-content-secondary hover:text-content-primary transition-all border border-white/10 shadow-sm"
+              >
+                Load more tasks (Showing {visibleTasks.length} of {filteredTasks.length})
+              </button>
+            </div>
+          )}
         </div>
       )}
 

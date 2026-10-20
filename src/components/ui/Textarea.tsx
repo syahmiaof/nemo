@@ -11,6 +11,8 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
   ({ className, label, error, helperText, id, ...props }, ref) => {
     const generatedId = React.useId();
     const textareaId = id || props.name || generatedId;
+    const errorId = `${textareaId}-error`;
+    const helperId = `${textareaId}-helper`;
 
     return (
       <div className="w-full space-y-1.5">
@@ -22,6 +24,8 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
         <textarea
           id={textareaId}
           ref={ref}
+          aria-invalid={error ? 'true' : undefined}
+          aria-describedby={error ? errorId : helperText ? helperId : undefined}
           className={cn(
             'w-full px-3 py-2 bg-surface border rounded-lg text-sm text-content-primary placeholder:text-content-tertiary transition-colors resize-y min-h-[80px]',
             'border-border-subtle focus:border-border-emphasis focus:ring-1 focus:ring-accent-ring focus:outline-none',
@@ -31,9 +35,9 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
           {...props}
         />
         {error ? (
-          <p className="text-xs text-accent-ember">{error}</p>
+          <p id={errorId} role="alert" className="text-xs text-accent-ember">{error}</p>
         ) : helperText ? (
-          <p className="text-xs text-content-tertiary">{helperText}</p>
+          <p id={helperId} className="text-xs text-content-tertiary">{helperText}</p>
         ) : null}
       </div>
     );

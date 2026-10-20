@@ -119,6 +119,18 @@ export const CalendarPage: React.FC = () => {
     return list;
   }, [tasks, assignments, milestones, events]);
 
+  // Index projected items by date in a single pass O(N) for instant O(1) cell lookups
+  const itemsByDate = useMemo(() => {
+    const map = new Map<string, ProjectedCalendarItem[]>();
+    for (let i = 0; i < projectedItems.length; i++) {
+      const item = projectedItems[i];
+      const arr = map.get(item.date);
+      if (arr) arr.push(item);
+      else map.set(item.date, [item]);
+    }
+    return map;
+  }, [projectedItems]);
+
   // Navigation handlers
   const handlePrev = () => {
     const d = new Date(currentDate);
@@ -267,7 +279,7 @@ export const CalendarPage: React.FC = () => {
 
               const isCurrentMonth = dayDate.getMonth() === currentDate.getMonth();
               const isTodayCell = dateKey === todayStr;
-              const itemsForDay = projectedItems.filter((item) => item.date === dateKey);
+              const itemsForDay = itemsByDate.get(dateKey) || [];
 
               return (
                 <div
@@ -337,7 +349,7 @@ export const CalendarPage: React.FC = () => {
               const day = String(dayDate.getDate()).padStart(2, '0');
               const dateKey = `${year}-${month}-${day}`;
               const isTodayCell = dateKey === todayStr;
-              const itemsForDay = projectedItems.filter((item) => item.date === dateKey);
+              const itemsForDay = itemsByDate.get(dateKey) || [];
 
               return (
                 <div key={idx} className="p-2 space-y-2">

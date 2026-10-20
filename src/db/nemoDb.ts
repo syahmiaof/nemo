@@ -140,7 +140,13 @@ export async function exportWorkspaceBackup(): Promise<string> {
  */
 export async function importWorkspaceBackup(jsonContent: string): Promise<{ success: boolean; error?: string }> {
   try {
-    const rawParsed = JSON.parse(jsonContent);
+    const rawParsed = JSON.parse(jsonContent, (key, value) => {
+      // Defense-in-depth: strip prototype pollution vectors during JSON parsing
+      if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+        return undefined;
+      }
+      return value;
+    });
     const parsed = BackupSchema.safeParse(rawParsed);
     if (!parsed.success) {
       return { success: false, error: `Invalid backup schema: ${parsed.error.errors.map(e => e.message).join(', ')}` };

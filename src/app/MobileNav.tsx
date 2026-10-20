@@ -35,7 +35,7 @@ export const MobileNav: React.FC = () => {
   return (
     <>
       {/* 5-item Bottom Bar */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-elevated/95 backdrop-blur-md border-t border-border-subtle flex items-center justify-around h-16 px-1 safe-area-pb">
+      <nav aria-label="Mobile Navigation" className="mobile-nav md:hidden fixed bottom-0 left-0 right-0 z-40 bg-elevated/95 backdrop-blur-md border-t border-border-subtle flex items-center justify-around h-16 px-1 safe-area-pb">
         {mainTabs.map((item) => {
           const Icon = item.icon;
           return (

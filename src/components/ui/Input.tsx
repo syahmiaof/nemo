@@ -11,6 +11,8 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
   ({ className, label, error, helperText, id, ...props }, ref) => {
     const generatedId = React.useId();
     const inputId = id || props.name || generatedId;
+    const errorId = `${inputId}-error`;
+    const helperId = `${inputId}-helper`;
 
     return (
       <div className="w-full space-y-1.5">
@@ -22,6 +24,8 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         <input
           id={inputId}
           ref={ref}
+          aria-invalid={error ? 'true' : undefined}
+          aria-describedby={error ? errorId : helperText ? helperId : undefined}
           className={cn(
             'w-full px-3 py-2 bg-surface border rounded-lg text-sm text-content-primary placeholder:text-content-tertiary transition-colors',
             'border-border-subtle focus:border-border-emphasis focus:ring-1 focus:ring-accent-ring focus:outline-none',
@@ -31,9 +35,9 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
           {...props}
         />
         {error ? (
-          <p className="text-xs text-accent-ember">{error}</p>
+          <p id={errorId} role="alert" className="text-xs text-accent-ember">{error}</p>
         ) : helperText ? (
-          <p className="text-xs text-content-tertiary">{helperText}</p>
+          <p id={helperId} className="text-xs text-content-tertiary">{helperText}</p>
         ) : null}
       </div>
     );

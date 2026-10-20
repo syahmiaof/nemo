@@ -29,6 +29,7 @@ import { EmptyState } from '@/components/ui/EmptyState';
 import { useToast } from '@/components/ui/Toast';
 import { generateId } from '@/lib/ids';
 import { formatDisplayDate, isOverdue, getTodayLocalDateString } from '@/lib/dates';
+import { isValidWebUrl } from '@/lib/utils';
 import type { Assignment, AssignmentStatus, Task } from '@/domain/types';
 
 export const AcademicsPage: React.FC = () => {
@@ -165,6 +166,11 @@ export const AcademicsPage: React.FC = () => {
     const targetSubjectId = selectedSubjectId || subjects[0]?.id;
     if (!targetSubjectId) {
       error('Subject required', 'Please create a subject before adding assignments.');
+      return;
+    }
+
+    if (assignUrl.trim() && !isValidWebUrl(assignUrl.trim())) {
+      error('Invalid URL', 'Portal link must be a valid web URL starting with http:// or https://');
       return;
     }
 
@@ -467,7 +473,7 @@ export const AcademicsPage: React.FC = () => {
                           </div>
                         )}
 
-                        {assign.submissionUrl && (
+                        {isValidWebUrl(assign.submissionUrl) && (
                           <a
                             href={assign.submissionUrl}
                             target="_blank"
