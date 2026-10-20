@@ -326,11 +326,12 @@ export const mappers = {
   },
 
   settings: {
-    toRemote(local: WorkspaceSettings, userId: string, userEmail?: string) {
+    toRemote(local: WorkspaceSettings, userId: string, userEmail?: string, avatarUrl?: string | null) {
       return {
         id: userId,
         email: userEmail || null,
         display_name: local.displayName,
+        avatar_url: avatarUrl !== undefined ? avatarUrl : (local as any).avatarUrl || null,
         theme: local.theme,
         accent: local.accent,
         week_starts_on: local.weekStartsOn,

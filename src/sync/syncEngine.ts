@@ -278,7 +278,16 @@ class SyncEngine {
     let remotePayload: Record<string, any>;
     const mapper = (mappers as any)[mut.entityType];
 
-    if (mapper?.toRemote) {
+    if (mut.entityType === 'settings') {
+      let avatarData: string | null = null;
+      if (mut.payload?.avatarBlobId) {
+        const blob = await db.assetBlobs.get(mut.payload.avatarBlobId);
+        if (blob?.data) {
+          avatarData = blob.data;
+        }
+      }
+      remotePayload = mappers.settings.toRemote(mut.payload as any, userId, this.currentUserEmail || undefined, avatarData);
+    } else if (mapper?.toRemote) {
       remotePayload = mapper.toRemote(mut.payload, userId, this.currentUserEmail);
     } else {
       remotePayload = {
@@ -423,6 +432,57 @@ class SyncEngine {
         await db.goalTaskLinks.put(mappers.goalTaskLink.toLocal(row));
       }
     }
+
+    // Pull profile settings & avatar
+    const { data: remoteProfile } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', userId)
+      .maybeSingle();
+
+    if (remoteProfile) {
+      const currentSettings = await db.settings.get('default');
+      let targetAvatarBlobId = currentSettings?.avatarBlobId;
+
+      if (remoteProfile.avatar_url) {
+        const currentBlob = targetAvatarBlobId ? await db.assetBlobs.get(targetAvatarBlobId) : null;
+        if (!currentBlob || currentBlob.data !== remoteProfile.avatar_url) {
+          const newBlobId = `avatar-synced-${Date.now()}`;
+          const existingProfileBlobs = await db.assetBlobs.where('ownerType').equals('profile').toArray();
+          for (const item of existingProfileBlobs) {
+            await db.assetBlobs.delete(item.id);
+          }
+
+          await db.assetBlobs.put({
+            id: newBlobId,
+            ownerType: 'profile',
+            ownerId: 'default',
+            mimeType: 'image/webp',
+            size: Math.round((remoteProfile.avatar_url.length * 3) / 4),
+            data: remoteProfile.avatar_url,
+            createdAt: new Date().toISOString(),
+          });
+          targetAvatarBlobId = newBlobId;
+        }
+      } else if (remoteProfile.avatar_url === null && targetAvatarBlobId) {
+        const existing = await db.assetBlobs.where('ownerType').equals('profile').toArray();
+        for (const item of existing) {
+          await db.assetBlobs.delete(item.id);
+        }
+        targetAvatarBlobId = undefined;
+      }
+
+      await db.settings.update('default', {
+        displayName: remoteProfile.display_name || currentSettings?.displayName || 'My Workspace',
+        theme: (remoteProfile.theme as any) || currentSettings?.theme || 'dark',
+        accent: (remoteProfile.accent as any) || currentSettings?.accent || 'mint',
+        weekStartsOn: remoteProfile.week_starts_on ?? currentSettings?.weekStartsOn ?? 1,
+        hourFormat: (remoteProfile.hour_format as any) || currentSettings?.hourFormat || '24h',
+        reduceMotion: remoteProfile.reduce_motion ?? currentSettings?.reduceMotion ?? false,
+        onboardingCompleted: remoteProfile.onboarding_completed ?? currentSettings?.onboardingCompleted ?? true,
+        avatarBlobId: targetAvatarBlobId,
+      });
+    }
   }
 
   /**
@@ -460,7 +520,16 @@ class SyncEngine {
       let uploadCount = 0;
 
       if (settings) {
-        await supabase.from('profiles').upsert(mappers.settings.toRemote(settings, userId, this.currentUserEmail || undefined));
+        let avatarData: string | null = null;
+        if (settings.avatarBlobId) {
+          const blob = await db.assetBlobs.get(settings.avatarBlobId);
+          if (blob?.data) {
+            avatarData = blob.data;
+          }
+        }
+        await supabase.from('profiles').upsert(
+          mappers.settings.toRemote(settings, userId, this.currentUserEmail || undefined, avatarData)
+        );
         uploadCount++;
       }
 

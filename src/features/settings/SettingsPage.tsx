@@ -29,6 +29,7 @@ import type { WorkspaceSettings } from '@/domain/types';
 import { DemoWorkspacePanel } from './DemoWorkspacePanel';
 import { AccountSyncPanel } from './AccountSyncPanel';
 import { getInitials, saveProfileAvatar, removeProfileAvatar } from '@/lib/avatar';
+import { syncEngine } from '@/sync/syncEngine';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { useReducedMotion } from '@/design/useReducedMotion';
@@ -93,7 +94,8 @@ export const SettingsPage: React.FC = () => {
     try {
       setIsUploadingAvatar(true);
       await saveProfileAvatar(file);
-      success('Avatar updated', 'Your profile picture was compressed to 256x256 WebP and saved locally.');
+      syncEngine.syncNow().catch(() => {});
+      success('Avatar updated', 'Your profile picture was compressed to 256x256 WebP and synced to cloud.');
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Upload failed';
       error('Avatar Error', msg);
@@ -106,6 +108,7 @@ export const SettingsPage: React.FC = () => {
   const handleAvatarRemove = async () => {
     try {
       await removeProfileAvatar();
+      syncEngine.syncNow().catch(() => {});
       success('Avatar removed', 'Profile avatar reset to initials fallback.');
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Removal failed';
@@ -122,6 +125,7 @@ export const SettingsPage: React.FC = () => {
     await db.settings.update('default', {
       displayName: displayName.trim(),
     });
+    syncEngine.syncNow().catch(() => {});
     success('Profile updated');
   };
 

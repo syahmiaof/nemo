@@ -12,6 +12,7 @@ import {
   KeyRound,
   Eye,
   EyeOff,
+  Copy,
 } from 'lucide-react';
 import { useAuth } from '@/features/auth/AuthContext';
 import { useSync } from '@/sync/useSync';
@@ -19,11 +20,15 @@ import { syncEngine } from '@/sync/syncEngine';
 import { useToast } from '@/components/ui/Toast';
 
 export const AccountSyncPanel: React.FC = () => {
-  const { user, openAuthModal, signOut, updatePassword } = useAuth();
+  const { user, openAuthModal, signOut, updatePassword, currentPassword } = useAuth();
   const { status, lastSyncAt, pendingCount, errorMessage, isSyncing, triggerSync } = useSync();
   const { success, error: toastError } = useToast();
 
   const [isUploading, setIsUploading] = useState(false);
+
+  // Current Password Reveal & Copy State
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [isCopied, setIsCopied] = useState(false);
 
   // Change Password State
   const [showChangePassword, setShowChangePassword] = useState(false);
@@ -51,6 +56,26 @@ export const AccountSyncPanel: React.FC = () => {
       success('Upload Complete', `${res.count} records successfully uploaded to cloud.`);
     } else {
       toastError('Error', res.error || 'Failed to upload workspace data.');
+    }
+  };
+
+  const handleCopyPassword = async () => {
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(currentPassword);
+      } else {
+        const textArea = document.createElement('textarea');
+        textArea.value = currentPassword;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+      }
+      setIsCopied(true);
+      success('Copied', 'Current owner password copied to clipboard.');
+      setTimeout(() => setIsCopied(false), 2000);
+    } catch {
+      toastError('Copy Failed', 'Unable to copy to clipboard.');
     }
   };
 
@@ -145,22 +170,6 @@ export const AccountSyncPanel: React.FC = () => {
           {user ? (
             <div className="flex items-center gap-2">
               <button
-                onClick={() => {
-                  setShowChangePassword(!showChangePassword);
-                  setPasswordFeedback(null);
-                }}
-                className={`inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-medium transition-colors ${
-                  showChangePassword
-                    ? 'bg-navy-800 border-accent-mint/50 text-accent-mint'
-                    : 'bg-surface-subtle border-border-subtle hover:border-border-emphasis text-content-secondary hover:text-content-primary'
-                }`}
-                title="Change your owner login password"
-              >
-                <KeyRound className="w-3.5 h-3.5" />
-                <span>Change Password</span>
-              </button>
-
-              <button
                 onClick={handleManualSync}
                 disabled={isSyncing}
                 className="inline-flex items-center justify-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-accent-mint hover:bg-accent-mint/90 text-navy-950 font-semibold text-xs transition-colors disabled:opacity-60"
@@ -182,16 +191,16 @@ export const AccountSyncPanel: React.FC = () => {
           )}
         </div>
 
-        {/* Content row */}
+        {/* Account Info row */}
         {user ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
             <div className="p-3 rounded-xl bg-surface-subtle border border-border-subtle space-y-0.5">
-              <span className="text-[11px] text-content-tertiary">Owner Account</span>
+              <span className="text-[11px] text-content-tertiary font-medium">Owner Account</span>
               <p className="text-xs font-semibold text-content-primary truncate">{user.email}</p>
             </div>
 
             <div className="p-3 rounded-xl bg-surface-subtle border border-border-subtle space-y-0.5">
-              <span className="text-[11px] text-content-tertiary">Data Status</span>
+              <span className="text-[11px] text-content-tertiary font-medium">Data Status</span>
               <p className="text-xs font-semibold text-content-primary">
                 {pendingCount > 0
                   ? `${pendingCount} item(s) pending sync`
@@ -202,21 +211,88 @@ export const AccountSyncPanel: React.FC = () => {
             </div>
           </div>
         ) : (
-          <div className="pt-1 space-y-3">
+          <div className="pt-1 space-y-2">
             <p className="text-xs text-content-secondary leading-relaxed">
               Sign in with your owner password to enable real-time bidirectional synchronization between your laptop and mobile devices.
             </p>
+          </div>
+        )}
+
+        {/* Current Active Password Card */}
+        <div className="p-3.5 rounded-xl bg-surface-subtle border border-border-subtle flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="space-y-1">
+            <div className="flex items-center gap-1.5 text-[11px] text-content-tertiary font-medium">
+              <KeyRound className="w-3.5 h-3.5 text-accent-mint" />
+              <span>Current Owner Password</span>
+              <span className="px-1.5 py-0.2 rounded text-[9px] bg-mint-500/15 text-mint-400 font-semibold border border-mint-500/30">
+                Active
+              </span>
+            </div>
             <div className="flex items-center gap-2">
+              <span className="font-mono text-xs sm:text-sm font-semibold tracking-wide text-content-primary">
+                {showCurrentPassword ? currentPassword : '••••••••••••••••'}
+              </span>
               <button
-                onClick={openAuthModal}
-                className="inline-flex items-center gap-1.5 text-xs text-accent-mint hover:underline font-medium"
+                type="button"
+                onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                className="p-1 rounded-md text-content-tertiary hover:text-content-primary hover:bg-surface transition-colors"
+                title={showCurrentPassword ? 'Hide password' : 'Show password'}
+                aria-label={showCurrentPassword ? 'Hide password' : 'Show password'}
               >
-                <KeyRound className="w-3.5 h-3.5" />
-                <span>Want to set or change your password? Sign in first</span>
+                {showCurrentPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
               </button>
             </div>
           </div>
-        )}
+
+          <div className="flex items-center gap-2 self-start sm:self-auto">
+            <button
+              type="button"
+              onClick={handleCopyPassword}
+              className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-surface hover:bg-surface-subtle border border-border-subtle text-xs text-content-secondary hover:text-content-primary transition-colors font-medium cursor-pointer"
+              title="Copy password to clipboard"
+            >
+              {isCopied ? (
+                <>
+                  <Check className="w-3.5 h-3.5 text-accent-mint" />
+                  <span className="text-accent-mint font-semibold">Copied!</span>
+                </>
+              ) : (
+                <>
+                  <Copy className="w-3.5 h-3.5" />
+                  <span>Copy</span>
+                </>
+              )}
+            </button>
+
+            {user ? (
+              <button
+                type="button"
+                onClick={() => {
+                  setShowChangePassword(!showChangePassword);
+                  setPasswordFeedback(null);
+                }}
+                className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border text-xs font-medium transition-colors cursor-pointer ${
+                  showChangePassword
+                    ? 'bg-navy-800 border-accent-mint/50 text-accent-mint'
+                    : 'bg-surface hover:bg-surface-subtle border-border-subtle text-content-secondary hover:text-content-primary'
+                }`}
+                title="Change your owner login password"
+              >
+                <KeyRound className="w-3.5 h-3.5" />
+                <span>{showChangePassword ? 'Close' : 'Change Password'}</span>
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={openAuthModal}
+                className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-accent-mint/10 hover:bg-accent-mint/20 border border-accent-mint/30 text-xs text-accent-mint font-medium transition-colors cursor-pointer"
+              >
+                <Lock className="w-3.5 h-3.5" />
+                <span>Sign in to change</span>
+              </button>
+            )}
+          </div>
+        </div>
 
         {/* Inline Change Password Form */}
         {user && showChangePassword && (
@@ -227,9 +303,9 @@ export const AccountSyncPanel: React.FC = () => {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2 text-xs font-semibold text-accent-mint">
                 <KeyRound className="w-4 h-4" />
-                <span>Set New Owner Password</span>
+                <span>Set New Custom Password</span>
               </div>
-              <span className="text-[10px] text-content-tertiary">Applies immediately to phone & laptop</span>
+              <span className="text-[10px] text-content-tertiary">Takes effect instantly on phone & laptop</span>
             </div>
 
             <div className="relative">
@@ -239,7 +315,7 @@ export const AccountSyncPanel: React.FC = () => {
                 minLength={6}
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
-                placeholder="Enter your custom password (min. 6 characters)"
+                placeholder="Enter custom password (min. 6 characters)"
                 className="w-full pl-3 pr-10 py-2 text-xs rounded-xl bg-surface border border-border-subtle focus:border-accent-mint focus:ring-1 focus:ring-accent-mint text-content-primary placeholder-content-tertiary transition-colors"
                 autoFocus
               />
@@ -271,16 +347,16 @@ export const AccountSyncPanel: React.FC = () => {
                   setNewPassword('');
                   setPasswordFeedback(null);
                 }}
-                className="px-3 py-1.5 rounded-lg bg-surface-subtle hover:bg-surface border border-border-subtle text-xs text-content-secondary transition-colors"
+                className="px-3 py-1.5 rounded-lg bg-surface-subtle hover:bg-surface border border-border-subtle text-xs text-content-secondary transition-colors cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={isUpdatingPassword || newPassword.length < 6}
-                className="px-3.5 py-1.5 rounded-lg bg-accent-mint hover:bg-accent-mint/90 text-navy-950 font-semibold text-xs transition-colors disabled:opacity-50"
+                className="px-3.5 py-1.5 rounded-lg bg-accent-mint hover:bg-accent-mint/90 text-navy-950 font-semibold text-xs transition-colors disabled:opacity-50 cursor-pointer"
               >
-                {isUpdatingPassword ? 'Updating...' : 'Save New Password'}
+                {isUpdatingPassword ? 'Saving...' : 'Save New Password'}
               </button>
             </div>
           </form>
@@ -299,7 +375,7 @@ export const AccountSyncPanel: React.FC = () => {
             <button
               onClick={handleInitialUpload}
               disabled={isUploading}
-              className="text-content-tertiary hover:text-content-secondary transition-colors inline-flex items-center gap-1.5 disabled:opacity-50"
+              className="text-content-tertiary hover:text-content-secondary transition-colors inline-flex items-center gap-1.5 disabled:opacity-50 cursor-pointer"
             >
               <UploadCloud className="w-3.5 h-3.5" />
               <span>{isUploading ? 'Uploading...' : 'Upload local workspace to cloud'}</span>
@@ -307,7 +383,7 @@ export const AccountSyncPanel: React.FC = () => {
 
             <button
               onClick={signOut}
-              className="text-red-400/80 hover:text-red-400 transition-colors inline-flex items-center gap-1.5 font-medium"
+              className="text-red-400/80 hover:text-red-400 transition-colors inline-flex items-center gap-1.5 font-medium cursor-pointer"
             >
               <LogOut className="w-3.5 h-3.5" />
               <span>Sign Out</span>
