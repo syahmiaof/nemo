@@ -1,0 +1,10 @@
+{
+  "afterTab": {
+    "element": "<body class=\"bg-canvas text-content-primary antialiased selection:bg-accent-mint/20 selection:text-accent-mint min-h-screen\" style=\"\">\n    <div id=\"root\"><div class=\"nemo-app\"><a href=\"#main-content\" ",
+    "insideDialog": false
+  },
+  "afterClose": {
+    "element": "<body class=\"bg-canvas text-content-primary antialiased selection:bg-accent-mint/20 selection:text-accent-mint min-h-screen\" style=\"\">\n    <div id=\"root\"><div class=\"nemo-app\"><a href=\"#main-content\" ",
+    "triggerFocused": false
+  }
+}

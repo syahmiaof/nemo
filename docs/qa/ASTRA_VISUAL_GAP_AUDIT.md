@@ -1,0 +1,16 @@
+# Visual gap audit — Nemo vs live Tavola
+
+Reference was opened directly and captured after animation settled: [Tavola 1440](artifacts/tavola-reference-settled-1440.png), [Tavola 390](artifacts/tavola-reference-settled-390.png). Nemo comparisons: [Overview 1440](artifacts/midnight-1440-overview.png), [Overview 390](artifacts/midnight-390-overview.png). Screens were measured in CSS pixels in `artifacts/audit-measurements.json`; product content and brand remain deliberately different.
+
+| Aspect | Tavola observed | Nemo observed | Impact / acceptance |
+|---|---|---|---|
+| Overview entry | First analytical panel at x115/y200, width753/height408 at 1440×900. | x124/y294, width727/height658 at same viewport. | **N4C-07 P2**: +94px delayed entry and +250px height; secondary Nemo content falls below fold. At comparable viewport, decouple left chart height from three-card focus column and keep first analytical panel compact enough to reveal the next section without weakening readable chart labels. |
+| Mobile first panel | Tavola x14/y363, width362/height434 at 390×844. | Nemo x16/y365, width358/height569. | Starts at similar point but Nemo consumes another 135px. Verify chart/data table and next content are discoverable after adjustment. |
+| Navigation | Tavola uses visible horizontal route capsule on mobile, bottom utility dock. | Nemo uses desktop capsule plus mobile five-item bottom nav/More sheet. | Different information architecture is appropriate for Nemo. Independent More interaction works; keep five routes and secondary modules accessible. |
+| Motion pill | Tavola active capsule visibly moves with continuous shape change. | Nemo pill sampled at x515.6/w75 → x538.1/w93.4 (50ms) → x592.6/w64 (400ms). | Functional equivalent in observed desktop transition. Preserve interruption behavior; no claim of identical easing. |
+| Content hierarchy | Tavola puts broad KPIs above a dense 58:42 analytical/ticket split; distinct module layouts across Orders/Floor/Menu/Reports. | Nemo has a similar header/KPI/chart/focus structure, but its chart panel stretches to match the taller focus stack. Projects/Academics/Tasks differ meaningfully. | The main visual gap is vertical density, not a missing decorative gradient. Review desktop Overview grid alignment first. |
+| Brand | Tavola uses peach tile/wordmark and service colors; Nemo uses supplied route emblem, `nemo.` and local Urbanist. | Nemo icon and OG artwork are recognizable in actual rendered assets. | Preserve Nemo identity; do not copy Tavola restaurant imagery or wording. |
+
+Other screens inspected in rendered browser: Overview, Projects, Project Detail (`/projects/demo-project-1`), Tasks, Calendar, Academics, Goals, Goal Detail (`/goals/demo-goal-1`), Insights, Settings, Profile, Ask Nemo, Welcome, Demo mode, More sheet and backup modal. Evidence is in `artifacts/` (`midnight-*`, `daylight-*`, `aurora-*`, interaction and backup captures). The project cards' dark illustrated covers remain legible in Daylight; the confirmed contrast failures are in the Settings theme chooser and Ask Nemo dialog, described separately.
+
+Tavola's first live captures were caught mid-entrance, with incomplete ticket/chart content. Those frames (`tavola-reference-1440.png`, `tavola-reference-390.png`) were excluded from comparison. The settled captures are the benchmark for this report.

@@ -1,0 +1,5165 @@
+{
+  "startedAt": "2026-10-20T15:25:53.328Z",
+  "routes": [
+    {
+      "viewport": "320x568",
+      "route": "overview",
+      "title": "nemo. — Track it, finish it.",
+      "h1": [
+        "Make room for progress."
+      ],
+      "docWidth": 320,
+      "windowWidth": 320,
+      "overflow": 0,
+      "theme": "dark",
+      "rects": {
+        ".app-header": {
+          "x": 16,
+          "y": 20,
+          "w": 288,
+          "h": 44
+        },
+        ".header-navigation": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".glass-panel": {
+          "x": 16,
+          "y": 414,
+          "w": 288,
+          "h": 569
+        },
+        ".mobile-nav": {
+          "x": 0,
+          "y": 504,
+          "w": 320,
+          "h": 64
+        },
+        ".dock": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".tabs__track": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        }
+      },
+      "offenders": [
+        {
+          "tag": "I",
+          "className": "mesh__a",
+          "text": "",
+          "left": -91,
+          "right": 307
+        },
+        {
+          "tag": "I",
+          "className": "mesh__b",
+          "text": "",
+          "left": 59,
+          "right": 422
+        },
+        {
+          "tag": "DIV",
+          "className": "fixed bottom-16 md:bottom-6 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-event",
+          "text": "",
+          "left": -16,
+          "right": 304
+        }
+      ]
+    },
+    {
+      "viewport": "320x568",
+      "route": "projects",
+      "title": "nemo. — Track it, finish it.",
+      "h1": [
+        "Projects"
+      ],
+      "docWidth": 320,
+      "windowWidth": 320,
+      "overflow": 0,
+      "theme": "dark",
+      "rects": {
+        ".app-header": {
+          "x": 16,
+          "y": 20,
+          "w": 288,
+          "h": 44
+        },
+        ".header-navigation": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".module-heading": {
+          "x": 16,
+          "y": 172,
+          "w": 288,
+          "h": 61
+        },
+        ".glass-panel": {
+          "x": 16,
+          "y": 257,
+          "w": 288,
+          "h": 104
+        },
+        ".mobile-nav": {
+          "x": 0,
+          "y": 504,
+          "w": 320,
+          "h": 64
+        },
+        ".dock": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".tabs__track": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        }
+      },
+      "offenders": [
+        {
+          "tag": "I",
+          "className": "mesh__a",
+          "text": "",
+          "left": -91,
+          "right": 307
+        },
+        {
+          "tag": "I",
+          "className": "mesh__b",
+          "text": "",
+          "left": 59,
+          "right": 422
+        },
+        {
+          "tag": "DIV",
+          "className": "fixed bottom-16 md:bottom-6 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-event",
+          "text": "",
+          "left": -16,
+          "right": 304
+        }
+      ]
+    },
+    {
+      "viewport": "320x568",
+      "route": "tasks",
+      "title": "nemo. — Track it, finish it.",
+      "h1": [
+        "Tasks"
+      ],
+      "docWidth": 320,
+      "windowWidth": 320,
+      "overflow": 0,
+      "theme": "dark",
+      "rects": {
+        ".app-header": {
+          "x": 16,
+          "y": 20,
+          "w": 288,
+          "h": 44
+        },
+        ".header-navigation": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".module-heading": {
+          "x": 16,
+          "y": 172,
+          "w": 288,
+          "h": 61
+        },
+        ".glass-panel": {
+          "x": 16,
+          "y": 257,
+          "w": 288,
+          "h": 94
+        },
+        ".mobile-nav": {
+          "x": 0,
+          "y": 504,
+          "w": 320,
+          "h": 64
+        },
+        ".dock": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".tabs__track": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        }
+      },
+      "offenders": [
+        {
+          "tag": "I",
+          "className": "mesh__a",
+          "text": "",
+          "left": -91,
+          "right": 307
+        },
+        {
+          "tag": "I",
+          "className": "mesh__b",
+          "text": "",
+          "left": 59,
+          "right": 422
+        },
+        {
+          "tag": "DIV",
+          "className": "fixed bottom-16 md:bottom-6 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-event",
+          "text": "",
+          "left": -16,
+          "right": 304
+        }
+      ]
+    },
+    {
+      "viewport": "320x568",
+      "route": "calendar",
+      "title": "nemo. — Track it, finish it.",
+      "h1": [],
+      "docWidth": 320,
+      "windowWidth": 320,
+      "overflow": 0,
+      "theme": "dark",
+      "rects": {
+        ".app-header": {
+          "x": 16,
+          "y": 20,
+          "w": 288,
+          "h": 44
+        },
+        ".header-navigation": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".glass-panel": {
+          "x": 16,
+          "y": 172,
+          "w": 288,
+          "h": 114
+        },
+        ".mobile-nav": {
+          "x": 0,
+          "y": 504,
+          "w": 320,
+          "h": 64
+        },
+        ".dock": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".tabs__track": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        }
+      },
+      "offenders": [
+        {
+          "tag": "I",
+          "className": "mesh__a",
+          "text": "",
+          "left": -91,
+          "right": 307
+        },
+        {
+          "tag": "I",
+          "className": "mesh__b",
+          "text": "",
+          "left": 59,
+          "right": 422
+        },
+        {
+          "tag": "DIV",
+          "className": "fixed bottom-16 md:bottom-6 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-event",
+          "text": "",
+          "left": -16,
+          "right": 304
+        }
+      ]
+    },
+    {
+      "viewport": "320x568",
+      "route": "academics",
+      "title": "nemo. — Track it, finish it.",
+      "h1": [],
+      "docWidth": 320,
+      "windowWidth": 320,
+      "overflow": 0,
+      "theme": "dark",
+      "rects": {
+        ".app-header": {
+          "x": 16,
+          "y": 20,
+          "w": 288,
+          "h": 44
+        },
+        ".header-navigation": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".glass-panel": {
+          "x": 16,
+          "y": 172,
+          "w": 288,
+          "h": 212
+        },
+        ".mobile-nav": {
+          "x": 0,
+          "y": 504,
+          "w": 320,
+          "h": 64
+        },
+        ".dock": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".tabs__track": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        }
+      },
+      "offenders": [
+        {
+          "tag": "I",
+          "className": "mesh__a",
+          "text": "",
+          "left": -91,
+          "right": 307
+        },
+        {
+          "tag": "I",
+          "className": "mesh__b",
+          "text": "",
+          "left": 59,
+          "right": 422
+        },
+        {
+          "tag": "DIV",
+          "className": "fixed bottom-16 md:bottom-6 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-event",
+          "text": "",
+          "left": -16,
+          "right": 304
+        }
+      ]
+    },
+    {
+      "viewport": "320x568",
+      "route": "goals",
+      "title": "nemo. — Track it, finish it.",
+      "h1": [],
+      "docWidth": 320,
+      "windowWidth": 320,
+      "overflow": 0,
+      "theme": "dark",
+      "rects": {
+        ".app-header": {
+          "x": 16,
+          "y": 20,
+          "w": 288,
+          "h": 44
+        },
+        ".header-navigation": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".glass-panel": {
+          "x": 16,
+          "y": 172,
+          "w": 288,
+          "h": 178
+        },
+        ".mobile-nav": {
+          "x": 0,
+          "y": 504,
+          "w": 320,
+          "h": 64
+        },
+        ".dock": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".tabs__track": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        }
+      },
+      "offenders": [
+        {
+          "tag": "I",
+          "className": "mesh__a",
+          "text": "",
+          "left": -91,
+          "right": 307
+        },
+        {
+          "tag": "I",
+          "className": "mesh__b",
+          "text": "",
+          "left": 59,
+          "right": 422
+        },
+        {
+          "tag": "DIV",
+          "className": "fixed bottom-16 md:bottom-6 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-event",
+          "text": "",
+          "left": -16,
+          "right": 304
+        }
+      ]
+    },
+    {
+      "viewport": "320x568",
+      "route": "insights",
+      "title": "nemo. — Track it, finish it.",
+      "h1": [
+        "WorkspaceInsights"
+      ],
+      "docWidth": 320,
+      "windowWidth": 320,
+      "overflow": 0,
+      "theme": "dark",
+      "rects": {
+        ".app-header": {
+          "x": 16,
+          "y": 20,
+          "w": 288,
+          "h": 44
+        },
+        ".header-navigation": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".glass-panel": {
+          "x": 16,
+          "y": 442,
+          "w": 288,
+          "h": 827
+        },
+        ".mobile-nav": {
+          "x": 0,
+          "y": 504,
+          "w": 320,
+          "h": 64
+        },
+        ".dock": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".tabs__track": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        }
+      },
+      "offenders": [
+        {
+          "tag": "I",
+          "className": "mesh__a",
+          "text": "",
+          "left": -91,
+          "right": 307
+        },
+        {
+          "tag": "I",
+          "className": "mesh__b",
+          "text": "",
+          "left": 59,
+          "right": 422
+        },
+        {
+          "tag": "DIV",
+          "className": "fixed bottom-16 md:bottom-6 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-event",
+          "text": "",
+          "left": -16,
+          "right": 304
+        }
+      ]
+    },
+    {
+      "viewport": "320x568",
+      "route": "settings",
+      "title": "nemo. — Track it, finish it.",
+      "h1": [
+        "Settings"
+      ],
+      "docWidth": 320,
+      "windowWidth": 320,
+      "overflow": 0,
+      "theme": "dark",
+      "rects": {
+        ".app-header": {
+          "x": 16,
+          "y": 20,
+          "w": 288,
+          "h": 44
+        },
+        ".header-navigation": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".module-heading": {
+          "x": 16,
+          "y": 172,
+          "w": 288,
+          "h": 61
+        },
+        ".glass-panel": {
+          "x": 16,
+          "y": 409,
+          "w": 288,
+          "h": 808
+        },
+        ".mobile-nav": {
+          "x": 0,
+          "y": 504,
+          "w": 320,
+          "h": 64
+        },
+        ".dock": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".tabs__track": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        }
+      },
+      "offenders": [
+        {
+          "tag": "I",
+          "className": "mesh__a",
+          "text": "",
+          "left": -91,
+          "right": 307
+        },
+        {
+          "tag": "I",
+          "className": "mesh__b",
+          "text": "",
+          "left": 59,
+          "right": 422
+        },
+        {
+          "tag": "DIV",
+          "className": "fixed bottom-16 md:bottom-6 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-event",
+          "text": "",
+          "left": -16,
+          "right": 304
+        }
+      ]
+    },
+    {
+      "viewport": "360x800",
+      "route": "overview",
+      "title": "nemo. — Track it, finish it.",
+      "h1": [
+        "Make room for progress."
+      ],
+      "docWidth": 360,
+      "windowWidth": 360,
+      "overflow": 0,
+      "theme": "dark",
+      "rects": {
+        ".app-header": {
+          "x": 16,
+          "y": 20,
+          "w": 328,
+          "h": 44
+        },
+        ".header-navigation": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".glass-panel": {
+          "x": 16,
+          "y": 380,
+          "w": 328,
+          "h": 569
+        },
+        ".mobile-nav": {
+          "x": 0,
+          "y": 736,
+          "w": 360,
+          "h": 64
+        },
+        ".dock": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".tabs__track": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        }
+      },
+      "offenders": [
+        {
+          "tag": "I",
+          "className": "mesh__a",
+          "text": "",
+          "left": -128,
+          "right": 432
+        },
+        {
+          "tag": "I",
+          "className": "mesh__b",
+          "text": "",
+          "left": -8,
+          "right": 504
+        },
+        {
+          "tag": "DIV",
+          "className": "fixed bottom-16 md:bottom-6 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-event",
+          "text": "",
+          "left": -16,
+          "right": 344
+        }
+      ]
+    },
+    {
+      "viewport": "360x800",
+      "route": "projects",
+      "title": "nemo. — Track it, finish it.",
+      "h1": [
+        "Projects"
+      ],
+      "docWidth": 360,
+      "windowWidth": 360,
+      "overflow": 0,
+      "theme": "dark",
+      "rects": {
+        ".app-header": {
+          "x": 16,
+          "y": 20,
+          "w": 328,
+          "h": 44
+        },
+        ".header-navigation": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".module-heading": {
+          "x": 16,
+          "y": 172,
+          "w": 328,
+          "h": 61
+        },
+        ".glass-panel": {
+          "x": 16,
+          "y": 257,
+          "w": 328,
+          "h": 104
+        },
+        ".mobile-nav": {
+          "x": 0,
+          "y": 736,
+          "w": 360,
+          "h": 64
+        },
+        ".dock": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".tabs__track": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        }
+      },
+      "offenders": [
+        {
+          "tag": "I",
+          "className": "mesh__a",
+          "text": "",
+          "left": -128,
+          "right": 432
+        },
+        {
+          "tag": "I",
+          "className": "mesh__b",
+          "text": "",
+          "left": -8,
+          "right": 504
+        },
+        {
+          "tag": "DIV",
+          "className": "fixed bottom-16 md:bottom-6 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-event",
+          "text": "",
+          "left": -16,
+          "right": 344
+        }
+      ]
+    },
+    {
+      "viewport": "360x800",
+      "route": "tasks",
+      "title": "nemo. — Track it, finish it.",
+      "h1": [
+        "Tasks"
+      ],
+      "docWidth": 360,
+      "windowWidth": 360,
+      "overflow": 0,
+      "theme": "dark",
+      "rects": {
+        ".app-header": {
+          "x": 16,
+          "y": 20,
+          "w": 328,
+          "h": 44
+        },
+        ".header-navigation": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".module-heading": {
+          "x": 16,
+          "y": 172,
+          "w": 328,
+          "h": 61
+        },
+        ".glass-panel": {
+          "x": 16,
+          "y": 257,
+          "w": 328,
+          "h": 94
+        },
+        ".mobile-nav": {
+          "x": 0,
+          "y": 736,
+          "w": 360,
+          "h": 64
+        },
+        ".dock": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".tabs__track": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        }
+      },
+      "offenders": [
+        {
+          "tag": "I",
+          "className": "mesh__a",
+          "text": "",
+          "left": -128,
+          "right": 432
+        },
+        {
+          "tag": "I",
+          "className": "mesh__b",
+          "text": "",
+          "left": -8,
+          "right": 504
+        },
+        {
+          "tag": "DIV",
+          "className": "fixed bottom-16 md:bottom-6 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-event",
+          "text": "",
+          "left": -16,
+          "right": 344
+        }
+      ]
+    },
+    {
+      "viewport": "360x800",
+      "route": "calendar",
+      "title": "nemo. — Track it, finish it.",
+      "h1": [],
+      "docWidth": 360,
+      "windowWidth": 360,
+      "overflow": 0,
+      "theme": "dark",
+      "rects": {
+        ".app-header": {
+          "x": 16,
+          "y": 20,
+          "w": 328,
+          "h": 44
+        },
+        ".header-navigation": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".glass-panel": {
+          "x": 16,
+          "y": 172,
+          "w": 328,
+          "h": 114
+        },
+        ".mobile-nav": {
+          "x": 0,
+          "y": 736,
+          "w": 360,
+          "h": 64
+        },
+        ".dock": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".tabs__track": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        }
+      },
+      "offenders": [
+        {
+          "tag": "I",
+          "className": "mesh__a",
+          "text": "",
+          "left": -128,
+          "right": 432
+        },
+        {
+          "tag": "I",
+          "className": "mesh__b",
+          "text": "",
+          "left": -8,
+          "right": 504
+        },
+        {
+          "tag": "DIV",
+          "className": "fixed bottom-16 md:bottom-6 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-event",
+          "text": "",
+          "left": -16,
+          "right": 344
+        }
+      ]
+    },
+    {
+      "viewport": "360x800",
+      "route": "academics",
+      "title": "nemo. — Track it, finish it.",
+      "h1": [],
+      "docWidth": 360,
+      "windowWidth": 360,
+      "overflow": 0,
+      "theme": "dark",
+      "rects": {
+        ".app-header": {
+          "x": 16,
+          "y": 20,
+          "w": 328,
+          "h": 44
+        },
+        ".header-navigation": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".glass-panel": {
+          "x": 16,
+          "y": 172,
+          "w": 328,
+          "h": 196
+        },
+        ".mobile-nav": {
+          "x": 0,
+          "y": 736,
+          "w": 360,
+          "h": 64
+        },
+        ".dock": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".tabs__track": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        }
+      },
+      "offenders": [
+        {
+          "tag": "I",
+          "className": "mesh__a",
+          "text": "",
+          "left": -128,
+          "right": 432
+        },
+        {
+          "tag": "I",
+          "className": "mesh__b",
+          "text": "",
+          "left": -8,
+          "right": 504
+        },
+        {
+          "tag": "DIV",
+          "className": "fixed bottom-16 md:bottom-6 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-event",
+          "text": "",
+          "left": -16,
+          "right": 344
+        }
+      ]
+    },
+    {
+      "viewport": "360x800",
+      "route": "goals",
+      "title": "nemo. — Track it, finish it.",
+      "h1": [],
+      "docWidth": 360,
+      "windowWidth": 360,
+      "overflow": 0,
+      "theme": "dark",
+      "rects": {
+        ".app-header": {
+          "x": 16,
+          "y": 20,
+          "w": 328,
+          "h": 44
+        },
+        ".header-navigation": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".glass-panel": {
+          "x": 16,
+          "y": 172,
+          "w": 328,
+          "h": 178
+        },
+        ".mobile-nav": {
+          "x": 0,
+          "y": 736,
+          "w": 360,
+          "h": 64
+        },
+        ".dock": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".tabs__track": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        }
+      },
+      "offenders": [
+        {
+          "tag": "I",
+          "className": "mesh__a",
+          "text": "",
+          "left": -128,
+          "right": 432
+        },
+        {
+          "tag": "I",
+          "className": "mesh__b",
+          "text": "",
+          "left": -8,
+          "right": 504
+        },
+        {
+          "tag": "DIV",
+          "className": "fixed bottom-16 md:bottom-6 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-event",
+          "text": "",
+          "left": -16,
+          "right": 344
+        }
+      ]
+    },
+    {
+      "viewport": "360x800",
+      "route": "insights",
+      "title": "nemo. — Track it, finish it.",
+      "h1": [
+        "WorkspaceInsights"
+      ],
+      "docWidth": 360,
+      "windowWidth": 360,
+      "overflow": 0,
+      "theme": "dark",
+      "rects": {
+        ".app-header": {
+          "x": 16,
+          "y": 20,
+          "w": 328,
+          "h": 44
+        },
+        ".header-navigation": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".glass-panel": {
+          "x": 16,
+          "y": 370,
+          "w": 328,
+          "h": 827
+        },
+        ".mobile-nav": {
+          "x": 0,
+          "y": 736,
+          "w": 360,
+          "h": 64
+        },
+        ".dock": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".tabs__track": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        }
+      },
+      "offenders": [
+        {
+          "tag": "I",
+          "className": "mesh__a",
+          "text": "",
+          "left": -128,
+          "right": 432
+        },
+        {
+          "tag": "I",
+          "className": "mesh__b",
+          "text": "",
+          "left": -8,
+          "right": 504
+        },
+        {
+          "tag": "DIV",
+          "className": "fixed bottom-16 md:bottom-6 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-event",
+          "text": "",
+          "left": -16,
+          "right": 344
+        }
+      ]
+    },
+    {
+      "viewport": "360x800",
+      "route": "settings",
+      "title": "nemo. — Track it, finish it.",
+      "h1": [
+        "Settings"
+      ],
+      "docWidth": 360,
+      "windowWidth": 360,
+      "overflow": 0,
+      "theme": "dark",
+      "rects": {
+        ".app-header": {
+          "x": 16,
+          "y": 20,
+          "w": 328,
+          "h": 44
+        },
+        ".header-navigation": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".module-heading": {
+          "x": 16,
+          "y": 172,
+          "w": 328,
+          "h": 61
+        },
+        ".glass-panel": {
+          "x": 16,
+          "y": 409,
+          "w": 328,
+          "h": 776
+        },
+        ".mobile-nav": {
+          "x": 0,
+          "y": 736,
+          "w": 360,
+          "h": 64
+        },
+        ".dock": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".tabs__track": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        }
+      },
+      "offenders": [
+        {
+          "tag": "I",
+          "className": "mesh__a",
+          "text": "",
+          "left": -128,
+          "right": 432
+        },
+        {
+          "tag": "I",
+          "className": "mesh__b",
+          "text": "",
+          "left": -8,
+          "right": 504
+        },
+        {
+          "tag": "DIV",
+          "className": "fixed bottom-16 md:bottom-6 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-event",
+          "text": "",
+          "left": -16,
+          "right": 344
+        }
+      ]
+    },
+    {
+      "viewport": "375x812",
+      "route": "overview",
+      "title": "nemo. — Track it, finish it.",
+      "h1": [
+        "Make room for progress."
+      ],
+      "docWidth": 375,
+      "windowWidth": 375,
+      "overflow": 0,
+      "theme": "dark",
+      "rects": {
+        ".app-header": {
+          "x": 16,
+          "y": 20,
+          "w": 343,
+          "h": 44
+        },
+        ".header-navigation": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".glass-panel": {
+          "x": 16,
+          "y": 365,
+          "w": 343,
+          "h": 569
+        },
+        ".mobile-nav": {
+          "x": 0,
+          "y": 748,
+          "w": 375,
+          "h": 64
+        },
+        ".dock": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".tabs__track": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        }
+      },
+      "offenders": [
+        {
+          "tag": "I",
+          "className": "mesh__a",
+          "text": "",
+          "left": -130,
+          "right": 438
+        },
+        {
+          "tag": "I",
+          "className": "mesh__b",
+          "text": "",
+          "left": 1,
+          "right": 521
+        },
+        {
+          "tag": "DIV",
+          "className": "fixed bottom-16 md:bottom-6 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-event",
+          "text": "",
+          "left": -16,
+          "right": 359
+        }
+      ]
+    },
+    {
+      "viewport": "375x812",
+      "route": "projects",
+      "title": "nemo. — Track it, finish it.",
+      "h1": [
+        "Projects"
+      ],
+      "docWidth": 375,
+      "windowWidth": 375,
+      "overflow": 0,
+      "theme": "dark",
+      "rects": {
+        ".app-header": {
+          "x": 16,
+          "y": 20,
+          "w": 343,
+          "h": 44
+        },
+        ".header-navigation": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".module-heading": {
+          "x": 16,
+          "y": 172,
+          "w": 343,
+          "h": 61
+        },
+        ".glass-panel": {
+          "x": 16,
+          "y": 257,
+          "w": 343,
+          "h": 104
+        },
+        ".mobile-nav": {
+          "x": 0,
+          "y": 748,
+          "w": 375,
+          "h": 64
+        },
+        ".dock": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".tabs__track": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        }
+      },
+      "offenders": [
+        {
+          "tag": "I",
+          "className": "mesh__a",
+          "text": "",
+          "left": -130,
+          "right": 438
+        },
+        {
+          "tag": "I",
+          "className": "mesh__b",
+          "text": "",
+          "left": 1,
+          "right": 521
+        },
+        {
+          "tag": "DIV",
+          "className": "fixed bottom-16 md:bottom-6 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-event",
+          "text": "",
+          "left": -16,
+          "right": 359
+        }
+      ]
+    },
+    {
+      "viewport": "375x812",
+      "route": "tasks",
+      "title": "nemo. — Track it, finish it.",
+      "h1": [
+        "Tasks"
+      ],
+      "docWidth": 375,
+      "windowWidth": 375,
+      "overflow": 0,
+      "theme": "dark",
+      "rects": {
+        ".app-header": {
+          "x": 16,
+          "y": 20,
+          "w": 343,
+          "h": 44
+        },
+        ".header-navigation": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".module-heading": {
+          "x": 16,
+          "y": 172,
+          "w": 343,
+          "h": 61
+        },
+        ".glass-panel": {
+          "x": 16,
+          "y": 257,
+          "w": 343,
+          "h": 94
+        },
+        ".mobile-nav": {
+          "x": 0,
+          "y": 748,
+          "w": 375,
+          "h": 64
+        },
+        ".dock": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".tabs__track": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        }
+      },
+      "offenders": [
+        {
+          "tag": "I",
+          "className": "mesh__a",
+          "text": "",
+          "left": -130,
+          "right": 438
+        },
+        {
+          "tag": "I",
+          "className": "mesh__b",
+          "text": "",
+          "left": 1,
+          "right": 521
+        },
+        {
+          "tag": "DIV",
+          "className": "fixed bottom-16 md:bottom-6 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-event",
+          "text": "",
+          "left": -16,
+          "right": 359
+        }
+      ]
+    },
+    {
+      "viewport": "375x812",
+      "route": "calendar",
+      "title": "nemo. — Track it, finish it.",
+      "h1": [],
+      "docWidth": 375,
+      "windowWidth": 375,
+      "overflow": 0,
+      "theme": "dark",
+      "rects": {
+        ".app-header": {
+          "x": 16,
+          "y": 20,
+          "w": 343,
+          "h": 44
+        },
+        ".header-navigation": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".glass-panel": {
+          "x": 16,
+          "y": 172,
+          "w": 343,
+          "h": 114
+        },
+        ".mobile-nav": {
+          "x": 0,
+          "y": 748,
+          "w": 375,
+          "h": 64
+        },
+        ".dock": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".tabs__track": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        }
+      },
+      "offenders": [
+        {
+          "tag": "I",
+          "className": "mesh__a",
+          "text": "",
+          "left": -130,
+          "right": 438
+        },
+        {
+          "tag": "I",
+          "className": "mesh__b",
+          "text": "",
+          "left": 1,
+          "right": 521
+        },
+        {
+          "tag": "DIV",
+          "className": "fixed bottom-16 md:bottom-6 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-event",
+          "text": "",
+          "left": -16,
+          "right": 359
+        }
+      ]
+    },
+    {
+      "viewport": "375x812",
+      "route": "academics",
+      "title": "nemo. — Track it, finish it.",
+      "h1": [],
+      "docWidth": 375,
+      "windowWidth": 375,
+      "overflow": 0,
+      "theme": "dark",
+      "rects": {
+        ".app-header": {
+          "x": 16,
+          "y": 20,
+          "w": 343,
+          "h": 44
+        },
+        ".header-navigation": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".glass-panel": {
+          "x": 16,
+          "y": 172,
+          "w": 343,
+          "h": 196
+        },
+        ".mobile-nav": {
+          "x": 0,
+          "y": 748,
+          "w": 375,
+          "h": 64
+        },
+        ".dock": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".tabs__track": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        }
+      },
+      "offenders": [
+        {
+          "tag": "I",
+          "className": "mesh__a",
+          "text": "",
+          "left": -130,
+          "right": 438
+        },
+        {
+          "tag": "I",
+          "className": "mesh__b",
+          "text": "",
+          "left": 1,
+          "right": 521
+        },
+        {
+          "tag": "DIV",
+          "className": "fixed bottom-16 md:bottom-6 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-event",
+          "text": "",
+          "left": -16,
+          "right": 359
+        }
+      ]
+    },
+    {
+      "viewport": "375x812",
+      "route": "goals",
+      "title": "nemo. — Track it, finish it.",
+      "h1": [],
+      "docWidth": 375,
+      "windowWidth": 375,
+      "overflow": 0,
+      "theme": "dark",
+      "rects": {
+        ".app-header": {
+          "x": 16,
+          "y": 20,
+          "w": 343,
+          "h": 44
+        },
+        ".header-navigation": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".glass-panel": {
+          "x": 16,
+          "y": 172,
+          "w": 343,
+          "h": 178
+        },
+        ".mobile-nav": {
+          "x": 0,
+          "y": 748,
+          "w": 375,
+          "h": 64
+        },
+        ".dock": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".tabs__track": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        }
+      },
+      "offenders": [
+        {
+          "tag": "I",
+          "className": "mesh__a",
+          "text": "",
+          "left": -130,
+          "right": 438
+        },
+        {
+          "tag": "I",
+          "className": "mesh__b",
+          "text": "",
+          "left": 1,
+          "right": 521
+        },
+        {
+          "tag": "DIV",
+          "className": "fixed bottom-16 md:bottom-6 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-event",
+          "text": "",
+          "left": -16,
+          "right": 359
+        }
+      ]
+    },
+    {
+      "viewport": "375x812",
+      "route": "insights",
+      "title": "nemo. — Track it, finish it.",
+      "h1": [
+        "WorkspaceInsights"
+      ],
+      "docWidth": 375,
+      "windowWidth": 375,
+      "overflow": 0,
+      "theme": "dark",
+      "rects": {
+        ".app-header": {
+          "x": 16,
+          "y": 20,
+          "w": 343,
+          "h": 44
+        },
+        ".header-navigation": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".glass-panel": {
+          "x": 16,
+          "y": 370,
+          "w": 343,
+          "h": 789
+        },
+        ".mobile-nav": {
+          "x": 0,
+          "y": 748,
+          "w": 375,
+          "h": 64
+        },
+        ".dock": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".tabs__track": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        }
+      },
+      "offenders": [
+        {
+          "tag": "I",
+          "className": "mesh__a",
+          "text": "",
+          "left": -130,
+          "right": 438
+        },
+        {
+          "tag": "I",
+          "className": "mesh__b",
+          "text": "",
+          "left": 1,
+          "right": 521
+        },
+        {
+          "tag": "DIV",
+          "className": "fixed bottom-16 md:bottom-6 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-event",
+          "text": "",
+          "left": -16,
+          "right": 359
+        }
+      ]
+    },
+    {
+      "viewport": "375x812",
+      "route": "settings",
+      "title": "nemo. — Track it, finish it.",
+      "h1": [
+        "Settings"
+      ],
+      "docWidth": 375,
+      "windowWidth": 375,
+      "overflow": 0,
+      "theme": "dark",
+      "rects": {
+        ".app-header": {
+          "x": 16,
+          "y": 20,
+          "w": 343,
+          "h": 44
+        },
+        ".header-navigation": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".module-heading": {
+          "x": 16,
+          "y": 172,
+          "w": 343,
+          "h": 61
+        },
+        ".glass-panel": {
+          "x": 16,
+          "y": 359,
+          "w": 343,
+          "h": 776
+        },
+        ".mobile-nav": {
+          "x": 0,
+          "y": 748,
+          "w": 375,
+          "h": 64
+        },
+        ".dock": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".tabs__track": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        }
+      },
+      "offenders": [
+        {
+          "tag": "I",
+          "className": "mesh__a",
+          "text": "",
+          "left": -130,
+          "right": 438
+        },
+        {
+          "tag": "I",
+          "className": "mesh__b",
+          "text": "",
+          "left": 1,
+          "right": 521
+        },
+        {
+          "tag": "DIV",
+          "className": "fixed bottom-16 md:bottom-6 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-event",
+          "text": "",
+          "left": -16,
+          "right": 359
+        }
+      ]
+    },
+    {
+      "viewport": "390x844",
+      "route": "overview",
+      "title": "nemo. — Track it, finish it.",
+      "h1": [
+        "Make room for progress."
+      ],
+      "docWidth": 390,
+      "windowWidth": 390,
+      "overflow": 0,
+      "theme": "dark",
+      "rects": {
+        ".app-header": {
+          "x": 16,
+          "y": 20,
+          "w": 358,
+          "h": 44
+        },
+        ".header-navigation": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".glass-panel": {
+          "x": 16,
+          "y": 365,
+          "w": 358,
+          "h": 569
+        },
+        ".mobile-nav": {
+          "x": 0,
+          "y": 780,
+          "w": 390,
+          "h": 64
+        },
+        ".dock": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".tabs__track": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        }
+      },
+      "offenders": [
+        {
+          "tag": "I",
+          "className": "mesh__a",
+          "text": "",
+          "left": -135,
+          "right": 456
+        },
+        {
+          "tag": "I",
+          "className": "mesh__b",
+          "text": "",
+          "left": 2,
+          "right": 542
+        },
+        {
+          "tag": "DIV",
+          "className": "fixed bottom-16 md:bottom-6 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-event",
+          "text": "",
+          "left": -10,
+          "right": 374
+        }
+      ]
+    },
+    {
+      "viewport": "390x844",
+      "route": "projects",
+      "title": "nemo. — Track it, finish it.",
+      "h1": [
+        "Projects"
+      ],
+      "docWidth": 390,
+      "windowWidth": 390,
+      "overflow": 0,
+      "theme": "dark",
+      "rects": {
+        ".app-header": {
+          "x": 16,
+          "y": 20,
+          "w": 358,
+          "h": 44
+        },
+        ".header-navigation": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".module-heading": {
+          "x": 16,
+          "y": 172,
+          "w": 358,
+          "h": 61
+        },
+        ".glass-panel": {
+          "x": 16,
+          "y": 257,
+          "w": 358,
+          "h": 104
+        },
+        ".mobile-nav": {
+          "x": 0,
+          "y": 780,
+          "w": 390,
+          "h": 64
+        },
+        ".dock": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".tabs__track": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        }
+      },
+      "offenders": [
+        {
+          "tag": "I",
+          "className": "mesh__a",
+          "text": "",
+          "left": -135,
+          "right": 456
+        },
+        {
+          "tag": "I",
+          "className": "mesh__b",
+          "text": "",
+          "left": 2,
+          "right": 542
+        },
+        {
+          "tag": "DIV",
+          "className": "fixed bottom-16 md:bottom-6 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-event",
+          "text": "",
+          "left": -10,
+          "right": 374
+        }
+      ]
+    },
+    {
+      "viewport": "390x844",
+      "route": "tasks",
+      "title": "nemo. — Track it, finish it.",
+      "h1": [
+        "Tasks"
+      ],
+      "docWidth": 390,
+      "windowWidth": 390,
+      "overflow": 0,
+      "theme": "dark",
+      "rects": {
+        ".app-header": {
+          "x": 16,
+          "y": 20,
+          "w": 358,
+          "h": 44
+        },
+        ".header-navigation": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".module-heading": {
+          "x": 16,
+          "y": 172,
+          "w": 358,
+          "h": 61
+        },
+        ".glass-panel": {
+          "x": 16,
+          "y": 257,
+          "w": 358,
+          "h": 94
+        },
+        ".mobile-nav": {
+          "x": 0,
+          "y": 780,
+          "w": 390,
+          "h": 64
+        },
+        ".dock": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".tabs__track": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        }
+      },
+      "offenders": [
+        {
+          "tag": "I",
+          "className": "mesh__a",
+          "text": "",
+          "left": -135,
+          "right": 456
+        },
+        {
+          "tag": "I",
+          "className": "mesh__b",
+          "text": "",
+          "left": 2,
+          "right": 542
+        },
+        {
+          "tag": "DIV",
+          "className": "fixed bottom-16 md:bottom-6 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-event",
+          "text": "",
+          "left": -10,
+          "right": 374
+        }
+      ]
+    },
+    {
+      "viewport": "390x844",
+      "route": "calendar",
+      "title": "nemo. — Track it, finish it.",
+      "h1": [],
+      "docWidth": 390,
+      "windowWidth": 390,
+      "overflow": 0,
+      "theme": "dark",
+      "rects": {
+        ".app-header": {
+          "x": 16,
+          "y": 20,
+          "w": 358,
+          "h": 44
+        },
+        ".header-navigation": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".glass-panel": {
+          "x": 16,
+          "y": 172,
+          "w": 358,
+          "h": 114
+        },
+        ".mobile-nav": {
+          "x": 0,
+          "y": 780,
+          "w": 390,
+          "h": 64
+        },
+        ".dock": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".tabs__track": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        }
+      },
+      "offenders": [
+        {
+          "tag": "I",
+          "className": "mesh__a",
+          "text": "",
+          "left": -135,
+          "right": 456
+        },
+        {
+          "tag": "I",
+          "className": "mesh__b",
+          "text": "",
+          "left": 2,
+          "right": 542
+        },
+        {
+          "tag": "DIV",
+          "className": "fixed bottom-16 md:bottom-6 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-event",
+          "text": "",
+          "left": -10,
+          "right": 374
+        }
+      ]
+    },
+    {
+      "viewport": "390x844",
+      "route": "academics",
+      "title": "nemo. — Track it, finish it.",
+      "h1": [],
+      "docWidth": 390,
+      "windowWidth": 390,
+      "overflow": 0,
+      "theme": "dark",
+      "rects": {
+        ".app-header": {
+          "x": 16,
+          "y": 20,
+          "w": 358,
+          "h": 44
+        },
+        ".header-navigation": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".glass-panel": {
+          "x": 16,
+          "y": 172,
+          "w": 358,
+          "h": 196
+        },
+        ".mobile-nav": {
+          "x": 0,
+          "y": 780,
+          "w": 390,
+          "h": 64
+        },
+        ".dock": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".tabs__track": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        }
+      },
+      "offenders": [
+        {
+          "tag": "I",
+          "className": "mesh__a",
+          "text": "",
+          "left": -135,
+          "right": 456
+        },
+        {
+          "tag": "I",
+          "className": "mesh__b",
+          "text": "",
+          "left": 2,
+          "right": 542
+        },
+        {
+          "tag": "DIV",
+          "className": "fixed bottom-16 md:bottom-6 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-event",
+          "text": "",
+          "left": -10,
+          "right": 374
+        }
+      ]
+    },
+    {
+      "viewport": "390x844",
+      "route": "goals",
+      "title": "nemo. — Track it, finish it.",
+      "h1": [],
+      "docWidth": 390,
+      "windowWidth": 390,
+      "overflow": 0,
+      "theme": "dark",
+      "rects": {
+        ".app-header": {
+          "x": 16,
+          "y": 20,
+          "w": 358,
+          "h": 44
+        },
+        ".header-navigation": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".glass-panel": {
+          "x": 16,
+          "y": 172,
+          "w": 358,
+          "h": 178
+        },
+        ".mobile-nav": {
+          "x": 0,
+          "y": 780,
+          "w": 390,
+          "h": 64
+        },
+        ".dock": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".tabs__track": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        }
+      },
+      "offenders": [
+        {
+          "tag": "I",
+          "className": "mesh__a",
+          "text": "",
+          "left": -135,
+          "right": 456
+        },
+        {
+          "tag": "I",
+          "className": "mesh__b",
+          "text": "",
+          "left": 2,
+          "right": 542
+        },
+        {
+          "tag": "DIV",
+          "className": "fixed bottom-16 md:bottom-6 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-event",
+          "text": "",
+          "left": -10,
+          "right": 374
+        }
+      ]
+    },
+    {
+      "viewport": "390x844",
+      "route": "insights",
+      "title": "nemo. — Track it, finish it.",
+      "h1": [
+        "WorkspaceInsights"
+      ],
+      "docWidth": 390,
+      "windowWidth": 390,
+      "overflow": 0,
+      "theme": "dark",
+      "rects": {
+        ".app-header": {
+          "x": 16,
+          "y": 20,
+          "w": 358,
+          "h": 44
+        },
+        ".header-navigation": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".glass-panel": {
+          "x": 16,
+          "y": 370,
+          "w": 358,
+          "h": 789
+        },
+        ".mobile-nav": {
+          "x": 0,
+          "y": 780,
+          "w": 390,
+          "h": 64
+        },
+        ".dock": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".tabs__track": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        }
+      },
+      "offenders": [
+        {
+          "tag": "I",
+          "className": "mesh__a",
+          "text": "",
+          "left": -135,
+          "right": 456
+        },
+        {
+          "tag": "I",
+          "className": "mesh__b",
+          "text": "",
+          "left": 2,
+          "right": 542
+        },
+        {
+          "tag": "DIV",
+          "className": "fixed bottom-16 md:bottom-6 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-event",
+          "text": "",
+          "left": -10,
+          "right": 374
+        }
+      ]
+    },
+    {
+      "viewport": "390x844",
+      "route": "settings",
+      "title": "nemo. — Track it, finish it.",
+      "h1": [
+        "Settings"
+      ],
+      "docWidth": 390,
+      "windowWidth": 390,
+      "overflow": 0,
+      "theme": "dark",
+      "rects": {
+        ".app-header": {
+          "x": 16,
+          "y": 20,
+          "w": 358,
+          "h": 44
+        },
+        ".header-navigation": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".module-heading": {
+          "x": 16,
+          "y": 172,
+          "w": 358,
+          "h": 61
+        },
+        ".glass-panel": {
+          "x": 16,
+          "y": 359,
+          "w": 358,
+          "h": 776
+        },
+        ".mobile-nav": {
+          "x": 0,
+          "y": 780,
+          "w": 390,
+          "h": 64
+        },
+        ".dock": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".tabs__track": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        }
+      },
+      "offenders": [
+        {
+          "tag": "I",
+          "className": "mesh__a",
+          "text": "",
+          "left": -135,
+          "right": 456
+        },
+        {
+          "tag": "I",
+          "className": "mesh__b",
+          "text": "",
+          "left": 2,
+          "right": 542
+        },
+        {
+          "tag": "DIV",
+          "className": "fixed bottom-16 md:bottom-6 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-event",
+          "text": "",
+          "left": -10,
+          "right": 374
+        }
+      ]
+    },
+    {
+      "viewport": "430x932",
+      "route": "overview",
+      "title": "nemo. — Track it, finish it.",
+      "h1": [
+        "Make room for progress."
+      ],
+      "docWidth": 430,
+      "windowWidth": 430,
+      "overflow": 0,
+      "theme": "dark",
+      "rects": {
+        ".app-header": {
+          "x": 16,
+          "y": 20,
+          "w": 398,
+          "h": 44
+        },
+        ".header-navigation": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".glass-panel": {
+          "x": 16,
+          "y": 338,
+          "w": 398,
+          "h": 569
+        },
+        ".mobile-nav": {
+          "x": 0,
+          "y": 868,
+          "w": 430,
+          "h": 64
+        },
+        ".dock": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".tabs__track": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        }
+      },
+      "offenders": [
+        {
+          "tag": "I",
+          "className": "mesh__a",
+          "text": "",
+          "left": -149,
+          "right": 503
+        },
+        {
+          "tag": "I",
+          "className": "mesh__b",
+          "text": "",
+          "left": 1,
+          "right": 598
+        }
+      ]
+    },
+    {
+      "viewport": "430x932",
+      "route": "projects",
+      "title": "nemo. — Track it, finish it.",
+      "h1": [
+        "Projects"
+      ],
+      "docWidth": 430,
+      "windowWidth": 430,
+      "overflow": 0,
+      "theme": "dark",
+      "rects": {
+        ".app-header": {
+          "x": 16,
+          "y": 20,
+          "w": 398,
+          "h": 44
+        },
+        ".header-navigation": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".module-heading": {
+          "x": 16,
+          "y": 144,
+          "w": 398,
+          "h": 61
+        },
+        ".glass-panel": {
+          "x": 16,
+          "y": 230,
+          "w": 398,
+          "h": 104
+        },
+        ".mobile-nav": {
+          "x": 0,
+          "y": 868,
+          "w": 430,
+          "h": 64
+        },
+        ".dock": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".tabs__track": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        }
+      },
+      "offenders": [
+        {
+          "tag": "I",
+          "className": "mesh__a",
+          "text": "",
+          "left": -149,
+          "right": 503
+        },
+        {
+          "tag": "I",
+          "className": "mesh__b",
+          "text": "",
+          "left": 1,
+          "right": 598
+        }
+      ]
+    },
+    {
+      "viewport": "430x932",
+      "route": "tasks",
+      "title": "nemo. — Track it, finish it.",
+      "h1": [
+        "Tasks"
+      ],
+      "docWidth": 430,
+      "windowWidth": 430,
+      "overflow": 0,
+      "theme": "dark",
+      "rects": {
+        ".app-header": {
+          "x": 16,
+          "y": 20,
+          "w": 398,
+          "h": 44
+        },
+        ".header-navigation": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".module-heading": {
+          "x": 16,
+          "y": 144,
+          "w": 398,
+          "h": 61
+        },
+        ".glass-panel": {
+          "x": 16,
+          "y": 229,
+          "w": 398,
+          "h": 94
+        },
+        ".mobile-nav": {
+          "x": 0,
+          "y": 868,
+          "w": 430,
+          "h": 64
+        },
+        ".dock": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".tabs__track": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        }
+      },
+      "offenders": [
+        {
+          "tag": "I",
+          "className": "mesh__a",
+          "text": "",
+          "left": -149,
+          "right": 503
+        },
+        {
+          "tag": "I",
+          "className": "mesh__b",
+          "text": "",
+          "left": 1,
+          "right": 598
+        }
+      ]
+    },
+    {
+      "viewport": "430x932",
+      "route": "calendar",
+      "title": "nemo. — Track it, finish it.",
+      "h1": [],
+      "docWidth": 430,
+      "windowWidth": 430,
+      "overflow": 0,
+      "theme": "dark",
+      "rects": {
+        ".app-header": {
+          "x": 16,
+          "y": 20,
+          "w": 398,
+          "h": 44
+        },
+        ".header-navigation": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".glass-panel": {
+          "x": 16,
+          "y": 144,
+          "w": 398,
+          "h": 114
+        },
+        ".mobile-nav": {
+          "x": 0,
+          "y": 868,
+          "w": 430,
+          "h": 64
+        },
+        ".dock": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".tabs__track": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        }
+      },
+      "offenders": [
+        {
+          "tag": "I",
+          "className": "mesh__a",
+          "text": "",
+          "left": -149,
+          "right": 503
+        },
+        {
+          "tag": "I",
+          "className": "mesh__b",
+          "text": "",
+          "left": 1,
+          "right": 598
+        }
+      ]
+    },
+    {
+      "viewport": "430x932",
+      "route": "academics",
+      "title": "nemo. — Track it, finish it.",
+      "h1": [],
+      "docWidth": 430,
+      "windowWidth": 430,
+      "overflow": 0,
+      "theme": "dark",
+      "rects": {
+        ".app-header": {
+          "x": 16,
+          "y": 20,
+          "w": 398,
+          "h": 44
+        },
+        ".header-navigation": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".glass-panel": {
+          "x": 16,
+          "y": 144,
+          "w": 398,
+          "h": 98
+        },
+        ".mobile-nav": {
+          "x": 0,
+          "y": 868,
+          "w": 430,
+          "h": 64
+        },
+        ".dock": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".tabs__track": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        }
+      },
+      "offenders": [
+        {
+          "tag": "I",
+          "className": "mesh__a",
+          "text": "",
+          "left": -149,
+          "right": 503
+        },
+        {
+          "tag": "I",
+          "className": "mesh__b",
+          "text": "",
+          "left": 1,
+          "right": 598
+        }
+      ]
+    },
+    {
+      "viewport": "430x932",
+      "route": "goals",
+      "title": "nemo. — Track it, finish it.",
+      "h1": [],
+      "docWidth": 430,
+      "windowWidth": 430,
+      "overflow": 0,
+      "theme": "dark",
+      "rects": {
+        ".app-header": {
+          "x": 16,
+          "y": 20,
+          "w": 398,
+          "h": 44
+        },
+        ".header-navigation": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".glass-panel": {
+          "x": 16,
+          "y": 144,
+          "w": 398,
+          "h": 178
+        },
+        ".mobile-nav": {
+          "x": 0,
+          "y": 868,
+          "w": 430,
+          "h": 64
+        },
+        ".dock": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".tabs__track": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        }
+      },
+      "offenders": [
+        {
+          "tag": "I",
+          "className": "mesh__a",
+          "text": "",
+          "left": -149,
+          "right": 503
+        },
+        {
+          "tag": "I",
+          "className": "mesh__b",
+          "text": "",
+          "left": 1,
+          "right": 598
+        }
+      ]
+    },
+    {
+      "viewport": "430x932",
+      "route": "insights",
+      "title": "nemo. — Track it, finish it.",
+      "h1": [
+        "WorkspaceInsights"
+      ],
+      "docWidth": 430,
+      "windowWidth": 430,
+      "overflow": 0,
+      "theme": "dark",
+      "rects": {
+        ".app-header": {
+          "x": 16,
+          "y": 20,
+          "w": 398,
+          "h": 44
+        },
+        ".header-navigation": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".glass-panel": {
+          "x": 16,
+          "y": 342,
+          "w": 398,
+          "h": 710
+        },
+        ".mobile-nav": {
+          "x": 0,
+          "y": 868,
+          "w": 430,
+          "h": 64
+        },
+        ".dock": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".tabs__track": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        }
+      },
+      "offenders": [
+        {
+          "tag": "I",
+          "className": "mesh__a",
+          "text": "",
+          "left": -149,
+          "right": 503
+        },
+        {
+          "tag": "I",
+          "className": "mesh__b",
+          "text": "",
+          "left": 1,
+          "right": 598
+        }
+      ]
+    },
+    {
+      "viewport": "430x932",
+      "route": "settings",
+      "title": "nemo. — Track it, finish it.",
+      "h1": [
+        "Settings"
+      ],
+      "docWidth": 430,
+      "windowWidth": 430,
+      "overflow": 0,
+      "theme": "dark",
+      "rects": {
+        ".app-header": {
+          "x": 16,
+          "y": 20,
+          "w": 398,
+          "h": 44
+        },
+        ".header-navigation": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".module-heading": {
+          "x": 16,
+          "y": 144,
+          "w": 398,
+          "h": 61
+        },
+        ".glass-panel": {
+          "x": 16,
+          "y": 332,
+          "w": 398,
+          "h": 776
+        },
+        ".mobile-nav": {
+          "x": 0,
+          "y": 868,
+          "w": 430,
+          "h": 64
+        },
+        ".dock": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".tabs__track": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        }
+      },
+      "offenders": [
+        {
+          "tag": "I",
+          "className": "mesh__a",
+          "text": "",
+          "left": -149,
+          "right": 503
+        },
+        {
+          "tag": "I",
+          "className": "mesh__b",
+          "text": "",
+          "left": 1,
+          "right": 598
+        }
+      ]
+    },
+    {
+      "viewport": "768x1024",
+      "route": "overview",
+      "title": "nemo. — Track it, finish it.",
+      "h1": [
+        "Make room for progress."
+      ],
+      "docWidth": 768,
+      "windowWidth": 768,
+      "overflow": 0,
+      "theme": "dark",
+      "rects": {
+        ".app-header": {
+          "x": 110,
+          "y": 22,
+          "w": 636,
+          "h": 114
+        },
+        ".header-navigation": {
+          "x": 110,
+          "y": 89,
+          "w": 636,
+          "h": 47
+        },
+        ".glass-panel": {
+          "x": 110,
+          "y": 378,
+          "w": 636,
+          "h": 541
+        },
+        ".mobile-nav": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".dock": {
+          "x": 20,
+          "y": 370,
+          "w": 72,
+          "h": 285
+        },
+        ".tabs__track": {
+          "x": 110,
+          "y": 89,
+          "w": 511,
+          "h": 47
+        }
+      },
+      "offenders": [
+        {
+          "tag": "I",
+          "className": "mesh__a",
+          "text": "",
+          "left": -164,
+          "right": 553
+        },
+        {
+          "tag": "I",
+          "className": "mesh__b",
+          "text": "",
+          "left": 297,
+          "right": 952
+        }
+      ]
+    },
+    {
+      "viewport": "768x1024",
+      "route": "projects",
+      "title": "nemo. — Track it, finish it.",
+      "h1": [
+        "Projects"
+      ],
+      "docWidth": 768,
+      "windowWidth": 768,
+      "overflow": 0,
+      "theme": "dark",
+      "rects": {
+        ".app-header": {
+          "x": 110,
+          "y": 22,
+          "w": 636,
+          "h": 114
+        },
+        ".header-navigation": {
+          "x": 110,
+          "y": 89,
+          "w": 636,
+          "h": 47
+        },
+        ".module-heading": {
+          "x": 110,
+          "y": 207,
+          "w": 636,
+          "h": 61
+        },
+        ".glass-panel": {
+          "x": 110,
+          "y": 292,
+          "w": 636,
+          "h": 40
+        },
+        ".mobile-nav": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".dock": {
+          "x": 20,
+          "y": 370,
+          "w": 72,
+          "h": 285
+        },
+        ".tabs__track": {
+          "x": 110,
+          "y": 89,
+          "w": 511,
+          "h": 47
+        }
+      },
+      "offenders": [
+        {
+          "tag": "I",
+          "className": "mesh__a",
+          "text": "",
+          "left": -164,
+          "right": 553
+        },
+        {
+          "tag": "I",
+          "className": "mesh__b",
+          "text": "",
+          "left": 297,
+          "right": 952
+        }
+      ]
+    },
+    {
+      "viewport": "768x1024",
+      "route": "tasks",
+      "title": "nemo. — Track it, finish it.",
+      "h1": [
+        "Tasks"
+      ],
+      "docWidth": 768,
+      "windowWidth": 768,
+      "overflow": 0,
+      "theme": "dark",
+      "rects": {
+        ".app-header": {
+          "x": 110,
+          "y": 22,
+          "w": 636,
+          "h": 114
+        },
+        ".header-navigation": {
+          "x": 110,
+          "y": 89,
+          "w": 636,
+          "h": 47
+        },
+        ".module-heading": {
+          "x": 110,
+          "y": 207,
+          "w": 636,
+          "h": 61
+        },
+        ".glass-panel": {
+          "x": 110,
+          "y": 292,
+          "w": 636,
+          "h": 40
+        },
+        ".mobile-nav": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".dock": {
+          "x": 20,
+          "y": 370,
+          "w": 72,
+          "h": 285
+        },
+        ".tabs__track": {
+          "x": 110,
+          "y": 89,
+          "w": 511,
+          "h": 47
+        }
+      },
+      "offenders": [
+        {
+          "tag": "I",
+          "className": "mesh__a",
+          "text": "",
+          "left": -164,
+          "right": 553
+        },
+        {
+          "tag": "I",
+          "className": "mesh__b",
+          "text": "",
+          "left": 297,
+          "right": 952
+        }
+      ]
+    },
+    {
+      "viewport": "768x1024",
+      "route": "calendar",
+      "title": "nemo. — Track it, finish it.",
+      "h1": [],
+      "docWidth": 768,
+      "windowWidth": 768,
+      "overflow": 0,
+      "theme": "dark",
+      "rects": {
+        ".app-header": {
+          "x": 110,
+          "y": 22,
+          "w": 636,
+          "h": 114
+        },
+        ".header-navigation": {
+          "x": 110,
+          "y": 89,
+          "w": 636,
+          "h": 47
+        },
+        ".glass-panel": {
+          "x": 110,
+          "y": 207,
+          "w": 636,
+          "h": 54
+        },
+        ".mobile-nav": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".dock": {
+          "x": 20,
+          "y": 370,
+          "w": 72,
+          "h": 285
+        },
+        ".tabs__track": {
+          "x": 110,
+          "y": 89,
+          "w": 511,
+          "h": 47
+        }
+      },
+      "offenders": [
+        {
+          "tag": "I",
+          "className": "mesh__a",
+          "text": "",
+          "left": -164,
+          "right": 553
+        },
+        {
+          "tag": "I",
+          "className": "mesh__b",
+          "text": "",
+          "left": 297,
+          "right": 952
+        }
+      ]
+    },
+    {
+      "viewport": "768x1024",
+      "route": "academics",
+      "title": "nemo. — Track it, finish it.",
+      "h1": [],
+      "docWidth": 768,
+      "windowWidth": 768,
+      "overflow": 0,
+      "theme": "dark",
+      "rects": {
+        ".app-header": {
+          "x": 110,
+          "y": 22,
+          "w": 636,
+          "h": 114
+        },
+        ".header-navigation": {
+          "x": 110,
+          "y": 89,
+          "w": 636,
+          "h": 47
+        },
+        ".glass-panel": {
+          "x": 110,
+          "y": 207,
+          "w": 636,
+          "h": 98
+        },
+        ".mobile-nav": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".dock": {
+          "x": 20,
+          "y": 370,
+          "w": 72,
+          "h": 285
+        },
+        ".tabs__track": {
+          "x": 110,
+          "y": 89,
+          "w": 511,
+          "h": 47
+        }
+      },
+      "offenders": [
+        {
+          "tag": "I",
+          "className": "mesh__a",
+          "text": "",
+          "left": -164,
+          "right": 553
+        },
+        {
+          "tag": "I",
+          "className": "mesh__b",
+          "text": "",
+          "left": 297,
+          "right": 952
+        }
+      ]
+    },
+    {
+      "viewport": "768x1024",
+      "route": "goals",
+      "title": "nemo. — Track it, finish it.",
+      "h1": [],
+      "docWidth": 768,
+      "windowWidth": 768,
+      "overflow": 0,
+      "theme": "dark",
+      "rects": {
+        ".app-header": {
+          "x": 110,
+          "y": 22,
+          "w": 636,
+          "h": 114
+        },
+        ".header-navigation": {
+          "x": 110,
+          "y": 89,
+          "w": 636,
+          "h": 47
+        },
+        ".glass-panel": {
+          "x": 110,
+          "y": 207,
+          "w": 636,
+          "h": 60
+        },
+        ".mobile-nav": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".dock": {
+          "x": 20,
+          "y": 370,
+          "w": 72,
+          "h": 285
+        },
+        ".tabs__track": {
+          "x": 110,
+          "y": 89,
+          "w": 511,
+          "h": 47
+        }
+      },
+      "offenders": [
+        {
+          "tag": "I",
+          "className": "mesh__a",
+          "text": "",
+          "left": -164,
+          "right": 553
+        },
+        {
+          "tag": "I",
+          "className": "mesh__b",
+          "text": "",
+          "left": 297,
+          "right": 952
+        }
+      ]
+    },
+    {
+      "viewport": "768x1024",
+      "route": "insights",
+      "title": "nemo. — Track it, finish it.",
+      "h1": [
+        "WorkspaceInsights"
+      ],
+      "docWidth": 768,
+      "windowWidth": 768,
+      "overflow": 0,
+      "theme": "dark",
+      "rects": {
+        ".app-header": {
+          "x": 110,
+          "y": 22,
+          "w": 636,
+          "h": 114
+        },
+        ".header-navigation": {
+          "x": 110,
+          "y": 89,
+          "w": 636,
+          "h": 47
+        },
+        ".glass-panel": {
+          "x": 110,
+          "y": 405,
+          "w": 636,
+          "h": 723
+        },
+        ".mobile-nav": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".dock": {
+          "x": 20,
+          "y": 370,
+          "w": 72,
+          "h": 285
+        },
+        ".tabs__track": {
+          "x": 110,
+          "y": 89,
+          "w": 511,
+          "h": 47
+        }
+      },
+      "offenders": [
+        {
+          "tag": "I",
+          "className": "mesh__a",
+          "text": "",
+          "left": -164,
+          "right": 553
+        },
+        {
+          "tag": "I",
+          "className": "mesh__b",
+          "text": "",
+          "left": 297,
+          "right": 952
+        }
+      ]
+    },
+    {
+      "viewport": "768x1024",
+      "route": "settings",
+      "title": "nemo. — Track it, finish it.",
+      "h1": [
+        "Settings"
+      ],
+      "docWidth": 768,
+      "windowWidth": 768,
+      "overflow": 0,
+      "theme": "dark",
+      "rects": {
+        ".app-header": {
+          "x": 110,
+          "y": 22,
+          "w": 636,
+          "h": 114
+        },
+        ".header-navigation": {
+          "x": 110,
+          "y": 89,
+          "w": 636,
+          "h": 47
+        },
+        ".module-heading": {
+          "x": 110,
+          "y": 207,
+          "w": 636,
+          "h": 61
+        },
+        ".glass-panel": {
+          "x": 110,
+          "y": 344,
+          "w": 636,
+          "h": 355
+        },
+        ".mobile-nav": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".dock": {
+          "x": 20,
+          "y": 370,
+          "w": 72,
+          "h": 285
+        },
+        ".tabs__track": {
+          "x": 110,
+          "y": 89,
+          "w": 511,
+          "h": 47
+        }
+      },
+      "offenders": [
+        {
+          "tag": "I",
+          "className": "mesh__a",
+          "text": "",
+          "left": -164,
+          "right": 553
+        },
+        {
+          "tag": "I",
+          "className": "mesh__b",
+          "text": "",
+          "left": 297,
+          "right": 952
+        }
+      ]
+    },
+    {
+      "viewport": "1440x900",
+      "route": "overview",
+      "title": "nemo. — Track it, finish it.",
+      "h1": [
+        "Make room for progress."
+      ],
+      "docWidth": 1440,
+      "windowWidth": 1440,
+      "overflow": 0,
+      "theme": "dark",
+      "rects": {
+        ".app-header": {
+          "x": 124,
+          "y": 24,
+          "w": 1288,
+          "h": 48
+        },
+        ".header-navigation": {
+          "x": 291,
+          "y": 27,
+          "w": 923,
+          "h": 43
+        },
+        ".glass-panel": {
+          "x": 124,
+          "y": 294,
+          "w": 727,
+          "h": 658
+        },
+        ".mobile-nav": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".dock": {
+          "x": 24,
+          "y": 308,
+          "w": 72,
+          "h": 285
+        },
+        ".tabs__track": {
+          "x": 511,
+          "y": 27,
+          "w": 483,
+          "h": 43
+        }
+      },
+      "offenders": [
+        {
+          "tag": "I",
+          "className": "mesh__a",
+          "text": "",
+          "left": -230,
+          "right": 778
+        },
+        {
+          "tag": "I",
+          "className": "mesh__b",
+          "text": "",
+          "left": 778,
+          "right": 1699
+        }
+      ]
+    },
+    {
+      "viewport": "1440x900",
+      "route": "projects",
+      "title": "nemo. — Track it, finish it.",
+      "h1": [
+        "Projects"
+      ],
+      "docWidth": 1440,
+      "windowWidth": 1440,
+      "overflow": 0,
+      "theme": "dark",
+      "rects": {
+        ".app-header": {
+          "x": 124,
+          "y": 24,
+          "w": 1288,
+          "h": 48
+        },
+        ".header-navigation": {
+          "x": 291,
+          "y": 27,
+          "w": 923,
+          "h": 43
+        },
+        ".module-heading": {
+          "x": 124,
+          "y": 143,
+          "w": 1288,
+          "h": 74
+        },
+        ".glass-panel": {
+          "x": 124,
+          "y": 241,
+          "w": 1288,
+          "h": 40
+        },
+        ".mobile-nav": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".dock": {
+          "x": 24,
+          "y": 308,
+          "w": 72,
+          "h": 285
+        },
+        ".tabs__track": {
+          "x": 511,
+          "y": 27,
+          "w": 483,
+          "h": 43
+        }
+      },
+      "offenders": [
+        {
+          "tag": "I",
+          "className": "mesh__a",
+          "text": "",
+          "left": -230,
+          "right": 778
+        },
+        {
+          "tag": "I",
+          "className": "mesh__b",
+          "text": "",
+          "left": 778,
+          "right": 1699
+        }
+      ]
+    },
+    {
+      "viewport": "1440x900",
+      "route": "tasks",
+      "title": "nemo. — Track it, finish it.",
+      "h1": [
+        "Tasks"
+      ],
+      "docWidth": 1440,
+      "windowWidth": 1440,
+      "overflow": 0,
+      "theme": "dark",
+      "rects": {
+        ".app-header": {
+          "x": 124,
+          "y": 24,
+          "w": 1288,
+          "h": 48
+        },
+        ".header-navigation": {
+          "x": 291,
+          "y": 27,
+          "w": 923,
+          "h": 43
+        },
+        ".module-heading": {
+          "x": 124,
+          "y": 143,
+          "w": 1288,
+          "h": 74
+        },
+        ".glass-panel": {
+          "x": 124,
+          "y": 241,
+          "w": 1288,
+          "h": 40
+        },
+        ".mobile-nav": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".dock": {
+          "x": 24,
+          "y": 308,
+          "w": 72,
+          "h": 285
+        },
+        ".tabs__track": {
+          "x": 511,
+          "y": 27,
+          "w": 483,
+          "h": 43
+        }
+      },
+      "offenders": [
+        {
+          "tag": "I",
+          "className": "mesh__a",
+          "text": "",
+          "left": -230,
+          "right": 778
+        },
+        {
+          "tag": "I",
+          "className": "mesh__b",
+          "text": "",
+          "left": 778,
+          "right": 1699
+        }
+      ]
+    },
+    {
+      "viewport": "1440x900",
+      "route": "calendar",
+      "title": "nemo. — Track it, finish it.",
+      "h1": [],
+      "docWidth": 1440,
+      "windowWidth": 1440,
+      "overflow": 0,
+      "theme": "dark",
+      "rects": {
+        ".app-header": {
+          "x": 124,
+          "y": 24,
+          "w": 1288,
+          "h": 48
+        },
+        ".header-navigation": {
+          "x": 291,
+          "y": 27,
+          "w": 923,
+          "h": 43
+        },
+        ".glass-panel": {
+          "x": 124,
+          "y": 143,
+          "w": 1288,
+          "h": 54
+        },
+        ".mobile-nav": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".dock": {
+          "x": 24,
+          "y": 308,
+          "w": 72,
+          "h": 285
+        },
+        ".tabs__track": {
+          "x": 511,
+          "y": 27,
+          "w": 483,
+          "h": 43
+        }
+      },
+      "offenders": [
+        {
+          "tag": "I",
+          "className": "mesh__a",
+          "text": "",
+          "left": -230,
+          "right": 778
+        },
+        {
+          "tag": "I",
+          "className": "mesh__b",
+          "text": "",
+          "left": 778,
+          "right": 1699
+        }
+      ]
+    },
+    {
+      "viewport": "1440x900",
+      "route": "academics",
+      "title": "nemo. — Track it, finish it.",
+      "h1": [],
+      "docWidth": 1440,
+      "windowWidth": 1440,
+      "overflow": 0,
+      "theme": "dark",
+      "rects": {
+        ".app-header": {
+          "x": 124,
+          "y": 24,
+          "w": 1288,
+          "h": 48
+        },
+        ".header-navigation": {
+          "x": 291,
+          "y": 27,
+          "w": 923,
+          "h": 43
+        },
+        ".glass-panel": {
+          "x": 124,
+          "y": 143,
+          "w": 1288,
+          "h": 50
+        },
+        ".mobile-nav": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".dock": {
+          "x": 24,
+          "y": 308,
+          "w": 72,
+          "h": 285
+        },
+        ".tabs__track": {
+          "x": 511,
+          "y": 27,
+          "w": 483,
+          "h": 43
+        }
+      },
+      "offenders": [
+        {
+          "tag": "I",
+          "className": "mesh__a",
+          "text": "",
+          "left": -230,
+          "right": 778
+        },
+        {
+          "tag": "I",
+          "className": "mesh__b",
+          "text": "",
+          "left": 778,
+          "right": 1699
+        }
+      ]
+    },
+    {
+      "viewport": "1440x900",
+      "route": "goals",
+      "title": "nemo. — Track it, finish it.",
+      "h1": [],
+      "docWidth": 1440,
+      "windowWidth": 1440,
+      "overflow": 0,
+      "theme": "dark",
+      "rects": {
+        ".app-header": {
+          "x": 124,
+          "y": 24,
+          "w": 1288,
+          "h": 48
+        },
+        ".header-navigation": {
+          "x": 291,
+          "y": 27,
+          "w": 923,
+          "h": 43
+        },
+        ".glass-panel": {
+          "x": 124,
+          "y": 143,
+          "w": 1288,
+          "h": 50
+        },
+        ".mobile-nav": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".dock": {
+          "x": 24,
+          "y": 308,
+          "w": 72,
+          "h": 285
+        },
+        ".tabs__track": {
+          "x": 511,
+          "y": 27,
+          "w": 483,
+          "h": 43
+        }
+      },
+      "offenders": [
+        {
+          "tag": "I",
+          "className": "mesh__a",
+          "text": "",
+          "left": -230,
+          "right": 778
+        },
+        {
+          "tag": "I",
+          "className": "mesh__b",
+          "text": "",
+          "left": 778,
+          "right": 1699
+        }
+      ]
+    },
+    {
+      "viewport": "1440x900",
+      "route": "insights",
+      "title": "nemo. — Track it, finish it.",
+      "h1": [
+        "WorkspaceInsights"
+      ],
+      "docWidth": 1440,
+      "windowWidth": 1440,
+      "overflow": 0,
+      "theme": "dark",
+      "rects": {
+        ".app-header": {
+          "x": 124,
+          "y": 24,
+          "w": 1288,
+          "h": 48
+        },
+        ".header-navigation": {
+          "x": 291,
+          "y": 27,
+          "w": 923,
+          "h": 43
+        },
+        ".glass-panel": {
+          "x": 124,
+          "y": 282,
+          "w": 828,
+          "h": 723
+        },
+        ".mobile-nav": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".dock": {
+          "x": 24,
+          "y": 308,
+          "w": 72,
+          "h": 285
+        },
+        ".tabs__track": {
+          "x": 511,
+          "y": 27,
+          "w": 483,
+          "h": 43
+        }
+      },
+      "offenders": [
+        {
+          "tag": "I",
+          "className": "mesh__a",
+          "text": "",
+          "left": -230,
+          "right": 778
+        },
+        {
+          "tag": "I",
+          "className": "mesh__b",
+          "text": "",
+          "left": 778,
+          "right": 1699
+        }
+      ]
+    },
+    {
+      "viewport": "1440x900",
+      "route": "settings",
+      "title": "nemo. — Track it, finish it.",
+      "h1": [
+        "Settings"
+      ],
+      "docWidth": 1440,
+      "windowWidth": 1440,
+      "overflow": 0,
+      "theme": "dark",
+      "rects": {
+        ".app-header": {
+          "x": 124,
+          "y": 24,
+          "w": 1288,
+          "h": 48
+        },
+        ".header-navigation": {
+          "x": 291,
+          "y": 27,
+          "w": 923,
+          "h": 43
+        },
+        ".module-heading": {
+          "x": 124,
+          "y": 143,
+          "w": 1288,
+          "h": 74
+        },
+        ".glass-panel": {
+          "x": 124,
+          "y": 293,
+          "w": 1288,
+          "h": 324
+        },
+        ".mobile-nav": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".dock": {
+          "x": 24,
+          "y": 308,
+          "w": 72,
+          "h": 285
+        },
+        ".tabs__track": {
+          "x": 511,
+          "y": 27,
+          "w": 483,
+          "h": 43
+        }
+      },
+      "offenders": [
+        {
+          "tag": "I",
+          "className": "mesh__a",
+          "text": "",
+          "left": -230,
+          "right": 778
+        },
+        {
+          "tag": "I",
+          "className": "mesh__b",
+          "text": "",
+          "left": 778,
+          "right": 1699
+        }
+      ]
+    },
+    {
+      "viewport": "1920x1080",
+      "route": "overview",
+      "title": "nemo. — Track it, finish it.",
+      "h1": [
+        "Make room for progress."
+      ],
+      "docWidth": 1920,
+      "windowWidth": 1920,
+      "overflow": 0,
+      "theme": "dark",
+      "rects": {
+        ".app-header": {
+          "x": 124,
+          "y": 24,
+          "w": 1768,
+          "h": 48
+        },
+        ".header-navigation": {
+          "x": 400,
+          "y": 26,
+          "w": 1279,
+          "h": 44
+        },
+        ".glass-panel": {
+          "x": 124,
+          "y": 307,
+          "w": 1003,
+          "h": 658
+        },
+        ".mobile-nav": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".dock": {
+          "x": 24,
+          "y": 398,
+          "w": 72,
+          "h": 285
+        },
+        ".tabs__track": {
+          "x": 729,
+          "y": 26,
+          "w": 620,
+          "h": 44
+        }
+      },
+      "offenders": [
+        {
+          "tag": "I",
+          "className": "mesh__a",
+          "text": "",
+          "left": -307,
+          "right": 1037
+        },
+        {
+          "tag": "I",
+          "className": "mesh__b",
+          "text": "",
+          "left": 1037,
+          "right": 2266
+        }
+      ]
+    },
+    {
+      "viewport": "1920x1080",
+      "route": "projects",
+      "title": "nemo. — Track it, finish it.",
+      "h1": [
+        "Projects"
+      ],
+      "docWidth": 1920,
+      "windowWidth": 1920,
+      "overflow": 0,
+      "theme": "dark",
+      "rects": {
+        ".app-header": {
+          "x": 124,
+          "y": 24,
+          "w": 1768,
+          "h": 48
+        },
+        ".header-navigation": {
+          "x": 400,
+          "y": 26,
+          "w": 1279,
+          "h": 44
+        },
+        ".module-heading": {
+          "x": 124,
+          "y": 143,
+          "w": 1768,
+          "h": 74
+        },
+        ".glass-panel": {
+          "x": 124,
+          "y": 241,
+          "w": 1768,
+          "h": 40
+        },
+        ".mobile-nav": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".dock": {
+          "x": 24,
+          "y": 398,
+          "w": 72,
+          "h": 285
+        },
+        ".tabs__track": {
+          "x": 729,
+          "y": 26,
+          "w": 620,
+          "h": 44
+        }
+      },
+      "offenders": [
+        {
+          "tag": "I",
+          "className": "mesh__a",
+          "text": "",
+          "left": -307,
+          "right": 1037
+        },
+        {
+          "tag": "I",
+          "className": "mesh__b",
+          "text": "",
+          "left": 1037,
+          "right": 2266
+        }
+      ]
+    },
+    {
+      "viewport": "1920x1080",
+      "route": "tasks",
+      "title": "nemo. — Track it, finish it.",
+      "h1": [
+        "Tasks"
+      ],
+      "docWidth": 1920,
+      "windowWidth": 1920,
+      "overflow": 0,
+      "theme": "dark",
+      "rects": {
+        ".app-header": {
+          "x": 124,
+          "y": 24,
+          "w": 1768,
+          "h": 48
+        },
+        ".header-navigation": {
+          "x": 400,
+          "y": 26,
+          "w": 1279,
+          "h": 44
+        },
+        ".module-heading": {
+          "x": 124,
+          "y": 143,
+          "w": 1768,
+          "h": 74
+        },
+        ".glass-panel": {
+          "x": 124,
+          "y": 241,
+          "w": 1768,
+          "h": 40
+        },
+        ".mobile-nav": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".dock": {
+          "x": 24,
+          "y": 398,
+          "w": 72,
+          "h": 285
+        },
+        ".tabs__track": {
+          "x": 729,
+          "y": 26,
+          "w": 620,
+          "h": 44
+        }
+      },
+      "offenders": [
+        {
+          "tag": "I",
+          "className": "mesh__a",
+          "text": "",
+          "left": -307,
+          "right": 1037
+        },
+        {
+          "tag": "I",
+          "className": "mesh__b",
+          "text": "",
+          "left": 1037,
+          "right": 2266
+        }
+      ]
+    },
+    {
+      "viewport": "1920x1080",
+      "route": "calendar",
+      "title": "nemo. — Track it, finish it.",
+      "h1": [],
+      "docWidth": 1920,
+      "windowWidth": 1920,
+      "overflow": 0,
+      "theme": "dark",
+      "rects": {
+        ".app-header": {
+          "x": 124,
+          "y": 24,
+          "w": 1768,
+          "h": 48
+        },
+        ".header-navigation": {
+          "x": 400,
+          "y": 26,
+          "w": 1279,
+          "h": 44
+        },
+        ".glass-panel": {
+          "x": 124,
+          "y": 143,
+          "w": 1768,
+          "h": 54
+        },
+        ".mobile-nav": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".dock": {
+          "x": 24,
+          "y": 398,
+          "w": 72,
+          "h": 285
+        },
+        ".tabs__track": {
+          "x": 729,
+          "y": 26,
+          "w": 620,
+          "h": 44
+        }
+      },
+      "offenders": [
+        {
+          "tag": "I",
+          "className": "mesh__a",
+          "text": "",
+          "left": -307,
+          "right": 1037
+        },
+        {
+          "tag": "I",
+          "className": "mesh__b",
+          "text": "",
+          "left": 1037,
+          "right": 2266
+        }
+      ]
+    },
+    {
+      "viewport": "1920x1080",
+      "route": "academics",
+      "title": "nemo. — Track it, finish it.",
+      "h1": [],
+      "docWidth": 1920,
+      "windowWidth": 1920,
+      "overflow": 0,
+      "theme": "dark",
+      "rects": {
+        ".app-header": {
+          "x": 124,
+          "y": 24,
+          "w": 1768,
+          "h": 48
+        },
+        ".header-navigation": {
+          "x": 400,
+          "y": 26,
+          "w": 1279,
+          "h": 44
+        },
+        ".glass-panel": {
+          "x": 124,
+          "y": 143,
+          "w": 1768,
+          "h": 50
+        },
+        ".mobile-nav": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".dock": {
+          "x": 24,
+          "y": 398,
+          "w": 72,
+          "h": 285
+        },
+        ".tabs__track": {
+          "x": 729,
+          "y": 26,
+          "w": 620,
+          "h": 44
+        }
+      },
+      "offenders": [
+        {
+          "tag": "I",
+          "className": "mesh__a",
+          "text": "",
+          "left": -307,
+          "right": 1037
+        },
+        {
+          "tag": "I",
+          "className": "mesh__b",
+          "text": "",
+          "left": 1037,
+          "right": 2266
+        }
+      ]
+    },
+    {
+      "viewport": "1920x1080",
+      "route": "goals",
+      "title": "nemo. — Track it, finish it.",
+      "h1": [],
+      "docWidth": 1920,
+      "windowWidth": 1920,
+      "overflow": 0,
+      "theme": "dark",
+      "rects": {
+        ".app-header": {
+          "x": 124,
+          "y": 24,
+          "w": 1768,
+          "h": 48
+        },
+        ".header-navigation": {
+          "x": 400,
+          "y": 26,
+          "w": 1279,
+          "h": 44
+        },
+        ".glass-panel": {
+          "x": 124,
+          "y": 143,
+          "w": 1768,
+          "h": 50
+        },
+        ".mobile-nav": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".dock": {
+          "x": 24,
+          "y": 398,
+          "w": 72,
+          "h": 285
+        },
+        ".tabs__track": {
+          "x": 729,
+          "y": 26,
+          "w": 620,
+          "h": 44
+        }
+      },
+      "offenders": [
+        {
+          "tag": "I",
+          "className": "mesh__a",
+          "text": "",
+          "left": -307,
+          "right": 1037
+        },
+        {
+          "tag": "I",
+          "className": "mesh__b",
+          "text": "",
+          "left": 1037,
+          "right": 2266
+        }
+      ]
+    },
+    {
+      "viewport": "1920x1080",
+      "route": "insights",
+      "title": "nemo. — Track it, finish it.",
+      "h1": [
+        "WorkspaceInsights"
+      ],
+      "docWidth": 1920,
+      "windowWidth": 1920,
+      "overflow": 0,
+      "theme": "dark",
+      "rects": {
+        ".app-header": {
+          "x": 124,
+          "y": 24,
+          "w": 1768,
+          "h": 48
+        },
+        ".header-navigation": {
+          "x": 400,
+          "y": 26,
+          "w": 1279,
+          "h": 44
+        },
+        ".glass-panel": {
+          "x": 124,
+          "y": 288,
+          "w": 1143,
+          "h": 723
+        },
+        ".mobile-nav": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".dock": {
+          "x": 24,
+          "y": 398,
+          "w": 72,
+          "h": 285
+        },
+        ".tabs__track": {
+          "x": 729,
+          "y": 26,
+          "w": 620,
+          "h": 44
+        }
+      },
+      "offenders": [
+        {
+          "tag": "I",
+          "className": "mesh__a",
+          "text": "",
+          "left": -307,
+          "right": 1037
+        },
+        {
+          "tag": "I",
+          "className": "mesh__b",
+          "text": "",
+          "left": 1037,
+          "right": 2266
+        }
+      ]
+    },
+    {
+      "viewport": "1920x1080",
+      "route": "settings",
+      "title": "nemo. — Track it, finish it.",
+      "h1": [
+        "Settings"
+      ],
+      "docWidth": 1920,
+      "windowWidth": 1920,
+      "overflow": 0,
+      "theme": "dark",
+      "rects": {
+        ".app-header": {
+          "x": 124,
+          "y": 24,
+          "w": 1768,
+          "h": 48
+        },
+        ".header-navigation": {
+          "x": 400,
+          "y": 26,
+          "w": 1279,
+          "h": 44
+        },
+        ".module-heading": {
+          "x": 124,
+          "y": 143,
+          "w": 1768,
+          "h": 74
+        },
+        ".glass-panel": {
+          "x": 124,
+          "y": 293,
+          "w": 1768,
+          "h": 308
+        },
+        ".mobile-nav": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        ".dock": {
+          "x": 24,
+          "y": 398,
+          "w": 72,
+          "h": 285
+        },
+        ".tabs__track": {
+          "x": 729,
+          "y": 26,
+          "w": 620,
+          "h": 44
+        }
+      },
+      "offenders": [
+        {
+          "tag": "I",
+          "className": "mesh__a",
+          "text": "",
+          "left": -307,
+          "right": 1037
+        },
+        {
+          "tag": "I",
+          "className": "mesh__b",
+          "text": "",
+          "left": 1037,
+          "right": 2266
+        }
+      ]
+    }
+  ],
+  "themes": [
+    {
+      "name": "Midnight",
+      "settings": {
+        "title": "nemo. — Track it, finish it.",
+        "h1": [
+          "Settings"
+        ],
+        "docWidth": 390,
+        "windowWidth": 390,
+        "overflow": 0,
+        "theme": "midnight",
+        "rects": {
+          ".app-header": {
+            "x": 16,
+            "y": -455,
+            "w": 358,
+            "h": 44
+          },
+          ".header-navigation": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          ".module-heading": {
+            "x": 16,
+            "y": -304,
+            "w": 358,
+            "h": 61
+          },
+          ".glass-panel": {
+            "x": 16,
+            "y": -116,
+            "w": 358,
+            "h": 776
+          },
+          ".mobile-nav": {
+            "x": 0,
+            "y": 780,
+            "w": 390,
+            "h": 64
+          },
+          ".dock": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          ".tabs__track": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          }
+        },
+        "offenders": [
+          {
+            "tag": "I",
+            "className": "mesh__a",
+            "text": "",
+            "left": -135,
+            "right": 456
+          },
+          {
+            "tag": "I",
+            "className": "mesh__b",
+            "text": "",
+            "left": 2,
+            "right": 542
+          },
+          {
+            "tag": "DIV",
+            "className": "fixed bottom-16 md:bottom-6 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-event",
+            "text": "Preferences saved",
+            "left": -10,
+            "right": 374
+          },
+          {
+            "tag": "DIV",
+            "className": "pointer-events-auto flex items-start gap-3 p-3.5 rounded-xl border shadow-xl bg-elevated t",
+            "text": "Preferences saved",
+            "left": -10,
+            "right": 374
+          }
+        ]
+      },
+      "overview": {
+        "title": "nemo. — Track it, finish it.",
+        "h1": [
+          "Make room for progress."
+        ],
+        "docWidth": 390,
+        "windowWidth": 390,
+        "overflow": 0,
+        "theme": "midnight",
+        "rects": {
+          ".app-header": {
+            "x": 16,
+            "y": 20,
+            "w": 358,
+            "h": 44
+          },
+          ".header-navigation": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          ".glass-panel": {
+            "x": 16,
+            "y": 365,
+            "w": 358,
+            "h": 569
+          },
+          ".mobile-nav": {
+            "x": 0,
+            "y": 780,
+            "w": 390,
+            "h": 64
+          },
+          ".dock": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          ".tabs__track": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          }
+        },
+        "offenders": [
+          {
+            "tag": "I",
+            "className": "mesh__a",
+            "text": "",
+            "left": -135,
+            "right": 456
+          },
+          {
+            "tag": "I",
+            "className": "mesh__b",
+            "text": "",
+            "left": 2,
+            "right": 542
+          },
+          {
+            "tag": "DIV",
+            "className": "fixed bottom-16 md:bottom-6 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-event",
+            "text": "",
+            "left": -10,
+            "right": 374
+          }
+        ]
+      },
+      "persisted": "midnight"
+    },
+    {
+      "name": "Daylight",
+      "settings": {
+        "title": "nemo. — Track it, finish it.",
+        "h1": [
+          "Settings"
+        ],
+        "docWidth": 390,
+        "windowWidth": 390,
+        "overflow": 0,
+        "theme": "daylight",
+        "rects": {
+          ".app-header": {
+            "x": 16,
+            "y": -647,
+            "w": 358,
+            "h": 44
+          },
+          ".header-navigation": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          ".module-heading": {
+            "x": 16,
+            "y": -496,
+            "w": 358,
+            "h": 61
+          },
+          ".glass-panel": {
+            "x": 16,
+            "y": -308,
+            "w": 358,
+            "h": 776
+          },
+          ".mobile-nav": {
+            "x": 0,
+            "y": 780,
+            "w": 390,
+            "h": 64
+          },
+          ".dock": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          ".tabs__track": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          }
+        },
+        "offenders": [
+          {
+            "tag": "I",
+            "className": "mesh__a",
+            "text": "",
+            "left": -135,
+            "right": 456
+          },
+          {
+            "tag": "I",
+            "className": "mesh__b",
+            "text": "",
+            "left": 2,
+            "right": 542
+          },
+          {
+            "tag": "DIV",
+            "className": "fixed bottom-16 md:bottom-6 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-event",
+            "text": "Preferences saved",
+            "left": -10,
+            "right": 374
+          },
+          {
+            "tag": "DIV",
+            "className": "pointer-events-auto flex items-start gap-3 p-3.5 rounded-xl border shadow-xl bg-elevated t",
+            "text": "Preferences saved",
+            "left": -10,
+            "right": 374
+          }
+        ]
+      },
+      "overview": {
+        "title": "nemo. — Track it, finish it.",
+        "h1": [
+          "Make room for progress."
+        ],
+        "docWidth": 390,
+        "windowWidth": 390,
+        "overflow": 0,
+        "theme": "daylight",
+        "rects": {
+          ".app-header": {
+            "x": 16,
+            "y": 20,
+            "w": 358,
+            "h": 44
+          },
+          ".header-navigation": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          ".glass-panel": {
+            "x": 16,
+            "y": 364,
+            "w": 358,
+            "h": 569
+          },
+          ".mobile-nav": {
+            "x": 0,
+            "y": 780,
+            "w": 390,
+            "h": 64
+          },
+          ".dock": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          ".tabs__track": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          }
+        },
+        "offenders": [
+          {
+            "tag": "I",
+            "className": "mesh__a",
+            "text": "",
+            "left": -135,
+            "right": 456
+          },
+          {
+            "tag": "I",
+            "className": "mesh__b",
+            "text": "",
+            "left": 2,
+            "right": 542
+          },
+          {
+            "tag": "DIV",
+            "className": "fixed bottom-16 md:bottom-6 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-event",
+            "text": "",
+            "left": -10,
+            "right": 374
+          }
+        ]
+      },
+      "persisted": "daylight"
+    },
+    {
+      "name": "Aurora",
+      "settings": {
+        "title": "nemo. — Track it, finish it.",
+        "h1": [
+          "Settings"
+        ],
+        "docWidth": 390,
+        "windowWidth": 390,
+        "overflow": 0,
+        "theme": "aurora",
+        "rects": {
+          ".app-header": {
+            "x": 16,
+            "y": -647,
+            "w": 358,
+            "h": 44
+          },
+          ".header-navigation": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          ".module-heading": {
+            "x": 16,
+            "y": -496,
+            "w": 358,
+            "h": 61
+          },
+          ".glass-panel": {
+            "x": 16,
+            "y": -308,
+            "w": 358,
+            "h": 776
+          },
+          ".mobile-nav": {
+            "x": 0,
+            "y": 780,
+            "w": 390,
+            "h": 64
+          },
+          ".dock": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          ".tabs__track": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          }
+        },
+        "offenders": [
+          {
+            "tag": "DIV",
+            "className": "fixed bottom-16 md:bottom-6 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-event",
+            "text": "Preferences saved",
+            "left": -10,
+            "right": 374
+          },
+          {
+            "tag": "DIV",
+            "className": "pointer-events-auto flex items-start gap-3 p-3.5 rounded-xl border shadow-xl bg-elevated t",
+            "text": "Preferences saved",
+            "left": -10,
+            "right": 374
+          }
+        ]
+      },
+      "overview": {
+        "title": "nemo. — Track it, finish it.",
+        "h1": [
+          "Make room for progress."
+        ],
+        "docWidth": 390,
+        "windowWidth": 390,
+        "overflow": 0,
+        "theme": "aurora",
+        "rects": {
+          ".app-header": {
+            "x": 16,
+            "y": 20,
+            "w": 358,
+            "h": 44
+          },
+          ".header-navigation": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          ".glass-panel": {
+            "x": 16,
+            "y": 365,
+            "w": 358,
+            "h": 569
+          },
+          ".mobile-nav": {
+            "x": 0,
+            "y": 780,
+            "w": 390,
+            "h": 64
+          },
+          ".dock": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          ".tabs__track": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          }
+        },
+        "offenders": [
+          {
+            "tag": "DIV",
+            "className": "fixed bottom-16 md:bottom-6 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-event",
+            "text": "",
+            "left": -10,
+            "right": 374
+          }
+        ]
+      },
+      "persisted": "aurora"
+    }
+  ],
+  "reference": {
+    "url": "https://demo.codeandchill.store/tavola/#/overview",
+    "title": "Overview · Tavola",
+    "h1": [
+      "Tonight’sService"
+    ]
+  },
+  "browserEngines": [
+    {
+      "name": "firefox",
+      "metric": {
+        "title": "nemo. — Track it, finish it.",
+        "h1": [
+          "Make room for progress."
+        ],
+        "docWidth": 390,
+        "windowWidth": 390,
+        "overflow": 0,
+        "theme": "dark",
+        "rects": {
+          ".app-header": {
+            "x": 16,
+            "y": 20,
+            "w": 358,
+            "h": 44
+          },
+          ".header-navigation": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          ".glass-panel": {
+            "x": 16,
+            "y": 334,
+            "w": 358,
+            "h": 302
+          },
+          ".mobile-nav": {
+            "x": 0,
+            "y": 780,
+            "w": 390,
+            "h": 64
+          },
+          ".dock": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          ".tabs__track": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          }
+        },
+        "offenders": [
+          {
+            "tag": "I",
+            "className": "mesh__a",
+            "text": "",
+            "left": -135,
+            "right": 456
+          },
+          {
+            "tag": "I",
+            "className": "mesh__b",
+            "text": "",
+            "left": 2,
+            "right": 542
+          },
+          {
+            "tag": "DIV",
+            "className": "fixed bottom-16 md:bottom-6 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-event",
+            "text": "",
+            "left": -10,
+            "right": 374
+          }
+        ]
+      }
+    },
+    {
+      "name": "webkit",
+      "metric": {
+        "title": "nemo. — Track it, finish it.",
+        "h1": [
+          "Make room for progress."
+        ],
+        "docWidth": 384,
+        "windowWidth": 390,
+        "overflow": -6,
+        "theme": "dark",
+        "rects": {
+          ".app-header": {
+            "x": 16,
+            "y": 20,
+            "w": 352,
+            "h": 44
+          },
+          ".header-navigation": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          ".glass-panel": {
+            "x": 16,
+            "y": 334,
+            "w": 352,
+            "h": 302
+          },
+          ".mobile-nav": {
+            "x": 0,
+            "y": 780,
+            "w": 384,
+            "h": 64
+          },
+          ".dock": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          ".tabs__track": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          }
+        },
+        "offenders": [
+          {
+            "tag": "I",
+            "className": "mesh__a",
+            "text": "",
+            "left": -135,
+            "right": 456
+          },
+          {
+            "tag": "I",
+            "className": "mesh__b",
+            "text": "",
+            "left": -4,
+            "right": 536
+          },
+          {
+            "tag": "DIV",
+            "className": "fixed bottom-16 md:bottom-6 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-event",
+            "text": "",
+            "left": -16,
+            "right": 368
+          }
+        ]
+      }
+    }
+  ],
+  "interactions": [
+    {
+      "name": "first welcome",
+      "visible": 0,
+      "body": "nemo\n.\n\nTrack it, finish it.\n\nWorkspace ready\n\nCLICK OR PRESS ESC TO SKIP\n\nSkip to content\nSearch (Ctrl+K)\nQuick Add\nAsk Nemo\nToday's Focus\nSettings\nnemo.\nOverview\nProjects\nTasks\nCalendar\nAcademics\nGoals\nInsights\n11:25 PM\nMW\nPersonal workspace · Save"
+    }
+  ],
+  "errors": []
+}

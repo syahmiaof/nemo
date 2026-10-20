@@ -16,6 +16,7 @@ import type {
 import { BackupSchema, type BackupData } from '@/domain/schemas';
 import { databaseNameForMode, getWorkspaceMode, REAL_DATABASE_NAME } from './workspaceMode';
 import { validateReferentialIntegrity } from './operations';
+import { registerDexieSyncHooks } from '@/sync/dexieHooks';
 
 export * from './operations';
 
@@ -49,10 +50,17 @@ export class NemoDatabase extends Dexie {
       focusSelections: 'id, taskId, effectiveLocalDate, [effectiveLocalDate+taskId]',
       assetBlobs: 'id, ownerType, ownerId, mimeType, createdAt',
     });
+
+
   }
 }
 
 export const db = new NemoDatabase(databaseNameForMode(getWorkspaceMode()));
+
+// Airgap: Only register sync outbox hooks on the real personal database, never demo
+if (getWorkspaceMode() === 'real') {
+  registerDexieSyncHooks(db);
+}
 
 /**
  * Initializes default settings if not already present.

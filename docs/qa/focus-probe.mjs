@@ -1,0 +1,15 @@
+import { chromium } from '@playwright/test';
+import { writeFile } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
+const b=await chromium.launch();const c=await b.newContext({viewport:{width:1440,height:900}});const p=await c.newPage();
+await p.goto('http://127.0.0.1:4173/overview');await p.waitForTimeout(250);
+if(await p.getByRole('dialog',{name:'Welcome to Nemo'}).count())await p.keyboard.press('Escape');
+await p.getByRole('button',{name:'Skip customization'}).click({timeout:3000}).catch(()=>{});
+const trigger=p.getByRole('button',{name:'Ask Nemo Assistant'});await trigger.click();
+const dialog=p.getByRole('dialog',{name:'Ask Nemo'}), input=dialog.locator('input').first();
+await input.fill('Active projects');await input.press('Enter');await p.waitForTimeout(300);
+await dialog.getByRole('button',{name:'Send query'}).focus();await p.keyboard.press('Tab');
+const afterTab=await p.evaluate(()=>({element:document.activeElement?.outerHTML.slice(0,200),insideDialog:!!document.activeElement?.closest('[aria-label="Ask Nemo"]')}));
+await p.getByRole('button',{name:'Close Ask Nemo drawer'}).click();
+const afterClose=await p.evaluate(()=>({element:document.activeElement?.outerHTML.slice(0,200),triggerFocused:document.activeElement?.getAttribute('aria-label')==='Ask Nemo Assistant'}));
+const result={afterTab,afterClose};await c.close();await b.close();await writeFile(fileURLToPath(new URL('./artifacts/focus-probe.json',import.meta.url)),JSON.stringify(result,null,2));console.log(JSON.stringify(result,null,2));

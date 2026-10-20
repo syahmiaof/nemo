@@ -1,0 +1,53 @@
+{
+  "startedAt": "2026-10-20T15:52:27.230Z",
+  "checks": [
+    {
+      "name": "Demo counts",
+      "headline": "Make room for progress.\n\nTuesday, October 20 · Alex Morgan\n\n6\nActive projects\n11\n6 overdue\nTasks need attention\n86\nTasks completed\nYour momentum\nTasks\nProjects\n14\n\nTasks finished in the last 7 days\n\n+14 vs previous 7 days\nThis week\nPrevious 7 days\n0\n2\n4\nWed\nThu\nFri\nSat\nSun\nMon\nTue\n\nValues in tasks. ",
+      "demo": "DEMO WORKSPACE · Fictional data"
+    },
+    {
+      "name": "Ask Nemo suggested intents",
+      "answers": [
+        {
+          "question": "What tasks are due today?",
+          "answer": "Tasks Due Today\n11:52 PM\n\nYou have 5 tasks scheduled for completion today.\n\nConnect persisted data · Forma Commerce\n\nDefine acceptance criteria and record the outcome for Forma\n\nHIGH\n\nPlan next week’s priorities\n\nHIGH\n\nReview the learning journal\n\nMEDIUM\n\nBack up the current workspace\n\nURGENT\n\nMap the primary user journey · Harbour Booking\n\nDefine acceptance criteria and record the outcome for Harbou\n\nLOW\n\nSUGGESTED QUESTIONS\n\nToday's focus tasks"
+        },
+        {
+          "question": "Overdue tasks",
+          "answer": "Overdue Tasks\n11:52 PM\n\nYou have 6 overdue tasks that need attention.\n\nValidate the domain model · Orbit Analytics\n\nDue Oct 15, 2026\n\nOVERDUE\n\nBuild the core workflow · Orbit Analytics\n\nDue Oct 17, 2026\n\nOVERDUE\n\nBuild the core workflow · Forma Commerce\n\nDue Oct 18, 2026\n\nOVERDUE\n\nValidate the domain model · Atlas API Gateway\n\nDue Oct 19, 2026\n\nOVERDUE\n\nConnect persisted data · Orbit Analytics\n\nDue Oct 19, 2026\n\nOVERDUE\n\nMap the primary user jour"
+        },
+        {
+          "question": "Active projects",
+          "answer": "Active Projects\n11:52 PM\n\nYou have 6 active projects currently in flight.\n\nOrbit Analytics\n\nDue Nov 1, 2026\n\nHIGH\n\nForma Commerce\n\nDue Nov 6, 2026\n\nMEDIUM\n\nCloud Infrastructure Lab\n\nDue Nov 11, 2026\n\nURGENT\n\nPulse Mobile\n\nDue Nov 16, 2026\n\nLOW\n\nAtlas API Gateway\n\nDue Nov 21, 2026\n\nHIGH\n\nAcademy Learning Portal\n\nDue Nov 26, 2026\n\nMEDIUM\n\nSUGGESTED QUESTIONS\n\nClosest project deadline\nProject progress summary\nUpcoming milestones"
+        },
+        {
+          "question": "Tasks finished this month",
+          "answer": "Tasks Finished This Month\n11:52 PM\n\nHigh velocity! You have completed 14 tasks this calendar month.\n\nMap the primary user journey · Orbit Analytics\n\nCompleted on Oct 20, 2026\n\nDONE\n\nValidate the domain model · Forma Commerce\n\nCompleted on Oct 17, 2026\n\nDONE\n\nTidy the development environment\n\nCompleted on Oct 19, 2026\n\nDONE\n\nMap the primary user journey · Cloud Infrastructure Lab\n\nCompleted on Oct 16, 2026\n\nDONE\n\nValidate the domain model · Cloud "
+        },
+        {
+          "question": "Active goals",
+          "answer": "Active Goals\n11:52 PM\n\nYou are actively pursuing 4 strategic goals.\n\nShip a polished portfolio\n\nTarget: Nov 19, 2026\n\nACTIVE\n\nBuild dependable cloud skills\n\nTarget: Dec 3, 2026\n\nACTIVE\n\nCreate a sustainable freelance practice\n\nTarget: Dec 17, 2026\n\nACTIVE\n\nImprove accessible interface design\n\nTarget: Dec 31, 2026\n\nACTIVE\n\nSUGGESTED QUESTIONS\n\nUpcoming milestones\nActive projects\nToday's focus tasks"
+        },
+        {
+          "question": "What is the moon made of?",
+          "answer": "Ask Nemo Assistant\n11:52 PM\n\nI am your offline, privacy-first Nemo assistant. I compute answers instantly from your local workspace data. Here are questions you can ask me:\n\nSUGGESTED QUESTIONS\n\nWhat tasks are due today?\nOverdue tasks\nAssignments due this week\nActive projects\nClosest project deadline\nToday's focus tasks\nTasks finished this month\nUpcoming milestones\nActive goals\nProject progress summary"
+        }
+      ]
+    },
+    {
+      "name": "Avatar upload replace remove and workspace isolation",
+      "uploaded": 1,
+      "replaced": 1,
+      "persisted": 1,
+      "removed": 0,
+      "fallback": "AM"
+    },
+    {
+      "name": "Backup export",
+      "filename": "nemo_backup_2026-10-20_v1.json",
+      "artifact": "C:\\Users\\USER\\Desktop\\nemo\\docs\\qa\\artifacts\\disposable-demo-backup.json"
+    }
+  ],
+  "errors": []
+}

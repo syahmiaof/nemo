@@ -181,3 +181,41 @@ export interface ProjectedCalendarItem {
   color?: string;
   meta?: Record<string, unknown>;
 }
+
+
+export type SyncStatus = 'local_only' | 'signed_in' | 'syncing' | 'up_to_date' | 'offline' | 'error';
+
+export type SyncEntityType =
+  | 'project'
+  | 'task'
+  | 'milestone'
+  | 'semester'
+  | 'subject'
+  | 'assignment'
+  | 'calendarEvent'
+  | 'goal'
+  | 'goalTaskLink'
+  | 'focusSelection'
+  | 'settings'
+  | 'assetBlob';
+
+export interface SyncMutation {
+  id: string;
+  entityType: SyncEntityType;
+  entityId: string;
+  operation: 'UPSERT' | 'DELETE';
+  payload: Record<string, unknown>;
+  clientTimestamp: string;
+  status: 'pending' | 'in_flight' | 'failed' | 'applied';
+  retryCount: number;
+  lastError?: string;
+  createdAt: string;
+}
+
+export interface SyncState {
+  status: SyncStatus;
+  lastSyncAt?: string;
+  pendingCount: number;
+  errorMessage?: string;
+  ownerEmail?: string;
+}

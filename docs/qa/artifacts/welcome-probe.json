@@ -1,0 +1,74 @@
+[
+  {
+    "r": "overview",
+    "delay": 0,
+    "session": "true",
+    "local": "true",
+    "welcome": false,
+    "body": ""
+  },
+  {
+    "r": "overview",
+    "delay": 300,
+    "session": "true",
+    "local": "true",
+    "welcome": true,
+    "body": "nemo\n.\n\nTrack it, finish it.\n\nWorkspace ready\n\nCLICK OR PRESS ESC TO SKIP\n\nSkip "
+  },
+  {
+    "r": "overview",
+    "delay": 900,
+    "session": "true",
+    "local": "true",
+    "welcome": true,
+    "body": "nemo\n.\n\nTrack it, finish it.\n\nWorkspace ready\n\nCLICK OR PRESS ESC TO SKIP\n\nSkip "
+  },
+  {
+    "r": "projects",
+    "delay": 0,
+    "session": "true",
+    "local": "true",
+    "welcome": true,
+    "body": "nemo\n.\n\nTrack it, finish it.\n\nInitializing workspace...\n\nCLICK OR PRESS ESC TO S"
+  },
+  {
+    "r": "projects",
+    "delay": 300,
+    "session": "true",
+    "local": "true",
+    "welcome": true,
+    "body": "nemo\n.\n\nTrack it, finish it.\n\nWorkspace ready\n\nCLICK OR PRESS ESC TO SKIP\n\nSkip "
+  },
+  {
+    "r": "projects",
+    "delay": 900,
+    "session": "true",
+    "local": "true",
+    "welcome": true,
+    "body": "nemo\n.\n\nTrack it, finish it.\n\nWorkspace ready\n\nCLICK OR PRESS ESC TO SKIP\n\nSkip "
+  },
+  {
+    "r": "tasks",
+    "delay": 0,
+    "session": "true",
+    "local": "true",
+    "welcome": true,
+    "body": "nemo\n.\n\nTrack it, finish it.\n\nInitializing workspace...\n\nCLICK OR PRESS ESC TO S"
+  },
+  {
+    "r": "tasks",
+    "delay": 300,
+    "session": "true",
+    "local": "true",
+    "welcome": true,
+    "body": "nemo\n.\n\nTrack it, finish it.\n\nWorkspace ready\n\nCLICK OR PRESS ESC TO SKIP\n\nSkip "
+  },
+  {
+    "r": "tasks",
+    "delay": 900,
+    "session": "true",
+    "local": "true",
+    "welcome": true,
+    "body": "nemo\n.\n\nTrack it, finish it.\n\nWorkspace ready\n\nCLICK OR PRESS ESC TO SKIP\n\nSkip "
+  }
+]

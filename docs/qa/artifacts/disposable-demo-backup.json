@@ -1,0 +1,4596 @@
+{
+  "version": 1,
+  "exportedAt": "2026-10-20T15:52:38.194Z",
+  "app": "nemo",
+  "data": {
+    "settings": {
+      "id": "default",
+      "displayName": "Alex Morgan",
+      "theme": "dark",
+      "accent": "ember",
+      "weekStartsOn": 1,
+      "hourFormat": "24h",
+      "reduceMotion": false,
+      "onboardingCompleted": true,
+      "databaseVersion": 1
+    },
+    "projects": [
+      {
+        "id": "demo-project-1",
+        "title": "Orbit Analytics",
+        "description": "A privacy-first product analytics workspace.",
+        "category": "SaaS",
+        "priority": "high",
+        "status": "in_progress",
+        "createdAt": "2026-09-07T04:00:00.000Z",
+        "startedAt": "2026-09-07T04:00:00.000Z",
+        "dueDate": "2026-11-01",
+        "clientLabel": "Orbit Studio",
+        "tags": [
+          "saas",
+          "demo"
+        ],
+        "techStack": [
+          "TypeScript",
+          "TypeScript"
+        ],
+        "notes": "Fictional demo project. All changes remain in the isolated demo workspace.",
+        "previewBlobId": "demo-cover-1",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-project-10",
+        "title": "Monograph Portfolio",
+        "description": "A typographic home for an independent photographer.",
+        "category": "Portfolio",
+        "priority": "medium",
+        "status": "completed",
+        "createdAt": "2025-06-09T04:00:00.000Z",
+        "startedAt": "2025-06-09T04:00:00.000Z",
+        "dueDate": "2025-08-12",
+        "completedAt": "2025-08-12T04:00:00.000Z",
+        "clientLabel": "Monograph",
+        "tags": [
+          "portfolio",
+          "demo"
+        ],
+        "techStack": [
+          "Astro",
+          "TypeScript"
+        ],
+        "notes": "Fictional demo project. All changes remain in the isolated demo workspace.",
+        "previewBlobId": "demo-cover-10",
+        "updatedAt": "2025-08-12T04:00:00.000Z"
+      },
+      {
+        "id": "demo-project-11",
+        "title": "Canopy Inventory",
+        "description": "Stock movements and replenishment for a plant shop.",
+        "category": "Operations",
+        "priority": "urgent",
+        "status": "completed",
+        "createdAt": "2025-08-08T04:00:00.000Z",
+        "startedAt": "2025-08-08T04:00:00.000Z",
+        "dueDate": "2025-10-12",
+        "completedAt": "2025-10-12T04:00:00.000Z",
+        "clientLabel": "Canopy",
+        "tags": [
+          "operations",
+          "demo"
+        ],
+        "techStack": [
+          "React",
+          "TypeScript"
+        ],
+        "notes": "Fictional demo project. All changes remain in the isolated demo workspace.",
+        "previewBlobId": "demo-cover-11",
+        "updatedAt": "2025-10-12T04:00:00.000Z"
+      },
+      {
+        "id": "demo-project-12",
+        "title": "Signal Status Page",
+        "description": "Clear incident communication and service history.",
+        "category": "Developer tools",
+        "priority": "low",
+        "status": "completed",
+        "createdAt": "2025-10-07T04:00:00.000Z",
+        "startedAt": "2025-10-07T04:00:00.000Z",
+        "dueDate": "2025-12-12",
+        "completedAt": "2025-12-12T04:00:00.000Z",
+        "clientLabel": "Signal",
+        "tags": [
+          "developer tools",
+          "demo"
+        ],
+        "techStack": [
+          "TypeScript",
+          "TypeScript"
+        ],
+        "notes": "Fictional demo project. All changes remain in the isolated demo workspace.",
+        "previewBlobId": "demo-cover-12",
+        "updatedAt": "2025-12-12T04:00:00.000Z"
+      },
+      {
+        "id": "demo-project-13",
+        "title": "Locale City Guide",
+        "description": "Neighbourhood stories and walking routes.",
+        "category": "Travel",
+        "priority": "high",
+        "status": "completed",
+        "createdAt": "2025-12-07T04:00:00.000Z",
+        "startedAt": "2025-12-07T04:00:00.000Z",
+        "dueDate": "2026-02-12",
+        "completedAt": "2026-02-12T04:00:00.000Z",
+        "clientLabel": "Locale",
+        "tags": [
+          "travel",
+          "demo"
+        ],
+        "techStack": [
+          "Next.js",
+          "TypeScript"
+        ],
+        "notes": "Fictional demo project. All changes remain in the isolated demo workspace.",
+        "previewBlobId": "demo-cover-13",
+        "updatedAt": "2026-02-12T04:00:00.000Z"
+      },
+      {
+        "id": "demo-project-14",
+        "title": "Ledger Invoice Studio",
+        "description": "A small invoicing workspace for freelancers.",
+        "category": "Finance",
+        "priority": "medium",
+        "status": "completed",
+        "createdAt": "2026-02-03T04:00:00.000Z",
+        "startedAt": "2026-02-03T04:00:00.000Z",
+        "dueDate": "2026-04-12",
+        "completedAt": "2026-04-12T04:00:00.000Z",
+        "clientLabel": "Ledger",
+        "tags": [
+          "finance",
+          "demo"
+        ],
+        "techStack": [
+          "React",
+          "TypeScript"
+        ],
+        "notes": "Fictional demo project. All changes remain in the isolated demo workspace.",
+        "previewBlobId": "demo-cover-14",
+        "updatedAt": "2026-04-12T04:00:00.000Z"
+      },
+      {
+        "id": "demo-project-15",
+        "title": "Relay Support Desk",
+        "description": "A shared inbox built around clear ownership.",
+        "category": "SaaS",
+        "priority": "urgent",
+        "status": "completed",
+        "createdAt": "2026-04-04T04:00:00.000Z",
+        "startedAt": "2026-04-04T04:00:00.000Z",
+        "dueDate": "2026-06-12",
+        "completedAt": "2026-06-12T04:00:00.000Z",
+        "clientLabel": "Relay",
+        "tags": [
+          "saas",
+          "demo"
+        ],
+        "techStack": [
+          "Node.js",
+          "TypeScript"
+        ],
+        "notes": "Fictional demo project. All changes remain in the isolated demo workspace.",
+        "previewBlobId": "demo-cover-15",
+        "updatedAt": "2026-06-12T04:00:00.000Z"
+      },
+      {
+        "id": "demo-project-16",
+        "title": "Morrow Habit Journal",
+        "description": "A gentle journal for consistent daily routines.",
+        "category": "Wellbeing",
+        "priority": "low",
+        "status": "completed",
+        "createdAt": "2026-05-03T04:00:00.000Z",
+        "startedAt": "2026-05-03T04:00:00.000Z",
+        "dueDate": "2026-07-12",
+        "completedAt": "2026-07-12T04:00:00.000Z",
+        "clientLabel": "Morrow",
+        "tags": [
+          "wellbeing",
+          "demo"
+        ],
+        "techStack": [
+          "React",
+          "TypeScript"
+        ],
+        "notes": "Fictional demo project. All changes remain in the isolated demo workspace.",
+        "previewBlobId": "demo-cover-16",
+        "updatedAt": "2026-07-12T04:00:00.000Z"
+      },
+      {
+        "id": "demo-project-17",
+        "title": "Northstar Research Hub",
+        "description": "Searchable interviews and product research findings.",
+        "category": "Research",
+        "priority": "high",
+        "status": "completed",
+        "createdAt": "2026-06-02T04:00:00.000Z",
+        "startedAt": "2026-06-02T04:00:00.000Z",
+        "dueDate": "2026-08-12",
+        "completedAt": "2026-08-12T04:00:00.000Z",
+        "clientLabel": "Northstar",
+        "tags": [
+          "research",
+          "demo"
+        ],
+        "techStack": [
+          "TypeScript",
+          "TypeScript"
+        ],
+        "notes": "Fictional demo project. All changes remain in the isolated demo workspace.",
+        "previewBlobId": "demo-cover-17",
+        "updatedAt": "2026-08-12T04:00:00.000Z"
+      },
+      {
+        "id": "demo-project-18",
+        "title": "Terrain Trail Planner",
+        "description": "Saved routes and practical packing checklists.",
+        "category": "Outdoors",
+        "priority": "medium",
+        "status": "completed",
+        "createdAt": "2026-07-02T04:00:00.000Z",
+        "startedAt": "2026-07-02T04:00:00.000Z",
+        "dueDate": "2026-09-12",
+        "completedAt": "2026-09-12T04:00:00.000Z",
+        "clientLabel": "Terrain",
+        "tags": [
+          "outdoors",
+          "demo"
+        ],
+        "techStack": [
+          "React",
+          "TypeScript"
+        ],
+        "notes": "Fictional demo project. All changes remain in the isolated demo workspace.",
+        "previewBlobId": "demo-cover-18",
+        "updatedAt": "2026-09-12T04:00:00.000Z"
+      },
+      {
+        "id": "demo-project-2",
+        "title": "Forma Commerce",
+        "description": "A thoughtful storefront for independent furniture makers.",
+        "category": "E-commerce",
+        "priority": "medium",
+        "status": "in_progress",
+        "createdAt": "2026-09-11T04:00:00.000Z",
+        "startedAt": "2026-09-11T04:00:00.000Z",
+        "dueDate": "2026-11-06",
+        "clientLabel": "Forma Living",
+        "tags": [
+          "e-commerce",
+          "demo"
+        ],
+        "techStack": [
+          "React",
+          "TypeScript"
+        ],
+        "notes": "Fictional demo project. All changes remain in the isolated demo workspace.",
+        "previewBlobId": "demo-cover-2",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-project-3",
+        "title": "Cloud Infrastructure Lab",
+        "description": "Repeatable cloud environments with observable services.",
+        "category": "Infrastructure",
+        "priority": "urgent",
+        "status": "in_progress",
+        "createdAt": "2026-09-15T04:00:00.000Z",
+        "startedAt": "2026-09-15T04:00:00.000Z",
+        "dueDate": "2026-11-11",
+        "clientLabel": "Personal",
+        "tags": [
+          "infrastructure",
+          "demo"
+        ],
+        "techStack": [
+          "Terraform",
+          "TypeScript"
+        ],
+        "notes": "Fictional demo project. All changes remain in the isolated demo workspace.",
+        "previewBlobId": "demo-cover-3",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-project-4",
+        "title": "Pulse Mobile",
+        "description": "A quiet daily planning companion for focused work.",
+        "category": "Mobile",
+        "priority": "low",
+        "status": "in_progress",
+        "createdAt": "2026-09-19T04:00:00.000Z",
+        "startedAt": "2026-09-19T04:00:00.000Z",
+        "dueDate": "2026-11-16",
+        "clientLabel": "Pulse Collective",
+        "tags": [
+          "mobile",
+          "demo"
+        ],
+        "techStack": [
+          "React Native",
+          "TypeScript"
+        ],
+        "notes": "Fictional demo project. All changes remain in the isolated demo workspace.",
+        "previewBlobId": "demo-cover-4",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-project-5",
+        "title": "Atlas API Gateway",
+        "description": "A typed gateway with rate limits and operational visibility.",
+        "category": "Backend",
+        "priority": "high",
+        "status": "in_progress",
+        "createdAt": "2026-09-23T04:00:00.000Z",
+        "startedAt": "2026-09-23T04:00:00.000Z",
+        "dueDate": "2026-11-21",
+        "clientLabel": "Atlas Labs",
+        "tags": [
+          "backend",
+          "demo"
+        ],
+        "techStack": [
+          "Node.js",
+          "TypeScript"
+        ],
+        "notes": "Fictional demo project. All changes remain in the isolated demo workspace.",
+        "previewBlobId": "demo-cover-5",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-project-6",
+        "title": "Academy Learning Portal",
+        "description": "Outcome-based courses and clear learner progress.",
+        "category": "Education",
+        "priority": "medium",
+        "status": "in_progress",
+        "createdAt": "2026-09-27T04:00:00.000Z",
+        "startedAt": "2026-09-27T04:00:00.000Z",
+        "dueDate": "2026-11-26",
+        "clientLabel": "Academy",
+        "tags": [
+          "education",
+          "demo"
+        ],
+        "techStack": [
+          "Next.js",
+          "TypeScript"
+        ],
+        "notes": "Fictional demo project. All changes remain in the isolated demo workspace.",
+        "previewBlobId": "demo-cover-6",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-project-7",
+        "title": "Field Notes CMS",
+        "description": "An editorial toolkit for a small independent journal.",
+        "category": "Publishing",
+        "priority": "urgent",
+        "status": "not_started",
+        "createdAt": "2026-10-01T04:00:00.000Z",
+        "dueDate": "2026-12-01",
+        "clientLabel": "Field Notes",
+        "tags": [
+          "publishing",
+          "demo"
+        ],
+        "techStack": [
+          "TypeScript",
+          "TypeScript"
+        ],
+        "notes": "Fictional demo project. All changes remain in the isolated demo workspace.",
+        "previewBlobId": "demo-cover-7",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-project-8",
+        "title": "Harbour Booking",
+        "description": "Accessible reservations for a coastal retreat.",
+        "category": "Travel",
+        "priority": "low",
+        "status": "not_started",
+        "createdAt": "2026-10-05T04:00:00.000Z",
+        "dueDate": "2026-12-06",
+        "clientLabel": "Harbour House",
+        "tags": [
+          "travel",
+          "demo"
+        ],
+        "techStack": [
+          "React",
+          "TypeScript"
+        ],
+        "notes": "Fictional demo project. All changes remain in the isolated demo workspace.",
+        "previewBlobId": "demo-cover-8",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-project-9",
+        "title": "Thread Design System",
+        "description": "Shared interface foundations for a growing product team.",
+        "category": "Design",
+        "priority": "high",
+        "status": "on_hold",
+        "createdAt": "2026-10-09T04:00:00.000Z",
+        "dueDate": "2026-12-11",
+        "clientLabel": "Thread Studio",
+        "tags": [
+          "design",
+          "demo"
+        ],
+        "techStack": [
+          "Storybook",
+          "TypeScript"
+        ],
+        "notes": "Fictional demo project. All changes remain in the isolated demo workspace.",
+        "previewBlobId": "demo-cover-9",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      }
+    ],
+    "tasks": [
+      {
+        "id": "demo-task-1",
+        "title": "Map the primary user journey · Orbit Analytics",
+        "notes": "Define acceptance criteria and record the outcome for Orbit Analytics.",
+        "status": "done",
+        "priority": "high",
+        "dueDate": "2026-10-13",
+        "dueTime": "09:00",
+        "estimatedMinutes": 40,
+        "tags": [
+          "planning"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-1",
+        "createdAt": "2026-09-07T04:00:00.000Z",
+        "completedAt": "2026-10-20T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-10",
+        "title": "Validate the domain model · Forma Commerce",
+        "notes": "Define acceptance criteria and record the outcome for Forma Commerce.",
+        "status": "done",
+        "priority": "urgent",
+        "dueDate": "2026-10-16",
+        "dueTime": "11:30",
+        "estimatedMinutes": 40,
+        "tags": [
+          "planning"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-2",
+        "createdAt": "2026-09-11T04:00:00.000Z",
+        "completedAt": "2026-10-17T04:00:00.000Z",
+        "updatedAt": "2026-10-17T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-100",
+        "title": "Connect persisted data · Locale City Guide",
+        "notes": "Define acceptance criteria and record the outcome for Locale City Guide.",
+        "status": "done",
+        "priority": "low",
+        "dueDate": "2026-01-31",
+        "dueTime": "16:30",
+        "estimatedMinutes": 25,
+        "tags": [
+          "build"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-13",
+        "createdAt": "2025-12-07T04:00:00.000Z",
+        "completedAt": "2026-01-31T04:00:00.000Z",
+        "updatedAt": "2026-01-31T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-101",
+        "title": "Refine the responsive layouts · Locale City Guide",
+        "notes": "Define acceptance criteria and record the outcome for Locale City Guide.",
+        "status": "done",
+        "priority": "high",
+        "dueDate": "2026-02-03",
+        "dueTime": "09:00",
+        "estimatedMinutes": 100,
+        "tags": [
+          "build"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-13",
+        "createdAt": "2025-12-07T04:00:00.000Z",
+        "completedAt": "2026-02-03T04:00:00.000Z",
+        "updatedAt": "2026-02-03T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-102",
+        "title": "Review keyboard navigation · Locale City Guide",
+        "notes": "Define acceptance criteria and record the outcome for Locale City Guide.",
+        "status": "done",
+        "priority": "medium",
+        "dueDate": "2026-02-06",
+        "dueTime": "11:30",
+        "estimatedMinutes": 70,
+        "tags": [
+          "build"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-13",
+        "createdAt": "2025-12-07T04:00:00.000Z",
+        "completedAt": "2026-02-06T04:00:00.000Z",
+        "updatedAt": "2026-02-06T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-103",
+        "title": "Verify the release checklist · Locale City Guide",
+        "notes": "Define acceptance criteria and record the outcome for Locale City Guide.",
+        "status": "done",
+        "priority": "urgent",
+        "dueDate": "2026-02-09",
+        "dueTime": "14:00",
+        "estimatedMinutes": 25,
+        "tags": [
+          "review"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-13",
+        "createdAt": "2025-12-07T04:00:00.000Z",
+        "completedAt": "2026-02-09T04:00:00.000Z",
+        "updatedAt": "2026-02-09T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-104",
+        "title": "Document the handover · Locale City Guide",
+        "notes": "Define acceptance criteria and record the outcome for Locale City Guide.",
+        "status": "done",
+        "priority": "low",
+        "dueDate": "2026-02-12",
+        "dueTime": "16:30",
+        "estimatedMinutes": 25,
+        "tags": [
+          "review"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-13",
+        "createdAt": "2025-12-07T04:00:00.000Z",
+        "completedAt": "2026-02-12T04:00:00.000Z",
+        "updatedAt": "2026-02-12T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-105",
+        "title": "Map the primary user journey · Ledger Invoice Studio",
+        "notes": "Define acceptance criteria and record the outcome for Ledger Invoice Studio.",
+        "status": "done",
+        "priority": "medium",
+        "dueDate": "2026-03-22",
+        "dueTime": "09:00",
+        "estimatedMinutes": 25,
+        "tags": [
+          "planning"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-14",
+        "createdAt": "2026-02-03T04:00:00.000Z",
+        "completedAt": "2026-03-22T04:00:00.000Z",
+        "updatedAt": "2026-03-22T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-106",
+        "title": "Validate the domain model · Ledger Invoice Studio",
+        "notes": "Define acceptance criteria and record the outcome for Ledger Invoice Studio.",
+        "status": "done",
+        "priority": "urgent",
+        "dueDate": "2026-03-25",
+        "dueTime": "11:30",
+        "estimatedMinutes": 85,
+        "tags": [
+          "planning"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-14",
+        "createdAt": "2026-02-03T04:00:00.000Z",
+        "completedAt": "2026-03-25T04:00:00.000Z",
+        "updatedAt": "2026-03-25T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-107",
+        "title": "Build the core workflow · Ledger Invoice Studio",
+        "notes": "Define acceptance criteria and record the outcome for Ledger Invoice Studio.",
+        "status": "done",
+        "priority": "low",
+        "dueDate": "2026-03-28",
+        "dueTime": "14:00",
+        "estimatedMinutes": 85,
+        "tags": [
+          "build"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-14",
+        "createdAt": "2026-02-03T04:00:00.000Z",
+        "completedAt": "2026-03-28T04:00:00.000Z",
+        "updatedAt": "2026-03-28T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-108",
+        "title": "Connect persisted data · Ledger Invoice Studio",
+        "notes": "Define acceptance criteria and record the outcome for Ledger Invoice Studio.",
+        "status": "done",
+        "priority": "high",
+        "dueDate": "2026-03-31",
+        "dueTime": "16:30",
+        "estimatedMinutes": 55,
+        "tags": [
+          "build"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-14",
+        "createdAt": "2026-02-03T04:00:00.000Z",
+        "completedAt": "2026-03-31T04:00:00.000Z",
+        "updatedAt": "2026-03-31T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-109",
+        "title": "Refine the responsive layouts · Ledger Invoice Studio",
+        "notes": "Define acceptance criteria and record the outcome for Ledger Invoice Studio.",
+        "status": "done",
+        "priority": "medium",
+        "dueDate": "2026-04-03",
+        "dueTime": "09:00",
+        "estimatedMinutes": 85,
+        "tags": [
+          "build"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-14",
+        "createdAt": "2026-02-03T04:00:00.000Z",
+        "completedAt": "2026-04-03T04:00:00.000Z",
+        "updatedAt": "2026-04-03T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-11",
+        "title": "Build the core workflow · Forma Commerce",
+        "notes": "Define acceptance criteria and record the outcome for Forma Commerce.",
+        "status": "in_progress",
+        "priority": "low",
+        "dueDate": "2026-10-18",
+        "dueTime": "14:00",
+        "estimatedMinutes": 55,
+        "tags": [
+          "build"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-2",
+        "createdAt": "2026-09-11T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-110",
+        "title": "Review keyboard navigation · Ledger Invoice Studio",
+        "notes": "Define acceptance criteria and record the outcome for Ledger Invoice Studio.",
+        "status": "done",
+        "priority": "urgent",
+        "dueDate": "2026-04-06",
+        "dueTime": "11:30",
+        "estimatedMinutes": 55,
+        "tags": [
+          "build"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-14",
+        "createdAt": "2026-02-03T04:00:00.000Z",
+        "completedAt": "2026-04-06T04:00:00.000Z",
+        "updatedAt": "2026-04-06T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-111",
+        "title": "Verify the release checklist · Ledger Invoice Studio",
+        "notes": "Define acceptance criteria and record the outcome for Ledger Invoice Studio.",
+        "status": "done",
+        "priority": "low",
+        "dueDate": "2026-04-09",
+        "dueTime": "14:00",
+        "estimatedMinutes": 85,
+        "tags": [
+          "review"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-14",
+        "createdAt": "2026-02-03T04:00:00.000Z",
+        "completedAt": "2026-04-09T04:00:00.000Z",
+        "updatedAt": "2026-04-09T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-112",
+        "title": "Document the handover · Ledger Invoice Studio",
+        "notes": "Define acceptance criteria and record the outcome for Ledger Invoice Studio.",
+        "status": "done",
+        "priority": "high",
+        "dueDate": "2026-04-12",
+        "dueTime": "16:30",
+        "estimatedMinutes": 70,
+        "tags": [
+          "review"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-14",
+        "createdAt": "2026-02-03T04:00:00.000Z",
+        "completedAt": "2026-04-12T04:00:00.000Z",
+        "updatedAt": "2026-04-12T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-113",
+        "title": "Map the primary user journey · Relay Support Desk",
+        "notes": "Define acceptance criteria and record the outcome for Relay Support Desk.",
+        "status": "done",
+        "priority": "urgent",
+        "dueDate": "2026-05-22",
+        "dueTime": "09:00",
+        "estimatedMinutes": 55,
+        "tags": [
+          "planning"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-15",
+        "createdAt": "2026-04-04T04:00:00.000Z",
+        "completedAt": "2026-05-22T04:00:00.000Z",
+        "updatedAt": "2026-05-22T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-114",
+        "title": "Validate the domain model · Relay Support Desk",
+        "notes": "Define acceptance criteria and record the outcome for Relay Support Desk.",
+        "status": "done",
+        "priority": "low",
+        "dueDate": "2026-05-25",
+        "dueTime": "11:30",
+        "estimatedMinutes": 85,
+        "tags": [
+          "planning"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-15",
+        "createdAt": "2026-04-04T04:00:00.000Z",
+        "completedAt": "2026-05-25T04:00:00.000Z",
+        "updatedAt": "2026-05-25T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-115",
+        "title": "Build the core workflow · Relay Support Desk",
+        "notes": "Define acceptance criteria and record the outcome for Relay Support Desk.",
+        "status": "done",
+        "priority": "high",
+        "dueDate": "2026-05-28",
+        "dueTime": "14:00",
+        "estimatedMinutes": 25,
+        "tags": [
+          "build"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-15",
+        "createdAt": "2026-04-04T04:00:00.000Z",
+        "completedAt": "2026-05-28T04:00:00.000Z",
+        "updatedAt": "2026-05-28T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-116",
+        "title": "Connect persisted data · Relay Support Desk",
+        "notes": "Define acceptance criteria and record the outcome for Relay Support Desk.",
+        "status": "done",
+        "priority": "medium",
+        "dueDate": "2026-05-31",
+        "dueTime": "16:30",
+        "estimatedMinutes": 25,
+        "tags": [
+          "build"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-15",
+        "createdAt": "2026-04-04T04:00:00.000Z",
+        "completedAt": "2026-05-31T04:00:00.000Z",
+        "updatedAt": "2026-05-31T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-117",
+        "title": "Refine the responsive layouts · Relay Support Desk",
+        "notes": "Define acceptance criteria and record the outcome for Relay Support Desk.",
+        "status": "done",
+        "priority": "urgent",
+        "dueDate": "2026-06-03",
+        "dueTime": "09:00",
+        "estimatedMinutes": 70,
+        "tags": [
+          "build"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-15",
+        "createdAt": "2026-04-04T04:00:00.000Z",
+        "completedAt": "2026-06-03T04:00:00.000Z",
+        "updatedAt": "2026-06-03T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-118",
+        "title": "Review keyboard navigation · Relay Support Desk",
+        "notes": "Define acceptance criteria and record the outcome for Relay Support Desk.",
+        "status": "done",
+        "priority": "low",
+        "dueDate": "2026-06-06",
+        "dueTime": "11:30",
+        "estimatedMinutes": 25,
+        "tags": [
+          "build"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-15",
+        "createdAt": "2026-04-04T04:00:00.000Z",
+        "completedAt": "2026-06-06T04:00:00.000Z",
+        "updatedAt": "2026-06-06T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-119",
+        "title": "Verify the release checklist · Relay Support Desk",
+        "notes": "Define acceptance criteria and record the outcome for Relay Support Desk.",
+        "status": "done",
+        "priority": "high",
+        "dueDate": "2026-06-09",
+        "dueTime": "14:00",
+        "estimatedMinutes": 40,
+        "tags": [
+          "review"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-15",
+        "createdAt": "2026-04-04T04:00:00.000Z",
+        "completedAt": "2026-06-09T04:00:00.000Z",
+        "updatedAt": "2026-06-09T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-12",
+        "title": "Connect persisted data · Forma Commerce",
+        "notes": "Define acceptance criteria and record the outcome for Forma Commerce.",
+        "status": "todo",
+        "priority": "high",
+        "dueDate": "2026-10-20",
+        "dueTime": "16:30",
+        "estimatedMinutes": 55,
+        "tags": [
+          "build"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-2",
+        "createdAt": "2026-09-11T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-120",
+        "title": "Document the handover · Relay Support Desk",
+        "notes": "Define acceptance criteria and record the outcome for Relay Support Desk.",
+        "status": "done",
+        "priority": "medium",
+        "dueDate": "2026-06-12",
+        "dueTime": "16:30",
+        "estimatedMinutes": 85,
+        "tags": [
+          "review"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-15",
+        "createdAt": "2026-04-04T04:00:00.000Z",
+        "completedAt": "2026-06-12T04:00:00.000Z",
+        "updatedAt": "2026-06-12T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-121",
+        "title": "Map the primary user journey · Morrow Habit Journal",
+        "notes": "Define acceptance criteria and record the outcome for Morrow Habit Journal.",
+        "status": "done",
+        "priority": "low",
+        "dueDate": "2026-06-21",
+        "dueTime": "09:00",
+        "estimatedMinutes": 85,
+        "tags": [
+          "planning"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-16",
+        "createdAt": "2026-05-03T04:00:00.000Z",
+        "completedAt": "2026-06-21T04:00:00.000Z",
+        "updatedAt": "2026-06-21T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-122",
+        "title": "Validate the domain model · Morrow Habit Journal",
+        "notes": "Define acceptance criteria and record the outcome for Morrow Habit Journal.",
+        "status": "done",
+        "priority": "high",
+        "dueDate": "2026-06-24",
+        "dueTime": "11:30",
+        "estimatedMinutes": 40,
+        "tags": [
+          "planning"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-16",
+        "createdAt": "2026-05-03T04:00:00.000Z",
+        "completedAt": "2026-06-24T04:00:00.000Z",
+        "updatedAt": "2026-06-24T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-123",
+        "title": "Build the core workflow · Morrow Habit Journal",
+        "notes": "Define acceptance criteria and record the outcome for Morrow Habit Journal.",
+        "status": "done",
+        "priority": "medium",
+        "dueDate": "2026-06-27",
+        "dueTime": "14:00",
+        "estimatedMinutes": 85,
+        "tags": [
+          "build"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-16",
+        "createdAt": "2026-05-03T04:00:00.000Z",
+        "completedAt": "2026-06-27T04:00:00.000Z",
+        "updatedAt": "2026-06-27T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-124",
+        "title": "Connect persisted data · Morrow Habit Journal",
+        "notes": "Define acceptance criteria and record the outcome for Morrow Habit Journal.",
+        "status": "done",
+        "priority": "urgent",
+        "dueDate": "2026-06-30",
+        "dueTime": "16:30",
+        "estimatedMinutes": 100,
+        "tags": [
+          "build"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-16",
+        "createdAt": "2026-05-03T04:00:00.000Z",
+        "completedAt": "2026-06-30T04:00:00.000Z",
+        "updatedAt": "2026-06-30T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-125",
+        "title": "Refine the responsive layouts · Morrow Habit Journal",
+        "notes": "Define acceptance criteria and record the outcome for Morrow Habit Journal.",
+        "status": "done",
+        "priority": "low",
+        "dueDate": "2026-07-03",
+        "dueTime": "09:00",
+        "estimatedMinutes": 55,
+        "tags": [
+          "build"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-16",
+        "createdAt": "2026-05-03T04:00:00.000Z",
+        "completedAt": "2026-07-03T04:00:00.000Z",
+        "updatedAt": "2026-07-03T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-126",
+        "title": "Review keyboard navigation · Morrow Habit Journal",
+        "notes": "Define acceptance criteria and record the outcome for Morrow Habit Journal.",
+        "status": "done",
+        "priority": "high",
+        "dueDate": "2026-07-06",
+        "dueTime": "11:30",
+        "estimatedMinutes": 40,
+        "tags": [
+          "build"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-16",
+        "createdAt": "2026-05-03T04:00:00.000Z",
+        "completedAt": "2026-07-06T04:00:00.000Z",
+        "updatedAt": "2026-07-06T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-127",
+        "title": "Verify the release checklist · Morrow Habit Journal",
+        "notes": "Define acceptance criteria and record the outcome for Morrow Habit Journal.",
+        "status": "done",
+        "priority": "medium",
+        "dueDate": "2026-07-09",
+        "dueTime": "14:00",
+        "estimatedMinutes": 25,
+        "tags": [
+          "review"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-16",
+        "createdAt": "2026-05-03T04:00:00.000Z",
+        "completedAt": "2026-07-09T04:00:00.000Z",
+        "updatedAt": "2026-07-09T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-128",
+        "title": "Document the handover · Morrow Habit Journal",
+        "notes": "Define acceptance criteria and record the outcome for Morrow Habit Journal.",
+        "status": "done",
+        "priority": "urgent",
+        "dueDate": "2026-07-12",
+        "dueTime": "16:30",
+        "estimatedMinutes": 55,
+        "tags": [
+          "review"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-16",
+        "createdAt": "2026-05-03T04:00:00.000Z",
+        "completedAt": "2026-07-12T04:00:00.000Z",
+        "updatedAt": "2026-07-12T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-129",
+        "title": "Map the primary user journey · Northstar Research Hub",
+        "notes": "Define acceptance criteria and record the outcome for Northstar Research Hub.",
+        "status": "done",
+        "priority": "high",
+        "dueDate": "2026-07-22",
+        "dueTime": "09:00",
+        "estimatedMinutes": 40,
+        "tags": [
+          "planning"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-17",
+        "createdAt": "2026-06-02T04:00:00.000Z",
+        "completedAt": "2026-07-22T04:00:00.000Z",
+        "updatedAt": "2026-07-22T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-13",
+        "title": "Refine the responsive layouts · Forma Commerce",
+        "notes": "Define acceptance criteria and record the outcome for Forma Commerce.",
+        "status": "todo",
+        "priority": "medium",
+        "dueDate": "2026-10-22",
+        "dueTime": "09:00",
+        "estimatedMinutes": 25,
+        "tags": [
+          "build"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-2",
+        "createdAt": "2026-09-11T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-130",
+        "title": "Validate the domain model · Northstar Research Hub",
+        "notes": "Define acceptance criteria and record the outcome for Northstar Research Hub.",
+        "status": "done",
+        "priority": "medium",
+        "dueDate": "2026-07-25",
+        "dueTime": "11:30",
+        "estimatedMinutes": 85,
+        "tags": [
+          "planning"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-17",
+        "createdAt": "2026-06-02T04:00:00.000Z",
+        "completedAt": "2026-07-25T04:00:00.000Z",
+        "updatedAt": "2026-07-25T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-131",
+        "title": "Build the core workflow · Northstar Research Hub",
+        "notes": "Define acceptance criteria and record the outcome for Northstar Research Hub.",
+        "status": "done",
+        "priority": "urgent",
+        "dueDate": "2026-07-28",
+        "dueTime": "14:00",
+        "estimatedMinutes": 100,
+        "tags": [
+          "build"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-17",
+        "createdAt": "2026-06-02T04:00:00.000Z",
+        "completedAt": "2026-07-28T04:00:00.000Z",
+        "updatedAt": "2026-07-28T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-132",
+        "title": "Connect persisted data · Northstar Research Hub",
+        "notes": "Define acceptance criteria and record the outcome for Northstar Research Hub.",
+        "status": "done",
+        "priority": "low",
+        "dueDate": "2026-07-31",
+        "dueTime": "16:30",
+        "estimatedMinutes": 55,
+        "tags": [
+          "build"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-17",
+        "createdAt": "2026-06-02T04:00:00.000Z",
+        "completedAt": "2026-07-31T04:00:00.000Z",
+        "updatedAt": "2026-07-31T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-133",
+        "title": "Refine the responsive layouts · Northstar Research Hub",
+        "notes": "Define acceptance criteria and record the outcome for Northstar Research Hub.",
+        "status": "done",
+        "priority": "high",
+        "dueDate": "2026-08-03",
+        "dueTime": "09:00",
+        "estimatedMinutes": 55,
+        "tags": [
+          "build"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-17",
+        "createdAt": "2026-06-02T04:00:00.000Z",
+        "completedAt": "2026-08-03T04:00:00.000Z",
+        "updatedAt": "2026-08-03T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-134",
+        "title": "Review keyboard navigation · Northstar Research Hub",
+        "notes": "Define acceptance criteria and record the outcome for Northstar Research Hub.",
+        "status": "done",
+        "priority": "medium",
+        "dueDate": "2026-08-06",
+        "dueTime": "11:30",
+        "estimatedMinutes": 40,
+        "tags": [
+          "build"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-17",
+        "createdAt": "2026-06-02T04:00:00.000Z",
+        "completedAt": "2026-08-06T04:00:00.000Z",
+        "updatedAt": "2026-08-06T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-135",
+        "title": "Verify the release checklist · Northstar Research Hub",
+        "notes": "Define acceptance criteria and record the outcome for Northstar Research Hub.",
+        "status": "done",
+        "priority": "urgent",
+        "dueDate": "2026-08-09",
+        "dueTime": "14:00",
+        "estimatedMinutes": 100,
+        "tags": [
+          "review"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-17",
+        "createdAt": "2026-06-02T04:00:00.000Z",
+        "completedAt": "2026-08-09T04:00:00.000Z",
+        "updatedAt": "2026-08-09T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-136",
+        "title": "Document the handover · Northstar Research Hub",
+        "notes": "Define acceptance criteria and record the outcome for Northstar Research Hub.",
+        "status": "done",
+        "priority": "low",
+        "dueDate": "2026-08-12",
+        "dueTime": "16:30",
+        "estimatedMinutes": 25,
+        "tags": [
+          "review"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-17",
+        "createdAt": "2026-06-02T04:00:00.000Z",
+        "completedAt": "2026-08-12T04:00:00.000Z",
+        "updatedAt": "2026-08-12T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-137",
+        "title": "Map the primary user journey · Terrain Trail Planner",
+        "notes": "Define acceptance criteria and record the outcome for Terrain Trail Planner.",
+        "status": "done",
+        "priority": "medium",
+        "dueDate": "2026-08-22",
+        "dueTime": "09:00",
+        "estimatedMinutes": 70,
+        "tags": [
+          "planning"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-18",
+        "createdAt": "2026-07-02T04:00:00.000Z",
+        "completedAt": "2026-08-22T04:00:00.000Z",
+        "updatedAt": "2026-08-22T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-138",
+        "title": "Validate the domain model · Terrain Trail Planner",
+        "notes": "Define acceptance criteria and record the outcome for Terrain Trail Planner.",
+        "status": "done",
+        "priority": "urgent",
+        "dueDate": "2026-08-25",
+        "dueTime": "11:30",
+        "estimatedMinutes": 70,
+        "tags": [
+          "planning"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-18",
+        "createdAt": "2026-07-02T04:00:00.000Z",
+        "completedAt": "2026-08-25T04:00:00.000Z",
+        "updatedAt": "2026-08-25T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-139",
+        "title": "Build the core workflow · Terrain Trail Planner",
+        "notes": "Define acceptance criteria and record the outcome for Terrain Trail Planner.",
+        "status": "done",
+        "priority": "low",
+        "dueDate": "2026-08-28",
+        "dueTime": "14:00",
+        "estimatedMinutes": 40,
+        "tags": [
+          "build"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-18",
+        "createdAt": "2026-07-02T04:00:00.000Z",
+        "completedAt": "2026-08-28T04:00:00.000Z",
+        "updatedAt": "2026-08-28T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-14",
+        "title": "Review keyboard navigation · Forma Commerce",
+        "notes": "Define acceptance criteria and record the outcome for Forma Commerce.",
+        "status": "todo",
+        "priority": "urgent",
+        "dueDate": "2026-10-24",
+        "dueTime": "11:30",
+        "estimatedMinutes": 40,
+        "tags": [
+          "build"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-2",
+        "createdAt": "2026-09-11T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-140",
+        "title": "Connect persisted data · Terrain Trail Planner",
+        "notes": "Define acceptance criteria and record the outcome for Terrain Trail Planner.",
+        "status": "done",
+        "priority": "high",
+        "dueDate": "2026-08-31",
+        "dueTime": "16:30",
+        "estimatedMinutes": 70,
+        "tags": [
+          "build"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-18",
+        "createdAt": "2026-07-02T04:00:00.000Z",
+        "completedAt": "2026-08-31T04:00:00.000Z",
+        "updatedAt": "2026-08-31T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-141",
+        "title": "Refine the responsive layouts · Terrain Trail Planner",
+        "notes": "Define acceptance criteria and record the outcome for Terrain Trail Planner.",
+        "status": "done",
+        "priority": "medium",
+        "dueDate": "2026-09-03",
+        "dueTime": "09:00",
+        "estimatedMinutes": 100,
+        "tags": [
+          "build"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-18",
+        "createdAt": "2026-07-02T04:00:00.000Z",
+        "completedAt": "2026-09-03T04:00:00.000Z",
+        "updatedAt": "2026-09-03T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-142",
+        "title": "Review keyboard navigation · Terrain Trail Planner",
+        "notes": "Define acceptance criteria and record the outcome for Terrain Trail Planner.",
+        "status": "done",
+        "priority": "urgent",
+        "dueDate": "2026-09-06",
+        "dueTime": "11:30",
+        "estimatedMinutes": 70,
+        "tags": [
+          "build"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-18",
+        "createdAt": "2026-07-02T04:00:00.000Z",
+        "completedAt": "2026-09-06T04:00:00.000Z",
+        "updatedAt": "2026-09-06T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-143",
+        "title": "Verify the release checklist · Terrain Trail Planner",
+        "notes": "Define acceptance criteria and record the outcome for Terrain Trail Planner.",
+        "status": "done",
+        "priority": "low",
+        "dueDate": "2026-09-09",
+        "dueTime": "14:00",
+        "estimatedMinutes": 55,
+        "tags": [
+          "review"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-18",
+        "createdAt": "2026-07-02T04:00:00.000Z",
+        "completedAt": "2026-09-09T04:00:00.000Z",
+        "updatedAt": "2026-09-09T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-144",
+        "title": "Document the handover · Terrain Trail Planner",
+        "notes": "Define acceptance criteria and record the outcome for Terrain Trail Planner.",
+        "status": "done",
+        "priority": "high",
+        "dueDate": "2026-09-12",
+        "dueTime": "16:30",
+        "estimatedMinutes": 25,
+        "tags": [
+          "review"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-18",
+        "createdAt": "2026-07-02T04:00:00.000Z",
+        "completedAt": "2026-09-12T04:00:00.000Z",
+        "updatedAt": "2026-09-12T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-145",
+        "title": "Plan next week’s priorities",
+        "status": "in_progress",
+        "priority": "high",
+        "dueDate": "2026-10-20",
+        "estimatedMinutes": 25,
+        "tags": [
+          "personal"
+        ],
+        "createdAt": "2026-10-08T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-146",
+        "title": "Review the learning journal",
+        "status": "todo",
+        "priority": "medium",
+        "dueDate": "2026-10-20",
+        "estimatedMinutes": 25,
+        "tags": [
+          "personal"
+        ],
+        "createdAt": "2026-10-08T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-147",
+        "title": "Back up the current workspace",
+        "status": "todo",
+        "priority": "urgent",
+        "dueDate": "2026-10-20",
+        "estimatedMinutes": 25,
+        "tags": [
+          "personal"
+        ],
+        "createdAt": "2026-10-08T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-148",
+        "title": "Prepare the mentor check-in",
+        "status": "todo",
+        "priority": "low",
+        "dueDate": "2026-10-21",
+        "estimatedMinutes": 25,
+        "tags": [
+          "personal"
+        ],
+        "createdAt": "2026-10-08T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-149",
+        "title": "Read the accessibility field guide",
+        "status": "todo",
+        "priority": "high",
+        "dueDate": "2026-10-22",
+        "estimatedMinutes": 25,
+        "tags": [
+          "personal"
+        ],
+        "createdAt": "2026-10-08T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-15",
+        "title": "Verify the release checklist · Forma Commerce",
+        "notes": "Define acceptance criteria and record the outcome for Forma Commerce.",
+        "status": "todo",
+        "priority": "low",
+        "dueDate": "2026-10-26",
+        "dueTime": "14:00",
+        "estimatedMinutes": 100,
+        "tags": [
+          "review"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-2",
+        "createdAt": "2026-09-11T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-150",
+        "title": "Tidy the development environment",
+        "status": "done",
+        "priority": "medium",
+        "dueDate": "2026-10-23",
+        "estimatedMinutes": 25,
+        "tags": [
+          "personal"
+        ],
+        "createdAt": "2026-10-08T04:00:00.000Z",
+        "completedAt": "2026-10-19T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-16",
+        "title": "Document the handover · Forma Commerce",
+        "notes": "Define acceptance criteria and record the outcome for Forma Commerce.",
+        "status": "todo",
+        "priority": "high",
+        "dueDate": "2026-10-28",
+        "dueTime": "16:30",
+        "estimatedMinutes": 100,
+        "tags": [
+          "review"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-2",
+        "createdAt": "2026-09-11T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-17",
+        "title": "Map the primary user journey · Cloud Infrastructure Lab",
+        "notes": "Define acceptance criteria and record the outcome for Cloud Infrastructure Lab.",
+        "status": "done",
+        "priority": "urgent",
+        "dueDate": "2026-10-15",
+        "dueTime": "09:00",
+        "estimatedMinutes": 40,
+        "tags": [
+          "planning"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-3",
+        "createdAt": "2026-09-15T04:00:00.000Z",
+        "completedAt": "2026-10-16T04:00:00.000Z",
+        "updatedAt": "2026-10-16T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-18",
+        "title": "Validate the domain model · Cloud Infrastructure Lab",
+        "notes": "Define acceptance criteria and record the outcome for Cloud Infrastructure Lab.",
+        "status": "done",
+        "priority": "low",
+        "dueDate": "2026-10-17",
+        "dueTime": "11:30",
+        "estimatedMinutes": 25,
+        "tags": [
+          "planning"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-3",
+        "createdAt": "2026-09-15T04:00:00.000Z",
+        "completedAt": "2026-10-15T04:00:00.000Z",
+        "updatedAt": "2026-10-15T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-19",
+        "title": "Build the core workflow · Cloud Infrastructure Lab",
+        "notes": "Define acceptance criteria and record the outcome for Cloud Infrastructure Lab.",
+        "status": "done",
+        "priority": "high",
+        "dueDate": "2026-10-19",
+        "dueTime": "14:00",
+        "estimatedMinutes": 70,
+        "tags": [
+          "build"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-3",
+        "createdAt": "2026-09-15T04:00:00.000Z",
+        "completedAt": "2026-10-14T04:00:00.000Z",
+        "updatedAt": "2026-10-14T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-2",
+        "title": "Validate the domain model · Orbit Analytics",
+        "notes": "Define acceptance criteria and record the outcome for Orbit Analytics.",
+        "status": "in_progress",
+        "priority": "medium",
+        "dueDate": "2026-10-15",
+        "dueTime": "11:30",
+        "estimatedMinutes": 55,
+        "tags": [
+          "planning"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-1",
+        "createdAt": "2026-09-07T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-20",
+        "title": "Connect persisted data · Cloud Infrastructure Lab",
+        "notes": "Define acceptance criteria and record the outcome for Cloud Infrastructure Lab.",
+        "status": "in_progress",
+        "priority": "medium",
+        "dueDate": "2026-10-21",
+        "dueTime": "16:30",
+        "estimatedMinutes": 40,
+        "tags": [
+          "build"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-3",
+        "createdAt": "2026-09-15T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-21",
+        "title": "Refine the responsive layouts · Cloud Infrastructure Lab",
+        "notes": "Define acceptance criteria and record the outcome for Cloud Infrastructure Lab.",
+        "status": "todo",
+        "priority": "urgent",
+        "dueDate": "2026-10-23",
+        "dueTime": "09:00",
+        "estimatedMinutes": 70,
+        "tags": [
+          "build"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-3",
+        "createdAt": "2026-09-15T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-22",
+        "title": "Review keyboard navigation · Cloud Infrastructure Lab",
+        "notes": "Define acceptance criteria and record the outcome for Cloud Infrastructure Lab.",
+        "status": "todo",
+        "priority": "low",
+        "dueDate": "2026-10-25",
+        "dueTime": "11:30",
+        "estimatedMinutes": 40,
+        "tags": [
+          "build"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-3",
+        "createdAt": "2026-09-15T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-23",
+        "title": "Verify the release checklist · Cloud Infrastructure Lab",
+        "notes": "Define acceptance criteria and record the outcome for Cloud Infrastructure Lab.",
+        "status": "todo",
+        "priority": "high",
+        "dueDate": "2026-10-27",
+        "dueTime": "14:00",
+        "estimatedMinutes": 40,
+        "tags": [
+          "review"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-3",
+        "createdAt": "2026-09-15T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-24",
+        "title": "Document the handover · Cloud Infrastructure Lab",
+        "notes": "Define acceptance criteria and record the outcome for Cloud Infrastructure Lab.",
+        "status": "todo",
+        "priority": "medium",
+        "dueDate": "2026-10-29",
+        "dueTime": "16:30",
+        "estimatedMinutes": 70,
+        "tags": [
+          "review"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-3",
+        "createdAt": "2026-09-15T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-25",
+        "title": "Map the primary user journey · Pulse Mobile",
+        "notes": "Define acceptance criteria and record the outcome for Pulse Mobile.",
+        "status": "done",
+        "priority": "low",
+        "dueDate": "2026-10-16",
+        "dueTime": "09:00",
+        "estimatedMinutes": 100,
+        "tags": [
+          "planning"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-4",
+        "createdAt": "2026-09-19T04:00:00.000Z",
+        "completedAt": "2026-10-14T04:00:00.000Z",
+        "updatedAt": "2026-10-14T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-26",
+        "title": "Validate the domain model · Pulse Mobile",
+        "notes": "Define acceptance criteria and record the outcome for Pulse Mobile.",
+        "status": "done",
+        "priority": "high",
+        "dueDate": "2026-10-18",
+        "dueTime": "11:30",
+        "estimatedMinutes": 70,
+        "tags": [
+          "planning"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-4",
+        "createdAt": "2026-09-19T04:00:00.000Z",
+        "completedAt": "2026-10-20T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-27",
+        "title": "Build the core workflow · Pulse Mobile",
+        "notes": "Define acceptance criteria and record the outcome for Pulse Mobile.",
+        "status": "done",
+        "priority": "medium",
+        "dueDate": "2026-10-20",
+        "dueTime": "14:00",
+        "estimatedMinutes": 100,
+        "tags": [
+          "build"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-4",
+        "createdAt": "2026-09-19T04:00:00.000Z",
+        "completedAt": "2026-10-19T04:00:00.000Z",
+        "updatedAt": "2026-10-19T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-28",
+        "title": "Connect persisted data · Pulse Mobile",
+        "notes": "Define acceptance criteria and record the outcome for Pulse Mobile.",
+        "status": "done",
+        "priority": "urgent",
+        "dueDate": "2026-10-22",
+        "dueTime": "16:30",
+        "estimatedMinutes": 40,
+        "tags": [
+          "build"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-4",
+        "createdAt": "2026-09-19T04:00:00.000Z",
+        "completedAt": "2026-10-18T04:00:00.000Z",
+        "updatedAt": "2026-10-18T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-29",
+        "title": "Refine the responsive layouts · Pulse Mobile",
+        "notes": "Define acceptance criteria and record the outcome for Pulse Mobile.",
+        "status": "in_progress",
+        "priority": "low",
+        "dueDate": "2026-10-24",
+        "dueTime": "09:00",
+        "estimatedMinutes": 40,
+        "tags": [
+          "build"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-4",
+        "createdAt": "2026-09-19T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-3",
+        "title": "Build the core workflow · Orbit Analytics",
+        "notes": "Define acceptance criteria and record the outcome for Orbit Analytics.",
+        "status": "todo",
+        "priority": "urgent",
+        "dueDate": "2026-10-17",
+        "dueTime": "14:00",
+        "estimatedMinutes": 55,
+        "tags": [
+          "build"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-1",
+        "createdAt": "2026-09-07T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-30",
+        "title": "Review keyboard navigation · Pulse Mobile",
+        "notes": "Define acceptance criteria and record the outcome for Pulse Mobile.",
+        "status": "todo",
+        "priority": "high",
+        "dueDate": "2026-10-26",
+        "dueTime": "11:30",
+        "estimatedMinutes": 55,
+        "tags": [
+          "build"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-4",
+        "createdAt": "2026-09-19T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-31",
+        "title": "Verify the release checklist · Pulse Mobile",
+        "notes": "Define acceptance criteria and record the outcome for Pulse Mobile.",
+        "status": "todo",
+        "priority": "medium",
+        "dueDate": "2026-10-28",
+        "dueTime": "14:00",
+        "estimatedMinutes": 40,
+        "tags": [
+          "review"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-4",
+        "createdAt": "2026-09-19T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-32",
+        "title": "Document the handover · Pulse Mobile",
+        "notes": "Define acceptance criteria and record the outcome for Pulse Mobile.",
+        "status": "todo",
+        "priority": "urgent",
+        "dueDate": "2026-10-30",
+        "dueTime": "16:30",
+        "estimatedMinutes": 100,
+        "tags": [
+          "review"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-4",
+        "createdAt": "2026-09-19T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-33",
+        "title": "Map the primary user journey · Atlas API Gateway",
+        "notes": "Define acceptance criteria and record the outcome for Atlas API Gateway.",
+        "status": "done",
+        "priority": "high",
+        "dueDate": "2026-10-17",
+        "dueTime": "09:00",
+        "estimatedMinutes": 25,
+        "tags": [
+          "planning"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-5",
+        "createdAt": "2026-09-23T04:00:00.000Z",
+        "completedAt": "2026-10-19T04:00:00.000Z",
+        "updatedAt": "2026-10-19T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-34",
+        "title": "Validate the domain model · Atlas API Gateway",
+        "notes": "Define acceptance criteria and record the outcome for Atlas API Gateway.",
+        "status": "in_progress",
+        "priority": "medium",
+        "dueDate": "2026-10-19",
+        "dueTime": "11:30",
+        "estimatedMinutes": 55,
+        "tags": [
+          "planning"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-5",
+        "createdAt": "2026-09-23T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-35",
+        "title": "Build the core workflow · Atlas API Gateway",
+        "notes": "Define acceptance criteria and record the outcome for Atlas API Gateway.",
+        "status": "todo",
+        "priority": "urgent",
+        "dueDate": "2026-10-21",
+        "dueTime": "14:00",
+        "estimatedMinutes": 40,
+        "tags": [
+          "build"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-5",
+        "createdAt": "2026-09-23T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-36",
+        "title": "Connect persisted data · Atlas API Gateway",
+        "notes": "Define acceptance criteria and record the outcome for Atlas API Gateway.",
+        "status": "todo",
+        "priority": "low",
+        "dueDate": "2026-10-23",
+        "dueTime": "16:30",
+        "estimatedMinutes": 70,
+        "tags": [
+          "build"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-5",
+        "createdAt": "2026-09-23T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-37",
+        "title": "Refine the responsive layouts · Atlas API Gateway",
+        "notes": "Define acceptance criteria and record the outcome for Atlas API Gateway.",
+        "status": "todo",
+        "priority": "high",
+        "dueDate": "2026-10-25",
+        "dueTime": "09:00",
+        "estimatedMinutes": 100,
+        "tags": [
+          "build"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-5",
+        "createdAt": "2026-09-23T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-38",
+        "title": "Review keyboard navigation · Atlas API Gateway",
+        "notes": "Define acceptance criteria and record the outcome for Atlas API Gateway.",
+        "status": "todo",
+        "priority": "medium",
+        "dueDate": "2026-10-27",
+        "dueTime": "11:30",
+        "estimatedMinutes": 100,
+        "tags": [
+          "build"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-5",
+        "createdAt": "2026-09-23T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-39",
+        "title": "Verify the release checklist · Atlas API Gateway",
+        "notes": "Define acceptance criteria and record the outcome for Atlas API Gateway.",
+        "status": "todo",
+        "priority": "urgent",
+        "dueDate": "2026-10-29",
+        "dueTime": "14:00",
+        "estimatedMinutes": 70,
+        "tags": [
+          "review"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-5",
+        "createdAt": "2026-09-23T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-4",
+        "title": "Connect persisted data · Orbit Analytics",
+        "notes": "Define acceptance criteria and record the outcome for Orbit Analytics.",
+        "status": "todo",
+        "priority": "low",
+        "dueDate": "2026-10-19",
+        "dueTime": "16:30",
+        "estimatedMinutes": 100,
+        "tags": [
+          "build"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-1",
+        "createdAt": "2026-09-07T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-40",
+        "title": "Document the handover · Atlas API Gateway",
+        "notes": "Define acceptance criteria and record the outcome for Atlas API Gateway.",
+        "status": "todo",
+        "priority": "low",
+        "dueDate": "2026-10-31",
+        "dueTime": "16:30",
+        "estimatedMinutes": 25,
+        "tags": [
+          "review"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-5",
+        "createdAt": "2026-09-23T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-41",
+        "title": "Map the primary user journey · Academy Learning Portal",
+        "notes": "Define acceptance criteria and record the outcome for Academy Learning Portal.",
+        "status": "done",
+        "priority": "medium",
+        "dueDate": "2026-10-18",
+        "dueTime": "09:00",
+        "estimatedMinutes": 85,
+        "tags": [
+          "planning"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-6",
+        "createdAt": "2026-09-27T04:00:00.000Z",
+        "completedAt": "2026-10-17T04:00:00.000Z",
+        "updatedAt": "2026-10-17T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-42",
+        "title": "Validate the domain model · Academy Learning Portal",
+        "notes": "Define acceptance criteria and record the outcome for Academy Learning Portal.",
+        "status": "done",
+        "priority": "urgent",
+        "dueDate": "2026-10-20",
+        "dueTime": "11:30",
+        "estimatedMinutes": 85,
+        "tags": [
+          "planning"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-6",
+        "createdAt": "2026-09-27T04:00:00.000Z",
+        "completedAt": "2026-10-16T04:00:00.000Z",
+        "updatedAt": "2026-10-16T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-43",
+        "title": "Build the core workflow · Academy Learning Portal",
+        "notes": "Define acceptance criteria and record the outcome for Academy Learning Portal.",
+        "status": "in_progress",
+        "priority": "low",
+        "dueDate": "2026-10-22",
+        "dueTime": "14:00",
+        "estimatedMinutes": 25,
+        "tags": [
+          "build"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-6",
+        "createdAt": "2026-09-27T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-44",
+        "title": "Connect persisted data · Academy Learning Portal",
+        "notes": "Define acceptance criteria and record the outcome for Academy Learning Portal.",
+        "status": "todo",
+        "priority": "high",
+        "dueDate": "2026-10-24",
+        "dueTime": "16:30",
+        "estimatedMinutes": 25,
+        "tags": [
+          "build"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-6",
+        "createdAt": "2026-09-27T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-45",
+        "title": "Refine the responsive layouts · Academy Learning Portal",
+        "notes": "Define acceptance criteria and record the outcome for Academy Learning Portal.",
+        "status": "todo",
+        "priority": "medium",
+        "dueDate": "2026-10-26",
+        "dueTime": "09:00",
+        "estimatedMinutes": 55,
+        "tags": [
+          "build"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-6",
+        "createdAt": "2026-09-27T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-46",
+        "title": "Review keyboard navigation · Academy Learning Portal",
+        "notes": "Define acceptance criteria and record the outcome for Academy Learning Portal.",
+        "status": "todo",
+        "priority": "urgent",
+        "dueDate": "2026-10-28",
+        "dueTime": "11:30",
+        "estimatedMinutes": 70,
+        "tags": [
+          "build"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-6",
+        "createdAt": "2026-09-27T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-47",
+        "title": "Verify the release checklist · Academy Learning Portal",
+        "notes": "Define acceptance criteria and record the outcome for Academy Learning Portal.",
+        "status": "todo",
+        "priority": "low",
+        "dueDate": "2026-10-30",
+        "dueTime": "14:00",
+        "estimatedMinutes": 85,
+        "tags": [
+          "review"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-6",
+        "createdAt": "2026-09-27T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-48",
+        "title": "Document the handover · Academy Learning Portal",
+        "notes": "Define acceptance criteria and record the outcome for Academy Learning Portal.",
+        "status": "todo",
+        "priority": "high",
+        "dueDate": "2026-11-01",
+        "dueTime": "16:30",
+        "estimatedMinutes": 55,
+        "tags": [
+          "review"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-6",
+        "createdAt": "2026-09-27T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-49",
+        "title": "Map the primary user journey · Field Notes CMS",
+        "notes": "Define acceptance criteria and record the outcome for Field Notes CMS.",
+        "status": "todo",
+        "priority": "urgent",
+        "dueDate": "2026-10-19",
+        "dueTime": "09:00",
+        "estimatedMinutes": 70,
+        "tags": [
+          "planning"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-7",
+        "createdAt": "2026-10-01T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-5",
+        "title": "Refine the responsive layouts · Orbit Analytics",
+        "notes": "Define acceptance criteria and record the outcome for Orbit Analytics.",
+        "status": "todo",
+        "priority": "high",
+        "dueDate": "2026-10-21",
+        "dueTime": "09:00",
+        "estimatedMinutes": 70,
+        "tags": [
+          "build"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-1",
+        "createdAt": "2026-09-07T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-50",
+        "title": "Validate the domain model · Field Notes CMS",
+        "notes": "Define acceptance criteria and record the outcome for Field Notes CMS.",
+        "status": "todo",
+        "priority": "low",
+        "dueDate": "2026-10-21",
+        "dueTime": "11:30",
+        "estimatedMinutes": 55,
+        "tags": [
+          "planning"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-7",
+        "createdAt": "2026-10-01T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-51",
+        "title": "Build the core workflow · Field Notes CMS",
+        "notes": "Define acceptance criteria and record the outcome for Field Notes CMS.",
+        "status": "todo",
+        "priority": "high",
+        "dueDate": "2026-10-23",
+        "dueTime": "14:00",
+        "estimatedMinutes": 55,
+        "tags": [
+          "build"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-7",
+        "createdAt": "2026-10-01T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-52",
+        "title": "Connect persisted data · Field Notes CMS",
+        "notes": "Define acceptance criteria and record the outcome for Field Notes CMS.",
+        "status": "todo",
+        "priority": "medium",
+        "dueDate": "2026-10-25",
+        "dueTime": "16:30",
+        "estimatedMinutes": 55,
+        "tags": [
+          "build"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-7",
+        "createdAt": "2026-10-01T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-53",
+        "title": "Refine the responsive layouts · Field Notes CMS",
+        "notes": "Define acceptance criteria and record the outcome for Field Notes CMS.",
+        "status": "todo",
+        "priority": "urgent",
+        "dueDate": "2026-10-27",
+        "dueTime": "09:00",
+        "estimatedMinutes": 25,
+        "tags": [
+          "build"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-7",
+        "createdAt": "2026-10-01T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-54",
+        "title": "Review keyboard navigation · Field Notes CMS",
+        "notes": "Define acceptance criteria and record the outcome for Field Notes CMS.",
+        "status": "todo",
+        "priority": "low",
+        "dueDate": "2026-10-29",
+        "dueTime": "11:30",
+        "estimatedMinutes": 85,
+        "tags": [
+          "build"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-7",
+        "createdAt": "2026-10-01T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-55",
+        "title": "Verify the release checklist · Field Notes CMS",
+        "notes": "Define acceptance criteria and record the outcome for Field Notes CMS.",
+        "status": "todo",
+        "priority": "high",
+        "dueDate": "2026-10-31",
+        "dueTime": "14:00",
+        "estimatedMinutes": 85,
+        "tags": [
+          "review"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-7",
+        "createdAt": "2026-10-01T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-56",
+        "title": "Document the handover · Field Notes CMS",
+        "notes": "Define acceptance criteria and record the outcome for Field Notes CMS.",
+        "status": "todo",
+        "priority": "medium",
+        "dueDate": "2026-11-02",
+        "dueTime": "16:30",
+        "estimatedMinutes": 25,
+        "tags": [
+          "review"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-7",
+        "createdAt": "2026-10-01T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-57",
+        "title": "Map the primary user journey · Harbour Booking",
+        "notes": "Define acceptance criteria and record the outcome for Harbour Booking.",
+        "status": "todo",
+        "priority": "low",
+        "dueDate": "2026-10-20",
+        "dueTime": "09:00",
+        "estimatedMinutes": 70,
+        "tags": [
+          "planning"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-8",
+        "createdAt": "2026-10-05T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-58",
+        "title": "Validate the domain model · Harbour Booking",
+        "notes": "Define acceptance criteria and record the outcome for Harbour Booking.",
+        "status": "todo",
+        "priority": "high",
+        "dueDate": "2026-10-22",
+        "dueTime": "11:30",
+        "estimatedMinutes": 70,
+        "tags": [
+          "planning"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-8",
+        "createdAt": "2026-10-05T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-59",
+        "title": "Build the core workflow · Harbour Booking",
+        "notes": "Define acceptance criteria and record the outcome for Harbour Booking.",
+        "status": "todo",
+        "priority": "medium",
+        "dueDate": "2026-10-24",
+        "dueTime": "14:00",
+        "estimatedMinutes": 85,
+        "tags": [
+          "build"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-8",
+        "createdAt": "2026-10-05T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-6",
+        "title": "Review keyboard navigation · Orbit Analytics",
+        "notes": "Define acceptance criteria and record the outcome for Orbit Analytics.",
+        "status": "todo",
+        "priority": "medium",
+        "dueDate": "2026-10-23",
+        "dueTime": "11:30",
+        "estimatedMinutes": 70,
+        "tags": [
+          "build"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-1",
+        "createdAt": "2026-09-07T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-60",
+        "title": "Connect persisted data · Harbour Booking",
+        "notes": "Define acceptance criteria and record the outcome for Harbour Booking.",
+        "status": "todo",
+        "priority": "urgent",
+        "dueDate": "2026-10-26",
+        "dueTime": "16:30",
+        "estimatedMinutes": 70,
+        "tags": [
+          "build"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-8",
+        "createdAt": "2026-10-05T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-61",
+        "title": "Refine the responsive layouts · Harbour Booking",
+        "notes": "Define acceptance criteria and record the outcome for Harbour Booking.",
+        "status": "todo",
+        "priority": "low",
+        "dueDate": "2026-10-28",
+        "dueTime": "09:00",
+        "estimatedMinutes": 55,
+        "tags": [
+          "build"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-8",
+        "createdAt": "2026-10-05T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-62",
+        "title": "Review keyboard navigation · Harbour Booking",
+        "notes": "Define acceptance criteria and record the outcome for Harbour Booking.",
+        "status": "todo",
+        "priority": "high",
+        "dueDate": "2026-10-30",
+        "dueTime": "11:30",
+        "estimatedMinutes": 40,
+        "tags": [
+          "build"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-8",
+        "createdAt": "2026-10-05T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-63",
+        "title": "Verify the release checklist · Harbour Booking",
+        "notes": "Define acceptance criteria and record the outcome for Harbour Booking.",
+        "status": "todo",
+        "priority": "medium",
+        "dueDate": "2026-11-01",
+        "dueTime": "14:00",
+        "estimatedMinutes": 85,
+        "tags": [
+          "review"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-8",
+        "createdAt": "2026-10-05T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-64",
+        "title": "Document the handover · Harbour Booking",
+        "notes": "Define acceptance criteria and record the outcome for Harbour Booking.",
+        "status": "todo",
+        "priority": "urgent",
+        "dueDate": "2026-11-03",
+        "dueTime": "16:30",
+        "estimatedMinutes": 55,
+        "tags": [
+          "review"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-8",
+        "createdAt": "2026-10-05T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-65",
+        "title": "Map the primary user journey · Thread Design System",
+        "notes": "Define acceptance criteria and record the outcome for Thread Design System.",
+        "status": "todo",
+        "priority": "high",
+        "dueDate": "2026-10-21",
+        "dueTime": "09:00",
+        "estimatedMinutes": 55,
+        "tags": [
+          "planning"
+        ],
+        "blockedReason": "Waiting for the shared component inventory.",
+        "parentType": "project",
+        "parentId": "demo-project-9",
+        "createdAt": "2026-10-09T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-66",
+        "title": "Validate the domain model · Thread Design System",
+        "notes": "Define acceptance criteria and record the outcome for Thread Design System.",
+        "status": "todo",
+        "priority": "medium",
+        "dueDate": "2026-10-23",
+        "dueTime": "11:30",
+        "estimatedMinutes": 25,
+        "tags": [
+          "planning"
+        ],
+        "blockedReason": "Waiting for the shared component inventory.",
+        "parentType": "project",
+        "parentId": "demo-project-9",
+        "createdAt": "2026-10-09T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-67",
+        "title": "Build the core workflow · Thread Design System",
+        "notes": "Define acceptance criteria and record the outcome for Thread Design System.",
+        "status": "todo",
+        "priority": "urgent",
+        "dueDate": "2026-10-25",
+        "dueTime": "14:00",
+        "estimatedMinutes": 40,
+        "tags": [
+          "build"
+        ],
+        "blockedReason": "Waiting for the shared component inventory.",
+        "parentType": "project",
+        "parentId": "demo-project-9",
+        "createdAt": "2026-10-09T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-68",
+        "title": "Connect persisted data · Thread Design System",
+        "notes": "Define acceptance criteria and record the outcome for Thread Design System.",
+        "status": "todo",
+        "priority": "low",
+        "dueDate": "2026-10-27",
+        "dueTime": "16:30",
+        "estimatedMinutes": 25,
+        "tags": [
+          "build"
+        ],
+        "blockedReason": "Waiting for the shared component inventory.",
+        "parentType": "project",
+        "parentId": "demo-project-9",
+        "createdAt": "2026-10-09T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-69",
+        "title": "Refine the responsive layouts · Thread Design System",
+        "notes": "Define acceptance criteria and record the outcome for Thread Design System.",
+        "status": "todo",
+        "priority": "high",
+        "dueDate": "2026-10-29",
+        "dueTime": "09:00",
+        "estimatedMinutes": 85,
+        "tags": [
+          "build"
+        ],
+        "blockedReason": "Waiting for the shared component inventory.",
+        "parentType": "project",
+        "parentId": "demo-project-9",
+        "createdAt": "2026-10-09T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-7",
+        "title": "Verify the release checklist · Orbit Analytics",
+        "notes": "Define acceptance criteria and record the outcome for Orbit Analytics.",
+        "status": "todo",
+        "priority": "urgent",
+        "dueDate": "2026-10-25",
+        "dueTime": "14:00",
+        "estimatedMinutes": 55,
+        "tags": [
+          "review"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-1",
+        "createdAt": "2026-09-07T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-70",
+        "title": "Review keyboard navigation · Thread Design System",
+        "notes": "Define acceptance criteria and record the outcome for Thread Design System.",
+        "status": "todo",
+        "priority": "medium",
+        "dueDate": "2026-10-31",
+        "dueTime": "11:30",
+        "estimatedMinutes": 70,
+        "tags": [
+          "build"
+        ],
+        "blockedReason": "Waiting for the shared component inventory.",
+        "parentType": "project",
+        "parentId": "demo-project-9",
+        "createdAt": "2026-10-09T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-71",
+        "title": "Verify the release checklist · Thread Design System",
+        "notes": "Define acceptance criteria and record the outcome for Thread Design System.",
+        "status": "todo",
+        "priority": "urgent",
+        "dueDate": "2026-11-02",
+        "dueTime": "14:00",
+        "estimatedMinutes": 70,
+        "tags": [
+          "review"
+        ],
+        "blockedReason": "Waiting for the shared component inventory.",
+        "parentType": "project",
+        "parentId": "demo-project-9",
+        "createdAt": "2026-10-09T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-72",
+        "title": "Document the handover · Thread Design System",
+        "notes": "Define acceptance criteria and record the outcome for Thread Design System.",
+        "status": "todo",
+        "priority": "low",
+        "dueDate": "2026-11-04",
+        "dueTime": "16:30",
+        "estimatedMinutes": 55,
+        "tags": [
+          "review"
+        ],
+        "blockedReason": "Waiting for the shared component inventory.",
+        "parentType": "project",
+        "parentId": "demo-project-9",
+        "createdAt": "2026-10-09T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-73",
+        "title": "Map the primary user journey · Monograph Portfolio",
+        "notes": "Define acceptance criteria and record the outcome for Monograph Portfolio.",
+        "status": "done",
+        "priority": "medium",
+        "dueDate": "2025-07-22",
+        "dueTime": "09:00",
+        "estimatedMinutes": 85,
+        "tags": [
+          "planning"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-10",
+        "createdAt": "2025-06-09T04:00:00.000Z",
+        "completedAt": "2025-07-22T04:00:00.000Z",
+        "updatedAt": "2025-07-22T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-74",
+        "title": "Validate the domain model · Monograph Portfolio",
+        "notes": "Define acceptance criteria and record the outcome for Monograph Portfolio.",
+        "status": "done",
+        "priority": "urgent",
+        "dueDate": "2025-07-25",
+        "dueTime": "11:30",
+        "estimatedMinutes": 100,
+        "tags": [
+          "planning"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-10",
+        "createdAt": "2025-06-09T04:00:00.000Z",
+        "completedAt": "2025-07-25T04:00:00.000Z",
+        "updatedAt": "2025-07-25T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-75",
+        "title": "Build the core workflow · Monograph Portfolio",
+        "notes": "Define acceptance criteria and record the outcome for Monograph Portfolio.",
+        "status": "done",
+        "priority": "low",
+        "dueDate": "2025-07-28",
+        "dueTime": "14:00",
+        "estimatedMinutes": 55,
+        "tags": [
+          "build"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-10",
+        "createdAt": "2025-06-09T04:00:00.000Z",
+        "completedAt": "2025-07-28T04:00:00.000Z",
+        "updatedAt": "2025-07-28T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-76",
+        "title": "Connect persisted data · Monograph Portfolio",
+        "notes": "Define acceptance criteria and record the outcome for Monograph Portfolio.",
+        "status": "done",
+        "priority": "high",
+        "dueDate": "2025-07-31",
+        "dueTime": "16:30",
+        "estimatedMinutes": 70,
+        "tags": [
+          "build"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-10",
+        "createdAt": "2025-06-09T04:00:00.000Z",
+        "completedAt": "2025-07-31T04:00:00.000Z",
+        "updatedAt": "2025-07-31T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-77",
+        "title": "Refine the responsive layouts · Monograph Portfolio",
+        "notes": "Define acceptance criteria and record the outcome for Monograph Portfolio.",
+        "status": "done",
+        "priority": "medium",
+        "dueDate": "2025-08-03",
+        "dueTime": "09:00",
+        "estimatedMinutes": 55,
+        "tags": [
+          "build"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-10",
+        "createdAt": "2025-06-09T04:00:00.000Z",
+        "completedAt": "2025-08-03T04:00:00.000Z",
+        "updatedAt": "2025-08-03T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-78",
+        "title": "Review keyboard navigation · Monograph Portfolio",
+        "notes": "Define acceptance criteria and record the outcome for Monograph Portfolio.",
+        "status": "done",
+        "priority": "urgent",
+        "dueDate": "2025-08-06",
+        "dueTime": "11:30",
+        "estimatedMinutes": 40,
+        "tags": [
+          "build"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-10",
+        "createdAt": "2025-06-09T04:00:00.000Z",
+        "completedAt": "2025-08-06T04:00:00.000Z",
+        "updatedAt": "2025-08-06T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-79",
+        "title": "Verify the release checklist · Monograph Portfolio",
+        "notes": "Define acceptance criteria and record the outcome for Monograph Portfolio.",
+        "status": "done",
+        "priority": "low",
+        "dueDate": "2025-08-09",
+        "dueTime": "14:00",
+        "estimatedMinutes": 85,
+        "tags": [
+          "review"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-10",
+        "createdAt": "2025-06-09T04:00:00.000Z",
+        "completedAt": "2025-08-09T04:00:00.000Z",
+        "updatedAt": "2025-08-09T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-8",
+        "title": "Document the handover · Orbit Analytics",
+        "notes": "Define acceptance criteria and record the outcome for Orbit Analytics.",
+        "status": "todo",
+        "priority": "low",
+        "dueDate": "2026-10-27",
+        "dueTime": "16:30",
+        "estimatedMinutes": 70,
+        "tags": [
+          "review"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-1",
+        "createdAt": "2026-09-07T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-80",
+        "title": "Document the handover · Monograph Portfolio",
+        "notes": "Define acceptance criteria and record the outcome for Monograph Portfolio.",
+        "status": "done",
+        "priority": "high",
+        "dueDate": "2025-08-12",
+        "dueTime": "16:30",
+        "estimatedMinutes": 85,
+        "tags": [
+          "review"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-10",
+        "createdAt": "2025-06-09T04:00:00.000Z",
+        "completedAt": "2025-08-12T04:00:00.000Z",
+        "updatedAt": "2025-08-12T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-81",
+        "title": "Map the primary user journey · Canopy Inventory",
+        "notes": "Define acceptance criteria and record the outcome for Canopy Inventory.",
+        "status": "done",
+        "priority": "urgent",
+        "dueDate": "2025-09-21",
+        "dueTime": "09:00",
+        "estimatedMinutes": 70,
+        "tags": [
+          "planning"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-11",
+        "createdAt": "2025-08-08T04:00:00.000Z",
+        "completedAt": "2025-09-21T04:00:00.000Z",
+        "updatedAt": "2025-09-21T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-82",
+        "title": "Validate the domain model · Canopy Inventory",
+        "notes": "Define acceptance criteria and record the outcome for Canopy Inventory.",
+        "status": "done",
+        "priority": "low",
+        "dueDate": "2025-09-24",
+        "dueTime": "11:30",
+        "estimatedMinutes": 85,
+        "tags": [
+          "planning"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-11",
+        "createdAt": "2025-08-08T04:00:00.000Z",
+        "completedAt": "2025-09-24T04:00:00.000Z",
+        "updatedAt": "2025-09-24T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-83",
+        "title": "Build the core workflow · Canopy Inventory",
+        "notes": "Define acceptance criteria and record the outcome for Canopy Inventory.",
+        "status": "done",
+        "priority": "high",
+        "dueDate": "2025-09-27",
+        "dueTime": "14:00",
+        "estimatedMinutes": 55,
+        "tags": [
+          "build"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-11",
+        "createdAt": "2025-08-08T04:00:00.000Z",
+        "completedAt": "2025-09-27T04:00:00.000Z",
+        "updatedAt": "2025-09-27T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-84",
+        "title": "Connect persisted data · Canopy Inventory",
+        "notes": "Define acceptance criteria and record the outcome for Canopy Inventory.",
+        "status": "done",
+        "priority": "medium",
+        "dueDate": "2025-09-30",
+        "dueTime": "16:30",
+        "estimatedMinutes": 70,
+        "tags": [
+          "build"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-11",
+        "createdAt": "2025-08-08T04:00:00.000Z",
+        "completedAt": "2025-09-30T04:00:00.000Z",
+        "updatedAt": "2025-09-30T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-85",
+        "title": "Refine the responsive layouts · Canopy Inventory",
+        "notes": "Define acceptance criteria and record the outcome for Canopy Inventory.",
+        "status": "done",
+        "priority": "urgent",
+        "dueDate": "2025-10-03",
+        "dueTime": "09:00",
+        "estimatedMinutes": 85,
+        "tags": [
+          "build"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-11",
+        "createdAt": "2025-08-08T04:00:00.000Z",
+        "completedAt": "2025-10-03T04:00:00.000Z",
+        "updatedAt": "2025-10-03T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-86",
+        "title": "Review keyboard navigation · Canopy Inventory",
+        "notes": "Define acceptance criteria and record the outcome for Canopy Inventory.",
+        "status": "done",
+        "priority": "low",
+        "dueDate": "2025-10-06",
+        "dueTime": "11:30",
+        "estimatedMinutes": 40,
+        "tags": [
+          "build"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-11",
+        "createdAt": "2025-08-08T04:00:00.000Z",
+        "completedAt": "2025-10-06T04:00:00.000Z",
+        "updatedAt": "2025-10-06T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-87",
+        "title": "Verify the release checklist · Canopy Inventory",
+        "notes": "Define acceptance criteria and record the outcome for Canopy Inventory.",
+        "status": "done",
+        "priority": "high",
+        "dueDate": "2025-10-09",
+        "dueTime": "14:00",
+        "estimatedMinutes": 55,
+        "tags": [
+          "review"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-11",
+        "createdAt": "2025-08-08T04:00:00.000Z",
+        "completedAt": "2025-10-09T04:00:00.000Z",
+        "updatedAt": "2025-10-09T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-88",
+        "title": "Document the handover · Canopy Inventory",
+        "notes": "Define acceptance criteria and record the outcome for Canopy Inventory.",
+        "status": "done",
+        "priority": "medium",
+        "dueDate": "2025-10-12",
+        "dueTime": "16:30",
+        "estimatedMinutes": 25,
+        "tags": [
+          "review"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-11",
+        "createdAt": "2025-08-08T04:00:00.000Z",
+        "completedAt": "2025-10-12T04:00:00.000Z",
+        "updatedAt": "2025-10-12T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-89",
+        "title": "Map the primary user journey · Signal Status Page",
+        "notes": "Define acceptance criteria and record the outcome for Signal Status Page.",
+        "status": "done",
+        "priority": "low",
+        "dueDate": "2025-11-21",
+        "dueTime": "09:00",
+        "estimatedMinutes": 85,
+        "tags": [
+          "planning"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-12",
+        "createdAt": "2025-10-07T04:00:00.000Z",
+        "completedAt": "2025-11-21T04:00:00.000Z",
+        "updatedAt": "2025-11-21T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-9",
+        "title": "Map the primary user journey · Forma Commerce",
+        "notes": "Define acceptance criteria and record the outcome for Forma Commerce.",
+        "status": "done",
+        "priority": "medium",
+        "dueDate": "2026-10-14",
+        "dueTime": "09:00",
+        "estimatedMinutes": 100,
+        "tags": [
+          "planning"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-2",
+        "createdAt": "2026-09-11T04:00:00.000Z",
+        "completedAt": "2026-10-18T04:00:00.000Z",
+        "updatedAt": "2026-10-18T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-90",
+        "title": "Validate the domain model · Signal Status Page",
+        "notes": "Define acceptance criteria and record the outcome for Signal Status Page.",
+        "status": "done",
+        "priority": "high",
+        "dueDate": "2025-11-24",
+        "dueTime": "11:30",
+        "estimatedMinutes": 100,
+        "tags": [
+          "planning"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-12",
+        "createdAt": "2025-10-07T04:00:00.000Z",
+        "completedAt": "2025-11-24T04:00:00.000Z",
+        "updatedAt": "2025-11-24T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-91",
+        "title": "Build the core workflow · Signal Status Page",
+        "notes": "Define acceptance criteria and record the outcome for Signal Status Page.",
+        "status": "done",
+        "priority": "medium",
+        "dueDate": "2025-11-27",
+        "dueTime": "14:00",
+        "estimatedMinutes": 40,
+        "tags": [
+          "build"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-12",
+        "createdAt": "2025-10-07T04:00:00.000Z",
+        "completedAt": "2025-11-27T04:00:00.000Z",
+        "updatedAt": "2025-11-27T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-92",
+        "title": "Connect persisted data · Signal Status Page",
+        "notes": "Define acceptance criteria and record the outcome for Signal Status Page.",
+        "status": "done",
+        "priority": "urgent",
+        "dueDate": "2025-11-30",
+        "dueTime": "16:30",
+        "estimatedMinutes": 55,
+        "tags": [
+          "build"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-12",
+        "createdAt": "2025-10-07T04:00:00.000Z",
+        "completedAt": "2025-11-30T04:00:00.000Z",
+        "updatedAt": "2025-11-30T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-93",
+        "title": "Refine the responsive layouts · Signal Status Page",
+        "notes": "Define acceptance criteria and record the outcome for Signal Status Page.",
+        "status": "done",
+        "priority": "low",
+        "dueDate": "2025-12-03",
+        "dueTime": "09:00",
+        "estimatedMinutes": 40,
+        "tags": [
+          "build"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-12",
+        "createdAt": "2025-10-07T04:00:00.000Z",
+        "completedAt": "2025-12-03T04:00:00.000Z",
+        "updatedAt": "2025-12-03T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-94",
+        "title": "Review keyboard navigation · Signal Status Page",
+        "notes": "Define acceptance criteria and record the outcome for Signal Status Page.",
+        "status": "done",
+        "priority": "high",
+        "dueDate": "2025-12-06",
+        "dueTime": "11:30",
+        "estimatedMinutes": 25,
+        "tags": [
+          "build"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-12",
+        "createdAt": "2025-10-07T04:00:00.000Z",
+        "completedAt": "2025-12-06T04:00:00.000Z",
+        "updatedAt": "2025-12-06T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-95",
+        "title": "Verify the release checklist · Signal Status Page",
+        "notes": "Define acceptance criteria and record the outcome for Signal Status Page.",
+        "status": "done",
+        "priority": "medium",
+        "dueDate": "2025-12-09",
+        "dueTime": "14:00",
+        "estimatedMinutes": 40,
+        "tags": [
+          "review"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-12",
+        "createdAt": "2025-10-07T04:00:00.000Z",
+        "completedAt": "2025-12-09T04:00:00.000Z",
+        "updatedAt": "2025-12-09T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-96",
+        "title": "Document the handover · Signal Status Page",
+        "notes": "Define acceptance criteria and record the outcome for Signal Status Page.",
+        "status": "done",
+        "priority": "urgent",
+        "dueDate": "2025-12-12",
+        "dueTime": "16:30",
+        "estimatedMinutes": 100,
+        "tags": [
+          "review"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-12",
+        "createdAt": "2025-10-07T04:00:00.000Z",
+        "completedAt": "2025-12-12T04:00:00.000Z",
+        "updatedAt": "2025-12-12T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-97",
+        "title": "Map the primary user journey · Locale City Guide",
+        "notes": "Define acceptance criteria and record the outcome for Locale City Guide.",
+        "status": "done",
+        "priority": "high",
+        "dueDate": "2026-01-22",
+        "dueTime": "09:00",
+        "estimatedMinutes": 55,
+        "tags": [
+          "planning"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-13",
+        "createdAt": "2025-12-07T04:00:00.000Z",
+        "completedAt": "2026-01-22T04:00:00.000Z",
+        "updatedAt": "2026-01-22T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-98",
+        "title": "Validate the domain model · Locale City Guide",
+        "notes": "Define acceptance criteria and record the outcome for Locale City Guide.",
+        "status": "done",
+        "priority": "medium",
+        "dueDate": "2026-01-25",
+        "dueTime": "11:30",
+        "estimatedMinutes": 40,
+        "tags": [
+          "planning"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-13",
+        "createdAt": "2025-12-07T04:00:00.000Z",
+        "completedAt": "2026-01-25T04:00:00.000Z",
+        "updatedAt": "2026-01-25T04:00:00.000Z"
+      },
+      {
+        "id": "demo-task-99",
+        "title": "Build the core workflow · Locale City Guide",
+        "notes": "Define acceptance criteria and record the outcome for Locale City Guide.",
+        "status": "done",
+        "priority": "urgent",
+        "dueDate": "2026-01-28",
+        "dueTime": "14:00",
+        "estimatedMinutes": 70,
+        "tags": [
+          "build"
+        ],
+        "parentType": "project",
+        "parentId": "demo-project-13",
+        "createdAt": "2025-12-07T04:00:00.000Z",
+        "completedAt": "2026-01-28T04:00:00.000Z",
+        "updatedAt": "2026-01-28T04:00:00.000Z"
+      }
+    ],
+    "milestones": [
+      {
+        "id": "demo-goal-milestone-1",
+        "ownerType": "goal",
+        "ownerId": "demo-goal-1",
+        "title": "Select three case studies",
+        "targetDate": "2026-10-25",
+        "completedAt": "2026-10-08T04:00:00.000Z",
+        "order": 0
+      },
+      {
+        "id": "demo-goal-milestone-10",
+        "ownerType": "goal",
+        "ownerId": "demo-goal-2",
+        "title": "Document the operating guide",
+        "targetDate": "2026-11-25",
+        "order": 4
+      },
+      {
+        "id": "demo-goal-milestone-11",
+        "ownerType": "goal",
+        "ownerId": "demo-goal-3",
+        "title": "Define the ideal client",
+        "targetDate": "2026-10-31",
+        "completedAt": "2026-10-08T04:00:00.000Z",
+        "order": 0
+      },
+      {
+        "id": "demo-goal-milestone-12",
+        "ownerType": "goal",
+        "ownerId": "demo-goal-3",
+        "title": "Create a discovery checklist",
+        "targetDate": "2026-11-07",
+        "completedAt": "2026-10-11T04:00:00.000Z",
+        "order": 1
+      },
+      {
+        "id": "demo-goal-milestone-13",
+        "ownerType": "goal",
+        "ownerId": "demo-goal-3",
+        "title": "Prepare proposal templates",
+        "targetDate": "2026-11-14",
+        "completedAt": "2026-10-14T04:00:00.000Z",
+        "order": 2
+      },
+      {
+        "id": "demo-goal-milestone-14",
+        "ownerType": "goal",
+        "ownerId": "demo-goal-3",
+        "title": "Refine the handover process",
+        "targetDate": "2026-11-21",
+        "order": 3
+      },
+      {
+        "id": "demo-goal-milestone-15",
+        "ownerType": "goal",
+        "ownerId": "demo-goal-3",
+        "title": "Review the monthly workload",
+        "targetDate": "2026-11-28",
+        "order": 4
+      },
+      {
+        "id": "demo-goal-milestone-16",
+        "ownerType": "goal",
+        "ownerId": "demo-goal-4",
+        "title": "Audit keyboard navigation",
+        "targetDate": "2026-11-03",
+        "completedAt": "2026-10-08T04:00:00.000Z",
+        "order": 0
+      },
+      {
+        "id": "demo-goal-milestone-17",
+        "ownerType": "goal",
+        "ownerId": "demo-goal-4",
+        "title": "Review colour contrast",
+        "targetDate": "2026-11-10",
+        "order": 1
+      },
+      {
+        "id": "demo-goal-milestone-18",
+        "ownerType": "goal",
+        "ownerId": "demo-goal-4",
+        "title": "Practise screen reader testing",
+        "targetDate": "2026-11-17",
+        "order": 2
+      },
+      {
+        "id": "demo-goal-milestone-19",
+        "ownerType": "goal",
+        "ownerId": "demo-goal-4",
+        "title": "Improve form error messages",
+        "targetDate": "2026-11-24",
+        "order": 3
+      },
+      {
+        "id": "demo-goal-milestone-2",
+        "ownerType": "goal",
+        "ownerId": "demo-goal-1",
+        "title": "Write project narratives",
+        "targetDate": "2026-11-01",
+        "order": 1
+      },
+      {
+        "id": "demo-goal-milestone-20",
+        "ownerType": "goal",
+        "ownerId": "demo-goal-4",
+        "title": "Publish an accessibility checklist",
+        "targetDate": "2026-12-01",
+        "order": 4
+      },
+      {
+        "id": "demo-goal-milestone-21",
+        "ownerType": "goal",
+        "ownerId": "demo-goal-5",
+        "title": "Complete database exercises",
+        "targetDate": "2026-07-02",
+        "completedAt": "2026-07-02T04:00:00.000Z",
+        "order": 0
+      },
+      {
+        "id": "demo-goal-milestone-22",
+        "ownerType": "goal",
+        "ownerId": "demo-goal-5",
+        "title": "Finish algorithm labs",
+        "targetDate": "2026-07-07",
+        "completedAt": "2026-07-07T04:00:00.000Z",
+        "order": 1
+      },
+      {
+        "id": "demo-goal-milestone-23",
+        "ownerType": "goal",
+        "ownerId": "demo-goal-5",
+        "title": "Pass the security assessment",
+        "targetDate": "2026-07-12",
+        "completedAt": "2026-07-12T04:00:00.000Z",
+        "order": 2
+      },
+      {
+        "id": "demo-goal-milestone-24",
+        "ownerType": "goal",
+        "ownerId": "demo-goal-5",
+        "title": "Submit the team project",
+        "targetDate": "2026-07-17",
+        "completedAt": "2026-07-17T04:00:00.000Z",
+        "order": 3
+      },
+      {
+        "id": "demo-goal-milestone-25",
+        "ownerType": "goal",
+        "ownerId": "demo-goal-5",
+        "title": "Review final feedback",
+        "targetDate": "2026-07-22",
+        "completedAt": "2026-07-22T04:00:00.000Z",
+        "order": 4
+      },
+      {
+        "id": "demo-goal-milestone-26",
+        "ownerType": "goal",
+        "ownerId": "demo-goal-6",
+        "title": "Choose a community project",
+        "targetDate": "2026-11-09",
+        "order": 0
+      },
+      {
+        "id": "demo-goal-milestone-27",
+        "ownerType": "goal",
+        "ownerId": "demo-goal-6",
+        "title": "Read contribution guidance",
+        "targetDate": "2026-11-16",
+        "order": 1
+      },
+      {
+        "id": "demo-goal-milestone-28",
+        "ownerType": "goal",
+        "ownerId": "demo-goal-6",
+        "title": "Reproduce an open issue",
+        "targetDate": "2026-11-23",
+        "order": 2
+      },
+      {
+        "id": "demo-goal-milestone-29",
+        "ownerType": "goal",
+        "ownerId": "demo-goal-6",
+        "title": "Submit a small improvement",
+        "targetDate": "2026-11-30",
+        "order": 3
+      },
+      {
+        "id": "demo-goal-milestone-3",
+        "ownerType": "goal",
+        "ownerId": "demo-goal-1",
+        "title": "Prepare cover artwork",
+        "targetDate": "2026-11-08",
+        "order": 2
+      },
+      {
+        "id": "demo-goal-milestone-30",
+        "ownerType": "goal",
+        "ownerId": "demo-goal-6",
+        "title": "Respond to review feedback",
+        "targetDate": "2026-12-07",
+        "order": 4
+      },
+      {
+        "id": "demo-goal-milestone-4",
+        "ownerType": "goal",
+        "ownerId": "demo-goal-1",
+        "title": "Review the mobile experience",
+        "targetDate": "2026-11-15",
+        "order": 3
+      },
+      {
+        "id": "demo-goal-milestone-5",
+        "ownerType": "goal",
+        "ownerId": "demo-goal-1",
+        "title": "Publish and collect feedback",
+        "targetDate": "2026-11-22",
+        "order": 4
+      },
+      {
+        "id": "demo-goal-milestone-6",
+        "ownerType": "goal",
+        "ownerId": "demo-goal-2",
+        "title": "Finish networking fundamentals",
+        "targetDate": "2026-10-28",
+        "completedAt": "2026-10-08T04:00:00.000Z",
+        "order": 0
+      },
+      {
+        "id": "demo-goal-milestone-7",
+        "ownerType": "goal",
+        "ownerId": "demo-goal-2",
+        "title": "Deploy a container service",
+        "targetDate": "2026-11-04",
+        "completedAt": "2026-10-11T04:00:00.000Z",
+        "order": 1
+      },
+      {
+        "id": "demo-goal-milestone-8",
+        "ownerType": "goal",
+        "ownerId": "demo-goal-2",
+        "title": "Add service observability",
+        "targetDate": "2026-11-11",
+        "order": 2
+      },
+      {
+        "id": "demo-goal-milestone-9",
+        "ownerType": "goal",
+        "ownerId": "demo-goal-2",
+        "title": "Practise recovery procedures",
+        "targetDate": "2026-11-18",
+        "order": 3
+      },
+      {
+        "id": "demo-project-milestone-1",
+        "ownerType": "project",
+        "ownerId": "demo-project-1",
+        "title": "Core workflow accepted",
+        "targetDate": "2026-10-02",
+        "completedAt": "2026-10-15T04:00:00.000Z",
+        "order": 0
+      },
+      {
+        "id": "demo-project-milestone-10",
+        "ownerType": "project",
+        "ownerId": "demo-project-5",
+        "title": "Release and handover",
+        "targetDate": "2026-11-21",
+        "order": 1
+      },
+      {
+        "id": "demo-project-milestone-11",
+        "ownerType": "project",
+        "ownerId": "demo-project-6",
+        "title": "Core workflow accepted",
+        "targetDate": "2026-10-22",
+        "order": 0
+      },
+      {
+        "id": "demo-project-milestone-12",
+        "ownerType": "project",
+        "ownerId": "demo-project-6",
+        "title": "Release and handover",
+        "targetDate": "2026-11-26",
+        "order": 1
+      },
+      {
+        "id": "demo-project-milestone-13",
+        "ownerType": "project",
+        "ownerId": "demo-project-7",
+        "title": "Core workflow accepted",
+        "targetDate": "2026-10-26",
+        "order": 0
+      },
+      {
+        "id": "demo-project-milestone-14",
+        "ownerType": "project",
+        "ownerId": "demo-project-7",
+        "title": "Release and handover",
+        "targetDate": "2026-12-01",
+        "order": 1
+      },
+      {
+        "id": "demo-project-milestone-15",
+        "ownerType": "project",
+        "ownerId": "demo-project-8",
+        "title": "Core workflow accepted",
+        "targetDate": "2026-10-30",
+        "order": 0
+      },
+      {
+        "id": "demo-project-milestone-16",
+        "ownerType": "project",
+        "ownerId": "demo-project-8",
+        "title": "Release and handover",
+        "targetDate": "2026-12-06",
+        "order": 1
+      },
+      {
+        "id": "demo-project-milestone-17",
+        "ownerType": "project",
+        "ownerId": "demo-project-9",
+        "title": "Core workflow accepted",
+        "targetDate": "2026-11-03",
+        "order": 0
+      },
+      {
+        "id": "demo-project-milestone-18",
+        "ownerType": "project",
+        "ownerId": "demo-project-9",
+        "title": "Release and handover",
+        "targetDate": "2026-12-11",
+        "order": 1
+      },
+      {
+        "id": "demo-project-milestone-19",
+        "ownerType": "project",
+        "ownerId": "demo-project-10",
+        "title": "Core workflow accepted",
+        "targetDate": "2025-07-04",
+        "completedAt": "2025-08-12T04:00:00.000Z",
+        "order": 0
+      },
+      {
+        "id": "demo-project-milestone-2",
+        "ownerType": "project",
+        "ownerId": "demo-project-1",
+        "title": "Release and handover",
+        "targetDate": "2026-11-01",
+        "order": 1
+      },
+      {
+        "id": "demo-project-milestone-20",
+        "ownerType": "project",
+        "ownerId": "demo-project-10",
+        "title": "Release and handover",
+        "targetDate": "2025-08-12",
+        "completedAt": "2025-08-12T04:00:00.000Z",
+        "order": 1
+      },
+      {
+        "id": "demo-project-milestone-21",
+        "ownerType": "project",
+        "ownerId": "demo-project-11",
+        "title": "Core workflow accepted",
+        "targetDate": "2025-09-02",
+        "completedAt": "2025-10-12T04:00:00.000Z",
+        "order": 0
+      },
+      {
+        "id": "demo-project-milestone-22",
+        "ownerType": "project",
+        "ownerId": "demo-project-11",
+        "title": "Release and handover",
+        "targetDate": "2025-10-12",
+        "completedAt": "2025-10-12T04:00:00.000Z",
+        "order": 1
+      },
+      {
+        "id": "demo-project-milestone-23",
+        "ownerType": "project",
+        "ownerId": "demo-project-12",
+        "title": "Core workflow accepted",
+        "targetDate": "2025-11-01",
+        "completedAt": "2025-12-12T04:00:00.000Z",
+        "order": 0
+      },
+      {
+        "id": "demo-project-milestone-24",
+        "ownerType": "project",
+        "ownerId": "demo-project-12",
+        "title": "Release and handover",
+        "targetDate": "2025-12-12",
+        "completedAt": "2025-12-12T04:00:00.000Z",
+        "order": 1
+      },
+      {
+        "id": "demo-project-milestone-25",
+        "ownerType": "project",
+        "ownerId": "demo-project-13",
+        "title": "Core workflow accepted",
+        "targetDate": "2026-01-01",
+        "completedAt": "2026-02-12T04:00:00.000Z",
+        "order": 0
+      },
+      {
+        "id": "demo-project-milestone-26",
+        "ownerType": "project",
+        "ownerId": "demo-project-13",
+        "title": "Release and handover",
+        "targetDate": "2026-02-12",
+        "completedAt": "2026-02-12T04:00:00.000Z",
+        "order": 1
+      },
+      {
+        "id": "demo-project-milestone-27",
+        "ownerType": "project",
+        "ownerId": "demo-project-14",
+        "title": "Core workflow accepted",
+        "targetDate": "2026-02-28",
+        "completedAt": "2026-04-12T04:00:00.000Z",
+        "order": 0
+      },
+      {
+        "id": "demo-project-milestone-28",
+        "ownerType": "project",
+        "ownerId": "demo-project-14",
+        "title": "Release and handover",
+        "targetDate": "2026-04-12",
+        "completedAt": "2026-04-12T04:00:00.000Z",
+        "order": 1
+      },
+      {
+        "id": "demo-project-milestone-29",
+        "ownerType": "project",
+        "ownerId": "demo-project-15",
+        "title": "Core workflow accepted",
+        "targetDate": "2026-04-29",
+        "completedAt": "2026-06-12T04:00:00.000Z",
+        "order": 0
+      },
+      {
+        "id": "demo-project-milestone-3",
+        "ownerType": "project",
+        "ownerId": "demo-project-2",
+        "title": "Core workflow accepted",
+        "targetDate": "2026-10-06",
+        "completedAt": "2026-10-15T04:00:00.000Z",
+        "order": 0
+      },
+      {
+        "id": "demo-project-milestone-30",
+        "ownerType": "project",
+        "ownerId": "demo-project-15",
+        "title": "Release and handover",
+        "targetDate": "2026-06-12",
+        "completedAt": "2026-06-12T04:00:00.000Z",
+        "order": 1
+      },
+      {
+        "id": "demo-project-milestone-31",
+        "ownerType": "project",
+        "ownerId": "demo-project-16",
+        "title": "Core workflow accepted",
+        "targetDate": "2026-05-28",
+        "completedAt": "2026-07-12T04:00:00.000Z",
+        "order": 0
+      },
+      {
+        "id": "demo-project-milestone-32",
+        "ownerType": "project",
+        "ownerId": "demo-project-16",
+        "title": "Release and handover",
+        "targetDate": "2026-07-12",
+        "completedAt": "2026-07-12T04:00:00.000Z",
+        "order": 1
+      },
+      {
+        "id": "demo-project-milestone-33",
+        "ownerType": "project",
+        "ownerId": "demo-project-17",
+        "title": "Core workflow accepted",
+        "targetDate": "2026-06-27",
+        "completedAt": "2026-08-12T04:00:00.000Z",
+        "order": 0
+      },
+      {
+        "id": "demo-project-milestone-34",
+        "ownerType": "project",
+        "ownerId": "demo-project-17",
+        "title": "Release and handover",
+        "targetDate": "2026-08-12",
+        "completedAt": "2026-08-12T04:00:00.000Z",
+        "order": 1
+      },
+      {
+        "id": "demo-project-milestone-35",
+        "ownerType": "project",
+        "ownerId": "demo-project-18",
+        "title": "Core workflow accepted",
+        "targetDate": "2026-07-27",
+        "completedAt": "2026-09-12T04:00:00.000Z",
+        "order": 0
+      },
+      {
+        "id": "demo-project-milestone-36",
+        "ownerType": "project",
+        "ownerId": "demo-project-18",
+        "title": "Release and handover",
+        "targetDate": "2026-09-12",
+        "completedAt": "2026-09-12T04:00:00.000Z",
+        "order": 1
+      },
+      {
+        "id": "demo-project-milestone-4",
+        "ownerType": "project",
+        "ownerId": "demo-project-2",
+        "title": "Release and handover",
+        "targetDate": "2026-11-06",
+        "order": 1
+      },
+      {
+        "id": "demo-project-milestone-5",
+        "ownerType": "project",
+        "ownerId": "demo-project-3",
+        "title": "Core workflow accepted",
+        "targetDate": "2026-10-10",
+        "completedAt": "2026-10-15T04:00:00.000Z",
+        "order": 0
+      },
+      {
+        "id": "demo-project-milestone-6",
+        "ownerType": "project",
+        "ownerId": "demo-project-3",
+        "title": "Release and handover",
+        "targetDate": "2026-11-11",
+        "order": 1
+      },
+      {
+        "id": "demo-project-milestone-7",
+        "ownerType": "project",
+        "ownerId": "demo-project-4",
+        "title": "Core workflow accepted",
+        "targetDate": "2026-10-14",
+        "order": 0
+      },
+      {
+        "id": "demo-project-milestone-8",
+        "ownerType": "project",
+        "ownerId": "demo-project-4",
+        "title": "Release and handover",
+        "targetDate": "2026-11-16",
+        "order": 1
+      },
+      {
+        "id": "demo-project-milestone-9",
+        "ownerType": "project",
+        "ownerId": "demo-project-5",
+        "title": "Core workflow accepted",
+        "targetDate": "2026-10-18",
+        "order": 0
+      }
+    ],
+    "semesters": [
+      {
+        "id": "demo-semester-1",
+        "title": "Software Engineering · Current term",
+        "startDate": "2026-09-05",
+        "endDate": "2027-01-08",
+        "status": "active",
+        "createdAt": "2026-08-21T04:00:00.000Z"
+      },
+      {
+        "id": "demo-semester-2",
+        "title": "Computing Foundations · Previous term",
+        "startDate": "2026-03-14",
+        "endDate": "2026-07-22",
+        "status": "completed",
+        "createdAt": "2026-03-04T04:00:00.000Z"
+      }
+    ],
+    "subjects": [
+      {
+        "id": "demo-subject-1",
+        "semesterId": "demo-semester-1",
+        "code": "CS301",
+        "title": "Cloud Architecture",
+        "lecturer": "Dr. Nadia Rahman",
+        "color": "#A8DCC8",
+        "createdAt": "2026-09-05T04:00:00.000Z"
+      },
+      {
+        "id": "demo-subject-2",
+        "semesterId": "demo-semester-1",
+        "code": "CS315",
+        "title": "Human Computer Interaction",
+        "lecturer": "Dr. Lim Wei",
+        "color": "#EDB5A4",
+        "createdAt": "2026-09-05T04:00:00.000Z"
+      },
+      {
+        "id": "demo-subject-3",
+        "semesterId": "demo-semester-1",
+        "code": "CS322",
+        "title": "Network Security",
+        "lecturer": "Dr. Amir Hassan",
+        "color": "#EAD396",
+        "createdAt": "2026-09-05T04:00:00.000Z"
+      },
+      {
+        "id": "demo-subject-4",
+        "semesterId": "demo-semester-2",
+        "code": "CS210",
+        "title": "Database Systems",
+        "lecturer": "Dr. Siti Noor",
+        "color": "#B9B0E0",
+        "createdAt": "2026-03-14T04:00:00.000Z"
+      },
+      {
+        "id": "demo-subject-5",
+        "semesterId": "demo-semester-2",
+        "code": "CS220",
+        "title": "Algorithms & Data Structures",
+        "lecturer": "Dr. Daniel Tan",
+        "color": "#9BC6DB",
+        "createdAt": "2026-03-14T04:00:00.000Z"
+      },
+      {
+        "id": "demo-subject-6",
+        "semesterId": "demo-semester-2",
+        "code": "CS230",
+        "title": "Software Quality",
+        "lecturer": "Dr. Farah Aziz",
+        "color": "#C4D2AB",
+        "createdAt": "2026-03-14T04:00:00.000Z"
+      }
+    ],
+    "assignments": [
+      {
+        "id": "demo-assignment-1",
+        "subjectId": "demo-subject-1",
+        "title": "Design a resilient web service",
+        "description": "Apply the cloud architecture concepts to a practical case study.",
+        "status": "submitted",
+        "dueDate": "2026-10-17",
+        "dueTime": "23:59",
+        "weightPercent": 25,
+        "submittedAt": "2026-10-15T04:00:00.000Z",
+        "createdAt": "2026-09-05T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-assignment-10",
+        "subjectId": "demo-subject-3",
+        "title": "Document a threat model",
+        "description": "Apply the network security concepts to a practical case study.",
+        "status": "in_progress",
+        "dueDate": "2026-10-24",
+        "dueTime": "23:59",
+        "weightPercent": 25,
+        "createdAt": "2026-09-05T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-assignment-11",
+        "subjectId": "demo-subject-3",
+        "title": "Analyse packet capture evidence",
+        "description": "Apply the network security concepts to a practical case study.",
+        "status": "not_started",
+        "dueDate": "2026-10-31",
+        "dueTime": "23:59",
+        "weightPercent": 25,
+        "createdAt": "2026-09-05T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-assignment-12",
+        "subjectId": "demo-subject-3",
+        "title": "Demonstrate incident response",
+        "description": "Apply the network security concepts to a practical case study.",
+        "status": "not_started",
+        "dueDate": "2026-11-11",
+        "dueTime": "23:59",
+        "weightPercent": 25,
+        "createdAt": "2026-09-05T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-assignment-13",
+        "subjectId": "demo-subject-4",
+        "title": "Normalise the library catalogue",
+        "description": "Apply the database systems concepts to a practical case study.",
+        "status": "graded",
+        "dueDate": "2026-04-23",
+        "dueTime": "23:59",
+        "weightPercent": 25,
+        "scoreObtained": 77,
+        "scoreMaximum": 100,
+        "submittedAt": "2026-04-21T04:00:00.000Z",
+        "createdAt": "2026-03-14T04:00:00.000Z",
+        "updatedAt": "2026-04-30T04:00:00.000Z"
+      },
+      {
+        "id": "demo-assignment-14",
+        "subjectId": "demo-subject-4",
+        "title": "Implement transactional borrowing",
+        "description": "Apply the database systems concepts to a practical case study.",
+        "status": "graded",
+        "dueDate": "2026-05-13",
+        "dueTime": "23:59",
+        "weightPercent": 25,
+        "scoreObtained": 79,
+        "scoreMaximum": 100,
+        "submittedAt": "2026-05-11T04:00:00.000Z",
+        "createdAt": "2026-03-14T04:00:00.000Z",
+        "updatedAt": "2026-05-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-assignment-15",
+        "subjectId": "demo-subject-4",
+        "title": "Benchmark indexed search queries",
+        "description": "Apply the database systems concepts to a practical case study.",
+        "status": "graded",
+        "dueDate": "2026-06-02",
+        "dueTime": "23:59",
+        "weightPercent": 25,
+        "scoreObtained": 81,
+        "scoreMaximum": 100,
+        "submittedAt": "2026-05-31T04:00:00.000Z",
+        "createdAt": "2026-03-14T04:00:00.000Z",
+        "updatedAt": "2026-06-09T04:00:00.000Z"
+      },
+      {
+        "id": "demo-assignment-16",
+        "subjectId": "demo-subject-4",
+        "title": "Submit the data recovery report",
+        "description": "Apply the database systems concepts to a practical case study.",
+        "status": "graded",
+        "dueDate": "2026-06-22",
+        "dueTime": "23:59",
+        "weightPercent": 25,
+        "scoreObtained": 94,
+        "scoreMaximum": 100,
+        "submittedAt": "2026-06-20T04:00:00.000Z",
+        "createdAt": "2026-03-14T04:00:00.000Z",
+        "updatedAt": "2026-06-29T04:00:00.000Z"
+      },
+      {
+        "id": "demo-assignment-17",
+        "subjectId": "demo-subject-5",
+        "title": "Compare graph traversal strategies",
+        "description": "Apply the algorithms & data structures concepts to a practical case study.",
+        "status": "graded",
+        "dueDate": "2026-04-23",
+        "dueTime": "23:59",
+        "weightPercent": 25,
+        "scoreObtained": 82,
+        "scoreMaximum": 100,
+        "submittedAt": "2026-04-21T04:00:00.000Z",
+        "createdAt": "2026-03-14T04:00:00.000Z",
+        "updatedAt": "2026-04-30T04:00:00.000Z"
+      },
+      {
+        "id": "demo-assignment-18",
+        "subjectId": "demo-subject-5",
+        "title": "Implement a priority scheduler",
+        "description": "Apply the algorithms & data structures concepts to a practical case study.",
+        "status": "graded",
+        "dueDate": "2026-05-13",
+        "dueTime": "23:59",
+        "weightPercent": 25,
+        "scoreObtained": 84,
+        "scoreMaximum": 100,
+        "submittedAt": "2026-05-11T04:00:00.000Z",
+        "createdAt": "2026-03-14T04:00:00.000Z",
+        "updatedAt": "2026-05-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-assignment-19",
+        "subjectId": "demo-subject-5",
+        "title": "Profile sorting performance",
+        "description": "Apply the algorithms & data structures concepts to a practical case study.",
+        "status": "graded",
+        "dueDate": "2026-06-02",
+        "dueTime": "23:59",
+        "weightPercent": 25,
+        "scoreObtained": 86,
+        "scoreMaximum": 100,
+        "submittedAt": "2026-05-31T04:00:00.000Z",
+        "createdAt": "2026-03-14T04:00:00.000Z",
+        "updatedAt": "2026-06-09T04:00:00.000Z"
+      },
+      {
+        "id": "demo-assignment-2",
+        "subjectId": "demo-subject-1",
+        "title": "Compare container deployment strategies",
+        "description": "Apply the cloud architecture concepts to a practical case study.",
+        "status": "in_progress",
+        "dueDate": "2026-10-20",
+        "dueTime": "23:59",
+        "weightPercent": 25,
+        "createdAt": "2026-09-05T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-assignment-20",
+        "subjectId": "demo-subject-5",
+        "title": "Present the complexity analysis",
+        "description": "Apply the algorithms & data structures concepts to a practical case study.",
+        "status": "graded",
+        "dueDate": "2026-06-22",
+        "dueTime": "23:59",
+        "weightPercent": 25,
+        "scoreObtained": 79,
+        "scoreMaximum": 100,
+        "submittedAt": "2026-06-20T04:00:00.000Z",
+        "createdAt": "2026-03-14T04:00:00.000Z",
+        "updatedAt": "2026-06-29T04:00:00.000Z"
+      },
+      {
+        "id": "demo-assignment-21",
+        "subjectId": "demo-subject-6",
+        "title": "Write acceptance criteria",
+        "description": "Apply the software quality concepts to a practical case study.",
+        "status": "graded",
+        "dueDate": "2026-04-23",
+        "dueTime": "23:59",
+        "weightPercent": 25,
+        "scoreObtained": 93,
+        "scoreMaximum": 100,
+        "submittedAt": "2026-04-21T04:00:00.000Z",
+        "createdAt": "2026-03-14T04:00:00.000Z",
+        "updatedAt": "2026-04-30T04:00:00.000Z"
+      },
+      {
+        "id": "demo-assignment-22",
+        "subjectId": "demo-subject-6",
+        "title": "Build the regression test suite",
+        "description": "Apply the software quality concepts to a practical case study.",
+        "status": "graded",
+        "dueDate": "2026-05-13",
+        "dueTime": "23:59",
+        "weightPercent": 25,
+        "scoreObtained": 81,
+        "scoreMaximum": 100,
+        "submittedAt": "2026-05-11T04:00:00.000Z",
+        "createdAt": "2026-03-14T04:00:00.000Z",
+        "updatedAt": "2026-05-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-assignment-23",
+        "subjectId": "demo-subject-6",
+        "title": "Run an accessibility review",
+        "description": "Apply the software quality concepts to a practical case study.",
+        "status": "graded",
+        "dueDate": "2026-06-02",
+        "dueTime": "23:59",
+        "weightPercent": 25,
+        "scoreObtained": 92,
+        "scoreMaximum": 100,
+        "submittedAt": "2026-05-31T04:00:00.000Z",
+        "createdAt": "2026-03-14T04:00:00.000Z",
+        "updatedAt": "2026-06-09T04:00:00.000Z"
+      },
+      {
+        "id": "demo-assignment-24",
+        "subjectId": "demo-subject-6",
+        "title": "Submit the release quality report",
+        "description": "Apply the software quality concepts to a practical case study.",
+        "status": "graded",
+        "dueDate": "2026-06-22",
+        "dueTime": "23:59",
+        "weightPercent": 25,
+        "scoreObtained": 87,
+        "scoreMaximum": 100,
+        "submittedAt": "2026-06-20T04:00:00.000Z",
+        "createdAt": "2026-03-14T04:00:00.000Z",
+        "updatedAt": "2026-06-29T04:00:00.000Z"
+      },
+      {
+        "id": "demo-assignment-3",
+        "subjectId": "demo-subject-1",
+        "title": "Implement an observability dashboard",
+        "description": "Apply the cloud architecture concepts to a practical case study.",
+        "status": "not_started",
+        "dueDate": "2026-10-27",
+        "dueTime": "23:59",
+        "weightPercent": 25,
+        "createdAt": "2026-09-05T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-assignment-4",
+        "subjectId": "demo-subject-1",
+        "title": "Present the infrastructure cost review",
+        "description": "Apply the cloud architecture concepts to a practical case study.",
+        "status": "not_started",
+        "dueDate": "2026-11-07",
+        "dueTime": "23:59",
+        "weightPercent": 25,
+        "createdAt": "2026-09-05T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-assignment-5",
+        "subjectId": "demo-subject-2",
+        "title": "Interview five prototype users",
+        "description": "Apply the human computer interaction concepts to a practical case study.",
+        "status": "submitted",
+        "dueDate": "2026-10-19",
+        "dueTime": "23:59",
+        "weightPercent": 25,
+        "submittedAt": "2026-10-17T04:00:00.000Z",
+        "createdAt": "2026-09-05T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-assignment-6",
+        "subjectId": "demo-subject-2",
+        "title": "Audit a checkout keyboard flow",
+        "description": "Apply the human computer interaction concepts to a practical case study.",
+        "status": "in_progress",
+        "dueDate": "2026-10-22",
+        "dueTime": "23:59",
+        "weightPercent": 25,
+        "createdAt": "2026-09-05T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-assignment-7",
+        "subjectId": "demo-subject-2",
+        "title": "Build the high-fidelity prototype",
+        "description": "Apply the human computer interaction concepts to a practical case study.",
+        "status": "not_started",
+        "dueDate": "2026-10-29",
+        "dueTime": "23:59",
+        "weightPercent": 25,
+        "createdAt": "2026-09-05T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-assignment-8",
+        "subjectId": "demo-subject-2",
+        "title": "Present usability study findings",
+        "description": "Apply the human computer interaction concepts to a practical case study.",
+        "status": "not_started",
+        "dueDate": "2026-11-09",
+        "dueTime": "23:59",
+        "weightPercent": 25,
+        "createdAt": "2026-09-05T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-assignment-9",
+        "subjectId": "demo-subject-3",
+        "title": "Configure segmented lab networks",
+        "description": "Apply the network security concepts to a practical case study.",
+        "status": "submitted",
+        "dueDate": "2026-10-21",
+        "dueTime": "23:59",
+        "weightPercent": 25,
+        "submittedAt": "2026-10-19T04:00:00.000Z",
+        "createdAt": "2026-09-05T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      }
+    ],
+    "calendarEvents": [
+      {
+        "id": "demo-event-1",
+        "title": "Orbit product walkthrough",
+        "description": "Fictional demo event; edit this schedule freely.",
+        "location": "Online",
+        "startAt": "2026-10-18T01:00:00.000Z",
+        "endAt": "2026-10-18T02:00:00.000Z",
+        "isAllDay": false,
+        "createdAt": "2026-09-20T04:00:00.000Z",
+        "updatedAt": "2026-10-18T04:00:00.000Z"
+      },
+      {
+        "id": "demo-event-10",
+        "title": "Open source study group",
+        "description": "Fictional demo event; edit this schedule freely.",
+        "location": "Campus collaboration room",
+        "startAt": "2026-11-01T03:00:00.000Z",
+        "endAt": "2026-11-01T04:00:00.000Z",
+        "isAllDay": false,
+        "createdAt": "2026-09-20T04:00:00.000Z",
+        "updatedAt": "2026-10-18T04:00:00.000Z"
+      },
+      {
+        "id": "demo-event-11",
+        "title": "Course project presentation",
+        "description": "Fictional demo event; edit this schedule freely.",
+        "location": "Online",
+        "startAt": "2026-11-04",
+        "endAt": "2026-11-04",
+        "isAllDay": true,
+        "subjectId": "demo-subject-5",
+        "createdAt": "2026-09-20T04:00:00.000Z",
+        "updatedAt": "2026-10-18T04:00:00.000Z"
+      },
+      {
+        "id": "demo-event-12",
+        "title": "Portfolio feedback session",
+        "description": "Fictional demo event; edit this schedule freely.",
+        "location": "Campus collaboration room",
+        "startAt": "2026-11-07T05:00:00.000Z",
+        "endAt": "2026-11-07T08:00:00.000Z",
+        "isAllDay": false,
+        "createdAt": "2026-09-20T04:00:00.000Z",
+        "updatedAt": "2026-10-18T04:00:00.000Z"
+      },
+      {
+        "id": "demo-event-13",
+        "title": "Accessibility reading circle",
+        "description": "Fictional demo event; edit this schedule freely.",
+        "location": "Online",
+        "startAt": "2026-11-10T06:00:00.000Z",
+        "endAt": "2026-11-10T07:00:00.000Z",
+        "isAllDay": false,
+        "createdAt": "2026-09-20T04:00:00.000Z",
+        "updatedAt": "2026-10-18T04:00:00.000Z"
+      },
+      {
+        "id": "demo-event-14",
+        "title": "Infrastructure pairing session",
+        "description": "Fictional demo event; edit this schedule freely.",
+        "location": "Campus collaboration room",
+        "startAt": "2026-11-13T07:00:00.000Z",
+        "endAt": "2026-11-13T09:00:00.000Z",
+        "isAllDay": false,
+        "subjectId": "demo-subject-2",
+        "createdAt": "2026-09-20T04:00:00.000Z",
+        "updatedAt": "2026-10-18T04:00:00.000Z"
+      },
+      {
+        "id": "demo-event-15",
+        "title": "Quarterly learning review",
+        "description": "Fictional demo event; edit this schedule freely.",
+        "location": "Online",
+        "startAt": "2026-11-16T01:00:00.000Z",
+        "endAt": "2026-11-16T04:00:00.000Z",
+        "isAllDay": false,
+        "createdAt": "2026-09-20T04:00:00.000Z",
+        "updatedAt": "2026-10-18T04:00:00.000Z"
+      },
+      {
+        "id": "demo-event-16",
+        "title": "Community developer meetup",
+        "description": "Fictional demo event; edit this schedule freely.",
+        "location": "Campus collaboration room",
+        "startAt": "2026-11-19T02:00:00.000Z",
+        "endAt": "2026-11-19T03:00:00.000Z",
+        "isAllDay": false,
+        "createdAt": "2026-09-20T04:00:00.000Z",
+        "updatedAt": "2026-10-18T04:00:00.000Z"
+      },
+      {
+        "id": "demo-event-17",
+        "title": "Academy content workshop",
+        "description": "Fictional demo event; edit this schedule freely.",
+        "location": "Online",
+        "startAt": "2026-11-22T03:00:00.000Z",
+        "endAt": "2026-11-22T05:00:00.000Z",
+        "isAllDay": false,
+        "subjectId": "demo-subject-5",
+        "createdAt": "2026-09-20T04:00:00.000Z",
+        "updatedAt": "2026-10-18T04:00:00.000Z"
+      },
+      {
+        "id": "demo-event-18",
+        "title": "Research synthesis session",
+        "description": "Fictional demo event; edit this schedule freely.",
+        "location": "Campus collaboration room",
+        "startAt": "2026-11-25T04:00:00.000Z",
+        "endAt": "2026-11-25T07:00:00.000Z",
+        "isAllDay": false,
+        "createdAt": "2026-09-20T04:00:00.000Z",
+        "updatedAt": "2026-10-18T04:00:00.000Z"
+      },
+      {
+        "id": "demo-event-19",
+        "title": "Semester retrospective",
+        "description": "Fictional demo event; edit this schedule freely.",
+        "location": "Online",
+        "startAt": "2026-11-28",
+        "endAt": "2026-11-28",
+        "isAllDay": true,
+        "createdAt": "2026-09-20T04:00:00.000Z",
+        "updatedAt": "2026-10-18T04:00:00.000Z"
+      },
+      {
+        "id": "demo-event-2",
+        "title": "Cloud architecture lab",
+        "description": "Fictional demo event; edit this schedule freely.",
+        "location": "Campus collaboration room",
+        "startAt": "2026-10-19T02:00:00.000Z",
+        "endAt": "2026-10-19T04:00:00.000Z",
+        "isAllDay": false,
+        "subjectId": "demo-subject-2",
+        "createdAt": "2026-09-20T04:00:00.000Z",
+        "updatedAt": "2026-10-18T04:00:00.000Z"
+      },
+      {
+        "id": "demo-event-20",
+        "title": "Release readiness review",
+        "description": "Fictional demo event; edit this schedule freely.",
+        "location": "Campus collaboration room",
+        "startAt": "2026-12-01T06:00:00.000Z",
+        "endAt": "2026-12-01T08:00:00.000Z",
+        "isAllDay": false,
+        "subjectId": "demo-subject-2",
+        "createdAt": "2026-09-20T04:00:00.000Z",
+        "updatedAt": "2026-10-18T04:00:00.000Z"
+      },
+      {
+        "id": "demo-event-3",
+        "title": "Forma stakeholder review",
+        "description": "Fictional demo event; edit this schedule freely.",
+        "location": "Online",
+        "startAt": "2026-10-20T03:00:00.000Z",
+        "endAt": "2026-10-20T06:00:00.000Z",
+        "isAllDay": false,
+        "createdAt": "2026-09-20T04:00:00.000Z",
+        "updatedAt": "2026-10-18T04:00:00.000Z"
+      },
+      {
+        "id": "demo-event-4",
+        "title": "Network security workshop",
+        "description": "Fictional demo event; edit this schedule freely.",
+        "location": "Campus collaboration room",
+        "startAt": "2026-10-21T04:00:00.000Z",
+        "endAt": "2026-10-21T05:00:00.000Z",
+        "isAllDay": false,
+        "createdAt": "2026-09-20T04:00:00.000Z",
+        "updatedAt": "2026-10-18T04:00:00.000Z"
+      },
+      {
+        "id": "demo-event-5",
+        "title": "Weekly planning",
+        "description": "Fictional demo event; edit this schedule freely.",
+        "location": "Online",
+        "startAt": "2026-10-22T05:00:00.000Z",
+        "endAt": "2026-10-22T07:00:00.000Z",
+        "isAllDay": false,
+        "subjectId": "demo-subject-5",
+        "createdAt": "2026-09-20T04:00:00.000Z",
+        "updatedAt": "2026-10-18T04:00:00.000Z"
+      },
+      {
+        "id": "demo-event-6",
+        "title": "Prototype usability session",
+        "description": "Fictional demo event; edit this schedule freely.",
+        "location": "Campus collaboration room",
+        "startAt": "2026-10-23T06:00:00.000Z",
+        "endAt": "2026-10-23T09:00:00.000Z",
+        "isAllDay": false,
+        "createdAt": "2026-09-20T04:00:00.000Z",
+        "updatedAt": "2026-10-18T04:00:00.000Z"
+      },
+      {
+        "id": "demo-event-7",
+        "title": "Pulse design critique",
+        "description": "Fictional demo event; edit this schedule freely.",
+        "location": "Online",
+        "startAt": "2026-10-23T07:00:00.000Z",
+        "endAt": "2026-10-23T08:00:00.000Z",
+        "isAllDay": false,
+        "createdAt": "2026-09-20T04:00:00.000Z",
+        "updatedAt": "2026-10-18T04:00:00.000Z"
+      },
+      {
+        "id": "demo-event-8",
+        "title": "API reliability review",
+        "description": "Fictional demo event; edit this schedule freely.",
+        "location": "Campus collaboration room",
+        "startAt": "2026-10-26T01:00:00.000Z",
+        "endAt": "2026-10-26T03:00:00.000Z",
+        "isAllDay": false,
+        "subjectId": "demo-subject-2",
+        "createdAt": "2026-09-20T04:00:00.000Z",
+        "updatedAt": "2026-10-18T04:00:00.000Z"
+      },
+      {
+        "id": "demo-event-9",
+        "title": "Mentor office hours",
+        "description": "Fictional demo event; edit this schedule freely.",
+        "location": "Online",
+        "startAt": "2026-10-29T02:00:00.000Z",
+        "endAt": "2026-10-29T05:00:00.000Z",
+        "isAllDay": false,
+        "createdAt": "2026-09-20T04:00:00.000Z",
+        "updatedAt": "2026-10-18T04:00:00.000Z"
+      }
+    ],
+    "goals": [
+      {
+        "id": "demo-goal-1",
+        "title": "Ship a polished portfolio",
+        "why": "Make selected work easy to explore.",
+        "category": "Career",
+        "status": "active",
+        "targetDate": "2026-11-19",
+        "createdAt": "2026-08-21T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-goal-2",
+        "title": "Build dependable cloud skills",
+        "why": "Operate services with confidence.",
+        "category": "Learning",
+        "status": "active",
+        "targetDate": "2026-12-03",
+        "createdAt": "2026-08-21T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-goal-3",
+        "title": "Create a sustainable freelance practice",
+        "why": "Protect focused work and client relationships.",
+        "category": "Business",
+        "status": "active",
+        "targetDate": "2026-12-17",
+        "createdAt": "2026-08-21T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-goal-4",
+        "title": "Improve accessible interface design",
+        "why": "Make every workflow usable with a keyboard.",
+        "category": "Design",
+        "status": "active",
+        "targetDate": "2026-12-31",
+        "createdAt": "2026-08-21T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-goal-5",
+        "title": "Complete the computing foundations",
+        "why": "Build a strong technical foundation.",
+        "category": "Academics",
+        "status": "achieved",
+        "targetDate": "2026-07-27",
+        "createdAt": "2026-03-04T04:00:00.000Z",
+        "achievedAt": "2026-07-27T04:00:00.000Z",
+        "updatedAt": "2026-07-27T04:00:00.000Z"
+      },
+      {
+        "id": "demo-goal-6",
+        "title": "Contribute to open source",
+        "why": "Learn through small, useful contributions.",
+        "category": "Community",
+        "status": "planned",
+        "targetDate": "2027-01-28",
+        "createdAt": "2026-08-21T04:00:00.000Z",
+        "updatedAt": "2026-10-20T04:00:00.000Z"
+      }
+    ],
+    "goalTaskLinks": [
+      {
+        "id": "demo-link-1",
+        "goalId": "demo-goal-1",
+        "taskId": "demo-task-4",
+        "createdAt": "2026-10-15T04:00:00.000Z"
+      },
+      {
+        "id": "demo-link-10",
+        "goalId": "demo-goal-4",
+        "taskId": "demo-task-28",
+        "createdAt": "2026-10-15T04:00:00.000Z"
+      },
+      {
+        "id": "demo-link-11",
+        "goalId": "demo-goal-4",
+        "taskId": "demo-task-29",
+        "createdAt": "2026-10-15T04:00:00.000Z"
+      },
+      {
+        "id": "demo-link-12",
+        "goalId": "demo-goal-4",
+        "taskId": "demo-task-30",
+        "createdAt": "2026-10-15T04:00:00.000Z"
+      },
+      {
+        "id": "demo-link-13",
+        "goalId": "demo-goal-6",
+        "taskId": "demo-task-36",
+        "createdAt": "2026-10-15T04:00:00.000Z"
+      },
+      {
+        "id": "demo-link-14",
+        "goalId": "demo-goal-6",
+        "taskId": "demo-task-37",
+        "createdAt": "2026-10-15T04:00:00.000Z"
+      },
+      {
+        "id": "demo-link-15",
+        "goalId": "demo-goal-6",
+        "taskId": "demo-task-38",
+        "createdAt": "2026-10-15T04:00:00.000Z"
+      },
+      {
+        "id": "demo-link-2",
+        "goalId": "demo-goal-1",
+        "taskId": "demo-task-5",
+        "createdAt": "2026-10-15T04:00:00.000Z"
+      },
+      {
+        "id": "demo-link-3",
+        "goalId": "demo-goal-1",
+        "taskId": "demo-task-6",
+        "createdAt": "2026-10-15T04:00:00.000Z"
+      },
+      {
+        "id": "demo-link-4",
+        "goalId": "demo-goal-2",
+        "taskId": "demo-task-12",
+        "createdAt": "2026-10-15T04:00:00.000Z"
+      },
+      {
+        "id": "demo-link-5",
+        "goalId": "demo-goal-2",
+        "taskId": "demo-task-13",
+        "createdAt": "2026-10-15T04:00:00.000Z"
+      },
+      {
+        "id": "demo-link-6",
+        "goalId": "demo-goal-2",
+        "taskId": "demo-task-14",
+        "createdAt": "2026-10-15T04:00:00.000Z"
+      },
+      {
+        "id": "demo-link-7",
+        "goalId": "demo-goal-3",
+        "taskId": "demo-task-20",
+        "createdAt": "2026-10-15T04:00:00.000Z"
+      },
+      {
+        "id": "demo-link-8",
+        "goalId": "demo-goal-3",
+        "taskId": "demo-task-21",
+        "createdAt": "2026-10-15T04:00:00.000Z"
+      },
+      {
+        "id": "demo-link-9",
+        "goalId": "demo-goal-3",
+        "taskId": "demo-task-22",
+        "createdAt": "2026-10-15T04:00:00.000Z"
+      }
+    ],
+    "focusSelections": [
+      {
+        "id": "demo-focus-1",
+        "taskId": "demo-task-145",
+        "effectiveLocalDate": "2026-10-20",
+        "chosenAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-focus-2",
+        "taskId": "demo-task-146",
+        "effectiveLocalDate": "2026-10-20",
+        "chosenAt": "2026-10-20T04:00:00.000Z"
+      },
+      {
+        "id": "demo-focus-3",
+        "taskId": "demo-task-147",
+        "effectiveLocalDate": "2026-10-20",
+        "chosenAt": "2026-10-20T04:00:00.000Z"
+      }
+    ],
+    "assetBlobs": [
+      {
+        "id": "demo-cover-1",
+        "ownerType": "project",
+        "ownerId": "demo-project-1",
+        "mimeType": "image/svg+xml",
+        "size": 714,
+        "data": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4MDAgNDQwIj48cmVjdCB3aWR0aD0iODAwIiBoZWlnaHQ9IjQ0MCIgZmlsbD0iIzEwMWMzNSIvPjxwYXRoIGQ9Ik00MCA1NUgyNjBNNDAgMzgwSDc2MCIgc3Ryb2tlPSIjZWZiNGEyIiBvcGFjaXR5PSIuMyIvPjx0ZXh0IHg9IjQwIiB5PSIxMDAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE0IiBsZXR0ZXItc3BhY2luZz0iNCIgZmlsbD0iI2E4ZGNjYSI+TkVNTyAvIFNUVURJTyAwMTwvdGV4dD48dGV4dCB4PSI0MCIgeT0iMzMwIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSI0MCIgZm9udC13ZWlnaHQ9IjYwMCIgZmlsbD0iI2VmYjRhMiI+T3JiaXQ8L3RleHQ+PHRleHQgeD0iNDAiIHk9IjM1OCIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTMiIGxldHRlci1zcGFjaW5nPSIyIiBmaWxsPSIjYThkY2NhIj5GSUNUSU9OQUwgUFJPSkVDVDwvdGV4dD48Y2lyY2xlIGN4PSI1MzAiIGN5PSIxOTAiIHI9IjEzMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZWZiNGEyIiBzdHJva2Utd2lkdGg9IjM4Ii8+PGNpcmNsZSBjeD0iNTMwIiBjeT0iMTkwIiByPSI2NiIgZmlsbD0iI2E4ZGNjYSIvPjxwYXRoIGQ9Ik0zNDUgMzMwIDczMCA1MCIgc3Ryb2tlPSIjMTAxYzM1IiBzdHJva2Utd2lkdGg9IjIyIi8+PC9zdmc+",
+        "createdAt": "2026-09-07T04:00:00.000Z"
+      },
+      {
+        "id": "demo-cover-10",
+        "ownerType": "project",
+        "ownerId": "demo-project-10",
+        "mimeType": "image/svg+xml",
+        "size": 716,
+        "data": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4MDAgNDQwIj48cmVjdCB3aWR0aD0iODAwIiBoZWlnaHQ9IjQ0MCIgZmlsbD0iIzE3MmUzYiIvPjxwYXRoIGQ9Ik00MCA1NUgyNjBNNDAgMzgwSDc2MCIgc3Ryb2tlPSIjYTRkNGRmIiBvcGFjaXR5PSIuMyIvPjx0ZXh0IHg9IjQwIiB5PSIxMDAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE0IiBsZXR0ZXItc3BhY2luZz0iNCIgZmlsbD0iI2YxY2M4ZSI+TkVNTyAvIFNUVURJTyAxMDwvdGV4dD48dGV4dCB4PSI0MCIgeT0iMzMwIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSI0MCIgZm9udC13ZWlnaHQ9IjYwMCIgZmlsbD0iI2E0ZDRkZiI+TW9ub2dyYXBoPC90ZXh0Pjx0ZXh0IHg9IjQwIiB5PSIzNTgiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjEzIiBsZXR0ZXItc3BhY2luZz0iMiIgZmlsbD0iI2YxY2M4ZSI+RklDVElPTkFMIFBST0pFQ1Q8L3RleHQ+PHJlY3QgeD0iMzkwIiB5PSI3NSIgd2lkdGg9IjI0MCIgaGVpZ2h0PSIyODAiIHJ4PSIxMDAiIGZpbGw9IiNhNGQ0ZGYiLz48cmVjdCB4PSI0NDAiIHk9IjEyNSIgd2lkdGg9IjE0MCIgaGVpZ2h0PSIxODAiIHJ4PSI2MCIgZmlsbD0iIzE3MmUzYiIvPjxjaXJjbGUgY3g9IjUxMCIgY3k9IjIxNSIgcj0iMzgiIGZpbGw9IiNmMWNjOGUiLz48L3N2Zz4=",
+        "createdAt": "2025-06-09T04:00:00.000Z"
+      },
+      {
+        "id": "demo-cover-11",
+        "ownerType": "project",
+        "ownerId": "demo-project-11",
+        "mimeType": "image/svg+xml",
+        "size": 753,
+        "data": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4MDAgNDQwIj48cmVjdCB3aWR0aD0iODAwIiBoZWlnaHQ9IjQ0MCIgZmlsbD0iIzNhMjgyZCIvPjxwYXRoIGQ9Ik00MCA1NUgyNjBNNDAgMzgwSDc2MCIgc3Ryb2tlPSIjZWZiNmFhIiBvcGFjaXR5PSIuMyIvPjx0ZXh0IHg9IjQwIiB5PSIxMDAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE0IiBsZXR0ZXItc3BhY2luZz0iNCIgZmlsbD0iI2IwYzRkYyI+TkVNTyAvIFNUVURJTyAxMTwvdGV4dD48dGV4dCB4PSI0MCIgeT0iMzMwIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSI0MCIgZm9udC13ZWlnaHQ9IjYwMCIgZmlsbD0iI2VmYjZhYSI+Q2Fub3B5PC90ZXh0Pjx0ZXh0IHg9IjQwIiB5PSIzNTgiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjEzIiBsZXR0ZXItc3BhY2luZz0iMiIgZmlsbD0iI2IwYzRkYyI+RklDVElPTkFMIFBST0pFQ1Q8L3RleHQ+PGcgc3Ryb2tlPSIjZWZiNmFhIiBzdHJva2Utd2lkdGg9IjIiIGZpbGw9Im5vbmUiPjxwYXRoIGQ9Im0zNTAgMjEwIDE1MC0xNTAgMTUwIDE1MC0xNTAgMTUwWiIvPjxwYXRoIGQ9Im0zOTAgMjEwIDExMC0xMTAgMTEwIDExMC0xMTAgMTEwWiIvPjxwYXRoIGQ9Im00MzAgMjEwIDcwLTcwIDcwIDcwLTcwIDcwWiIvPjwvZz48Y2lyY2xlIGN4PSI1MDAiIGN5PSIyMTAiIHI9IjMwIiBmaWxsPSIjYjBjNGRjIi8+PC9zdmc+",
+        "createdAt": "2025-08-08T04:00:00.000Z"
+      },
+      {
+        "id": "demo-cover-12",
+        "ownerType": "project",
+        "ownerId": "demo-project-12",
+        "mimeType": "image/svg+xml",
+        "size": 683,
+        "data": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4MDAgNDQwIj48cmVjdCB3aWR0aD0iODAwIiBoZWlnaHQ9IjQ0MCIgZmlsbD0iIzIyMzAyYyIvPjxwYXRoIGQ9Ik00MCA1NUgyNjBNNDAgMzgwSDc2MCIgc3Ryb2tlPSIjYjhkNWJiIiBvcGFjaXR5PSIuMyIvPjx0ZXh0IHg9IjQwIiB5PSIxMDAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE0IiBsZXR0ZXItc3BhY2luZz0iNCIgZmlsbD0iI2U3YzY5YSI+TkVNTyAvIFNUVURJTyAxMjwvdGV4dD48dGV4dCB4PSI0MCIgeT0iMzMwIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSI0MCIgZm9udC13ZWlnaHQ9IjYwMCIgZmlsbD0iI2I4ZDViYiI+U2lnbmFsPC90ZXh0Pjx0ZXh0IHg9IjQwIiB5PSIzNTgiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjEzIiBsZXR0ZXItc3BhY2luZz0iMiIgZmlsbD0iI2U3YzY5YSI+RklDVElPTkFMIFBST0pFQ1Q8L3RleHQ+PHBhdGggZD0iTTM0MCAzMzAgNDMwIDkwIDUyMCAzMzBaIiBmaWxsPSIjYjhkNWJiIi8+PHBhdGggZD0iTTQ3MCAzMzAgNTYwIDkwIDY1MCAzMzBaIiBmaWxsPSIjZTdjNjlhIi8+PHBhdGggZD0iTTQ5MCAyNzVoMTAwIiBzdHJva2U9IiMyMjMwMmMiIHN0cm9rZS13aWR0aD0iMTAiLz48L3N2Zz4=",
+        "createdAt": "2025-10-07T04:00:00.000Z"
+      },
+      {
+        "id": "demo-cover-13",
+        "ownerType": "project",
+        "ownerId": "demo-project-13",
+        "mimeType": "image/svg+xml",
+        "size": 715,
+        "data": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4MDAgNDQwIj48cmVjdCB3aWR0aD0iODAwIiBoZWlnaHQ9IjQ0MCIgZmlsbD0iIzEwMWMzNSIvPjxwYXRoIGQ9Ik00MCA1NUgyNjBNNDAgMzgwSDc2MCIgc3Ryb2tlPSIjZWZiNGEyIiBvcGFjaXR5PSIuMyIvPjx0ZXh0IHg9IjQwIiB5PSIxMDAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE0IiBsZXR0ZXItc3BhY2luZz0iNCIgZmlsbD0iI2E4ZGNjYSI+TkVNTyAvIFNUVURJTyAxMzwvdGV4dD48dGV4dCB4PSI0MCIgeT0iMzMwIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSI0MCIgZm9udC13ZWlnaHQ9IjYwMCIgZmlsbD0iI2VmYjRhMiI+TG9jYWxlPC90ZXh0Pjx0ZXh0IHg9IjQwIiB5PSIzNTgiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjEzIiBsZXR0ZXItc3BhY2luZz0iMiIgZmlsbD0iI2E4ZGNjYSI+RklDVElPTkFMIFBST0pFQ1Q8L3RleHQ+PGNpcmNsZSBjeD0iNTMwIiBjeT0iMTkwIiByPSIxMzAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2VmYjRhMiIgc3Ryb2tlLXdpZHRoPSIzOCIvPjxjaXJjbGUgY3g9IjUzMCIgY3k9IjE5MCIgcj0iNjYiIGZpbGw9IiNhOGRjY2EiLz48cGF0aCBkPSJNMzQ1IDMzMCA3MzAgNTAiIHN0cm9rZT0iIzEwMWMzNSIgc3Ryb2tlLXdpZHRoPSIyMiIvPjwvc3ZnPg==",
+        "createdAt": "2025-12-07T04:00:00.000Z"
+      },
+      {
+        "id": "demo-cover-14",
+        "ownerType": "project",
+        "ownerId": "demo-project-14",
+        "mimeType": "image/svg+xml",
+        "size": 655,
+        "data": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4MDAgNDQwIj48cmVjdCB3aWR0aD0iODAwIiBoZWlnaHQ9IjQ0MCIgZmlsbD0iIzI2MzkyZiIvPjxwYXRoIGQ9Ik00MCA1NUgyNjBNNDAgMzgwSDc2MCIgc3Ryb2tlPSIjZTVkOWIzIiBvcGFjaXR5PSIuMyIvPjx0ZXh0IHg9IjQwIiB5PSIxMDAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE0IiBsZXR0ZXItc3BhY2luZz0iNCIgZmlsbD0iIzliYmQ4YSI+TkVNTyAvIFNUVURJTyAxNDwvdGV4dD48dGV4dCB4PSI0MCIgeT0iMzMwIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSI0MCIgZm9udC13ZWlnaHQ9IjYwMCIgZmlsbD0iI2U1ZDliMyI+TGVkZ2VyPC90ZXh0Pjx0ZXh0IHg9IjQwIiB5PSIzNTgiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjEzIiBsZXR0ZXItc3BhY2luZz0iMiIgZmlsbD0iIzliYmQ4YSI+RklDVElPTkFMIFBST0pFQ1Q8L3RleHQ+PHBhdGggZD0iTTM3NSAzMzBWMTE1TDQ5MCA1NVYyNzBaIE01MTAgMjcwVjU1TDYyNSAxMTVWMzMwWiIgZmlsbD0iI2U1ZDliMyIvPjxwYXRoIGQ9Im0zNzUgMzMwIDExNS02MCAxMzUgNjAtMTE1IDYwWiIgZmlsbD0iIzliYmQ4YSIvPjwvc3ZnPg==",
+        "createdAt": "2026-02-03T04:00:00.000Z"
+      },
+      {
+        "id": "demo-cover-15",
+        "ownerType": "project",
+        "ownerId": "demo-project-15",
+        "mimeType": "image/svg+xml",
+        "size": 676,
+        "data": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4MDAgNDQwIj48cmVjdCB3aWR0aD0iODAwIiBoZWlnaHQ9IjQ0MCIgZmlsbD0iIzI1MjEzOCIvPjxwYXRoIGQ9Ik00MCA1NUgyNjBNNDAgMzgwSDc2MCIgc3Ryb2tlPSIjYzRiOWVjIiBvcGFjaXR5PSIuMyIvPjx0ZXh0IHg9IjQwIiB5PSIxMDAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE0IiBsZXR0ZXItc3BhY2luZz0iNCIgZmlsbD0iI2VmYmI5YSI+TkVNTyAvIFNUVURJTyAxNTwvdGV4dD48dGV4dCB4PSI0MCIgeT0iMzMwIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSI0MCIgZm9udC13ZWlnaHQ9IjYwMCIgZmlsbD0iI2M0YjllYyI+UmVsYXk8L3RleHQ+PHRleHQgeD0iNDAiIHk9IjM1OCIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTMiIGxldHRlci1zcGFjaW5nPSIyIiBmaWxsPSIjZWZiYjlhIj5GSUNUSU9OQUwgUFJPSkVDVDwvdGV4dD48ZyBmaWxsPSJub25lIiBzdHJva2U9IiNjNGI5ZWMiIHN0cm9rZS13aWR0aD0iMTgiPjxwYXRoIGQ9Ik0zNTAgMjk1IDQ1MCAxMTUgNTUwIDI5NSA2NTAgMTE1Ii8+PHBhdGggZD0iTTM1MCAzNTAgNDUwIDE3MCA1NTAgMzUwIDY1MCAxNzAiIG9wYWNpdHk9Ii40Ii8+PC9nPjwvc3ZnPg==",
+        "createdAt": "2026-04-04T04:00:00.000Z"
+      },
+      {
+        "id": "demo-cover-16",
+        "ownerType": "project",
+        "ownerId": "demo-project-16",
+        "mimeType": "image/svg+xml",
+        "size": 713,
+        "data": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4MDAgNDQwIj48cmVjdCB3aWR0aD0iODAwIiBoZWlnaHQ9IjQ0MCIgZmlsbD0iIzE3MmUzYiIvPjxwYXRoIGQ9Ik00MCA1NUgyNjBNNDAgMzgwSDc2MCIgc3Ryb2tlPSIjYTRkNGRmIiBvcGFjaXR5PSIuMyIvPjx0ZXh0IHg9IjQwIiB5PSIxMDAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE0IiBsZXR0ZXItc3BhY2luZz0iNCIgZmlsbD0iI2YxY2M4ZSI+TkVNTyAvIFNUVURJTyAxNjwvdGV4dD48dGV4dCB4PSI0MCIgeT0iMzMwIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSI0MCIgZm9udC13ZWlnaHQ9IjYwMCIgZmlsbD0iI2E0ZDRkZiI+TW9ycm93PC90ZXh0Pjx0ZXh0IHg9IjQwIiB5PSIzNTgiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjEzIiBsZXR0ZXItc3BhY2luZz0iMiIgZmlsbD0iI2YxY2M4ZSI+RklDVElPTkFMIFBST0pFQ1Q8L3RleHQ+PHJlY3QgeD0iMzkwIiB5PSI3NSIgd2lkdGg9IjI0MCIgaGVpZ2h0PSIyODAiIHJ4PSIxMDAiIGZpbGw9IiNhNGQ0ZGYiLz48cmVjdCB4PSI0NDAiIHk9IjEyNSIgd2lkdGg9IjE0MCIgaGVpZ2h0PSIxODAiIHJ4PSI2MCIgZmlsbD0iIzE3MmUzYiIvPjxjaXJjbGUgY3g9IjUxMCIgY3k9IjIxNSIgcj0iMzgiIGZpbGw9IiNmMWNjOGUiLz48L3N2Zz4=",
+        "createdAt": "2026-05-03T04:00:00.000Z"
+      },
+      {
+        "id": "demo-cover-17",
+        "ownerType": "project",
+        "ownerId": "demo-project-17",
+        "mimeType": "image/svg+xml",
+        "size": 756,
+        "data": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4MDAgNDQwIj48cmVjdCB3aWR0aD0iODAwIiBoZWlnaHQ9IjQ0MCIgZmlsbD0iIzNhMjgyZCIvPjxwYXRoIGQ9Ik00MCA1NUgyNjBNNDAgMzgwSDc2MCIgc3Ryb2tlPSIjZWZiNmFhIiBvcGFjaXR5PSIuMyIvPjx0ZXh0IHg9IjQwIiB5PSIxMDAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE0IiBsZXR0ZXItc3BhY2luZz0iNCIgZmlsbD0iI2IwYzRkYyI+TkVNTyAvIFNUVURJTyAxNzwvdGV4dD48dGV4dCB4PSI0MCIgeT0iMzMwIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSI0MCIgZm9udC13ZWlnaHQ9IjYwMCIgZmlsbD0iI2VmYjZhYSI+Tm9ydGhzdGFyPC90ZXh0Pjx0ZXh0IHg9IjQwIiB5PSIzNTgiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjEzIiBsZXR0ZXItc3BhY2luZz0iMiIgZmlsbD0iI2IwYzRkYyI+RklDVElPTkFMIFBST0pFQ1Q8L3RleHQ+PGcgc3Ryb2tlPSIjZWZiNmFhIiBzdHJva2Utd2lkdGg9IjIiIGZpbGw9Im5vbmUiPjxwYXRoIGQ9Im0zNTAgMjEwIDE1MC0xNTAgMTUwIDE1MC0xNTAgMTUwWiIvPjxwYXRoIGQ9Im0zOTAgMjEwIDExMC0xMTAgMTEwIDExMC0xMTAgMTEwWiIvPjxwYXRoIGQ9Im00MzAgMjEwIDcwLTcwIDcwIDcwLTcwIDcwWiIvPjwvZz48Y2lyY2xlIGN4PSI1MDAiIGN5PSIyMTAiIHI9IjMwIiBmaWxsPSIjYjBjNGRjIi8+PC9zdmc+",
+        "createdAt": "2026-06-02T04:00:00.000Z"
+      },
+      {
+        "id": "demo-cover-18",
+        "ownerType": "project",
+        "ownerId": "demo-project-18",
+        "mimeType": "image/svg+xml",
+        "size": 684,
+        "data": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4MDAgNDQwIj48cmVjdCB3aWR0aD0iODAwIiBoZWlnaHQ9IjQ0MCIgZmlsbD0iIzIyMzAyYyIvPjxwYXRoIGQ9Ik00MCA1NUgyNjBNNDAgMzgwSDc2MCIgc3Ryb2tlPSIjYjhkNWJiIiBvcGFjaXR5PSIuMyIvPjx0ZXh0IHg9IjQwIiB5PSIxMDAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE0IiBsZXR0ZXItc3BhY2luZz0iNCIgZmlsbD0iI2U3YzY5YSI+TkVNTyAvIFNUVURJTyAxODwvdGV4dD48dGV4dCB4PSI0MCIgeT0iMzMwIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSI0MCIgZm9udC13ZWlnaHQ9IjYwMCIgZmlsbD0iI2I4ZDViYiI+VGVycmFpbjwvdGV4dD48dGV4dCB4PSI0MCIgeT0iMzU4IiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMyIgbGV0dGVyLXNwYWNpbmc9IjIiIGZpbGw9IiNlN2M2OWEiPkZJQ1RJT05BTCBQUk9KRUNUPC90ZXh0PjxwYXRoIGQ9Ik0zNDAgMzMwIDQzMCA5MCA1MjAgMzMwWiIgZmlsbD0iI2I4ZDViYiIvPjxwYXRoIGQ9Ik00NzAgMzMwIDU2MCA5MCA2NTAgMzMwWiIgZmlsbD0iI2U3YzY5YSIvPjxwYXRoIGQ9Ik00OTAgMjc1aDEwMCIgc3Ryb2tlPSIjMjIzMDJjIiBzdHJva2Utd2lkdGg9IjEwIi8+PC9zdmc+",
+        "createdAt": "2026-07-02T04:00:00.000Z"
+      },
+      {
+        "id": "demo-cover-2",
+        "ownerType": "project",
+        "ownerId": "demo-project-2",
+        "mimeType": "image/svg+xml",
+        "size": 654,
+        "data": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4MDAgNDQwIj48cmVjdCB3aWR0aD0iODAwIiBoZWlnaHQ9IjQ0MCIgZmlsbD0iIzI2MzkyZiIvPjxwYXRoIGQ9Ik00MCA1NUgyNjBNNDAgMzgwSDc2MCIgc3Ryb2tlPSIjZTVkOWIzIiBvcGFjaXR5PSIuMyIvPjx0ZXh0IHg9IjQwIiB5PSIxMDAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE0IiBsZXR0ZXItc3BhY2luZz0iNCIgZmlsbD0iIzliYmQ4YSI+TkVNTyAvIFNUVURJTyAwMjwvdGV4dD48dGV4dCB4PSI0MCIgeT0iMzMwIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSI0MCIgZm9udC13ZWlnaHQ9IjYwMCIgZmlsbD0iI2U1ZDliMyI+Rm9ybWE8L3RleHQ+PHRleHQgeD0iNDAiIHk9IjM1OCIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTMiIGxldHRlci1zcGFjaW5nPSIyIiBmaWxsPSIjOWJiZDhhIj5GSUNUSU9OQUwgUFJPSkVDVDwvdGV4dD48cGF0aCBkPSJNMzc1IDMzMFYxMTVMNDkwIDU1VjI3MFogTTUxMCAyNzBWNTVMNjI1IDExNVYzMzBaIiBmaWxsPSIjZTVkOWIzIi8+PHBhdGggZD0ibTM3NSAzMzAgMTE1LTYwIDEzNSA2MC0xMTUgNjBaIiBmaWxsPSIjOWJiZDhhIi8+PC9zdmc+",
+        "createdAt": "2026-09-11T04:00:00.000Z"
+      },
+      {
+        "id": "demo-cover-3",
+        "ownerType": "project",
+        "ownerId": "demo-project-3",
+        "mimeType": "image/svg+xml",
+        "size": 676,
+        "data": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4MDAgNDQwIj48cmVjdCB3aWR0aD0iODAwIiBoZWlnaHQ9IjQ0MCIgZmlsbD0iIzI1MjEzOCIvPjxwYXRoIGQ9Ik00MCA1NUgyNjBNNDAgMzgwSDc2MCIgc3Ryb2tlPSIjYzRiOWVjIiBvcGFjaXR5PSIuMyIvPjx0ZXh0IHg9IjQwIiB5PSIxMDAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE0IiBsZXR0ZXItc3BhY2luZz0iNCIgZmlsbD0iI2VmYmI5YSI+TkVNTyAvIFNUVURJTyAwMzwvdGV4dD48dGV4dCB4PSI0MCIgeT0iMzMwIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSI0MCIgZm9udC13ZWlnaHQ9IjYwMCIgZmlsbD0iI2M0YjllYyI+Q2xvdWQ8L3RleHQ+PHRleHQgeD0iNDAiIHk9IjM1OCIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTMiIGxldHRlci1zcGFjaW5nPSIyIiBmaWxsPSIjZWZiYjlhIj5GSUNUSU9OQUwgUFJPSkVDVDwvdGV4dD48ZyBmaWxsPSJub25lIiBzdHJva2U9IiNjNGI5ZWMiIHN0cm9rZS13aWR0aD0iMTgiPjxwYXRoIGQ9Ik0zNTAgMjk1IDQ1MCAxMTUgNTUwIDI5NSA2NTAgMTE1Ii8+PHBhdGggZD0iTTM1MCAzNTAgNDUwIDE3MCA1NTAgMzUwIDY1MCAxNzAiIG9wYWNpdHk9Ii40Ii8+PC9nPjwvc3ZnPg==",
+        "createdAt": "2026-09-15T04:00:00.000Z"
+      },
+      {
+        "id": "demo-cover-4",
+        "ownerType": "project",
+        "ownerId": "demo-project-4",
+        "mimeType": "image/svg+xml",
+        "size": 712,
+        "data": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4MDAgNDQwIj48cmVjdCB3aWR0aD0iODAwIiBoZWlnaHQ9IjQ0MCIgZmlsbD0iIzE3MmUzYiIvPjxwYXRoIGQ9Ik00MCA1NUgyNjBNNDAgMzgwSDc2MCIgc3Ryb2tlPSIjYTRkNGRmIiBvcGFjaXR5PSIuMyIvPjx0ZXh0IHg9IjQwIiB5PSIxMDAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE0IiBsZXR0ZXItc3BhY2luZz0iNCIgZmlsbD0iI2YxY2M4ZSI+TkVNTyAvIFNUVURJTyAwNDwvdGV4dD48dGV4dCB4PSI0MCIgeT0iMzMwIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSI0MCIgZm9udC13ZWlnaHQ9IjYwMCIgZmlsbD0iI2E0ZDRkZiI+UHVsc2U8L3RleHQ+PHRleHQgeD0iNDAiIHk9IjM1OCIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTMiIGxldHRlci1zcGFjaW5nPSIyIiBmaWxsPSIjZjFjYzhlIj5GSUNUSU9OQUwgUFJPSkVDVDwvdGV4dD48cmVjdCB4PSIzOTAiIHk9Ijc1IiB3aWR0aD0iMjQwIiBoZWlnaHQ9IjI4MCIgcng9IjEwMCIgZmlsbD0iI2E0ZDRkZiIvPjxyZWN0IHg9IjQ0MCIgeT0iMTI1IiB3aWR0aD0iMTQwIiBoZWlnaHQ9IjE4MCIgcng9IjYwIiBmaWxsPSIjMTcyZTNiIi8+PGNpcmNsZSBjeD0iNTEwIiBjeT0iMjE1IiByPSIzOCIgZmlsbD0iI2YxY2M4ZSIvPjwvc3ZnPg==",
+        "createdAt": "2026-09-19T04:00:00.000Z"
+      },
+      {
+        "id": "demo-cover-5",
+        "ownerType": "project",
+        "ownerId": "demo-project-5",
+        "mimeType": "image/svg+xml",
+        "size": 752,
+        "data": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4MDAgNDQwIj48cmVjdCB3aWR0aD0iODAwIiBoZWlnaHQ9IjQ0MCIgZmlsbD0iIzNhMjgyZCIvPjxwYXRoIGQ9Ik00MCA1NUgyNjBNNDAgMzgwSDc2MCIgc3Ryb2tlPSIjZWZiNmFhIiBvcGFjaXR5PSIuMyIvPjx0ZXh0IHg9IjQwIiB5PSIxMDAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE0IiBsZXR0ZXItc3BhY2luZz0iNCIgZmlsbD0iI2IwYzRkYyI+TkVNTyAvIFNUVURJTyAwNTwvdGV4dD48dGV4dCB4PSI0MCIgeT0iMzMwIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSI0MCIgZm9udC13ZWlnaHQ9IjYwMCIgZmlsbD0iI2VmYjZhYSI+QXRsYXM8L3RleHQ+PHRleHQgeD0iNDAiIHk9IjM1OCIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTMiIGxldHRlci1zcGFjaW5nPSIyIiBmaWxsPSIjYjBjNGRjIj5GSUNUSU9OQUwgUFJPSkVDVDwvdGV4dD48ZyBzdHJva2U9IiNlZmI2YWEiIHN0cm9rZS13aWR0aD0iMiIgZmlsbD0ibm9uZSI+PHBhdGggZD0ibTM1MCAyMTAgMTUwLTE1MCAxNTAgMTUwLTE1MCAxNTBaIi8+PHBhdGggZD0ibTM5MCAyMTAgMTEwLTExMCAxMTAgMTEwLTExMCAxMTBaIi8+PHBhdGggZD0ibTQzMCAyMTAgNzAtNzAgNzAgNzAtNzAgNzBaIi8+PC9nPjxjaXJjbGUgY3g9IjUwMCIgY3k9IjIxMCIgcj0iMzAiIGZpbGw9IiNiMGM0ZGMiLz48L3N2Zz4=",
+        "createdAt": "2026-09-23T04:00:00.000Z"
+      },
+      {
+        "id": "demo-cover-6",
+        "ownerType": "project",
+        "ownerId": "demo-project-6",
+        "mimeType": "image/svg+xml",
+        "size": 684,
+        "data": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4MDAgNDQwIj48cmVjdCB3aWR0aD0iODAwIiBoZWlnaHQ9IjQ0MCIgZmlsbD0iIzIyMzAyYyIvPjxwYXRoIGQ9Ik00MCA1NUgyNjBNNDAgMzgwSDc2MCIgc3Ryb2tlPSIjYjhkNWJiIiBvcGFjaXR5PSIuMyIvPjx0ZXh0IHg9IjQwIiB5PSIxMDAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE0IiBsZXR0ZXItc3BhY2luZz0iNCIgZmlsbD0iI2U3YzY5YSI+TkVNTyAvIFNUVURJTyAwNjwvdGV4dD48dGV4dCB4PSI0MCIgeT0iMzMwIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSI0MCIgZm9udC13ZWlnaHQ9IjYwMCIgZmlsbD0iI2I4ZDViYiI+QWNhZGVteTwvdGV4dD48dGV4dCB4PSI0MCIgeT0iMzU4IiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMyIgbGV0dGVyLXNwYWNpbmc9IjIiIGZpbGw9IiNlN2M2OWEiPkZJQ1RJT05BTCBQUk9KRUNUPC90ZXh0PjxwYXRoIGQ9Ik0zNDAgMzMwIDQzMCA5MCA1MjAgMzMwWiIgZmlsbD0iI2I4ZDViYiIvPjxwYXRoIGQ9Ik00NzAgMzMwIDU2MCA5MCA2NTAgMzMwWiIgZmlsbD0iI2U3YzY5YSIvPjxwYXRoIGQ9Ik00OTAgMjc1aDEwMCIgc3Ryb2tlPSIjMjIzMDJjIiBzdHJva2Utd2lkdGg9IjEwIi8+PC9zdmc+",
+        "createdAt": "2026-09-27T04:00:00.000Z"
+      },
+      {
+        "id": "demo-cover-7",
+        "ownerType": "project",
+        "ownerId": "demo-project-7",
+        "mimeType": "image/svg+xml",
+        "size": 714,
+        "data": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4MDAgNDQwIj48cmVjdCB3aWR0aD0iODAwIiBoZWlnaHQ9IjQ0MCIgZmlsbD0iIzEwMWMzNSIvPjxwYXRoIGQ9Ik00MCA1NUgyNjBNNDAgMzgwSDc2MCIgc3Ryb2tlPSIjZWZiNGEyIiBvcGFjaXR5PSIuMyIvPjx0ZXh0IHg9IjQwIiB5PSIxMDAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE0IiBsZXR0ZXItc3BhY2luZz0iNCIgZmlsbD0iI2E4ZGNjYSI+TkVNTyAvIFNUVURJTyAwNzwvdGV4dD48dGV4dCB4PSI0MCIgeT0iMzMwIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSI0MCIgZm9udC13ZWlnaHQ9IjYwMCIgZmlsbD0iI2VmYjRhMiI+RmllbGQ8L3RleHQ+PHRleHQgeD0iNDAiIHk9IjM1OCIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTMiIGxldHRlci1zcGFjaW5nPSIyIiBmaWxsPSIjYThkY2NhIj5GSUNUSU9OQUwgUFJPSkVDVDwvdGV4dD48Y2lyY2xlIGN4PSI1MzAiIGN5PSIxOTAiIHI9IjEzMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZWZiNGEyIiBzdHJva2Utd2lkdGg9IjM4Ii8+PGNpcmNsZSBjeD0iNTMwIiBjeT0iMTkwIiByPSI2NiIgZmlsbD0iI2E4ZGNjYSIvPjxwYXRoIGQ9Ik0zNDUgMzMwIDczMCA1MCIgc3Ryb2tlPSIjMTAxYzM1IiBzdHJva2Utd2lkdGg9IjIyIi8+PC9zdmc+",
+        "createdAt": "2026-10-01T04:00:00.000Z"
+      },
+      {
+        "id": "demo-cover-8",
+        "ownerType": "project",
+        "ownerId": "demo-project-8",
+        "mimeType": "image/svg+xml",
+        "size": 656,
+        "data": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4MDAgNDQwIj48cmVjdCB3aWR0aD0iODAwIiBoZWlnaHQ9IjQ0MCIgZmlsbD0iIzI2MzkyZiIvPjxwYXRoIGQ9Ik00MCA1NUgyNjBNNDAgMzgwSDc2MCIgc3Ryb2tlPSIjZTVkOWIzIiBvcGFjaXR5PSIuMyIvPjx0ZXh0IHg9IjQwIiB5PSIxMDAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE0IiBsZXR0ZXItc3BhY2luZz0iNCIgZmlsbD0iIzliYmQ4YSI+TkVNTyAvIFNUVURJTyAwODwvdGV4dD48dGV4dCB4PSI0MCIgeT0iMzMwIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSI0MCIgZm9udC13ZWlnaHQ9IjYwMCIgZmlsbD0iI2U1ZDliMyI+SGFyYm91cjwvdGV4dD48dGV4dCB4PSI0MCIgeT0iMzU4IiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMyIgbGV0dGVyLXNwYWNpbmc9IjIiIGZpbGw9IiM5YmJkOGEiPkZJQ1RJT05BTCBQUk9KRUNUPC90ZXh0PjxwYXRoIGQ9Ik0zNzUgMzMwVjExNUw0OTAgNTVWMjcwWiBNNTEwIDI3MFY1NUw2MjUgMTE1VjMzMFoiIGZpbGw9IiNlNWQ5YjMiLz48cGF0aCBkPSJtMzc1IDMzMCAxMTUtNjAgMTM1IDYwLTExNSA2MFoiIGZpbGw9IiM5YmJkOGEiLz48L3N2Zz4=",
+        "createdAt": "2026-10-05T04:00:00.000Z"
+      },
+      {
+        "id": "demo-cover-9",
+        "ownerType": "project",
+        "ownerId": "demo-project-9",
+        "mimeType": "image/svg+xml",
+        "size": 677,
+        "data": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4MDAgNDQwIj48cmVjdCB3aWR0aD0iODAwIiBoZWlnaHQ9IjQ0MCIgZmlsbD0iIzI1MjEzOCIvPjxwYXRoIGQ9Ik00MCA1NUgyNjBNNDAgMzgwSDc2MCIgc3Ryb2tlPSIjYzRiOWVjIiBvcGFjaXR5PSIuMyIvPjx0ZXh0IHg9IjQwIiB5PSIxMDAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE0IiBsZXR0ZXItc3BhY2luZz0iNCIgZmlsbD0iI2VmYmI5YSI+TkVNTyAvIFNUVURJTyAwOTwvdGV4dD48dGV4dCB4PSI0MCIgeT0iMzMwIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSI0MCIgZm9udC13ZWlnaHQ9IjYwMCIgZmlsbD0iI2M0YjllYyI+VGhyZWFkPC90ZXh0Pjx0ZXh0IHg9IjQwIiB5PSIzNTgiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjEzIiBsZXR0ZXItc3BhY2luZz0iMiIgZmlsbD0iI2VmYmI5YSI+RklDVElPTkFMIFBST0pFQ1Q8L3RleHQ+PGcgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjYzRiOWVjIiBzdHJva2Utd2lkdGg9IjE4Ij48cGF0aCBkPSJNMzUwIDI5NSA0NTAgMTE1IDU1MCAyOTUgNjUwIDExNSIvPjxwYXRoIGQ9Ik0zNTAgMzUwIDQ1MCAxNzAgNTUwIDM1MCA2NTAgMTcwIiBvcGFjaXR5PSIuNCIvPjwvZz48L3N2Zz4=",
+        "createdAt": "2026-10-09T04:00:00.000Z"
+      }
+    ]
+  }
+}

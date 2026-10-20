@@ -1,0 +1,374 @@
+[
+  {
+    "requestedTheme": "Midnight",
+    "route": "overview",
+    "overlayBefore": 1,
+    "theme": "midnight",
+    "scrollWidth": 390,
+    "innerWidth": 390,
+    "h1": [
+      "Make room for progress."
+    ],
+    "bodyColor": "rgb(238, 242, 251)",
+    "bodyBg": "rgb(10, 18, 34)"
+  },
+  {
+    "requestedTheme": "Midnight",
+    "route": "projects",
+    "overlayBefore": 1,
+    "theme": "midnight",
+    "scrollWidth": 390,
+    "innerWidth": 390,
+    "h1": [
+      "Projects"
+    ],
+    "bodyColor": "rgb(238, 242, 251)",
+    "bodyBg": "rgb(10, 18, 34)"
+  },
+  {
+    "requestedTheme": "Midnight",
+    "route": "projects/demo-project-1",
+    "overlayBefore": 1,
+    "theme": "midnight",
+    "scrollWidth": 390,
+    "innerWidth": 390,
+    "h1": [
+      "Orbit Analytics"
+    ],
+    "bodyColor": "rgb(238, 242, 251)",
+    "bodyBg": "rgb(10, 18, 34)"
+  },
+  {
+    "requestedTheme": "Midnight",
+    "route": "tasks",
+    "overlayBefore": 1,
+    "theme": "midnight",
+    "scrollWidth": 390,
+    "innerWidth": 390,
+    "h1": [
+      "Tasks"
+    ],
+    "bodyColor": "rgb(238, 242, 251)",
+    "bodyBg": "rgb(10, 18, 34)"
+  },
+  {
+    "requestedTheme": "Midnight",
+    "route": "calendar",
+    "overlayBefore": 1,
+    "theme": "midnight",
+    "scrollWidth": 390,
+    "innerWidth": 390,
+    "h1": [],
+    "bodyColor": "rgb(238, 242, 251)",
+    "bodyBg": "rgb(10, 18, 34)"
+  },
+  {
+    "requestedTheme": "Midnight",
+    "route": "academics",
+    "overlayBefore": 1,
+    "theme": "midnight",
+    "scrollWidth": 390,
+    "innerWidth": 390,
+    "h1": [],
+    "bodyColor": "rgb(238, 242, 251)",
+    "bodyBg": "rgb(10, 18, 34)"
+  },
+  {
+    "requestedTheme": "Midnight",
+    "route": "goals",
+    "overlayBefore": 1,
+    "theme": "midnight",
+    "scrollWidth": 390,
+    "innerWidth": 390,
+    "h1": [],
+    "bodyColor": "rgb(238, 242, 251)",
+    "bodyBg": "rgb(10, 18, 34)"
+  },
+  {
+    "requestedTheme": "Midnight",
+    "route": "goals/demo-goal-1",
+    "overlayBefore": 1,
+    "theme": "midnight",
+    "scrollWidth": 390,
+    "innerWidth": 390,
+    "h1": [
+      "Ship a polished portfolio"
+    ],
+    "bodyColor": "rgb(238, 242, 251)",
+    "bodyBg": "rgb(10, 18, 34)"
+  },
+  {
+    "requestedTheme": "Midnight",
+    "route": "insights",
+    "overlayBefore": 1,
+    "theme": "midnight",
+    "scrollWidth": 390,
+    "innerWidth": 390,
+    "h1": [
+      "Workspace\nInsights"
+    ],
+    "bodyColor": "rgb(238, 242, 251)",
+    "bodyBg": "rgb(10, 18, 34)"
+  },
+  {
+    "requestedTheme": "Midnight",
+    "route": "settings",
+    "overlayBefore": 1,
+    "theme": "midnight",
+    "scrollWidth": 390,
+    "innerWidth": 390,
+    "h1": [
+      "Settings"
+    ],
+    "bodyColor": "rgb(238, 242, 251)",
+    "bodyBg": "rgb(10, 18, 34)"
+  },
+  {
+    "requestedTheme": "Daylight",
+    "route": "overview",
+    "overlayBefore": 1,
+    "theme": "daylight",
+    "scrollWidth": 390,
+    "innerWidth": 390,
+    "h1": [
+      "Make room for progress."
+    ],
+    "bodyColor": "rgb(15, 23, 42)",
+    "bodyBg": "rgb(248, 250, 252)"
+  },
+  {
+    "requestedTheme": "Daylight",
+    "route": "projects",
+    "overlayBefore": 1,
+    "theme": "daylight",
+    "scrollWidth": 390,
+    "innerWidth": 390,
+    "h1": [
+      "Projects"
+    ],
+    "bodyColor": "rgb(15, 23, 42)",
+    "bodyBg": "rgb(248, 250, 252)"
+  },
+  {
+    "requestedTheme": "Daylight",
+    "route": "projects/demo-project-1",
+    "overlayBefore": 1,
+    "theme": "daylight",
+    "scrollWidth": 390,
+    "innerWidth": 390,
+    "h1": [
+      "Orbit Analytics"
+    ],
+    "bodyColor": "rgb(15, 23, 42)",
+    "bodyBg": "rgb(248, 250, 252)"
+  },
+  {
+    "requestedTheme": "Daylight",
+    "route": "tasks",
+    "overlayBefore": 1,
+    "theme": "daylight",
+    "scrollWidth": 390,
+    "innerWidth": 390,
+    "h1": [
+      "Tasks"
+    ],
+    "bodyColor": "rgb(15, 23, 42)",
+    "bodyBg": "rgb(248, 250, 252)"
+  },
+  {
+    "requestedTheme": "Daylight",
+    "route": "calendar",
+    "overlayBefore": 1,
+    "theme": "daylight",
+    "scrollWidth": 390,
+    "innerWidth": 390,
+    "h1": [],
+    "bodyColor": "rgb(15, 23, 42)",
+    "bodyBg": "rgb(248, 250, 252)"
+  },
+  {
+    "requestedTheme": "Daylight",
+    "route": "academics",
+    "overlayBefore": 1,
+    "theme": "daylight",
+    "scrollWidth": 390,
+    "innerWidth": 390,
+    "h1": [],
+    "bodyColor": "rgb(15, 23, 42)",
+    "bodyBg": "rgb(248, 250, 252)"
+  },
+  {
+    "requestedTheme": "Daylight",
+    "route": "goals",
+    "overlayBefore": 1,
+    "theme": "daylight",
+    "scrollWidth": 390,
+    "innerWidth": 390,
+    "h1": [],
+    "bodyColor": "rgb(15, 23, 42)",
+    "bodyBg": "rgb(248, 250, 252)"
+  },
+  {
+    "requestedTheme": "Daylight",
+    "route": "goals/demo-goal-1",
+    "overlayBefore": 1,
+    "theme": "daylight",
+    "scrollWidth": 390,
+    "innerWidth": 390,
+    "h1": [
+      "Ship a polished portfolio"
+    ],
+    "bodyColor": "rgb(15, 23, 42)",
+    "bodyBg": "rgb(248, 250, 252)"
+  },
+  {
+    "requestedTheme": "Daylight",
+    "route": "insights",
+    "overlayBefore": 1,
+    "theme": "daylight",
+    "scrollWidth": 390,
+    "innerWidth": 390,
+    "h1": [
+      "Workspace\nInsights"
+    ],
+    "bodyColor": "rgb(15, 23, 42)",
+    "bodyBg": "rgb(248, 250, 252)"
+  },
+  {
+    "requestedTheme": "Daylight",
+    "route": "settings",
+    "overlayBefore": 1,
+    "theme": "daylight",
+    "scrollWidth": 390,
+    "innerWidth": 390,
+    "h1": [
+      "Settings"
+    ],
+    "bodyColor": "rgb(15, 23, 42)",
+    "bodyBg": "rgb(248, 250, 252)"
+  },
+  {
+    "requestedTheme": "Aurora",
+    "route": "overview",
+    "overlayBefore": 1,
+    "theme": "aurora",
+    "scrollWidth": 390,
+    "innerWidth": 390,
+    "h1": [
+      "Make room for progress."
+    ],
+    "bodyColor": "rgb(248, 250, 252)",
+    "bodyBg": "rgb(7, 11, 20)"
+  },
+  {
+    "requestedTheme": "Aurora",
+    "route": "projects",
+    "overlayBefore": 1,
+    "theme": "aurora",
+    "scrollWidth": 390,
+    "innerWidth": 390,
+    "h1": [
+      "Projects"
+    ],
+    "bodyColor": "rgb(248, 250, 252)",
+    "bodyBg": "rgb(7, 11, 20)"
+  },
+  {
+    "requestedTheme": "Aurora",
+    "route": "projects/demo-project-1",
+    "overlayBefore": 1,
+    "theme": "aurora",
+    "scrollWidth": 390,
+    "innerWidth": 390,
+    "h1": [
+      "Orbit Analytics"
+    ],
+    "bodyColor": "rgb(248, 250, 252)",
+    "bodyBg": "rgb(7, 11, 20)"
+  },
+  {
+    "requestedTheme": "Aurora",
+    "route": "tasks",
+    "overlayBefore": 1,
+    "theme": "aurora",
+    "scrollWidth": 390,
+    "innerWidth": 390,
+    "h1": [
+      "Tasks"
+    ],
+    "bodyColor": "rgb(248, 250, 252)",
+    "bodyBg": "rgb(7, 11, 20)"
+  },
+  {
+    "requestedTheme": "Aurora",
+    "route": "calendar",
+    "overlayBefore": 1,
+    "theme": "aurora",
+    "scrollWidth": 390,
+    "innerWidth": 390,
+    "h1": [],
+    "bodyColor": "rgb(248, 250, 252)",
+    "bodyBg": "rgb(7, 11, 20)"
+  },
+  {
+    "requestedTheme": "Aurora",
+    "route": "academics",
+    "overlayBefore": 1,
+    "theme": "aurora",
+    "scrollWidth": 390,
+    "innerWidth": 390,
+    "h1": [],
+    "bodyColor": "rgb(248, 250, 252)",
+    "bodyBg": "rgb(7, 11, 20)"
+  },
+  {
+    "requestedTheme": "Aurora",
+    "route": "goals",
+    "overlayBefore": 1,
+    "theme": "aurora",
+    "scrollWidth": 390,
+    "innerWidth": 390,
+    "h1": [],
+    "bodyColor": "rgb(248, 250, 252)",
+    "bodyBg": "rgb(7, 11, 20)"
+  },
+  {
+    "requestedTheme": "Aurora",
+    "route": "goals/demo-goal-1",
+    "overlayBefore": 1,
+    "theme": "aurora",
+    "scrollWidth": 390,
+    "innerWidth": 390,
+    "h1": [
+      "Ship a polished portfolio"
+    ],
+    "bodyColor": "rgb(248, 250, 252)",
+    "bodyBg": "rgb(7, 11, 20)"
+  },
+  {
+    "requestedTheme": "Aurora",
+    "route": "insights",
+    "overlayBefore": 1,
+    "theme": "aurora",
+    "scrollWidth": 390,
+    "innerWidth": 390,
+    "h1": [
+      "Workspace\nInsights"
+    ],
+    "bodyColor": "rgb(248, 250, 252)",
+    "bodyBg": "rgb(7, 11, 20)"
+  },
+  {
+    "requestedTheme": "Aurora",
+    "route": "settings",
+    "overlayBefore": 1,
+    "theme": "aurora",
+    "scrollWidth": 390,
+    "innerWidth": 390,
+    "h1": [
+      "Settings"
+    ],
+    "bodyColor": "rgb(248, 250, 252)",
+    "bodyBg": "rgb(7, 11, 20)"
+  }
+]

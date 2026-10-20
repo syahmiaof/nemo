@@ -1,0 +1,129 @@
+{
+  "startedAt": "2026-10-20T15:32:14.225Z",
+  "checks": [
+    {
+      "name": "More drawer",
+      "visible": true,
+      "dialogCount": 1,
+      "names": [
+        ":r3:"
+      ],
+      "focusedAfterTab": {
+        "tag": "BUTTON",
+        "label": "Close dialog",
+        "text": ""
+      },
+      "hiddenAfterEscape": true,
+      "focusRestored": true
+    },
+    {
+      "name": "Ask Nemo opened",
+      "visible": true,
+      "background": "rgb(11, 19, 34)",
+      "heading": "Ask Nemo\nOffline"
+    },
+    {
+      "name": "Ask: How many tasks are overdue?",
+      "lastReply": "Overdue Tasks\n11:32 PM\n\nYou have 6 overdue tasks that need attention.\n\nValidate the domain model · Orbit Analytics\n\nDue Oct 15, 2026\n\nOVERDUE\n\nBuild the core workflow · Orbit Analytics\n\nDue Oct 17, 2026\n\nOVERDUE\n\nBuild the core workflow · Forma Commerce\n\nDue Oct 18, 2026\n\nOVERDUE\n\nValidate the domain model · Atlas API Gateway\n\nDue Oct 19, 2026\n\nOVERDUE\n\nConnect persisted data · Orbit Analytics\n\nDue Oct 19, 2026\n\nOVERDUE\n\nMap the primary user journey · Field Notes CMS\n\nDue Oct 19, 2026\n\nOVERDUE\n\nSUGGESTED QUESTIONS\n\nWhat tasks are due today?\nClosest project deadline\nActive projects"
+    },
+    {
+      "name": "Ask: How many projects are active?",
+      "lastReply": "Ask Nemo Assistant\n11:32 PM\n\nI am your offline, privacy-first Nemo assistant. I compute answers instantly from your local workspace data. Here are questions you can ask me:\n\nSUGGESTED QUESTIONS\n\nWhat tasks are due today?\nOverdue tasks\nAssignments due this week\nActive projects\nClosest project deadline\nToday's focus tasks\nTasks finished this month\nUpcoming milestones\nActive goals\nProject progress summary"
+    },
+    {
+      "name": "Ask: How many tasks have I completed?",
+      "lastReply": "Ask Nemo Assistant\n11:32 PM\n\nI am your offline, privacy-first Nemo assistant. I compute answers instantly from your local workspace data. Here are questions you can ask me:\n\nSUGGESTED QUESTIONS\n\nWhat tasks are due today?\nOverdue tasks\nAssignments due this week\nActive projects\nClosest project deadline\nToday's focus tasks\nTasks finished this month\nUpcoming milestones\nActive goals\nProject progress summary"
+    },
+    {
+      "name": "Ask: What is the moon made of?",
+      "lastReply": "Ask Nemo Assistant\n11:32 PM\n\nI am your offline, privacy-first Nemo assistant. I compute answers instantly from your local workspace data. Here are questions you can ask me:\n\nSUGGESTED QUESTIONS\n\nWhat tasks are due today?\nOverdue tasks\nAssignments due this week\nActive projects\nClosest project deadline\nToday's focus tasks\nTasks finished this month\nUpcoming milestones\nActive goals\nProject progress summary"
+    },
+    {
+      "name": "Daylight cards",
+      "cards": [
+        {
+          "name": "MidnightMidnight navy foundation with warm peach and soft mint accents.",
+          "background": "rgba(15, 26, 45, 0.7)",
+          "color": "rgb(15, 23, 42)",
+          "child": [
+            {
+              "text": "Midnight",
+              "color": "rgb(15, 23, 42)"
+            },
+            {
+              "text": "Midnight navy foundation with warm peach and ",
+              "color": "rgb(100, 116, 139)"
+            }
+          ]
+        },
+        {
+          "name": "DaylightActiveHigh-contrast daylight canvas with dark slate typography and crisp surfaces.",
+          "background": "rgb(255, 255, 255)",
+          "color": "rgb(15, 23, 42)",
+          "child": [
+            {
+              "text": "Daylight",
+              "color": "rgb(17, 24, 39)"
+            },
+            {
+              "text": "Active",
+              "color": "rgb(190, 18, 60)"
+            },
+            {
+              "text": "High-contrast daylight canvas with dark slate",
+              "color": "rgb(75, 85, 99)"
+            }
+          ]
+        },
+        {
+          "name": "AuroraAtmospheric deep navy with flowing ambient aurora gradients and glass layering.",
+          "background": "rgba(7, 11, 20, 0.8)",
+          "color": "rgb(15, 23, 42)",
+          "child": [
+            {
+              "text": "Aurora",
+              "color": "rgb(15, 23, 42)"
+            },
+            {
+              "text": "Atmospheric deep navy with flowing ambient au",
+              "color": "rgb(100, 116, 139)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Daylight Ask drawer",
+      "theme": "daylight",
+      "panelBackground": "rgb(11, 19, 34)"
+    },
+    {
+      "name": "Avatar input",
+      "count": 1,
+      "buttons": [
+        "Appearance",
+        "Profile",
+        "Preferences",
+        "Data & Backups",
+        "Demo Mode",
+        "Upload Avatar",
+        "Save Name"
+      ]
+    },
+    {
+      "name": "Avatar uploaded",
+      "avatarImages": 1,
+      "srcPrefix": "data:image/webp;base64,Uk"
+    },
+    {
+      "name": "Avatar persisted",
+      "avatarImages": 1
+    },
+    {
+      "name": "Welcome replay",
+      "overlayVisible": false,
+      "text": "ompletion reveal.\n\nWelcome Launch Animation\n\nReplays the initial brand welcome overlay with full spatial route drawing.\n\nReplay Welcome Animation\nToday\nProjects\nTasks\nCalendar\nMore"
+    }
+  ],
+  "errors": []
+}

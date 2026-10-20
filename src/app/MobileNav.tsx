@@ -10,7 +10,7 @@ import {
   Target,
   BarChart3,
   Settings,
-  HardDrive,
+  Cloud,
   Bot,
   Search,
 } from 'lucide-react';
@@ -141,7 +141,7 @@ export const MobileNav: React.FC<MobileNavProps> = ({
           ))}
         </div>
         <p className="flex items-center justify-center gap-2 text-xs text-content-secondary mt-3">
-          <HardDrive size={15} /> Saved on this device · Export backups in Settings
+          <Cloud size={15} className="text-accent-mint" /> Local-first workspace · Cloud sync in Settings
         </p>
       </Modal>
     </>

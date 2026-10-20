@@ -11,10 +11,13 @@ import { QuickSearchModal } from './QuickSearchModal';
 import { AskNemoDrawer } from '@/features/assistant/AskNemoDrawer';
 import { OnboardingModal } from './OnboardingModal';
 import { ToastProvider } from '@/components/ui/Toast';
-import { Plus, HardDrive, WifiOff, FlaskConical } from 'lucide-react';
+import { Plus, FlaskConical } from 'lucide-react';
 import { RouteTransition } from './RouteTransition';
 import { WelcomeOverlay } from './WelcomeOverlay';
 import { getInitials } from '@/lib/avatar';
+import { AuthProvider } from '@/features/auth/AuthContext';
+import { AuthModal } from '@/features/auth/AuthModal';
+import { SyncIndicator } from '@/components/ui/SyncIndicator';
 
 const navTabs = [
   { to: '/overview', label: 'Overview' },
@@ -31,7 +34,6 @@ export function AppShell() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [askNemoOpen, setAskNemoOpen] = useState(false);
   const [welcomeDone, setWelcomeDone] = useState(false);
-  const [online, setOnline] = useState(navigator.onLine);
   const [modeError, setModeError] = useState('');
   const [timeStr, setTimeStr] = useState(() =>
     new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
@@ -57,16 +59,6 @@ export function AppShell() {
     document.documentElement.dataset.reduceMotion = String(settings?.reduceMotion || false);
   }, [settings?.theme, settings?.reduceMotion]);
 
-  useEffect(() => {
-    const update = () => setOnline(navigator.onLine);
-    window.addEventListener('online', update);
-    window.addEventListener('offline', update);
-    return () => {
-      window.removeEventListener('online', update);
-      window.removeEventListener('offline', update);
-    };
-  }, []);
-
   // Global Ctrl+K / Cmd+K search shortcut
   useEffect(() => {
     const handleGlobalKeyDown = (e: KeyboardEvent) => {
@@ -88,117 +80,116 @@ export function AppShell() {
   };
 
   return (
-    <ToastProvider>
-      <div className="nemo-app">
-        <WelcomeOverlay onComplete={() => setWelcomeDone(true)} />
-        <ScrollRestoration />
-        <a href="#main-content" className="skip-link">
-          Skip to content
-        </a>
-        <div className="mesh" aria-hidden="true">
-          <i className="mesh__a" />
-          <i className="mesh__b" />
-        </div>
-        {settings?.theme === 'aurora' && <div className="aurora-backdrop" aria-hidden="true" />}
+    <AuthProvider>
+      <ToastProvider>
+        <div className="nemo-app">
+          <WelcomeOverlay onComplete={() => setWelcomeDone(true)} />
+          <ScrollRestoration />
+          <a href="#main-content" className="skip-link">
+            Skip to content
+          </a>
+          <div className="mesh" aria-hidden="true">
+            <i className="mesh__a" />
+            <i className="mesh__b" />
+          </div>
+          {settings?.theme === 'aurora' && <div className="aurora-backdrop" aria-hidden="true" />}
 
-        {/* Dedicated Global Utility Rail */}
-        <TavolaDock
-          onOpenQuickAdd={() => setQuickAdd(true)}
-          onOpenSearch={() => setSearchOpen(true)}
-          onOpenAskNemo={() => setAskNemoOpen(true)}
-          settings={settings}
-        />
+          {/* Dedicated Global Utility Rail */}
+          <TavolaDock
+            onOpenQuickAdd={() => setQuickAdd(true)}
+            onOpenSearch={() => setSearchOpen(true)}
+            onOpenAskNemo={() => setAskNemoOpen(true)}
+            settings={settings}
+          />
 
-        <div className="app-shell">
-          <header className="app-header">
-            <Link to="/overview" className="wordmark" aria-label="Nemo overview">
-              <span className="brand-mark">
-                <img src="/nemo-icon.svg" width="48" height="48" alt="" />
-              </span>
-              <span>
-                nemo<span className="brand-dot">.</span>
-              </span>
-            </Link>
-
-            <div className="header-navigation">
-              <TavolaTabs tabs={navTabs} />
-            </div>
-
-            <div className="header-tools">
-              <div className="header-time-pill hidden xl:inline-flex" title="Local System Time">
-                <span className="live-pulse" />
-                <span>{timeStr}</span>
-              </div>
-              <button
-                type="button"
-                className="icon-button"
-                onClick={() => setQuickAdd(true)}
-                aria-label="Quick Add"
-              >
-                <Plus size={21} />
-              </button>
-              <Link
-                to="/settings"
-                className="profile-button overflow-hidden"
-                aria-label="Profile and settings"
-              >
-                {avatarBlob?.data ? (
-                  <img
-                    src={avatarBlob.data}
-                    alt={settings?.displayName || 'Profile'}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  getInitials(settings?.displayName)
-                )}
+          <div className="app-shell">
+            <header className="app-header">
+              <Link to="/overview" className="wordmark" aria-label="Nemo overview">
+                <span className="brand-mark">
+                  <img src="/nemo-icon.svg" width="48" height="48" alt="" />
+                </span>
+                <span>
+                  nemo<span className="brand-dot">.</span>
+                </span>
               </Link>
-            </div>
-          </header>
 
-          <div className="workspace-strip">
-            <span className="workspace-status">
-              {online ? <HardDrive size={13} /> : <WifiOff size={13} />}
-              <span>
-                {demo
-                  ? 'DEMO WORKSPACE · Fictional data'
-                  : online
-                  ? 'Personal workspace · Saved on this device'
-                  : 'Offline · Saved on this device'}
-              </span>
-            </span>
-            <button onClick={changeMode} className="workspace-switch">
-              <FlaskConical size={14} />
-              {demo ? 'Return to my workspace' : 'Explore demo'}
-            </button>
+              <div className="header-navigation">
+                <TavolaTabs tabs={navTabs} />
+              </div>
+
+              <div className="header-tools">
+                <SyncIndicator />
+                <div className="header-time-pill hidden xl:inline-flex" title="Local System Time">
+                  <span className="live-pulse" />
+                  <span>{timeStr}</span>
+                </div>
+                <button
+                  type="button"
+                  className="icon-button"
+                  onClick={() => setQuickAdd(true)}
+                  aria-label="Quick Add"
+                >
+                  <Plus size={21} />
+                </button>
+                <Link
+                  to="/settings"
+                  className="profile-button overflow-hidden"
+                  aria-label="Profile and settings"
+                >
+                  {avatarBlob?.data ? (
+                    <img
+                      src={avatarBlob.data}
+                      alt={settings?.displayName || 'Profile'}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    getInitials(settings?.displayName)
+                  )}
+                </Link>
+              </div>
+            </header>
+
+            {demo && (
+              <div className="workspace-strip">
+                <span className="workspace-status">
+                  <FlaskConical size={13} />
+                  <span>DEMO WORKSPACE · Fictional data</span>
+                </span>
+                <button onClick={changeMode} className="workspace-switch">
+                  Return to my workspace
+                </button>
+              </div>
+            )}
+
+            {modeError && (
+              <p role="alert" className="text-accent-ember mb-4">
+                {modeError}
+              </p>
+            )}
+
+            <main id="main-content" tabIndex={-1}>
+              <RouteTransition />
+            </main>
           </div>
 
-          {modeError && (
-            <p role="alert" className="text-accent-ember mb-4">
-              {modeError}
-            </p>
+          {/* Mobile Navigation */}
+          <MobileNav
+            onOpenAskNemo={() => setAskNemoOpen(true)}
+            onOpenSearch={() => setSearchOpen(true)}
+            onOpenQuickAdd={() => setQuickAdd(true)}
+          />
+
+          {/* Modals & Drawers */}
+          <AuthModal />
+          <QuickAddModal isOpen={quickAdd} onClose={() => setQuickAdd(false)} />
+          <QuickSearchModal isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
+          <AskNemoDrawer isOpen={askNemoOpen} onClose={() => setAskNemoOpen(false)} />
+
+          {settings && !settings.onboardingCompleted && welcomeDone && (
+            <OnboardingModal isOpen onComplete={() => {}} settings={settings} />
           )}
-
-          <main id="main-content" tabIndex={-1}>
-            <RouteTransition />
-          </main>
         </div>
-
-        {/* Mobile Navigation */}
-        <MobileNav
-          onOpenAskNemo={() => setAskNemoOpen(true)}
-          onOpenSearch={() => setSearchOpen(true)}
-          onOpenQuickAdd={() => setQuickAdd(true)}
-        />
-
-        {/* Modals & Drawers */}
-        <QuickAddModal isOpen={quickAdd} onClose={() => setQuickAdd(false)} />
-        <QuickSearchModal isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
-        <AskNemoDrawer isOpen={askNemoOpen} onClose={() => setAskNemoOpen(false)} />
-
-        {settings && !settings.onboardingCompleted && welcomeDone && (
-          <OnboardingModal isOpen onComplete={() => {}} settings={settings} />
-        )}
-      </div>
-    </ToastProvider>
+      </ToastProvider>
+    </AuthProvider>
   );
 }

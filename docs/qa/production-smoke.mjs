@@ -1,0 +1,17 @@
+import { chromium } from '@playwright/test';
+import { writeFile } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
+const path=name=>fileURLToPath(new URL(`./artifacts/${name}`,import.meta.url));
+const b=await chromium.launch();const c=await b.newContext({viewport:{width:390,height:844}});const p=await c.newPage();
+const errors=[];p.on('pageerror',e=>errors.push(String(e)));
+const response=await p.goto('https://nemo.syahmiaof.my/overview',{waitUntil:'domcontentloaded',timeout:30000});await p.waitForTimeout(350);
+const welcome=await p.getByRole('dialog',{name:'Welcome to Nemo'}).count();if(welcome)await p.keyboard.press('Escape');
+await p.getByRole('button',{name:'Skip customization'}).click({timeout:3000}).catch(()=>{});
+await p.getByRole('heading',{name:'Make room for progress.'}).waitFor({timeout:10000});
+const overview={status:response.status(),url:p.url(),title:await p.title(),h1:await p.locator('h1').allTextContents()};
+await p.screenshot({path:path('production-overview-390.png')});
+await p.goto('https://nemo.syahmiaof.my/projects',{waitUntil:'domcontentloaded'});await p.waitForTimeout(300);
+if(await p.getByRole('dialog',{name:'Welcome to Nemo'}).count())await p.keyboard.press('Escape');
+const projects={url:p.url(),h1:await p.locator('h1').allTextContents(),status:await p.locator('.workspace-status').innerText()};
+const result={overview,projects,welcomeOnInitial:!!welcome,errors};await c.close();await b.close();
+await writeFile(path('production-smoke.json'),JSON.stringify(result,null,2));console.log(JSON.stringify(result,null,2));

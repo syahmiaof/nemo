@@ -1,0 +1,34 @@
+{
+  "normal": {
+    "exists": true,
+    "marker": "same-node",
+    "before": "24s",
+    "after": "30s",
+    "media": false,
+    "root": "false"
+  },
+  "afterSpaRoute": {
+    "exists": true,
+    "marker": "same-node",
+    "before": "24s",
+    "after": "30s",
+    "media": false,
+    "root": "false"
+  },
+  "osReduced": {
+    "exists": true,
+    "marker": "same-node",
+    "before": "0s",
+    "after": "0s",
+    "media": true,
+    "root": "false"
+  },
+  "appReduced": {
+    "exists": true,
+    "marker": null,
+    "before": "0s",
+    "after": "0s",
+    "media": false,
+    "root": "true"
+  }
+}

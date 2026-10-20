@@ -1,0 +1,5 @@
+{
+  "summary": "Confirm Backup Restore\n\nRestoring will replace all current workspace records atomically with the contents of this backup file:\n\nExported: 2026-10-20T15:52:38.194Z\nProjects: 18\nTasks: 150\nAssignments: 24\nGoals: 6\nAssets: 18\nWarning: Any unsaved changes on this device will be replaced.\nCancel\nConfirm ",
+  "projectVisible": true,
+  "workspaceMode": "Personal workspace · Saved on this device"
+}

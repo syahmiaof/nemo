@@ -14,6 +14,7 @@ import {
   FlaskConical,
   Sliders,
   Palette,
+  Cloud,
   Upload,
   type LucideIcon,
 } from 'lucide-react';
@@ -26,13 +27,14 @@ import { Modal } from '@/components/ui/Modal';
 import { useToast } from '@/components/ui/Toast';
 import type { WorkspaceSettings } from '@/domain/types';
 import { DemoWorkspacePanel } from './DemoWorkspacePanel';
+import { AccountSyncPanel } from './AccountSyncPanel';
 import { getInitials, saveProfileAvatar, removeProfileAvatar } from '@/lib/avatar';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { useReducedMotion } from '@/design/useReducedMotion';
 gsap.registerPlugin(useGSAP);
 
-type SettingsTab = 'profile' | 'appearance' | 'preferences' | 'data' | 'demo';
+type SettingsTab = 'profile' | 'account_sync' | 'appearance' | 'preferences' | 'data' | 'demo';
 
 export const SettingsPage: React.FC = () => {
   const { success, error } = useToast();
@@ -223,6 +225,7 @@ export const SettingsPage: React.FC = () => {
   const tabs: { key: SettingsTab; label: string; icon: LucideIcon }[] = [
     { key: 'appearance', label: 'Appearance', icon: Palette },
     { key: 'profile', label: 'Profile', icon: User },
+    { key: 'account_sync', label: 'Account & Sync', icon: Cloud },
     { key: 'preferences', label: 'Preferences', icon: Sliders },
     { key: 'data', label: 'Data & Backups', icon: HardDrive },
     { key: 'demo', label: 'Demo Mode', icon: FlaskConical },
@@ -664,6 +667,13 @@ export const SettingsPage: React.FC = () => {
               </Button>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Account & Sync Panel */}
+      {activeTab === 'account_sync' && (
+        <div data-enter>
+          <AccountSyncPanel />
         </div>
       )}
 

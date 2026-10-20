@@ -1,0 +1,19 @@
+{
+  "overview": {
+    "status": 200,
+    "url": "https://nemo.syahmiaof.my/overview",
+    "title": "nemo. — Track it, finish it.",
+    "h1": [
+      "Make room for progress."
+    ]
+  },
+  "projects": {
+    "url": "https://nemo.syahmiaof.my/projects",
+    "h1": [
+      "Projects"
+    ],
+    "status": "Personal workspace · Saved on this device"
+  },
+  "welcomeOnInitial": true,
+  "errors": []
+}
