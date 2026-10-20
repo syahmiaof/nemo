@@ -1,8 +1,11 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Plus, Sun, Moon, Wifi, WifiOff } from 'lucide-react';
+import { useLiveQuery } from 'dexie-react-hooks';
 import { Button } from '@/components/ui/Button';
 import type { WorkspaceSettings } from '@/domain/types';
 import { db } from '@/db/nemoDb';
+import { getInitials } from '@/lib/avatar';
 
 interface HeaderProps {
   title: string;
@@ -13,6 +16,11 @@ interface HeaderProps {
 
 export const Header: React.FC<HeaderProps> = ({ title, subtitle, onOpenQuickAdd, settings }) => {
   const [isOnline, setIsOnline] = React.useState(navigator.onLine);
+
+  const avatarBlob = useLiveQuery(
+    () => (settings?.avatarBlobId ? db.assetBlobs.get(settings.avatarBlobId) : undefined),
+    [settings?.avatarBlobId]
+  );
 
   React.useEffect(() => {
     const handleOnline = () => setIsOnline(true);
@@ -78,6 +86,23 @@ export const Header: React.FC<HeaderProps> = ({ title, subtitle, onOpenQuickAdd,
           <Plus className="w-4 h-4" />
           <span className="hidden sm:inline">Quick Add</span>
         </Button>
+
+        {/* Profile Link */}
+        <Link
+          to="/settings"
+          className="profile-button overflow-hidden"
+          aria-label="Profile and settings"
+        >
+          {avatarBlob?.data ? (
+            <img
+              src={avatarBlob.data}
+              alt={settings?.displayName || 'Profile'}
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            getInitials(settings?.displayName)
+          )}
+        </Link>
       </div>
     </header>
   );

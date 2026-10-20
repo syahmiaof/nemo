@@ -19,7 +19,7 @@ export interface WorkspaceSettings {
   id: string; // Singleton ID: 'default'
   displayName: string;
   avatarBlobId?: string;
-  theme: 'dark' | 'light';
+  theme: 'dark' | 'light' | 'aurora' | 'midnight' | 'daylight';
   accent: 'mint' | 'amber' | 'ember';
   weekStartsOn: 0 | 1; // 0: Sunday, 1: Monday
   hourFormat: '12h' | '24h';

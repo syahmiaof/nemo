@@ -29,7 +29,8 @@
 }
 .brand-mark img { display: block; width: 100%; height: 100%; }
 .brand-dot { color: #eeb2a3; }
-[data-theme="light"] .brand-dot { color: #a24f3d; }
+[data-theme="light"] .brand-dot, [data-theme="daylight"] .brand-dot { color: #a24f3d; }
+[data-theme="aurora"] .brand-dot { color: #34d399; }
 .mobile-nav a, .mobile-nav button { min-height: 48px; }
 .more-modules a { min-height: 64px; }
 @media (max-width: 767px) {

@@ -11,7 +11,7 @@ export const WorkspaceSettingsSchema = z.object({
   id: z.string().default('default'),
   displayName: z.string().min(1, 'Display name cannot be empty').max(50),
   avatarBlobId: z.string().optional(),
-  theme: z.enum(['dark', 'light']).default('dark'),
+  theme: z.enum(['dark', 'light', 'aurora', 'midnight', 'daylight']).default('dark'),
   accent: z.enum(['mint', 'amber', 'ember']).default('mint'),
   weekStartsOn: z.union([z.literal(0), z.literal(1)]).default(1),
   hourFormat: z.enum(['12h', '24h']).default('24h'),

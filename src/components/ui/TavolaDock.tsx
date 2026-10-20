@@ -1,46 +1,40 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import {
-  LayoutDashboard,
-  FolderGit2,
-  CheckSquare,
-  Calendar,
-  GraduationCap,
-  Target,
-  BarChart3,
-  Settings,
+  Search,
   Plus,
-  Sun,
-  Moon,
+  Bot,
+  Crosshair,
+  Settings,
 } from 'lucide-react';
-import { db } from '@/db/nemoDb';
 import type { WorkspaceSettings } from '@/domain/types';
 
-interface TavolaDockProps {
+export interface TavolaDockProps {
   onOpenQuickAdd: () => void;
+  onOpenSearch?: () => void;
+  onOpenAskNemo?: () => void;
   settings?: WorkspaceSettings;
 }
 
-export const TavolaDock: React.FC<TavolaDockProps> = ({ onOpenQuickAdd, settings }) => {
-  const toggleTheme = async () => {
-    const nextTheme = settings?.theme === 'light' ? 'dark' : 'light';
-    document.documentElement.setAttribute('data-theme', nextTheme);
-    await db.settings.update('default', { theme: nextTheme });
-  };
-
-  const dockItems = [
-    { to: '/overview', label: 'Overview', icon: LayoutDashboard },
-    { to: '/projects', label: 'Projects', icon: FolderGit2 },
-    { to: '/tasks', label: 'Unified Tasks', icon: CheckSquare },
-    { to: '/calendar', label: 'Calendar', icon: Calendar },
-    { to: '/academics', label: 'Academics', icon: GraduationCap },
-    { to: '/goals', label: 'Goals', icon: Target },
-    { to: '/insights', label: 'Insights', icon: BarChart3 },
-  ];
-
+export const TavolaDock: React.FC<TavolaDockProps> = ({
+  onOpenQuickAdd,
+  onOpenSearch,
+  onOpenAskNemo,
+}) => {
   return (
-    <aside className="hidden md:flex dock" aria-label="Quick Actions Dock">
-      {/* Quick Add Button */}
+    <aside className="hidden md:flex dock" aria-label="Global Utility Rail">
+      {/* 1. Global Quick Search */}
+      <button
+        type="button"
+        onClick={onOpenSearch}
+        className="dock__btn text-content-secondary hover:text-content-primary hover:scale-105 active:scale-95 transition-all"
+        aria-label="Search workspace"
+      >
+        <Search className="w-5 h-5 stroke-[2.2]" />
+        <span className="dock__tip">Search (Ctrl+K)</span>
+      </button>
+
+      {/* 2. Quick Add Button */}
       <button
         type="button"
         onClick={onOpenQuickAdd}
@@ -48,49 +42,47 @@ export const TavolaDock: React.FC<TavolaDockProps> = ({ onOpenQuickAdd, settings
         aria-label="Quick Add"
       >
         <Plus className="w-5 h-5 stroke-[2.8]" />
-        <span className="dock__tip">Quick Add Task/Project</span>
+        <span className="dock__tip">Quick Add</span>
       </button>
 
       <span className="w-6 h-[1px] bg-border-subtle mx-auto my-0.5" aria-hidden="true" />
 
-      {/* Main Nav Items */}
-      {dockItems.map((item) => {
-        const Icon = item.icon;
-        return (
-          <NavLink
-            key={item.to}
-            to={item.to}
-            className={({ isActive }) => `dock__btn ${isActive ? 'is-active' : ''}`}
-            aria-label={item.label}
-          >
-            <Icon className="w-5 h-5" />
-            <span className="dock__tip">{item.label}</span>
-          </NavLink>
-        );
-      })}
+      {/* 3. Ask Nemo Assistant */}
+      <button
+        type="button"
+        onClick={onOpenAskNemo}
+        className="dock__btn text-accent-mint hover:bg-accent-mint/15 hover:scale-105 active:scale-95 transition-all"
+        aria-label="Ask Nemo Assistant"
+      >
+        <Bot className="w-5 h-5 stroke-[2.2]" />
+        <span className="dock__tip">Ask Nemo</span>
+      </button>
+
+      {/* 4. Today's Focus Shortcut */}
+      <NavLink
+        to="/overview#todays-focus"
+        className={({ isActive }) =>
+          `dock__btn ${isActive ? 'is-active text-accent-ember' : 'text-content-secondary hover:text-content-primary'} hover:scale-105 active:scale-95 transition-all`
+        }
+        aria-label="Today's Focus"
+      >
+        <Crosshair className="w-5 h-5 stroke-[2.2]" />
+        <span className="dock__tip">Today's Focus</span>
+      </NavLink>
 
       <span className="w-6 h-[1px] bg-border-subtle mx-auto my-0.5" aria-hidden="true" />
 
-      {/* Settings */}
+      {/* 5. Settings Link */}
       <NavLink
         to="/settings"
-        className={({ isActive }) => `dock__btn ${isActive ? 'is-active' : ''}`}
+        className={({ isActive }) =>
+          `dock__btn ${isActive ? 'is-active' : 'text-content-secondary hover:text-content-primary'} hover:scale-105 active:scale-95 transition-all`
+        }
         aria-label="Settings"
       >
         <Settings className="w-5 h-5" />
         <span className="dock__tip">Settings</span>
       </NavLink>
-
-      {/* Theme Toggle */}
-      <button
-        type="button"
-        onClick={toggleTheme}
-        className="dock__btn"
-        aria-label="Toggle Theme"
-      >
-        {settings?.theme === 'light' ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
-        <span className="dock__tip">{settings?.theme === 'light' ? 'Midnight Dark' : 'Clean Light'}</span>
-      </button>
     </aside>
   );
 };

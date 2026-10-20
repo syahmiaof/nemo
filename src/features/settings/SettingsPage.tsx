@@ -7,12 +7,14 @@ import {
   Trash2,
   Moon,
   Sun,
+  Sparkles,
   HardDrive,
   User,
   AlertTriangle,
   FlaskConical,
   Sliders,
   Palette,
+  Upload,
   type LucideIcon,
 } from 'lucide-react';
 import { db, exportWorkspaceBackup, importWorkspaceBackup, resetWorkspaceData } from '@/db/nemoDb';
@@ -24,6 +26,7 @@ import { Modal } from '@/components/ui/Modal';
 import { useToast } from '@/components/ui/Toast';
 import type { WorkspaceSettings } from '@/domain/types';
 import { DemoWorkspacePanel } from './DemoWorkspacePanel';
+import { getInitials, saveProfileAvatar, removeProfileAvatar } from '@/lib/avatar';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { useReducedMotion } from '@/design/useReducedMotion';
@@ -34,8 +37,13 @@ type SettingsTab = 'profile' | 'appearance' | 'preferences' | 'data' | 'demo';
 export const SettingsPage: React.FC = () => {
   const { success, error } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const avatarInputRef = useRef<HTMLInputElement>(null);
 
   const settings = useLiveQuery(() => db.settings.get('default'), []);
+  const avatarBlob = useLiveQuery(
+    () => (settings?.avatarBlobId ? db.assetBlobs.get(settings.avatarBlobId) : undefined),
+    [settings?.avatarBlobId]
+  );
 
   // Active subtab
   const [activeTab, setActiveTab] = useState<SettingsTab>('appearance');
@@ -48,10 +56,11 @@ export const SettingsPage: React.FC = () => {
 
   // Form states
   const [displayName, setDisplayName] = useState('');
-  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+  const [theme, setTheme] = useState<WorkspaceSettings['theme']>('dark');
   const [weekStartsOn, setWeekStartsOn] = useState<0 | 1>(1);
   const [hourFormat, setHourFormat] = useState<'12h' | '24h'>('24h');
   const [reduceMotion, setReduceMotion] = useState(false);
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
 
   // Dialogs
   const [isResetConfirmOpen, setIsResetConfirmOpen] = useState(false);
@@ -70,6 +79,38 @@ export const SettingsPage: React.FC = () => {
     }
   }, [settings]);
 
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 10 * 1024 * 1024) {
+      error('File too large', 'Please choose an image under 10MB.');
+      return;
+    }
+
+    try {
+      setIsUploadingAvatar(true);
+      await saveProfileAvatar(file);
+      success('Avatar updated', 'Your profile picture was compressed to 256x256 WebP and saved locally.');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Upload failed';
+      error('Avatar Error', msg);
+    } finally {
+      setIsUploadingAvatar(false);
+      e.target.value = '';
+    }
+  };
+
+  const handleAvatarRemove = async () => {
+    try {
+      await removeProfileAvatar();
+      success('Avatar removed', 'Profile avatar reset to initials fallback.');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Removal failed';
+      error('Avatar Error', msg);
+    }
+  };
+
   const handleSaveProfile = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!displayName.trim()) {
@@ -85,6 +126,7 @@ export const SettingsPage: React.FC = () => {
   const handleUpdatePreferences = async (updates: Partial<WorkspaceSettings>) => {
     await db.settings.update('default', updates);
     if (updates.theme) {
+      document.documentElement.dataset.theme = updates.theme;
       document.documentElement.setAttribute('data-theme', updates.theme);
     }
     success('Preferences saved');
@@ -230,12 +272,77 @@ export const SettingsPage: React.FC = () => {
       <section id="settings-panel" role="tabpanel" aria-labelledby={`settings-tab-${activeTab}`} tabIndex={0}>
       {/* Profile Panel */}
       {activeTab === 'profile' && (
-        <div data-enter className="p-6 rounded-2xl glass-panel relative z-10 space-y-5">
+        <div data-enter className="p-6 rounded-2xl glass-panel relative z-10 space-y-6">
           <div className="flex items-center gap-2.5 border-b border-white/[0.08] pb-3 relative z-10">
             <User className="w-5 h-5 text-accent-mint" />
-            <h3 className="text-base font-bold text-content-primary">Workspace Profile</h3>
+            <div>
+              <h3 className="text-base font-bold text-content-primary">Workspace Profile</h3>
+              <p className="text-xs text-content-secondary mt-0.5">
+                Personalize your workspace identity with an avatar and display name.
+              </p>
+            </div>
           </div>
 
+          {/* Avatar Upload & Preview Section */}
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5 p-4 rounded-xl bg-white/[0.03] border border-white/[0.08] relative z-10">
+            <div className="relative w-20 h-20 rounded-full border-2 border-accent-mint/30 shadow-lg overflow-hidden flex-shrink-0 bg-[#0F1A2D] grid place-items-center">
+              {avatarBlob?.data ? (
+                <img
+                  src={avatarBlob.data}
+                  alt={displayName || 'Profile Avatar'}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <span className="font-extrabold text-2xl text-accent-mint tracking-wider select-none">
+                  {getInitials(displayName || settings?.displayName)}
+                </span>
+              )}
+            </div>
+
+            <div className="space-y-2 flex-1">
+              <h4 className="text-sm font-semibold text-white">Profile Picture</h4>
+              <p className="text-xs text-content-secondary leading-relaxed">
+                Client-side compressed to max 256&times;256 WebP and saved in local IndexedDB.
+              </p>
+
+              <div className="flex flex-wrap items-center gap-2.5 pt-1">
+                <input
+                  ref={avatarInputRef}
+                  type="file"
+                  accept="image/png,image/jpeg,image/webp,image/gif"
+                  onChange={handleAvatarUpload}
+                  className="hidden"
+                />
+
+                <Button
+                  type="button"
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => avatarInputRef.current?.click()}
+                  disabled={isUploadingAvatar}
+                  className="gap-1.5"
+                >
+                  <Upload className="w-3.5 h-3.5" />
+                  <span>{avatarBlob ? 'Replace Avatar' : 'Upload Avatar'}</span>
+                </Button>
+
+                {avatarBlob && (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleAvatarRemove}
+                    className="gap-1.5 text-accent-ember hover:bg-accent-ember/10"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                    <span>Remove</span>
+                  </Button>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Display Name Form */}
           <form onSubmit={handleSaveProfile} className="space-y-4 max-w-md relative z-10">
             <Input
               label="Display / Workspace Name"
@@ -262,21 +369,21 @@ export const SettingsPage: React.FC = () => {
               <div>
                 <h3 className="text-base font-bold text-content-primary">Theme Atmosphere</h3>
                 <p className="text-xs text-content-secondary mt-0.5">
-                  A midnight room behind frosted glass or an accessible clean canvas.
+                  Choose your ambient workspace palette: Midnight, Daylight, or Aurora.
                 </p>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 relative z-10">
-              {/* Dark Theme Card */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5 relative z-10">
+              {/* Midnight Theme Card */}
               <button
                 type="button"
                 onClick={() => {
-                  setTheme('dark');
-                  handleUpdatePreferences({ theme: 'dark' });
+                  setTheme('midnight');
+                  handleUpdatePreferences({ theme: 'midnight' });
                 }}
                 className={`p-5 rounded-2xl border text-left transition-all ${
-                  theme === 'dark'
+                  theme === 'dark' || theme === 'midnight'
                     ? 'border-accent-ember ring-2 ring-accent-ember/30 bg-[#0F1A2D]'
                     : 'border-white/10 hover:border-white/20 bg-[#0F1A2D]/70'
                 }`}
@@ -284,9 +391,9 @@ export const SettingsPage: React.FC = () => {
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
                     <Moon className="w-4 h-4 text-accent-mint" />
-                    <span className="text-sm font-bold text-white">Midnight Navy</span>
+                    <span className="text-sm font-bold text-white">Midnight</span>
                   </div>
-                  {theme === 'dark' && (
+                  {(theme === 'dark' || theme === 'midnight') && (
                     <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-accent-ember/20 text-accent-ember border border-accent-ember/40">
                       Active
                     </span>
@@ -302,19 +409,19 @@ export const SettingsPage: React.FC = () => {
                   </div>
                 </div>
                 <p className="text-xs text-content-tertiary mt-3">
-                  Midnight navy with warm peach and soft mint accents.
+                  Midnight navy foundation with warm peach and soft mint accents.
                 </p>
               </button>
 
-              {/* Light Theme Card */}
+              {/* Daylight Theme Card */}
               <button
                 type="button"
                 onClick={() => {
-                  setTheme('light');
-                  handleUpdatePreferences({ theme: 'light' });
+                  setTheme('daylight');
+                  handleUpdatePreferences({ theme: 'daylight' });
                 }}
                 className={`p-5 rounded-2xl border text-left transition-all ${
-                  theme === 'light'
+                  theme === 'light' || theme === 'daylight'
                     ? 'border-accent-ember ring-2 ring-accent-ember/30 bg-[#FFFFFF]'
                     : 'border-white/10 hover:border-white/20 bg-[#F4F7FB]'
                 }`}
@@ -322,9 +429,9 @@ export const SettingsPage: React.FC = () => {
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
                     <Sun className="w-4 h-4 text-amber-500" />
-                    <span className="text-sm font-bold text-gray-900">Clean Slate</span>
+                    <span className="text-sm font-bold text-gray-900">Daylight</span>
                   </div>
-                  {theme === 'light' && (
+                  {(theme === 'light' || theme === 'daylight') && (
                     <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-accent-ember/20 text-accent-ember border border-accent-ember/40">
                       Active
                     </span>
@@ -334,15 +441,86 @@ export const SettingsPage: React.FC = () => {
                 <div className="w-full h-20 rounded-xl bg-[#FFFFFF] border border-gray-300 p-2.5 flex gap-2 overflow-hidden">
                   <div className="w-4 h-full rounded-md bg-[#EDF2F9]" />
                   <div className="flex-1 space-y-1.5">
-                    <div className="w-16 h-2 rounded bg-[#EEB2A3]" />
+                    <div className="w-16 h-2 rounded bg-[#0F766E]" />
                     <div className="w-full h-2 rounded bg-gray-200" />
                     <div className="w-24 h-2 rounded bg-gray-200" />
                   </div>
                 </div>
                 <p className="text-xs text-gray-600 mt-3">
-                  A clear daylight palette with dark text and calm surfaces.
+                  High-contrast daylight canvas with dark slate typography and crisp surfaces.
                 </p>
               </button>
+
+              {/* Aurora Theme Card */}
+              <button
+                type="button"
+                onClick={() => {
+                  setTheme('aurora');
+                  handleUpdatePreferences({ theme: 'aurora' });
+                }}
+                className={`p-5 rounded-2xl border text-left transition-all ${
+                  theme === 'aurora'
+                    ? 'border-emerald-400 ring-2 ring-emerald-400/30 bg-[#070B14]'
+                    : 'border-white/10 hover:border-white/20 bg-[#070B14]/80'
+                }`}
+              >
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <Sparkles className="w-4 h-4 text-emerald-400" />
+                    <span className="text-sm font-bold text-white">Aurora</span>
+                  </div>
+                  {theme === 'aurora' && (
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-400/40">
+                      Active
+                    </span>
+                  )}
+                </div>
+                {/* Mini preview illustration */}
+                <div className="w-full h-20 rounded-xl bg-[#070B14] border border-emerald-500/30 p-2.5 flex gap-2 overflow-hidden relative">
+                  <div className="w-4 h-full rounded-md bg-[#102A45]" />
+                  <div className="flex-1 space-y-1.5">
+                    <div className="w-16 h-2 rounded bg-gradient-to-r from-emerald-400 to-[#F5C8BC]" />
+                    <div className="w-full h-2 rounded bg-[#123B38]/60" />
+                    <div className="w-24 h-2 rounded bg-[#2A1F3D]/60" />
+                  </div>
+                </div>
+                <p className="text-xs text-content-tertiary mt-3">
+                  Atmospheric deep navy with flowing ambient aurora gradients and glass layering.
+                </p>
+              </button>
+            </div>
+          </div>
+
+          {/* Signature Brand & Launch Experience */}
+          <div className="p-6 rounded-2xl glass-panel relative z-10 space-y-4">
+            <div className="flex items-center gap-2.5 border-b border-white/[0.08] pb-3 relative z-10">
+              <Sparkles className="w-5 h-5 text-accent-mint" />
+              <div>
+                <h3 className="text-base font-bold text-content-primary">Signature Brand Experience</h3>
+                <p className="text-xs text-content-secondary mt-0.5">
+                  The official flowing route emblem initialization, mint checkpoint, and peach completion reveal.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap items-center justify-between gap-4 pt-1 relative z-10">
+              <div className="space-y-1">
+                <p className="text-sm font-semibold text-content-primary">Welcome Launch Animation</p>
+                <p className="text-xs text-content-tertiary">
+                  Replays the initial brand welcome overlay with full spatial route drawing.
+                </p>
+              </div>
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={() => {
+                  window.dispatchEvent(new CustomEvent('nemo:replay-welcome'));
+                }}
+                className="gap-2"
+              >
+                <Sparkles className="w-4 h-4 text-accent-mint" />
+                <span>Replay Welcome Animation</span>
+              </Button>
             </div>
           </div>
         </div>

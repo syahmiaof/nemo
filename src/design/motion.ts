@@ -2,7 +2,10 @@ import gsap from 'gsap';
 
 export function prefersReducedMotion(): boolean {
   if (typeof window === 'undefined') return false;
-  return document.documentElement.dataset.reduceMotion === 'true' || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  return (
+    document.documentElement.dataset.reduceMotion === 'true' ||
+    Boolean(window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches)
+  );
 }
 
 export function animateFadeIn(

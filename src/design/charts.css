@@ -71,9 +71,21 @@
 .insights-bottom-metrics strong { display: block; font-size: 30px; color: var(--text-primary); font-weight: 650; }
 .insights-bottom-metrics span { display: block; font-size: 14px; color: var(--text-secondary); margin-top: 5px; }
 .insights-source { font-size: 13px; color: var(--text-secondary); }
-[data-theme="light"] .insights-change { color: #286754; }
-[data-theme="light"] .insights-change.is-negative { color: #944b3f; }
-[data-theme="light"] .nemo-chart { --chart-peach: #b95945; }
+[data-theme="light"] .insights-change, [data-theme="daylight"] .insights-change { color: #0F766E; }
+[data-theme="light"] .insights-change.is-negative, [data-theme="daylight"] .insights-change.is-negative { color: #BE123C; }
+[data-theme="light"] .nemo-chart, [data-theme="daylight"] .nemo-chart { --chart-peach: #BE123C; }
+[data-theme="light"] .nemo-chart__grid line, [data-theme="daylight"] .nemo-chart__grid line { stroke: #94A3B8; opacity: 0.5; }
+[data-theme="light"] .nemo-chart__grid text, [data-theme="daylight"] .nemo-chart__grid text,
+[data-theme="light"] .nemo-chart__label, [data-theme="daylight"] .nemo-chart__label { fill: #334155; font-weight: 600; }
+[data-theme="light"] .nemo-chart__comparison, [data-theme="daylight"] .nemo-chart__comparison { stroke: #475569; opacity: 0.9; }
+[data-theme="light"] .nemo-chart__tooltip, [data-theme="daylight"] .nemo-chart__tooltip { background: #FFFFFF; border-color: #CBD5E1; color: #0F172A; box-shadow: 0 14px 34px -10px rgba(15, 23, 42, 0.16); }
+[data-theme="light"] .nemo-chart__dot, [data-theme="daylight"] .nemo-chart__dot { stroke: #FFFFFF; }
+[data-theme="light"] .nemo-chart__comparison-dot, [data-theme="daylight"] .nemo-chart__comparison-dot { stroke: #FFFFFF; }
+
+[data-theme="aurora"] .insights-change { color: #34D399; }
+[data-theme="aurora"] .insights-change.is-negative { color: #F5C8BC; }
+[data-theme="aurora"] .nemo-chart { --chart-peach: #34D399; }
+[data-theme="aurora"] .nemo-chart__tooltip { background: #0F192F; border-color: rgba(52, 211, 153, 0.3); color: #F8FAFC; box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.6); }
 @media (max-width: 1050px) {
   .insights-layout { grid-template-columns: minmax(0, 1fr); }
   .insights-distribution { display: grid; grid-template-columns: 1fr 1fr; gap: 0 30px; }
