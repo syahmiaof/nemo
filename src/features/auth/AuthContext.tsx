@@ -105,7 +105,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       });
 
       if (error) {
-        return { success: false, error: 'Kata laluan salah. Sila semak semula kata laluan anda.' };
+        return { success: false, error: 'Incorrect password. Please verify and try again.' };
       }
 
       if (data.user?.email) {
@@ -114,7 +114,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           await supabase.auth.signOut();
           return {
             success: false,
-            error: 'Akses ditolak: Bukan akaun pemilik yang dibenarkan.',
+            error: 'Access denied: Unauthorized owner account.',
           };
         }
         setIsApprovedOwner(true);
@@ -124,7 +124,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       return { success: true };
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'Ralat log masuk';
+      const message = err instanceof Error ? err.message : 'Sign-in error';
       return { success: false, error: message };
     }
   };
@@ -133,7 +133,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     newPassword: string
   ): Promise<{ success: boolean; error?: string }> => {
     if (!isSupabaseConfigured || !user) {
-      return { success: false, error: 'Sila log masuk terlebih dahulu.' };
+      return { success: false, error: 'Please sign in first.' };
     }
 
     try {
@@ -146,7 +146,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
       return { success: true };
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'Gagal menukar kata laluan';
+      const message = err instanceof Error ? err.message : 'Failed to update password';
       return { success: false, error: message };
     }
   };
@@ -160,7 +160,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (cleanEmail !== APPROVED_OWNER_EMAIL.toLowerCase()) {
       return {
         success: false,
-        error: `Akses ditolak: Hanya emel pemilik yang dibenarkan (${APPROVED_OWNER_EMAIL}).`,
+        error: `Access denied: Only the authorized owner email (${APPROVED_OWNER_EMAIL}) is permitted.`,
       };
     }
 
@@ -178,7 +178,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
       return { success: true };
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'Gagal menghantar kod OTP';
+      const message = err instanceof Error ? err.message : 'Failed to send OTP code';
       return { success: false, error: message };
     }
   };
@@ -208,7 +208,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           await supabase.auth.signOut();
           return {
             success: false,
-            error: 'Akses ditolak: Akaun ini tidak dibenarkan mengakses ruang kerja awan peribadi.',
+            error: 'Access denied: This account is not authorized to access this private cloud workspace.',
           };
         }
         setIsApprovedOwner(true);
@@ -218,7 +218,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       return { success: true };
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'Kod OTP tidak sah';
+      const message = err instanceof Error ? err.message : 'Invalid OTP code';
       return { success: false, error: message };
     }
   };

@@ -14,6 +14,7 @@ export const AuthModal: React.FC = () => {
 
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -34,20 +35,20 @@ export const AuthModal: React.FC = () => {
     setLoading(false);
 
     if (res.success) {
-      setSuccessMessage('Log masuk berjaya! Menyegerakkan data...');
+      setSuccessMessage('Signed in successfully! Syncing workspace data...');
       setTimeout(() => {
         closeAuthModal();
         setPassword('');
       }, 1000);
     } else {
-      setErrorMessage(res.error || 'Kata laluan salah.');
+      setErrorMessage(res.error || 'Incorrect password.');
     }
   };
 
   const handleUpdatePassword = async (e: React.FormEvent) => {
     e.preventDefault();
     if (newPassword.length < 6) {
-      setErrorMessage('Kata laluan baharu sekurang-kurangnya 6 aksara.');
+      setErrorMessage('New password must be at least 6 characters.');
       return;
     }
     setLoading(true);
@@ -56,14 +57,14 @@ export const AuthModal: React.FC = () => {
     setLoading(false);
 
     if (res.success) {
-      setSuccessMessage('Kata laluan berjaya dikemaskini!');
+      setSuccessMessage('Password updated successfully!');
       setTimeout(() => {
         setIsChangingPassword(false);
         setNewPassword('');
         setSuccessMessage(null);
       }, 1200);
     } else {
-      setErrorMessage(res.error || 'Gagal mengemaskini kata laluan.');
+      setErrorMessage(res.error || 'Failed to update password.');
     }
   };
 
@@ -81,7 +82,7 @@ export const AuthModal: React.FC = () => {
         <button
           onClick={closeAuthModal}
           className="absolute top-4 right-4 text-navy-400 hover:text-navy-100 p-1.5 rounded-lg transition-colors focus:ring-2 focus:ring-mint-500/50"
-          aria-label="Tutup"
+          aria-label="Close"
         >
           <X className="w-4 h-4" />
         </button>
@@ -93,7 +94,7 @@ export const AuthModal: React.FC = () => {
           </div>
           <div>
             <h2 id="auth-modal-title" className="text-base font-semibold text-white tracking-tight">
-              Akses Pemilik Nemo
+              Nemo Owner Access
             </h2>
             <p className="text-xs text-navy-400">
               syahmiaof123@gmail.com
@@ -106,14 +107,14 @@ export const AuthModal: React.FC = () => {
           <div className="space-y-4">
             <div className="p-3.5 rounded-xl bg-navy-800/60 border border-navy-700/60 flex items-center justify-between">
               <div>
-                <p className="text-[11px] text-navy-400 font-medium">Status Akaun</p>
+                <p className="text-[11px] text-navy-400 font-medium">Account Status</p>
                 <p className="text-sm font-semibold text-mint-400 flex items-center gap-1.5">
                   <ShieldCheck className="w-4 h-4" />
-                  Pemilik Sah Disahkan
+                  Verified Owner
                 </p>
               </div>
               <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-mint-500/15 text-mint-400 border border-mint-500/30">
-                Aktif
+                Active
               </span>
             </div>
 
@@ -121,19 +122,29 @@ export const AuthModal: React.FC = () => {
               <form onSubmit={handleUpdatePassword} className="space-y-3 pt-1">
                 <div>
                   <label htmlFor="new-pass" className="block text-xs font-medium text-navy-300 mb-1">
-                    Kata Laluan Baharu
+                    New Password
                   </label>
-                  <input
-                    id="new-pass"
-                    type="password"
-                    required
-                    minLength={6}
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                    className="w-full px-3 py-2 text-sm rounded-xl bg-navy-950 border border-navy-700 focus:border-mint-500 text-white placeholder-navy-500"
-                    placeholder="Min 6 aksara"
-                    autoFocus
-                  />
+                  <div className="relative">
+                    <input
+                      id="new-pass"
+                      type={showNewPassword ? 'text' : 'password'}
+                      required
+                      minLength={6}
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      className="w-full pl-3 pr-10 py-2 text-sm rounded-xl bg-navy-950 border border-navy-700 focus:border-mint-500 text-white placeholder-navy-500"
+                      placeholder="Minimum 6 characters"
+                      autoFocus
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowNewPassword(!showNewPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-navy-400 hover:text-navy-200"
+                      aria-label={showNewPassword ? 'Hide password' : 'Show password'}
+                    >
+                      {showNewPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
                 </div>
 
                 {errorMessage && (
@@ -152,14 +163,14 @@ export const AuthModal: React.FC = () => {
                     }}
                     className="w-1/2 py-2 px-3 rounded-xl bg-navy-800 hover:bg-navy-750 text-navy-300 text-xs font-medium"
                   >
-                    Batal
+                    Cancel
                   </button>
                   <button
                     type="submit"
-                    disabled={loading}
-                    className="w-1/2 py-2 px-3 rounded-xl bg-mint-500 hover:bg-mint-400 text-navy-950 text-xs font-semibold"
+                    disabled={loading || newPassword.length < 6}
+                    className="w-1/2 py-2 px-3 rounded-xl bg-mint-500 hover:bg-mint-400 text-navy-950 text-xs font-semibold disabled:opacity-50"
                   >
-                    {loading ? 'Menyimpan...' : 'Simpan'}
+                    {loading ? 'Saving...' : 'Save Password'}
                   </button>
                 </div>
               </form>
@@ -170,7 +181,7 @@ export const AuthModal: React.FC = () => {
                   className="w-full py-2 px-3 rounded-xl bg-navy-800/80 hover:bg-navy-800 border border-navy-700 text-navy-300 hover:text-white text-xs font-medium transition-colors flex items-center justify-center gap-1.5"
                 >
                   <KeyRound className="w-3.5 h-3.5" />
-                  Tukar Kata Laluan
+                  Change Password
                 </button>
 
                 <button
@@ -180,7 +191,7 @@ export const AuthModal: React.FC = () => {
                   }}
                   className="w-full py-2 px-3 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 text-xs font-medium transition-colors"
                 >
-                  Log Keluar
+                  Sign Out
                 </button>
               </div>
             )}
@@ -190,7 +201,7 @@ export const AuthModal: React.FC = () => {
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
               <label htmlFor="owner-password" className="block text-xs font-medium text-navy-300 mb-1.5">
-                Kata Laluan Pemilik
+                Owner Password
               </label>
               <div className="relative">
                 <input
@@ -200,14 +211,14 @@ export const AuthModal: React.FC = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="w-full pl-3.5 pr-10 py-2.5 text-sm rounded-xl bg-navy-950 border border-navy-700 focus:border-mint-500 focus:ring-1 focus:ring-mint-500 text-white placeholder-navy-500 transition-colors"
-                  placeholder="Masukkan kata laluan"
+                  placeholder="Enter owner password"
                   autoFocus
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-navy-400 hover:text-navy-200"
-                  aria-label={showPassword ? 'Sembunyi kata laluan' : 'Papar kata laluan'}
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
@@ -233,7 +244,7 @@ export const AuthModal: React.FC = () => {
               disabled={loading || !password.trim()}
               className="w-full py-2.5 px-4 rounded-xl bg-mint-500 hover:bg-mint-400 text-navy-950 font-semibold text-sm transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
             >
-              {loading ? 'Mengesahkan...' : 'Log Masuk ke Awan'}
+              {loading ? 'Authenticating...' : 'Sign In to Cloud'}
             </button>
           </form>
         )}

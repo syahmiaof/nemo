@@ -16,12 +16,12 @@ export const SyncIndicator: React.FC = () => {
   };
 
   const getTooltip = () => {
-    if (!user) return 'Mod Tempatan · Klik untuk log masuk & sync cloud';
-    if (isSyncing) return 'Sedang menyegerakkan data dengan Supabase...';
-    if (status === 'up_to_date') return `Diselaraskan dengan ${user.email} · Klik untuk sync semula`;
-    if (status === 'offline') return 'Luar talian (Offline) · Perubahan disimpan dalam IndexedDB';
-    if (status === 'error') return 'Ralat sinkronisasi · Klik untuk cuba lagi';
-    return `Bersambung (${user.email})`;
+    if (!user) return 'Local Mode · Click to sign in & sync cloud';
+    if (isSyncing) return 'Syncing data with Supabase...';
+    if (status === 'up_to_date') return `Synced with ${user.email} · Click to sync now`;
+    if (status === 'offline') return 'Offline · Changes saved locally in IndexedDB';
+    if (status === 'error') return 'Sync error · Click to retry';
+    return `Connected (${user.email})`;
   };
 
   return (
@@ -29,7 +29,7 @@ export const SyncIndicator: React.FC = () => {
       onClick={handleClick}
       className="header-time-pill flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface border border-border-subtle hover:border-border-emphasis text-xs text-content-secondary hover:text-content-primary transition-colors cursor-pointer"
       title={getTooltip()}
-      aria-label="Status Cloud Sync"
+      aria-label="Cloud Sync Status"
     >
       {isSyncing ? (
         <>
