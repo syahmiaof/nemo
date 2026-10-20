@@ -11,7 +11,13 @@ import {
   Edit2,
   Trash2,
 } from 'lucide-react';
-import { db } from '@/db/nemoDb';
+import {
+  db,
+  atomicDeleteSemester,
+  atomicDeleteSubject,
+  atomicDeleteAssignment,
+  atomicSetTaskStatus,
+} from '@/db/nemoDb';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Textarea } from '@/components/ui/Textarea';
@@ -228,48 +234,23 @@ export const AcademicsPage: React.FC = () => {
 
   const handleToggleSubtask = async (task: Task) => {
     const nextStatus = task.status === 'done' ? 'todo' : 'done';
-    await db.tasks.update(task.id, {
-      status: nextStatus,
-      completedAt: nextStatus === 'done' ? new Date().toISOString() : undefined,
-      updatedAt: new Date().toISOString(),
-    });
+    await atomicSetTaskStatus(db, task.id, nextStatus);
   };
 
   const handleDeleteItem = async () => {
     if (!itemToDelete) return;
     if (itemToDelete.type === 'semester') {
-      await db.transaction('rw', [db.semesters, db.subjects, db.assignments, db.tasks], async () => {
-        const subjectsInSem = await db.subjects.where('semesterId').equals(itemToDelete.id).toArray();
-        for (const s of subjectsInSem) {
-          const assignmentsInSub = await db.assignments.where('subjectId').equals(s.id).toArray();
-          for (const a of assignmentsInSub) {
-            await db.tasks.where('parentId').equals(a.id).delete();
-          }
-          await db.assignments.where('subjectId').equals(s.id).delete();
-        }
-        await db.subjects.where('semesterId').equals(itemToDelete.id).delete();
-        await db.semesters.delete(itemToDelete.id);
-      });
+      await atomicDeleteSemester(db, itemToDelete.id);
       if (selectedSemesterId === itemToDelete.id) {
         setSelectedSemesterId('');
       }
     } else if (itemToDelete.type === 'subject') {
-      await db.transaction('rw', [db.subjects, db.assignments, db.tasks], async () => {
-        const assignmentsInSub = await db.assignments.where('subjectId').equals(itemToDelete.id).toArray();
-        for (const a of assignmentsInSub) {
-          await db.tasks.where('parentId').equals(a.id).delete();
-        }
-        await db.assignments.where('subjectId').equals(itemToDelete.id).delete();
-        await db.subjects.delete(itemToDelete.id);
-      });
+      await atomicDeleteSubject(db, itemToDelete.id);
       if (selectedSubjectId === itemToDelete.id) {
         setSelectedSubjectId('');
       }
     } else if (itemToDelete.type === 'assignment') {
-      await db.transaction('rw', [db.assignments, db.tasks], async () => {
-        await db.tasks.where('parentId').equals(itemToDelete.id).delete();
-        await db.assignments.delete(itemToDelete.id);
-      });
+      await atomicDeleteAssignment(db, itemToDelete.id);
     }
     setItemToDelete(null);
     success('Item deleted');

@@ -15,6 +15,9 @@ import type {
 } from '@/domain/types';
 import { BackupSchema, type BackupData } from '@/domain/schemas';
 import { databaseNameForMode, getWorkspaceMode, REAL_DATABASE_NAME } from './workspaceMode';
+import { validateReferentialIntegrity } from './operations';
+
+export * from './operations';
 
 export class NemoDatabase extends Dexie {
   settings!: EntityTable<WorkspaceSettings, 'id'>;
@@ -144,6 +147,15 @@ export async function importWorkspaceBackup(jsonContent: string): Promise<{ succ
     }
 
     const { data } = parsed.data;
+
+    // Validate referential integrity in-memory before modifying database
+    const refCheck = validateReferentialIntegrity(data);
+    if (!refCheck.valid) {
+      return {
+        success: false,
+        error: `Referential integrity validation failed: ${refCheck.errors.slice(0, 3).join('; ')}${refCheck.errors.length > 3 ? ` (+${refCheck.errors.length - 3} more)` : ''}`,
+      };
+    }
 
     // Perform atomic transaction replacement across all tables
     await db.transaction('rw', [

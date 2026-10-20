@@ -1,13 +1,13 @@
 # Nemo Test & Verification Report
 
 ## Baseline Status
-- **Test Frameworks:** Vitest (Unit / Domain / Persistence / Schema / Chart / Demo) & Playwright (End-to-End Browser Automation)
+- **Test Frameworks:** Vitest (Unit / Domain / Persistence / Schema / Chart / Demo / Reliability) & Playwright (End-to-End Browser Automation)
 - **Environment:** Windows, Node v24.13.0, npm 11.6.2, Playwright v1.50+
 - **Verification Date:** 2026-10-20
-- **Total Vitest Unit Test Suites:** 8 passed (8 total, 36/36 tests passing)
-- **Total Playwright E2E Tests:** 22 passed (11 on Desktop Chrome, 11 on Mobile Chrome Pixel 7)
-- **Strict TypeScript Check:** PASS (0 errors via `tsc --noEmit`)
-- **Production Vite + PWA Build:** PASS (0 errors, Service Worker generated)
+- **Total Vitest Unit Test Suites:** 11 passed (11 total, 54/54 tests passing)
+- **Total Playwright E2E Tests:** 26 passed (13 on Desktop Chrome, 13 on Mobile Chrome Pixel 7)
+- **Strict TypeScript Check:** PASS (0 errors via `tsc --noEmit` & `tsc -b`)
+- **Production Vite + PWA Build:** PASS (0 errors, Service Worker generated, 16 precache entries / 755.63 KiB)
 
 ## Sprint 1 Functional Audit Pass/Fail Matrix
 
@@ -100,4 +100,84 @@ dist/assets/index-CfRT-5gY.css   60.80 kB
 dist/assets/index-R3QOb6I4.js   665.80 kB
 ✓ built in 7.21s
 PWA v0.20.5: Service worker & offline precache generated.
+```
+
+---
+
+## Sprint 2 Data Reliability, Offline & Recovery Pass/Fail Matrix
+
+| Pillar | Requirement / Feature | Verification Method | Status | Notes |
+|---|---|---|---|---|
+| **1. Database Reliability** | Atomic cascade delete of projects and milestones | Vitest & E2E | **VERIFIED** | Tasks detached to standalone; milestones deleted; zero foreign-key errors |
+| | Atomic task deletion cleans up focus and goal links | Vitest & E2E | **VERIFIED** | Active focus slots and goal links purged transactionally |
+| | Task completion timestamp invariant (`completedAt`) | Vitest & E2E | **VERIFIED** | Invariant enforced: set on 'done', cleared on 'todo' |
+| | Orphan asset blob lifecycle management | Vitest Unit | **VERIFIED** | Superseded and deleted cover blobs purged from `assetBlobs` |
+| | Multi-table transaction rollback on failure | Vitest Unit | **VERIFIED** | Atomic rollback verified under simulated write failure |
+| **2. Backup & Recovery** | Complete 12-store JSON export | Vitest & E2E | **VERIFIED** | All tables and base64 blobs exported in versioned envelope |
+| | In-memory referential pre-validation | Vitest Unit | **VERIFIED** | Rejects invalid references and dangling IDs before touching DB |
+| | Byte-for-byte image blob restoration | Vitest Unit | **VERIFIED** | Restored asset blobs match original binary data exactly (SHA-256 equivalent) |
+| | Clean profile / disaster recovery restoration | Vitest Unit | **VERIFIED** | Restores from clean/empty database state with zero loss |
+| | Corrupt/malformed JSON rejection | Vitest & E2E | **VERIFIED** | Rejection alert displayed; active user data kept 100% intact |
+| **3. Offline PWA & Service Worker** | Complete PWA application shell precaching | Production Build | **VERIFIED** | 16 entries precached (755.63 KiB) including all core icons |
+| | Service worker registration & cache population | Playwright E2E | **VERIFIED** | Verified active controller in real Chromium |
+| | 0 kbps offline client-side navigation | Playwright E2E | **VERIFIED** | All routes navigate smoothly with network severed |
+| | Offline IndexedDB data creation | Playwright E2E | **VERIFIED** | Task created offline in IndexedDB while network is cut |
+| | Offline hard page reload survivability | Playwright E2E | **VERIFIED** | Page reloads from SW cache and IndexedDB without network connection |
+| **4. Privacy & Network Security** | Zero telemetry / analytics egress | Playwright E2E | **VERIFIED** | Network route intercept asserts zero external requests |
+| | Zero third-party tracker connections | Playwright E2E | **VERIFIED** | Zero data sent to Google, Mixpanel, PostHog, Sentry, etc. |
+| | Full local-first data containment | Playwright E2E | **VERIFIED** | 100% of user data remains on device |
+
+### Sprint 2 Vitest Suite Execution
+```
+ RUN  v2.1.9 C:/Users/USER/Desktop/nemo
+
+ ✓ tests/unit/schemas.test.ts (4 tests) 14ms
+ ✓ tests/unit/dates.test.ts (5 tests) 5ms
+ ✓ tests/unit/destructive_resilience.test.ts (3 tests) 31ms
+ ✓ tests/unit/academics_calendar.test.ts (2 tests) 82ms
+ ✓ tests/unit/backup_recovery.test.ts (5 tests) 81ms
+ ✓ tests/unit/chart.test.ts (6 tests) 279ms
+ ✓ tests/unit/db.test.ts (4 tests) 65ms
+ ✓ tests/unit/goals_insights.test.ts (2 tests) 57ms
+ ✓ tests/unit/projects_tasks.test.ts (3 tests) 69ms
+ ✓ tests/unit/reliability_indexeddb.test.ts (10 tests) 116ms
+ ✓ tests/unit/demo.test.ts (10 tests) 565ms
+
+ Test Files  11 passed (11)
+      Tests  54 passed (54)
+   Duration  8.55s
+```
+
+### Sprint 2 Playwright Browser Test Suite Execution
+```
+Running 26 tests using 1 worker
+
+  ok  1 [desktop-chrome] › tests\e2e\academics_calendar_goals.spec.ts:16:3 (5.9s)
+  ok  2 [desktop-chrome] › tests\e2e\academics_calendar_goals.spec.ts:56:3 (6.1s)
+  ok  3 [desktop-chrome] › tests\e2e\academics_calendar_goals.spec.ts:98:3 (4.7s)
+  ok  4 [desktop-chrome] › tests\e2e\database_backup_demo.spec.ts:16:3 (4.5s)
+  ok  5 [desktop-chrome] › tests\e2e\database_backup_demo.spec.ts:39:3 (5.6s)
+  ok  6 [desktop-chrome] › tests\e2e\database_backup_demo.spec.ts:69:3 (2.3s)
+  ok  7 [desktop-chrome] › tests\e2e\offline_pwa.spec.ts:6:3 (7.4s)
+  ok  8 [desktop-chrome] › tests\e2e\overview_insights.spec.ts:16:3 (3.7s)
+  ok  9 [desktop-chrome] › tests\e2e\overview_insights.spec.ts:41:3 (3.0s)
+  ok 10 [desktop-chrome] › tests\e2e\privacy_network.spec.ts:16:3 (6.9s)
+  ok 11 [desktop-chrome] › tests\e2e\projects_tasks.spec.ts:18:3 (8.3s)
+  ok 12 [desktop-chrome] › tests\e2e\projects_tasks.spec.ts:94:3 (4.9s)
+  ok 13 [desktop-chrome] › tests\e2e\projects_tasks.spec.ts:133:3 (8.6s)
+  ok 14 [mobile-chrome] › tests\e2e\academics_calendar_goals.spec.ts:16:3 (8.9s)
+  ok 15 [mobile-chrome] › tests\e2e\academics_calendar_goals.spec.ts:56:3 (4.6s)
+  ok 16 [mobile-chrome] › tests\e2e\academics_calendar_goals.spec.ts:98:3 (4.4s)
+  ok 17 [mobile-chrome] › tests\e2e\database_backup_demo.spec.ts:16:3 (4.1s)
+  ok 18 [mobile-chrome] › tests\e2e\database_backup_demo.spec.ts:39:3 (5.2s)
+  ok 19 [mobile-chrome] › tests\e2e\database_backup_demo.spec.ts:69:3 (2.2s)
+  ok 20 [mobile-chrome] › tests\e2e\offline_pwa.spec.ts:6:3 (9.7s)
+  ok 21 [mobile-chrome] › tests\e2e\overview_insights.spec.ts:16:3 (3.2s)
+  ok 22 [mobile-chrome] › tests\e2e\overview_insights.spec.ts:41:3 (2.9s)
+  ok 23 [mobile-chrome] › tests\e2e\privacy_network.spec.ts:16:3 (6.5s)
+  ok 24 [mobile-chrome] › tests\e2e\projects_tasks.spec.ts:18:3 (12.8s)
+  ok 25 [mobile-chrome] › tests\e2e\projects_tasks.spec.ts:94:3 (4.1s)
+  ok 26 [mobile-chrome] › tests\e2e\projects_tasks.spec.ts:133:3 (8.5s)
+
+  26 passed (2.5m)
 ```

@@ -129,6 +129,10 @@ export const ProjectFormModal: React.FC<ProjectFormModalProps> = ({
       let previewBlobId = projectToEdit?.previewBlobId;
 
       if (imageBlobData && (isImageDirty || !previewBlobId)) {
+        // If replacing existing image, remove previous blob to avoid orphan leaks
+        if (projectToEdit?.previewBlobId) {
+          await db.assetBlobs.delete(projectToEdit.previewBlobId);
+        }
         previewBlobId = generateId('blob');
         await db.assetBlobs.put({
           id: previewBlobId,
@@ -139,6 +143,10 @@ export const ProjectFormModal: React.FC<ProjectFormModalProps> = ({
           data: imageBlobData,
           createdAt: now,
         });
+      } else if (!imageBlobData && projectToEdit?.previewBlobId) {
+        // User removed the image cover
+        await db.assetBlobs.delete(projectToEdit.previewBlobId);
+        previewBlobId = undefined;
       }
 
       if (projectToEdit) {

@@ -35,10 +35,18 @@
 | FA1.1 | Sprint 1: Functional Audit & Edge-Case Rectification | Principal Engineer | S6.1 | verified | Fixed Today's Focus orphan slots, Academic cascade delete, Standalone task unlinking, Textarea accessibility useId | 2026-10-20 |
 | FA1.2 | Sprint 1: Playwright E2E Integration Suite | QA Lead | FA1.1 | verified | 11 critical user journeys implemented, covering Projects, Tasks, Academics, Calendar, Goals, Insights, Demo & Backup | 2026-10-20 |
 | FA1.3 | Sprint 1: Multi-Viewport Reliability Verification | QA Lead | FA1.2 | verified | 100% pass rate across Desktop Chrome (11/11) & Mobile Chrome Pixel 7 (11/11); Vitest 36/36 pass; 0 TS errors | 2026-10-20 |
+| S7.1 | Sprint 2: Centralized Atomic Multi-Table Operations | Architecture Engineer | FA1.1 | verified | `src/db/operations.ts` atomic cascade deletes, status transitions, auto-focus eviction & rollback | 2026-10-20 |
+| S7.2 | Sprint 2: Asset Blob Lifecycle & Orphan Prevention | Reliability Engineer | S7.1 | verified | Purges superseded and deleted project covers from `assetBlobs`; cleanup sweeper implemented | 2026-10-20 |
+| S7.3 | Sprint 2: Referential Integrity & Invariant Scanner | QA / Reliability | S7.1 | verified | `auditDatabaseIntegrity` scans all 12 stores; in-memory pre-validation prevents bad restores | 2026-10-20 |
+| S7.4 | Sprint 2: Full-Fidelity Backup & Recovery Suite | Architecture Engineer | S7.3 | verified | Unit tests verify round-trip export/restore, byte-identical blobs (SHA-256 equivalent), malformed JSON rejection | 2026-10-20 |
+| S7.5 | Sprint 2: Real Offline PWA & Precache Hardening | Interface Engineer | S7.1 | verified | 16 precached assets (755.63 KiB); verified 0 kbps offline boot, navigation, CRUD, and offline reload | 2026-10-20 |
+| S7.6 | Sprint 2: Zero Data Egress Privacy Verification | QA Lead | S7.5 | verified | Network interception tests confirm zero calls to third-party CDNs, analytics, trackers, or telemetries | 2026-10-20 |
 
 ## Active Blockers
-- None. All 25 requirements across the 5 functional pillars verified working.
+- None. All functional, database reliability, backup, and offline requirements verified working.
 
 ## Verified Release State
-- **Sprint 1: Functional Audit & System Repair** is COMPLETE and fully verified.
-- Production branch: `sprint1-functional-audit`. All features operating local-first with zero cloud dependencies.
+- **Sprint 1: Functional Audit & System Repair** is COMPLETE.
+- **Sprint 2: Data Reliability, Offline & Recovery** is COMPLETE and fully verified.
+- Production branch: `sprint2-data-reliability`.
+- Test status: Vitest 54/54 passed (11 suites); Playwright 26/26 passed (Desktop & Mobile); TypeScript 0 errors; Vite PWA build 16 precache entries (755.63 KiB). All features operating local-first with zero cloud dependencies.

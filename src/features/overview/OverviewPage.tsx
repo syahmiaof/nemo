@@ -14,7 +14,7 @@ import {
   GraduationCap,
   Activity,
 } from 'lucide-react';
-import { db } from '@/db/nemoDb';
+import { db, atomicSetTaskStatus } from '@/db/nemoDb';
 import { getWorkspaceMode, switchWorkspace } from '@/db/workspace';
 import { useToast } from '@/components/ui/Toast';
 import { TavolaSplineChart } from '@/components/ui/TavolaSplineChart';
@@ -108,11 +108,7 @@ export function OverviewPage() {
 
   const complete = async (task: Task) => {
     try {
-      const now = new Date().toISOString();
-      await db.transaction('rw', [db.tasks, db.focusSelections], async () => {
-        await db.tasks.update(task.id, { status: 'done', completedAt: now, updatedAt: now });
-        await db.focusSelections.where('taskId').equals(task.id).delete();
-      });
+      await atomicSetTaskStatus(db, task.id, 'done');
       success('Task completed', task.title);
     } catch (e) {
       error('Could not complete task', e instanceof Error ? e.message : 'Please retry.');

@@ -11,7 +11,7 @@ import {
   Edit2,
   Link2,
 } from 'lucide-react';
-import { db } from '@/db/nemoDb';
+import { db, atomicDeleteGoal } from '@/db/nemoDb';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Textarea } from '@/components/ui/Textarea';
@@ -158,9 +158,7 @@ export const GoalDetailPage: React.FC = () => {
   };
 
   const handleDeleteGoal = async () => {
-    await db.goals.delete(goal.id);
-    await db.milestones.where('ownerId').equals(goal.id).delete();
-    await db.goalTaskLinks.where('goalId').equals(goal.id).delete();
+    await atomicDeleteGoal(db, goal.id);
     setIsDeleteOpen(false);
     success('Goal deleted');
     navigate('/goals');

@@ -13,7 +13,7 @@ import {
   GraduationCap,
   Target,
 } from 'lucide-react';
-import { db } from '@/db/nemoDb';
+import { db, atomicSetTaskStatus, atomicDeleteTask } from '@/db/nemoDb';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { PriorityBadge, StatusBadge } from '@/components/ui/Badge';
@@ -76,33 +76,19 @@ export const TasksPage: React.FC = () => {
 
   const handleToggleTask = async (task: Task, e: React.MouseEvent<HTMLButtonElement>) => {
     const nextStatus = task.status === 'done' ? 'todo' : 'done';
-    const completedAt = nextStatus === 'done' ? new Date().toISOString() : undefined;
 
     if (nextStatus === 'done') {
       animateTaskCompletion(e.currentTarget);
     }
 
-    await db.transaction('rw', [db.tasks, db.focusSelections], async () => {
-      await db.tasks.update(task.id, {
-        status: nextStatus,
-        completedAt,
-        updatedAt: new Date().toISOString(),
-      });
-      if (nextStatus === 'done') {
-        await db.focusSelections.where('taskId').equals(task.id).delete();
-      }
-    });
+    await atomicSetTaskStatus(db, task.id, nextStatus);
 
     success(nextStatus === 'done' ? 'Task completed' : 'Task reopened');
   };
 
   const handleDeleteTask = async () => {
     if (!taskToDelete) return;
-    await db.tasks.delete(taskToDelete.id);
-    // Delete any focus selection referencing this task
-    await db.focusSelections.where('taskId').equals(taskToDelete.id).delete();
-    // Delete any goal task links
-    await db.goalTaskLinks.where('taskId').equals(taskToDelete.id).delete();
+    await atomicDeleteTask(db, taskToDelete.id);
 
     setTaskToDelete(null);
     success('Task deleted');
