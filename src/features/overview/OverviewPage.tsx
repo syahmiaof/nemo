@@ -33,7 +33,6 @@ export function OverviewPage() {
   const { success, error } = useToast();
   const today = getTodayLocalDateString();
 
-  const settings = useLiveQuery(() => db.settings.get('default'), []);
   const tasks = useLiveQuery(() => db.tasks.toArray(), []) || [];
   const projects = useLiveQuery(() => db.projects.toArray(), []) || [];
   const milestones = useLiveQuery(() => db.milestones.toArray(), []) || [];
@@ -168,19 +167,13 @@ export function OverviewPage() {
   };
 
   const hasData = tasks.length + projects.length + assignments.length > 0;
-  const displayName =
-    settings?.displayName || 'My Workspace';
 
   return (
     <div className="overview-page">
       {/* Editorial Page Heading */}
       <PageHeading
         title="Make room for progress."
-        description={`${new Date().toLocaleDateString('en', {
-          weekday: 'long',
-          month: 'long',
-          day: 'numeric',
-        })} · ${displayName}`}
+        description="Track your daily priorities, projects, and commitments."
         stats={[
           {
             label: 'Active projects',

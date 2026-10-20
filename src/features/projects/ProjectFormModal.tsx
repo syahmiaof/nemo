@@ -8,6 +8,7 @@ import { useToast } from '@/components/ui/Toast';
 import { db } from '@/db/nemoDb';
 import { generateId } from '@/lib/ids';
 import { isValidWebUrl } from '@/lib/utils';
+import { resizeAndCompressCover } from '@/lib/avatar';
 import type { Project, Priority, ProjectStatus } from '@/domain/types';
 
 interface ProjectFormModalProps {
@@ -77,29 +78,29 @@ export const ProjectFormModal: React.FC<ProjectFormModalProps> = ({
     }
   }, [projectToEdit, isOpen]);
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
-    if (!allowedTypes.includes(file.type)) {
+    if (!file.type.startsWith('image/')) {
       error('Invalid file type', 'Please select a valid image file (JPEG, PNG, WebP, or GIF).');
       return;
     }
 
-    if (file.size > 2 * 1024 * 1024) {
-      error('File too large', 'Please choose an image under 2MB.');
+    if (file.size > 20 * 1024 * 1024) {
+      error('File too large', 'Please choose an image under 20MB.');
       return;
     }
 
-    const reader = new FileReader();
-    reader.onload = () => {
-      if (typeof reader.result === 'string') {
-        setImageBlobData(reader.result);
-        setIsImageDirty(true);
-      }
-    };
-    reader.readAsDataURL(file);
+    try {
+      const compressed = await resizeAndCompressCover(file, 1280, 0.82);
+      setImageBlobData(compressed.dataUrl);
+      setIsImageDirty(true);
+      success('Cover loaded', 'Image compressed and preview ready.');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Could not process image';
+      error('Upload error', msg);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {

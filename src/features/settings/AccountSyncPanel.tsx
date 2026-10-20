@@ -195,7 +195,7 @@ export const AccountSyncPanel: React.FC = () => {
         {user ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
             <div className="p-3 rounded-xl bg-surface-subtle border border-border-subtle space-y-0.5">
-              <span className="text-[11px] text-content-tertiary font-medium">Owner Account</span>
+              <span className="text-[11px] text-content-tertiary font-medium">Account Email</span>
               <p className="text-xs font-semibold text-content-primary truncate">{user.email}</p>
             </div>
 
@@ -213,58 +213,58 @@ export const AccountSyncPanel: React.FC = () => {
         ) : (
           <div className="pt-1 space-y-2">
             <p className="text-xs text-content-secondary leading-relaxed">
-              Sign in with your owner password to enable real-time bidirectional synchronization between your laptop and mobile devices.
+              Sign in with your account credentials to enable real-time bidirectional synchronization between your laptop and mobile devices.
             </p>
           </div>
         )}
 
-        {/* Current Active Password Card */}
-        <div className="p-3.5 rounded-xl bg-surface-subtle border border-border-subtle flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div className="space-y-1">
-            <div className="flex items-center gap-1.5 text-[11px] text-content-tertiary font-medium">
-              <KeyRound className="w-3.5 h-3.5 text-accent-mint" />
-              <span>Current Owner Password</span>
-              <span className="px-1.5 py-0.2 rounded text-[9px] bg-mint-500/15 text-mint-400 font-semibold border border-mint-500/30">
-                Active
-              </span>
+        {/* Current Active Password Card (Protected: Only visible after sign in) */}
+        {user && (
+          <div className="p-3.5 rounded-xl bg-surface-subtle border border-border-subtle flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="space-y-1">
+              <div className="flex items-center gap-1.5 text-[11px] text-content-tertiary font-medium">
+                <KeyRound className="w-3.5 h-3.5 text-accent-mint" />
+                <span>Current Account Password</span>
+                <span className="px-1.5 py-0.2 rounded text-[9px] bg-mint-500/15 text-mint-400 font-semibold border border-mint-500/30">
+                  Active
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="font-mono text-xs sm:text-sm font-semibold tracking-wide text-content-primary">
+                  {showCurrentPassword ? currentPassword : '••••••••••••••••'}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                  className="p-1 rounded-md text-content-tertiary hover:text-content-primary hover:bg-surface transition-colors"
+                  title={showCurrentPassword ? 'Hide password' : 'Show password'}
+                  aria-label={showCurrentPassword ? 'Hide password' : 'Show password'}
+                >
+                  {showCurrentPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                </button>
+              </div>
             </div>
-            <div className="flex items-center gap-2">
-              <span className="font-mono text-xs sm:text-sm font-semibold tracking-wide text-content-primary">
-                {showCurrentPassword ? currentPassword : '••••••••••••••••'}
-              </span>
+
+            <div className="flex items-center gap-2 self-start sm:self-auto">
               <button
                 type="button"
-                onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-                className="p-1 rounded-md text-content-tertiary hover:text-content-primary hover:bg-surface transition-colors"
-                title={showCurrentPassword ? 'Hide password' : 'Show password'}
-                aria-label={showCurrentPassword ? 'Hide password' : 'Show password'}
+                onClick={handleCopyPassword}
+                className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-surface hover:bg-surface-subtle border border-border-subtle text-xs text-content-secondary hover:text-content-primary transition-colors font-medium cursor-pointer"
+                title="Copy password to clipboard"
               >
-                {showCurrentPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                {isCopied ? (
+                  <>
+                    <Check className="w-3.5 h-3.5 text-accent-mint" />
+                    <span className="text-accent-mint font-semibold">Copied!</span>
+                  </>
+                ) : (
+                  <>
+                    <Copy className="w-3.5 h-3.5" />
+                    <span>Copy</span>
+                  </>
+                )}
               </button>
-            </div>
-          </div>
 
-          <div className="flex items-center gap-2 self-start sm:self-auto">
-            <button
-              type="button"
-              onClick={handleCopyPassword}
-              className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-surface hover:bg-surface-subtle border border-border-subtle text-xs text-content-secondary hover:text-content-primary transition-colors font-medium cursor-pointer"
-              title="Copy password to clipboard"
-            >
-              {isCopied ? (
-                <>
-                  <Check className="w-3.5 h-3.5 text-accent-mint" />
-                  <span className="text-accent-mint font-semibold">Copied!</span>
-                </>
-              ) : (
-                <>
-                  <Copy className="w-3.5 h-3.5" />
-                  <span>Copy</span>
-                </>
-              )}
-            </button>
-
-            {user ? (
               <button
                 type="button"
                 onClick={() => {
@@ -276,23 +276,14 @@ export const AccountSyncPanel: React.FC = () => {
                     ? 'bg-navy-800 border-accent-mint/50 text-accent-mint'
                     : 'bg-surface hover:bg-surface-subtle border-border-subtle text-content-secondary hover:text-content-primary'
                 }`}
-                title="Change your owner login password"
+                title="Change your login password"
               >
                 <KeyRound className="w-3.5 h-3.5" />
                 <span>{showChangePassword ? 'Close' : 'Change Password'}</span>
               </button>
-            ) : (
-              <button
-                type="button"
-                onClick={openAuthModal}
-                className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-accent-mint/10 hover:bg-accent-mint/20 border border-accent-mint/30 text-xs text-accent-mint font-medium transition-colors cursor-pointer"
-              >
-                <Lock className="w-3.5 h-3.5" />
-                <span>Sign in to change</span>
-              </button>
-            )}
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Inline Change Password Form */}
         {user && showChangePassword && (

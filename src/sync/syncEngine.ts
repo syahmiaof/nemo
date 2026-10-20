@@ -433,6 +433,19 @@ class SyncEngine {
       }
     }
 
+    // Pull workspace assets (covers, screenshots, attachments)
+    const { data: remoteAssets } = await supabase
+      .from('workspace_assets')
+      .select('*')
+      .eq('user_id', userId);
+    if (remoteAssets) {
+      for (const row of remoteAssets) {
+        if (row.owner_type !== 'profile') {
+          await db.assetBlobs.put(mappers.assetBlob.toLocal(row));
+        }
+      }
+    }
+
     // Pull profile settings & avatar
     const { data: remoteProfile } = await supabase
       .from('profiles')
@@ -503,6 +516,7 @@ class SyncEngine {
         goals,
         goalTaskLinks,
         focusSelections,
+        assetBlobs,
       ] = await Promise.all([
         db.settings.get('default'),
         db.projects.toArray(),
@@ -515,6 +529,7 @@ class SyncEngine {
         db.goals.toArray(),
         db.goalTaskLinks.toArray(),
         db.focusSelections.toArray(),
+        db.assetBlobs.toArray(),
       ]);
 
       let uploadCount = 0;
@@ -591,6 +606,13 @@ class SyncEngine {
         const rows = focusSelections.map((f) => mappers.focusSelection.toRemote(f, userId));
         await supabase.from('focus_selections').upsert(rows);
         uploadCount += focusSelections.length;
+      }
+
+      const nonProfileAssets = assetBlobs.filter((b) => b.ownerType !== 'profile');
+      if (nonProfileAssets.length) {
+        const rows = nonProfileAssets.map((b) => mappers.assetBlob.toRemote(b, userId));
+        await supabase.from('workspace_assets').upsert(rows);
+        uploadCount += nonProfileAssets.length;
       }
 
       return { success: true, count: uploadCount };

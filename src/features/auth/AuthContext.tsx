@@ -10,7 +10,7 @@ interface AuthContextValue {
   isLoading: boolean;
   isApprovedOwner: boolean;
   currentPassword: string;
-  signInWithPassword: (password: string) => Promise<{ success: boolean; error?: string }>;
+  signInWithPassword: (password: string, email?: string) => Promise<{ success: boolean; error?: string }>;
   updatePassword: (newPassword: string) => Promise<{ success: boolean; error?: string }>;
   signInWithEmailOtp: (email: string) => Promise<{ success: boolean; error?: string }>;
   verifyEmailOtp: (email: string, token: string) => Promise<{ success: boolean; error?: string }>;
@@ -40,7 +40,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const checkOwnerApproval = async (userEmail?: string): Promise<boolean> => {
     if (!userEmail) return false;
-    return userEmail.trim().toLowerCase() === APPROVED_OWNER_EMAIL.toLowerCase();
+    const clean = userEmail.trim().toLowerCase();
+    if (clean === APPROVED_OWNER_EMAIL.toLowerCase()) return true;
+
+    try {
+      const { data } = await supabase
+        .from('app_owners')
+        .select('email')
+        .eq('email', clean)
+        .maybeSingle();
+      if (data?.email) return true;
+    } catch {
+      // Fallback to primary owner check
+    }
+    return false;
   };
 
   useEffect(() => {
@@ -100,20 +113,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const signInWithPassword = async (
-    password: string
+    password: string,
+    email?: string
   ): Promise<{ success: boolean; error?: string }> => {
     if (!isSupabaseConfigured) {
       return { success: false, error: 'Supabase is not configured.' };
     }
 
+    const targetEmail = (email || '').trim().toLowerCase() || APPROVED_OWNER_EMAIL.toLowerCase();
+
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
-        email: APPROVED_OWNER_EMAIL,
+        email: targetEmail,
         password: password.trim(),
       });
 
       if (error) {
-        return { success: false, error: 'Incorrect password. Please verify and try again.' };
+        return { success: false, error: 'Incorrect email or password. Please verify and try again.' };
       }
 
       if (data.user?.email) {

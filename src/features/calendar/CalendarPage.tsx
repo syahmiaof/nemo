@@ -69,19 +69,25 @@ export const CalendarPage: React.FC = () => {
       }
     }
 
-    // 2. Assignments with dueDate
+    // 2. Assignments & Exams with dueDate
     for (const a of assignments) {
       if (a.dueDate) {
+        const isExam =
+          a.title.toLowerCase().includes('exam') ||
+          a.title.toLowerCase().includes('quiz') ||
+          a.description?.includes('[EXAM]');
+        const cleanTitle = a.title.replace(/^exam:\s*/i, '').replace(/^\[exam\]\s*/i, '');
+
         list.push({
           id: `assign_${a.id}`,
           sourceType: 'assignment',
           sourceId: a.id,
-          title: `Assignment: ${a.title}`,
+          title: isExam ? `Exam: ${cleanTitle}` : `Assignment: ${cleanTitle}`,
           date: a.dueDate,
           time: a.dueTime,
           isAllDay: !a.dueTime,
           status: a.status,
-          color: '#ECD29A',
+          color: isExam ? '#F28B82' : '#ECD29A',
         });
       }
     }

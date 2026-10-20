@@ -10,6 +10,7 @@ import type {
   GoalTaskLink,
   FocusSelection,
   WorkspaceSettings,
+  AssetBlob,
 } from '@/domain/types';
 
 export const mappers = {
@@ -351,6 +352,32 @@ export const mappers = {
         reduceMotion: remote.reduce_motion ?? false,
         onboardingCompleted: remote.onboarding_completed ?? true,
         databaseVersion: 2,
+      };
+    },
+  },
+  assetBlob: {
+    toRemote(local: AssetBlob, userId: string) {
+      return {
+        id: local.id,
+        user_id: userId,
+        owner_type: local.ownerType,
+        owner_id: local.ownerId,
+        mime_type: local.mimeType,
+        size: local.size,
+        data: local.data,
+        created_at: local.createdAt,
+        updated_at: new Date().toISOString(),
+      };
+    },
+    toLocal(remote: any): AssetBlob {
+      return {
+        id: remote.id,
+        ownerType: remote.owner_type,
+        ownerId: remote.owner_id,
+        mimeType: remote.mime_type,
+        size: remote.size,
+        data: remote.data,
+        createdAt: remote.created_at,
       };
     },
   },

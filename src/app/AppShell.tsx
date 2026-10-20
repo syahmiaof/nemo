@@ -123,6 +123,14 @@ export function AppShell() {
                   <span className="live-pulse" />
                   <span>{timeStr}</span>
                 </div>
+                <div className="hidden sm:flex flex-col items-end text-right px-1 leading-tight select-none">
+                  <span className="text-xs font-semibold text-content-primary truncate max-w-[140px]">
+                    {settings?.displayName || 'My Workspace'}
+                  </span>
+                  <span className="text-[11px] text-content-tertiary font-mono">
+                    {new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
+                  </span>
+                </div>
                 <button
                   type="button"
                   className="icon-button"

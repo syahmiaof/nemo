@@ -15,6 +15,7 @@ export function registerDexieSyncHooks(database: NemoDatabase) {
     { table: database.goalTaskLinks, entityType: 'goalTaskLink' },
     { table: database.focusSelections, entityType: 'focusSelection' },
     { table: database.settings, entityType: 'settings' },
+    { table: database.assetBlobs, entityType: 'assetBlob' },
   ];
 
   for (const { table, entityType } of syncableTables) {

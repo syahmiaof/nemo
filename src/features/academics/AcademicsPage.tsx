@@ -10,6 +10,7 @@ import {
   Circle,
   Edit2,
   Trash2,
+  Clock,
 } from 'lucide-react';
 import {
   db,
@@ -42,9 +43,11 @@ export const AcademicsPage: React.FC = () => {
   const [isAssignmentModalOpen, setIsAssignmentModalOpen] = useState(false);
   const [assignmentToEdit, setAssignmentToEdit] = useState<Assignment | null>(null);
 
-  // Active selections
+  // Active selections & filters
   const [selectedSemesterId, setSelectedSemesterId] = useState<string>('');
   const [selectedSubjectId, setSelectedSubjectId] = useState<string>('');
+  const [filterType, setFilterType] = useState<'all' | 'assignments' | 'exams'>('all');
+  const [deliverableType, setDeliverableType] = useState<'assignment' | 'exam'>('assignment');
 
   // Delete dialog state
   const [itemToDelete, setItemToDelete] = useState<{
@@ -91,6 +94,25 @@ export const AcademicsPage: React.FC = () => {
   const [newSubtaskTitle, setNewSubtaskTitle] = useState('');
   const [activeAssignmentForSubtask, setActiveAssignmentForSubtask] = useState<string | null>(null);
 
+  const isExamEntity = (item: Assignment) => {
+    return (
+      item.title.toLowerCase().includes('exam') ||
+      item.title.toLowerCase().includes('quiz') ||
+      item.description?.includes('[EXAM]')
+    );
+  };
+
+  const getExamCountdown = (dueDate?: string) => {
+    if (!dueDate) return null;
+    if (dueDate === todayStr) return { label: 'Today', urgency: 'urgent' };
+    const d1 = new Date(todayStr);
+    const d2 = new Date(dueDate);
+    const diffDays = Math.round((d2.getTime() - d1.getTime()) / (1000 * 60 * 60 * 24));
+    if (diffDays === 1) return { label: 'Tomorrow', urgency: 'urgent' };
+    if (diffDays > 1) return { label: `In ${diffDays} days`, urgency: diffDays <= 7 ? 'soon' : 'normal' };
+    return { label: 'Passed', urgency: 'passed' };
+  };
+
   // Handlers
   const handleSaveSemester = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -129,11 +151,16 @@ export const AcademicsPage: React.FC = () => {
     success('Subject created');
   };
 
-  const handleOpenAssignmentModal = (assignment?: Assignment) => {
+  const handleOpenAssignmentModal = (
+    assignment?: Assignment,
+    defaultType: 'assignment' | 'exam' = 'assignment'
+  ) => {
     if (assignment) {
       setAssignmentToEdit(assignment);
-      setAssignTitle(assignment.title);
-      setAssignDescription(assignment.description || '');
+      const isExam = isExamEntity(assignment);
+      setDeliverableType(isExam ? 'exam' : 'assignment');
+      setAssignTitle(assignment.title.replace(/^\[exam\]\s*/i, '').replace(/^exam:\s*/i, ''));
+      setAssignDescription(assignment.description?.replace(/\[EXAM\]\s*/g, '').trim() || '');
       setAssignStatus(assignment.status);
       setAssignDueDate(assignment.dueDate || '');
       setAssignDueTime(assignment.dueTime || '');
@@ -143,11 +170,12 @@ export const AcademicsPage: React.FC = () => {
       setAssignScoreMax(assignment.scoreMaximum?.toString() || '');
     } else {
       setAssignmentToEdit(null);
+      setDeliverableType(defaultType);
       setAssignTitle('');
       setAssignDescription('');
       setAssignStatus('not_started');
       setAssignDueDate(todayStr);
-      setAssignDueTime('');
+      setAssignDueTime(defaultType === 'exam' ? '09:00' : '');
       setAssignUrl('');
       setAssignWeight('');
       setAssignScoreObtained('');
@@ -179,10 +207,22 @@ export const AcademicsPage: React.FC = () => {
     const scoreObtained = assignScoreObtained ? parseFloat(assignScoreObtained) : undefined;
     const scoreMaximum = assignScoreMax ? parseFloat(assignScoreMax) : undefined;
 
+    let finalTitle = assignTitle.trim();
+    let finalDesc = assignDescription.trim();
+
+    if (deliverableType === 'exam') {
+      if (!finalTitle.toLowerCase().includes('exam') && !finalTitle.toLowerCase().includes('quiz')) {
+        finalTitle = `Exam: ${finalTitle}`;
+      }
+      if (!finalDesc.includes('[EXAM]')) {
+        finalDesc = finalDesc ? `[EXAM] ${finalDesc}` : '[EXAM]';
+      }
+    }
+
     if (assignmentToEdit) {
       await db.assignments.update(assignmentToEdit.id, {
-        title: assignTitle.trim(),
-        description: assignDescription.trim() || undefined,
+        title: finalTitle,
+        description: finalDesc || undefined,
         status: assignStatus,
         dueDate: assignDueDate || undefined,
         dueTime: assignDueTime || undefined,
@@ -193,13 +233,13 @@ export const AcademicsPage: React.FC = () => {
         submittedAt: assignStatus === 'submitted' || assignStatus === 'graded' ? now : undefined,
         updatedAt: now,
       });
-      success('Assignment updated');
+      success(deliverableType === 'exam' ? 'Exam schedule updated' : 'Assignment updated');
     } else {
       await db.assignments.add({
         id: generateId('assign'),
         subjectId: targetSubjectId,
-        title: assignTitle.trim(),
-        description: assignDescription.trim() || undefined,
+        title: finalTitle,
+        description: finalDesc || undefined,
         status: assignStatus,
         dueDate: assignDueDate || undefined,
         dueTime: assignDueTime || undefined,
@@ -211,7 +251,7 @@ export const AcademicsPage: React.FC = () => {
         createdAt: now,
         updatedAt: now,
       });
-      success('Assignment added');
+      success(deliverableType === 'exam' ? 'Exam scheduled & synced to Calendar' : 'Assignment added');
     }
 
     setIsAssignmentModalOpen(false);
@@ -262,9 +302,30 @@ export const AcademicsPage: React.FC = () => {
     success('Item deleted');
   };
 
-  const filteredAssignments = selectedSubjectId
-    ? assignments.filter((a) => a.subjectId === selectedSubjectId)
-    : assignments;
+  const subjectDeliverables = React.useMemo(() => {
+    return selectedSubjectId
+      ? assignments.filter((a) => a.subjectId === selectedSubjectId)
+      : assignments;
+  }, [assignments, selectedSubjectId]);
+
+  const upcomingExams = React.useMemo(() => {
+    return subjectDeliverables
+      .filter((a) => isExamEntity(a) && a.dueDate && a.status !== 'submitted' && a.status !== 'graded')
+      .sort((a, b) => (a.dueDate || '').localeCompare(b.dueDate || ''));
+  }, [subjectDeliverables]);
+
+  const filteredAssignments = React.useMemo(() => {
+    if (filterType === 'assignments') {
+      return subjectDeliverables.filter((a) => !isExamEntity(a));
+    }
+    if (filterType === 'exams') {
+      return subjectDeliverables.filter((a) => isExamEntity(a));
+    }
+    return subjectDeliverables;
+  }, [subjectDeliverables, filterType]);
+
+  const assignmentCount = subjectDeliverables.filter((a) => !isExamEntity(a)).length;
+  const examCount = subjectDeliverables.filter((a) => isExamEntity(a)).length;
 
   return (
     <div className="academics-page space-y-6">
@@ -378,17 +439,116 @@ export const AcademicsPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Right 3 Cols: Assignments */}
+          {/* Right 3 Cols: Deliverables & Exams */}
           <div className="lg:col-span-3 space-y-4">
-            <div className="flex items-center justify-between">
-              <h3 className="text-xs font-mono uppercase tracking-wider text-content-tertiary">
-                Assignments & Coursework ({filteredAssignments.length})
-              </h3>
-              <Button size="sm" onClick={() => handleOpenAssignmentModal()} className="gap-1.5">
-                <Plus className="w-4 h-4" />
-                <span>New Assignment</span>
-              </Button>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              {/* Category Filter Pills */}
+              <div className="flex items-center gap-1.5 p-1 rounded-xl bg-surface border border-border-subtle w-fit">
+                <button
+                  type="button"
+                  onClick={() => setFilterType('all')}
+                  className={`px-3 py-1 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
+                    filterType === 'all'
+                      ? 'bg-accent-mint text-navy-950 shadow-sm'
+                      : 'text-content-secondary hover:text-content-primary'
+                  }`}
+                >
+                  All ({subjectDeliverables.length})
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setFilterType('assignments')}
+                  className={`px-3 py-1 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
+                    filterType === 'assignments'
+                      ? 'bg-accent-mint text-navy-950 shadow-sm'
+                      : 'text-content-secondary hover:text-content-primary'
+                  }`}
+                >
+                  Assignments ({assignmentCount})
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setFilterType('exams')}
+                  className={`px-3 py-1 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
+                    filterType === 'exams'
+                      ? 'bg-rose-400 text-navy-950 shadow-sm'
+                      : 'text-content-secondary hover:text-content-primary'
+                  }`}
+                >
+                  Exams & Tests ({examCount})
+                </button>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => handleOpenAssignmentModal(undefined, 'exam')}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 border border-rose-500/30 text-rose-300 text-xs font-semibold transition-colors cursor-pointer"
+                >
+                  <Calendar className="w-3.5 h-3.5" />
+                  <span>Add Exam</span>
+                </button>
+                <Button size="sm" onClick={() => handleOpenAssignmentModal(undefined, 'assignment')} className="gap-1.5">
+                  <Plus className="w-4 h-4" />
+                  <span>New Assignment</span>
+                </Button>
+              </div>
             </div>
+
+            {/* Upcoming Exams Highlights Strip (if any exams upcoming) */}
+            {upcomingExams.length > 0 && filterType !== 'assignments' && (
+              <div className="p-4 rounded-2xl bg-rose-500/[0.08] border border-rose-500/20 space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold uppercase tracking-wider text-rose-300 flex items-center gap-1.5">
+                    <Calendar className="w-4 h-4" />
+                    Upcoming Exam Schedule
+                  </span>
+                  <span className="text-[11px] font-mono text-rose-300/80">
+                    {upcomingExams.length} scheduled
+                  </span>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5">
+                  {upcomingExams.map((exam) => {
+                    const sub = subjects.find((s) => s.id === exam.subjectId);
+                    const countdown = getExamCountdown(exam.dueDate);
+                    const cleanTitle = exam.title.replace(/^exam:\s*/i, '').replace(/^\[exam\]\s*/i, '');
+                    return (
+                      <div
+                        key={exam.id}
+                        onClick={() => handleOpenAssignmentModal(exam)}
+                        className="p-3 rounded-xl bg-surface/80 hover:bg-surface border border-rose-500/25 hover:border-rose-500/40 transition-all cursor-pointer space-y-1.5 group"
+                      >
+                        <div className="flex items-center justify-between gap-1">
+                          {sub && (
+                            <span className="text-[10px] px-1.5 py-0.2 rounded font-mono truncate" style={{ backgroundColor: `${sub.color}25`, color: sub.color }}>
+                              {sub.code || sub.title}
+                            </span>
+                          )}
+                          {countdown && (
+                            <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-semibold ${
+                              countdown.urgency === 'urgent'
+                                ? 'bg-rose-500 text-white font-bold animate-pulse'
+                                : 'bg-rose-500/20 text-rose-300'
+                            }`}>
+                              {countdown.label}
+                            </span>
+                          )}
+                        </div>
+                        <h5 className="text-xs font-bold text-content-primary group-hover:text-rose-300 transition-colors truncate">
+                          {cleanTitle}
+                        </h5>
+                        <div className="flex items-center gap-2 text-[11px] text-content-tertiary font-mono">
+                          <Clock className="w-3 h-3 text-rose-400" />
+                          <span>{formatDisplayDate(exam.dueDate!)}</span>
+                          {exam.dueTime && <span>{exam.dueTime}</span>}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
 
             {filteredAssignments.length === 0 ? (
               <EmptyState
@@ -402,17 +562,37 @@ export const AcademicsPage: React.FC = () => {
               <div className="space-y-4">
                 {filteredAssignments.map((assign) => {
                   const subject = subjects.find((s) => s.id === assign.subjectId);
-                  const isLate = assign.dueDate && isOverdue(assign.dueDate) && assign.status !== 'submitted' && assign.status !== 'graded';
+                  const isExam = isExamEntity(assign);
+                  const countdown = getExamCountdown(assign.dueDate);
+                  const cleanTitle = assign.title.replace(/^exam:\s*/i, '').replace(/^\[exam\]\s*/i, '');
+                  const cleanDesc = assign.description?.replace(/\[EXAM\]\s*/g, '').trim();
+                  const isLate = !isExam && assign.dueDate && isOverdue(assign.dueDate) && assign.status !== 'submitted' && assign.status !== 'graded';
                   const assignSubtasks = tasks.filter((t) => t.parentType === 'assignment' && t.parentId === assign.id);
 
                   return (
                     <div
                       key={assign.id}
-                      className="p-5 rounded-2xl glass-panel relative group space-y-4 hover:border-white/20 transition-all shadow-sm"
+                      className={`p-5 rounded-2xl glass-panel relative group space-y-4 transition-all shadow-sm ${
+                        isExam ? 'hover:border-rose-500/40 border-rose-500/20' : 'hover:border-white/20'
+                      }`}
                     >
                       <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 relative z-10">
                         <div className="space-y-1">
                           <div className="flex items-center gap-2 flex-wrap">
+                            {isExam && (
+                              <span className="text-[10px] px-2 py-0.5 rounded-full font-bold bg-rose-500/20 text-rose-300 border border-rose-500/40 tracking-wider font-mono">
+                                EXAM
+                              </span>
+                            )}
+                            {isExam && countdown && (
+                              <span className={`text-[10px] px-2 py-0.5 rounded-full font-semibold ${
+                                countdown.urgency === 'urgent'
+                                  ? 'bg-rose-500 text-white font-bold'
+                                  : 'bg-rose-500/15 text-rose-300 border border-rose-500/30'
+                              }`}>
+                                {countdown.label}
+                              </span>
+                            )}
                             {subject && (
                               <span
                                 className="text-[10px] px-2 py-0.5 rounded-full font-mono text-content-primary"
@@ -421,10 +601,10 @@ export const AcademicsPage: React.FC = () => {
                                 {subject.code || subject.title}
                               </span>
                             )}
-                            <h4 className="text-base font-bold text-content-primary">{assign.title}</h4>
+                            <h4 className="text-base font-bold text-content-primary">{cleanTitle}</h4>
                           </div>
-                          {assign.description && (
-                            <p className="text-xs text-content-secondary max-w-xl">{assign.description}</p>
+                          {cleanDesc && (
+                            <p className="text-xs text-content-secondary max-w-xl">{cleanDesc}</p>
                           )}
                         </div>
 
@@ -439,14 +619,14 @@ export const AcademicsPage: React.FC = () => {
                           <button
                             onClick={() => handleOpenAssignmentModal(assign)}
                             className="p-1.5 rounded-lg text-content-tertiary hover:text-content-primary hover:bg-surface-hover"
-                            title="Edit Assignment"
+                            title={isExam ? 'Edit Exam' : 'Edit Assignment'}
                           >
                             <Edit2 className="w-4 h-4" />
                           </button>
                           <button
-                            onClick={() => setItemToDelete({ type: 'assignment', id: assign.id, title: assign.title })}
+                            onClick={() => setItemToDelete({ type: 'assignment', id: assign.id, title: cleanTitle })}
                             className="p-1.5 rounded-lg text-content-tertiary hover:text-accent-ember hover:bg-surface-hover"
-                            title="Delete Assignment"
+                            title={isExam ? 'Delete Exam' : 'Delete Assignment'}
                           >
                             <Trash2 className="w-4 h-4" />
                           </button>
@@ -457,8 +637,8 @@ export const AcademicsPage: React.FC = () => {
                       <div className="flex flex-wrap items-center gap-4 text-xs text-content-tertiary pt-2 border-t border-border-subtle">
                         {assign.dueDate && (
                           <div className="flex items-center gap-1 font-mono">
-                            <Calendar className="w-3.5 h-3.5" />
-                            <span>Deadline: {formatDisplayDate(assign.dueDate)}</span>
+                            <Calendar className={`w-3.5 h-3.5 ${isExam ? 'text-rose-400' : ''}`} />
+                            <span>{isExam ? 'Exam Date' : 'Deadline'}: {formatDisplayDate(assign.dueDate)}</span>
                             {assign.dueTime && <span>at {assign.dueTime}</span>}
                           </div>
                         )}
@@ -610,17 +790,53 @@ export const AcademicsPage: React.FC = () => {
         </form>
       </Modal>
 
-      {/* Assignment Modal */}
+      {/* Assignment & Exam Modal */}
       <Modal
         isOpen={isAssignmentModalOpen}
         onClose={() => setIsAssignmentModalOpen(false)}
-        title={assignmentToEdit ? 'Edit Assignment' : 'New Assignment'}
+        title={
+          assignmentToEdit
+            ? deliverableType === 'exam'
+              ? 'Edit Exam'
+              : 'Edit Assignment'
+            : deliverableType === 'exam'
+            ? 'Schedule Exam / Test'
+            : 'New Assignment'
+        }
         maxWidth="lg"
       >
         <form onSubmit={handleSaveAssignment} className="space-y-4">
+          {/* Deliverable Type Switcher */}
+          {!assignmentToEdit && (
+            <div className="flex items-center gap-2 p-1 rounded-xl bg-surface border border-border-subtle">
+              <button
+                type="button"
+                onClick={() => setDeliverableType('assignment')}
+                className={`flex-1 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
+                  deliverableType === 'assignment'
+                    ? 'bg-accent-mint text-navy-950 shadow-sm'
+                    : 'text-content-secondary hover:text-content-primary'
+                }`}
+              >
+                Assignment
+              </button>
+              <button
+                type="button"
+                onClick={() => setDeliverableType('exam')}
+                className={`flex-1 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
+                  deliverableType === 'exam'
+                    ? 'bg-rose-500 text-white shadow-sm'
+                    : 'text-content-secondary hover:text-content-primary'
+                }`}
+              >
+                Exam / Test
+              </button>
+            </div>
+          )}
+
           <Input
-            label="Assignment Title"
-            placeholder="e.g. Final Research Project"
+            label={deliverableType === 'exam' ? 'Exam Title' : 'Assignment Title'}
+            placeholder={deliverableType === 'exam' ? 'e.g. Midterm Examination, Final Exam' : 'e.g. Final Research Project'}
             value={assignTitle}
             onChange={(e) => setAssignTitle(e.target.value)}
             required
@@ -632,15 +848,24 @@ export const AcademicsPage: React.FC = () => {
               label="Status"
               value={assignStatus}
               onChange={(e) => setAssignStatus(e.target.value as AssignmentStatus)}
-              options={[
-                { value: 'not_started', label: 'Not Started' },
-                { value: 'in_progress', label: 'In Progress' },
-                { value: 'submitted', label: 'Submitted' },
-                { value: 'graded', label: 'Graded' },
-              ]}
+              options={
+                deliverableType === 'exam'
+                  ? [
+                      { value: 'not_started', label: 'Upcoming' },
+                      { value: 'in_progress', label: 'Revising' },
+                      { value: 'submitted', label: 'Completed' },
+                      { value: 'graded', label: 'Graded' },
+                    ]
+                  : [
+                      { value: 'not_started', label: 'Not Started' },
+                      { value: 'in_progress', label: 'In Progress' },
+                      { value: 'submitted', label: 'Submitted' },
+                      { value: 'graded', label: 'Graded' },
+                    ]
+              }
             />
             <Input
-              label="Submission URL"
+              label={deliverableType === 'exam' ? 'Portal / Timetable Link' : 'Submission URL'}
               placeholder="https://canvas.edu/..."
               value={assignUrl}
               onChange={(e) => setAssignUrl(e.target.value)}
@@ -649,13 +874,13 @@ export const AcademicsPage: React.FC = () => {
 
           <div className="grid grid-cols-2 gap-3">
             <Input
-              label="Due Date"
+              label={deliverableType === 'exam' ? 'Exam Date' : 'Due Date'}
               type="date"
               value={assignDueDate}
               onChange={(e) => setAssignDueDate(e.target.value)}
             />
             <Input
-              label="Due Time"
+              label={deliverableType === 'exam' ? 'Exam Time' : 'Due Time'}
               type="time"
               value={assignDueTime}
               onChange={(e) => setAssignDueTime(e.target.value)}
@@ -666,14 +891,14 @@ export const AcademicsPage: React.FC = () => {
             <Input
               label="Weight (%)"
               type="number"
-              placeholder="e.g. 25"
+              placeholder="e.g. 40"
               value={assignWeight}
               onChange={(e) => setAssignWeight(e.target.value)}
             />
             <Input
               label="Score Obtained"
               type="number"
-              placeholder="e.g. 92"
+              placeholder="e.g. 88"
               value={assignScoreObtained}
               onChange={(e) => setAssignScoreObtained(e.target.value)}
             />
@@ -687,8 +912,8 @@ export const AcademicsPage: React.FC = () => {
           </div>
 
           <Textarea
-            label="Description / Requirements"
-            placeholder="Outline instructions, rubric criteria..."
+            label={deliverableType === 'exam' ? 'Exam Venue / Hall / Syllabus Notes' : 'Description / Requirements'}
+            placeholder={deliverableType === 'exam' ? 'e.g. Exam Hall B, Seat 42. Chapters 1-6.' : 'Outline instructions, rubric criteria...'}
             value={assignDescription}
             onChange={(e) => setAssignDescription(e.target.value)}
             rows={3}
@@ -699,7 +924,11 @@ export const AcademicsPage: React.FC = () => {
               Cancel
             </Button>
             <Button type="submit">
-              {assignmentToEdit ? 'Save Changes' : 'Create Assignment'}
+              {assignmentToEdit
+                ? 'Save Changes'
+                : deliverableType === 'exam'
+                ? 'Schedule Exam'
+                : 'Create Assignment'}
             </Button>
           </div>
         </form>

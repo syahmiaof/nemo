@@ -12,6 +12,7 @@ export const AuthModal: React.FC = () => {
     signOut,
   } = useAuth();
 
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
@@ -31,7 +32,7 @@ export const AuthModal: React.FC = () => {
     setSuccessMessage(null);
     setLoading(true);
 
-    const res = await signInWithPassword(password);
+    const res = await signInWithPassword(password, email);
     setLoading(false);
 
     if (res.success) {
@@ -39,9 +40,10 @@ export const AuthModal: React.FC = () => {
       setTimeout(() => {
         closeAuthModal();
         setPassword('');
+        setEmail('');
       }, 1000);
     } else {
-      setErrorMessage(res.error || 'Incorrect password.');
+      setErrorMessage(res.error || 'Incorrect email or password.');
     }
   };
 
@@ -94,10 +96,10 @@ export const AuthModal: React.FC = () => {
           </div>
           <div>
             <h2 id="auth-modal-title" className="text-base font-semibold text-white tracking-tight">
-              Nemo Owner Access
+              {user ? 'Nemo Workspace Account' : 'Sign In to Nemo'}
             </h2>
             <p className="text-xs text-navy-400">
-              syahmiaof123@gmail.com
+              {user ? user.email : 'Enter your credentials to sync across devices'}
             </p>
           </div>
         </div>
@@ -200,8 +202,25 @@ export const AuthModal: React.FC = () => {
           // Login Form
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
+              <label htmlFor="owner-email" className="block text-xs font-medium text-navy-300 mb-1.5">
+                Account Email
+              </label>
+              <input
+                id="owner-email"
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full px-3.5 py-2 text-sm rounded-xl bg-navy-950 border border-navy-700 focus:border-mint-500 focus:ring-1 focus:ring-mint-500 text-white placeholder-navy-500 transition-colors"
+                placeholder="you@example.com"
+                autoComplete="email"
+                autoFocus
+              />
+            </div>
+
+            <div>
               <label htmlFor="owner-password" className="block text-xs font-medium text-navy-300 mb-1.5">
-                Owner Password
+                Password
               </label>
               <div className="relative">
                 <input
@@ -211,8 +230,8 @@ export const AuthModal: React.FC = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="w-full pl-3.5 pr-10 py-2.5 text-sm rounded-xl bg-navy-950 border border-navy-700 focus:border-mint-500 focus:ring-1 focus:ring-mint-500 text-white placeholder-navy-500 transition-colors"
-                  placeholder="Enter owner password"
-                  autoFocus
+                  placeholder="Enter your password"
+                  autoComplete="current-password"
                 />
                 <button
                   type="button"

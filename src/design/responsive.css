@@ -6,7 +6,7 @@
 .module-heading p { margin-top: 8px; font-size: 14px; color: var(--text-secondary); }
 .tabs { overflow: visible; }
 .header-navigation .tabs { max-width: none; }
-.header-navigation .tab { padding-inline: clamp(10px, 1.1vw, 18px); }
+.header-navigation .tab { padding-inline: clamp(12px, 1.3vw, 20px); font-size: 15px; }
 .settings-page > .tabs { width: 100% !important; background: transparent; box-shadow: none; backdrop-filter: none; }
 .settings-page .tabs__track { flex-wrap: wrap; width: 100%; gap: 6px; }
 .settings-page .tab { min-height: 44px; background: var(--glass-2); }
@@ -49,7 +49,7 @@
   .header-tools { gap: 6px; }
   .wordmark { font-size: 27px; gap: 9px; }
   .app-header { grid-template-columns: 155px minmax(0,1fr) auto; gap: 12px; }
-  .header-navigation .tab { padding-inline: 10px; font-size: 13px; }
+  .header-navigation .tab { padding-inline: 11px; font-size: 14px; }
 }
 @media (max-width: 1100px) {
   .academics-page .page-toolbar { flex-direction: column; align-items: stretch; }
@@ -61,7 +61,7 @@
 }
 @media (min-width: 768px) and (max-width: 1000px) {
   .app-header { grid-template-columns: 1fr auto; }
-  .header-navigation .tab { padding-inline: 12px; font-size: 13px; }
+  .header-navigation .tab { padding-inline: 13px; font-size: 14px; }
   .dock { left: 20px; right: auto; top: 50%; bottom: auto; transform: translateY(-50%); flex-direction: column; margin: 0; }
   .focus-stack { grid-template-columns: minmax(0,1fr); }
 }
