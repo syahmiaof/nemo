@@ -107,6 +107,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         email: cleanEmail,
         options: {
           shouldCreateUser: true,
+          emailRedirectTo: (typeof window !== 'undefined' && window.location.origin ? window.location.origin + '/settings' : 'https://nemo.syahmiaof.my/settings'),
         },
       });
 
@@ -197,3 +198,4 @@ export function useAuth() {
   }
   return context;
 }
+

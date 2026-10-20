@@ -204,7 +204,7 @@ export const AuthModal: React.FC = () => {
                     autoFocus
                   />
                   <p className="text-[11px] text-navy-400 mt-1">
-                    Masukkan kod yang dihantar ke <strong>{email}</strong>
+                    Masukkan kod 6-digit ATAU klik pautan dalam emel untuk log masuk terus ke <strong>{email}</strong>
                   </p>
                 </div>
 
@@ -258,3 +258,4 @@ export const AuthModal: React.FC = () => {
     </div>
   );
 };
+
