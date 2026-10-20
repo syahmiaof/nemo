@@ -1,0 +1,182 @@
+import { z } from 'zod';
+
+export const PrioritySchema = z.enum(['low', 'medium', 'high', 'urgent']);
+export const ProjectStatusSchema = z.enum(['not_started', 'in_progress', 'on_hold', 'completed']);
+export const TaskStatusSchema = z.enum(['todo', 'in_progress', 'done']);
+export const AssignmentStatusSchema = z.enum(['not_started', 'in_progress', 'submitted', 'graded']);
+export const GoalStatusSchema = z.enum(['planned', 'active', 'paused', 'achieved']);
+export const SemesterStatusSchema = z.enum(['upcoming', 'active', 'completed']);
+
+export const WorkspaceSettingsSchema = z.object({
+  id: z.string().default('default'),
+  displayName: z.string().min(1, 'Display name cannot be empty').max(50),
+  avatarBlobId: z.string().optional(),
+  theme: z.enum(['dark', 'light']).default('dark'),
+  accent: z.enum(['mint', 'amber', 'ember']).default('mint'),
+  weekStartsOn: z.union([z.literal(0), z.literal(1)]).default(1),
+  hourFormat: z.enum(['12h', '24h']).default('24h'),
+  reduceMotion: z.boolean().default(false),
+  onboardingCompleted: z.boolean().default(false),
+  databaseVersion: z.number().default(1),
+});
+
+export const ProjectSchema = z.object({
+  id: z.string().min(1),
+  title: z.string().min(1, 'Project title is required').max(100),
+  description: z.string().max(1000).optional(),
+  category: z.string().max(50).optional(),
+  priority: PrioritySchema.default('medium'),
+  status: ProjectStatusSchema.default('not_started'),
+  archivedAt: z.string().optional(),
+  createdAt: z.string(),
+  startedAt: z.string().optional(),
+  dueDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Must be YYYY-MM-DD').optional(),
+  completedAt: z.string().optional(),
+  clientLabel: z.string().max(50).optional(),
+  tags: z.array(z.string()).default([]),
+  techStack: z.array(z.string()).default([]),
+  liveUrl: z.string().url('Must be a valid URL').optional().or(z.literal('')),
+  repoUrl: z.string().url('Must be a valid URL').optional().or(z.literal('')),
+  notes: z.string().max(5000).optional(),
+  previewBlobId: z.string().optional(),
+  updatedAt: z.string(),
+});
+
+export const TaskSchema = z.object({
+  id: z.string().min(1),
+  title: z.string().min(1, 'Task title is required').max(200),
+  notes: z.string().max(2000).optional(),
+  status: TaskStatusSchema.default('todo'),
+  priority: PrioritySchema.default('medium'),
+  dueDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Must be YYYY-MM-DD').optional(),
+  dueTime: z.string().regex(/^\d{2}:\d{2}$/, 'Must be HH:mm').optional(),
+  startDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Must be YYYY-MM-DD').optional(),
+  estimatedMinutes: z.number().int().nonnegative().optional(),
+  tags: z.array(z.string()).default([]),
+  blockedReason: z.string().max(500).optional(),
+  parentType: z.enum(['project', 'assignment', 'goal']).optional(),
+  parentId: z.string().optional(),
+  createdAt: z.string(),
+  completedAt: z.string().optional(),
+  updatedAt: z.string(),
+});
+
+export const MilestoneSchema = z.object({
+  id: z.string().min(1),
+  ownerType: z.enum(['project', 'goal']),
+  ownerId: z.string().min(1),
+  title: z.string().min(1, 'Milestone title is required').max(150),
+  targetDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Must be YYYY-MM-DD').optional(),
+  completedAt: z.string().optional(),
+  order: z.number().int().default(0),
+});
+
+export const SemesterSchema = z.object({
+  id: z.string().min(1),
+  title: z.string().min(1, 'Semester title is required').max(100),
+  startDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Must be YYYY-MM-DD').optional(),
+  endDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Must be YYYY-MM-DD').optional(),
+  status: SemesterStatusSchema.default('active'),
+  createdAt: z.string(),
+});
+
+export const SubjectSchema = z.object({
+  id: z.string().min(1),
+  semesterId: z.string().min(1),
+  code: z.string().max(20).optional(),
+  title: z.string().min(1, 'Subject title is required').max(100),
+  lecturer: z.string().max(100).optional(),
+  color: z.string().default('#A8DCC8'),
+  createdAt: z.string(),
+});
+
+export const AssignmentSchema = z.object({
+  id: z.string().min(1),
+  subjectId: z.string().min(1),
+  title: z.string().min(1, 'Assignment title is required').max(150),
+  description: z.string().max(2000).optional(),
+  status: AssignmentStatusSchema.default('not_started'),
+  dueDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Must be YYYY-MM-DD').optional(),
+  dueTime: z.string().regex(/^\d{2}:\d{2}$/, 'Must be HH:mm').optional(),
+  submissionUrl: z.string().url('Must be a valid URL').optional().or(z.literal('')),
+  weightPercent: z.number().min(0).max(100).optional(),
+  scoreObtained: z.number().min(0).optional(),
+  scoreMaximum: z.number().min(0).optional(),
+  submittedAt: z.string().optional(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+});
+
+export const CalendarEventSchema = z.object({
+  id: z.string().min(1),
+  title: z.string().min(1, 'Event title is required').max(150),
+  description: z.string().max(2000).optional(),
+  location: z.string().max(200).optional(),
+  startAt: z.string().min(1),
+  endAt: z.string().min(1),
+  isAllDay: z.boolean().default(false),
+  subjectId: z.string().optional(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+});
+
+export const GoalSchema = z.object({
+  id: z.string().min(1),
+  title: z.string().min(1, 'Goal title is required').max(150),
+  why: z.string().max(1000).optional(),
+  category: z.string().max(50).optional(),
+  status: GoalStatusSchema.default('active'),
+  targetDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Must be YYYY-MM-DD').optional(),
+  createdAt: z.string(),
+  achievedAt: z.string().optional(),
+  updatedAt: z.string(),
+});
+
+export const GoalTaskLinkSchema = z.object({
+  id: z.string().min(1),
+  goalId: z.string().min(1),
+  taskId: z.string().min(1),
+  createdAt: z.string(),
+});
+
+export const FocusSelectionSchema = z.object({
+  id: z.string().min(1),
+  taskId: z.string().min(1),
+  effectiveLocalDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Must be YYYY-MM-DD'),
+  chosenAt: z.string(),
+});
+
+export const AssetBlobSchema = z.object({
+  id: z.string().min(1),
+  ownerType: z.enum(['profile', 'project']),
+  ownerId: z.string().min(1),
+  mimeType: z.string().min(1),
+  size: z.number().nonnegative(),
+  data: z.string().min(1), // Base64 data url
+  createdAt: z.string(),
+});
+
+/**
+ * Complete Backup Envelope Schema for atomic import and export
+ */
+export const BackupSchema = z.object({
+  version: z.literal(1),
+  exportedAt: z.string(),
+  app: z.literal('nemo'),
+  data: z.object({
+    settings: WorkspaceSettingsSchema,
+    projects: z.array(ProjectSchema),
+    tasks: z.array(TaskSchema),
+    milestones: z.array(MilestoneSchema),
+    semesters: z.array(SemesterSchema),
+    subjects: z.array(SubjectSchema),
+    assignments: z.array(AssignmentSchema),
+    calendarEvents: z.array(CalendarEventSchema),
+    goals: z.array(GoalSchema),
+    goalTaskLinks: z.array(GoalTaskLinkSchema),
+    focusSelections: z.array(FocusSelectionSchema),
+    assetBlobs: z.array(AssetBlobSchema),
+  }),
+});
+
+export type BackupData = z.infer<typeof BackupSchema>;

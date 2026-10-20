@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <!-- Nemo abstract N tracking path logo -->
+  <rect width="48" height="48" rx="12" fill="#0A1222"/>
+  <rect x="1" y="1" width="46" height="46" rx="11" stroke="#1B2C44" stroke-width="2"/>
+  <!-- Continuous tracking path forming an N -->
+  <path d="M 14 34 L 14 16 L 34 32 L 34 14" 
+        stroke="#A8DCC8" 
+        stroke-width="3.5" 
+        stroke-linecap="round" 
+        stroke-linejoin="round"/>
+  <!-- Completion endpoint marker -->
+  <circle cx="34" cy="14" r="3" fill="#EEF2FB" stroke="#A8DCC8" stroke-width="1.5"/>
+</svg>
