@@ -1,0 +1,11 @@
+import { chromium } from '@playwright/test';
+import { mkdir, writeFile } from 'node:fs/promises';
+const out='docs/reference/evidence/stage-b';await mkdir(out,{recursive:true});
+const browser=await chromium.launch({channel:'msedge',headless:true});
+const page=await browser.newPage({viewport:{width:1440,height:900}});const errors=[];page.on('pageerror',e=>errors.push(e.message));
+await page.goto('http://127.0.0.1:5173',{waitUntil:'networkidle'});console.log((await page.locator('body').innerText()).slice(0,2000));console.log(errors);await page.screenshot({path:out+'/initial.png'});if(await page.getByRole('button',{name:'Skip customization'}).count())await page.getByRole('button',{name:'Skip customization'}).click();await page.waitForTimeout(900);
+await page.evaluate(()=>{window.__frames=[];const start=performance.now();function tick(){const route=document.querySelector('.route-content'),pill=document.querySelector('.tabs__indicator');window.__frames.push({t:Math.round(performance.now()-start),url:location.pathname,title:route?.querySelector('h1')?.textContent,opacity:route?getComputedStyle(route).opacity:null,transform:route?getComputedStyle(route).transform:null,clip:pill?getComputedStyle(pill).clipPath:null});if(performance.now()-start<3500)requestAnimationFrame(tick);}requestAnimationFrame(tick);});
+await page.getByRole('navigation',{name:'Main Navigation',exact:true}).getByRole('link',{name:'Projects',exact:true}).click();await page.waitForTimeout(900);await page.screenshot({path:`${out}/projects.png`});
+for(const name of ['Tasks','Calendar','Goals','Projects','Insights']){await page.getByRole('navigation',{name:'Main Navigation',exact:true}).getByRole('link',{name,exact:true}).click({force:true});await page.waitForTimeout(45);}
+await page.waitForTimeout(1800);const frames=await page.evaluate(()=>window.__frames);const summary={errors,url:page.url(),title:await page.locator('.route-content h1').innerText(),routeStyle:await page.locator('.route-content').evaluate(e=>({opacity:getComputedStyle(e).opacity,transform:getComputedStyle(e).transform})),uniqueClips:new Set(frames.map(f=>f.clip)).size,frames};await writeFile(`${out}/motion.json`,JSON.stringify(summary,null,2));await page.screenshot({path:`${out}/rapid-navigation-final.png`});console.log(JSON.stringify({...summary,frames:undefined}));await browser.close();
+

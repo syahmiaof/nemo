@@ -14,6 +14,7 @@ import type {
   AssetBlob,
 } from '@/domain/types';
 import { BackupSchema, type BackupData } from '@/domain/schemas';
+import { databaseNameForMode, getWorkspaceMode, REAL_DATABASE_NAME } from './workspaceMode';
 
 export class NemoDatabase extends Dexie {
   settings!: EntityTable<WorkspaceSettings, 'id'>;
@@ -29,8 +30,8 @@ export class NemoDatabase extends Dexie {
   focusSelections!: EntityTable<FocusSelection, 'id'>;
   assetBlobs!: EntityTable<AssetBlob, 'id'>;
 
-  constructor() {
-    super('NemoDatabase');
+  constructor(name = REAL_DATABASE_NAME) {
+    super(name);
     this.version(1).stores({
       settings: 'id',
       projects: 'id, status, priority, dueDate, createdAt, completedAt',
@@ -48,7 +49,7 @@ export class NemoDatabase extends Dexie {
   }
 }
 
-export const db = new NemoDatabase();
+export const db = new NemoDatabase(databaseNameForMode(getWorkspaceMode()));
 
 /**
  * Initializes default settings if not already present.

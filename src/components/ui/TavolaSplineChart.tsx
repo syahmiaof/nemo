@@ -1,5 +1,7 @@
-import React, { useState, useRef, useEffect, useId } from 'react';
+import React, { useState, useRef, useEffect, useId, useMemo } from 'react';
 import gsap from 'gsap';
+import { nearestChartIndex, normalizeChartValues, pointsToSplinePath } from '@/domain/chart';
+import '@/design/charts.css';
 
 interface SplineChartProps {
   labels: string[];
@@ -10,259 +12,138 @@ interface SplineChartProps {
   unit?: string;
   height?: number;
 }
-
-// Exact Catmull-Rom Bezier Spline formula extracted from Tavola
-function pointsToSplinePath(points: [number, number][], tension = 0.18): string {
-  if (points.length < 2) return '';
-  let d = `M${points[0][0]},${points[0][1]}`;
-
-  for (let i = 0; i < points.length - 1; i++) {
-    const p0 = points[i - 1] ?? points[i];
-    const p1 = points[i];
-    const p2 = points[i + 1];
-    const p3 = points[i + 2] ?? p2;
-
-    const cp1 = [
-      p1[0] + (p2[0] - p0[0]) * tension,
-      p1[1] + (p2[1] - p0[1]) * tension,
-    ];
-    const cp2 = [
-      p2[0] - (p3[0] - p1[0]) * tension,
-      p2[1] - (p3[1] - p1[1]) * tension,
-    ];
-
-    // Clamping to avoid overshooting
-    const minY = Math.min(p1[1], p2[1]);
-    const maxY = Math.max(p1[1], p2[1]);
-    cp1[1] = Math.max(minY, Math.min(maxY, cp1[1]));
-    cp2[1] = Math.max(minY, Math.min(maxY, cp2[1]));
-
-    d += ` C${cp1[0]},${cp1[1]} ${cp2[0]},${cp2[1]} ${p2[0]},${p2[1]}`;
-  }
-  return d;
-}
+interface ChartFrame { main: number[]; comparison: number[]; maximum: number }
 
 export const TavolaSplineChart: React.FC<SplineChartProps> = ({
-  labels,
-  values,
-  comparisonValues,
-  seriesName = 'This Week',
-  comparisonName = 'Last Week',
-  unit = 'tasks',
-  height = 190,
+  labels, values, comparisonValues, seriesName = 'This week', comparisonName = 'Last week', unit = 'tasks', height = 300,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const clipRectRef = useRef<SVGRectElement>(null);
-  const [containerWidth, setContainerWidth] = useState(500);
+  const [width, setWidth] = useState(600);
   const [hoverIndex, setHoverIndex] = useState<number | null>(null);
-  const rawId = useId();
-  const gradId = `tavola-grad-${rawId.replace(/\W/g, '')}`;
-  const clipId = `tavola-clip-${rawId.replace(/\W/g, '')}`;
+  const [reduced, setReduced] = useState(() => typeof window !== 'undefined' && (
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches || document.documentElement.dataset.reduceMotion === 'true'
+  ));
+  const id = useId().replace(/:/g, '');
+  // Content keys avoid restarting an unchanged chart on live-query renders.
+  const dataKey = JSON.stringify([normalizeChartValues(values, labels.length), comparisonValues ? normalizeChartValues(comparisonValues, labels.length) : []]);
+  const target = useMemo<ChartFrame>(() => {
+    const [main, comparison] = JSON.parse(dataKey) as [number[], number[]];
+    const maximum = Math.max(4, Math.ceil(Math.max(0, ...main, ...comparison) / 4) * 4);
+    return { main, comparison, maximum };
+  }, [dataKey]);
+  const [frame, setFrame] = useState(target);
+  const frameRef = useRef(frame);
+  const initialized = useRef(false);
 
-  const padding = { left: 36, right: 16, top: 18, bottom: 26 };
-
-  // Observe width
   useEffect(() => {
-    if (!containerRef.current) return;
-    const obs = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        if (entry.contentRect.width > 0) {
-          setContainerWidth(entry.contentRect.width);
-        }
-      }
+    const element = containerRef.current;
+    if (!element) return;
+    const observer = new ResizeObserver(([entry]) => {
+      if (entry.contentRect.width > 0) setWidth(entry.contentRect.width);
     });
-    obs.observe(containerRef.current);
-    return () => obs.disconnect();
+    observer.observe(element);
+    return () => observer.disconnect();
   }, []);
 
-  // GSAP Reveal Animation
   useEffect(() => {
-    if (!clipRectRef.current) return;
-    gsap.fromTo(
-      clipRectRef.current,
-      { attr: { width: 0 } },
-      { attr: { width: containerWidth }, duration: 1.2, ease: 'power2.inOut' }
-    );
-  }, [containerWidth, values]);
+    const media = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const update = () => setReduced(media.matches || document.documentElement.dataset.reduceMotion === 'true');
+    const observer = new MutationObserver(update);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-reduce-motion'] });
+    media.addEventListener('change', update);
+    update();
+    return () => { observer.disconnect(); media.removeEventListener('change', update); };
+  }, []);
 
-  // Scalers
-  const allValues = [...values, ...(comparisonValues || [])];
-  const maxVal = Math.max(5, ...allValues) * 1.15;
-  const getX = (i: number) =>
-    padding.left + (labels.length < 2 ? 0 : (i / (labels.length - 1)) * (containerWidth - padding.left - padding.right));
-  const getY = (val: number) =>
-    padding.top + (1 - val / maxVal) * (height - padding.top - padding.bottom);
+  useEffect(() => {
+    const initial = !initialized.current;
+    initialized.current = true;
+    if (reduced) { frameRef.current = target; setFrame(target); return; }
+    const previous = frameRef.current;
+    const compatible = previous.main.length === target.main.length && previous.comparison.length === target.comparison.length;
+    const start = initial
+      ? { main: target.main.map(() => 0), comparison: target.comparison.map(() => 0), maximum: target.maximum }
+      : compatible ? previous : target;
+    const progress = { value: 0 };
+    const context = gsap.context(() => {
+      gsap.to(progress, {
+        value: 1, duration: initial ? 0.85 : 0.5, ease: 'power2.out',
+        onUpdate: () => {
+          const mix = (from: number, to: number) => from + (to - from) * progress.value;
+          const next: ChartFrame = {
+            main: target.main.map((value, i) => mix(start.main[i], value)),
+            comparison: target.comparison.map((value, i) => mix(start.comparison[i], value)),
+            maximum: mix(start.maximum, target.maximum),
+          };
+          frameRef.current = next;
+          setFrame(next);
+        },
+        onComplete: () => { frameRef.current = target; setFrame(target); },
+      });
+    }, containerRef);
+    return () => context.revert();
+  }, [target, reduced]);
 
-  // Generate Splines
-  const mainPoints: [number, number][] = values.map((v, i) => [getX(i), getY(v)]);
-  const mainPath = pointsToSplinePath(mainPoints);
-  const areaPath = mainPoints.length > 0
-    ? `${mainPath} L${getX(mainPoints.length - 1)},${height - padding.bottom} L${getX(0)},${height - padding.bottom} Z`
-    : '';
-
-  const compPoints: [number, number][] = (comparisonValues || []).map((v, i) => [getX(i), getY(v)]);
-  const compPath = pointsToSplinePath(compPoints);
-
-  // Pointer interactions
-  const handlePointerMove = (e: React.PointerEvent<SVGSVGElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left - padding.left;
-    const effectiveWidth = Math.max(1, containerWidth - padding.left - padding.right);
-    const rawIdx = Math.round((x / effectiveWidth) * (labels.length - 1));
-    const clamped = Math.max(0, Math.min(labels.length - 1, rawIdx));
-    setHoverIndex(clamped);
+  const padding = { left: 38, right: 20, top: 26, bottom: 34 };
+  const plotWidth = Math.max(1, width - padding.left - padding.right);
+  const bottom = height - padding.bottom;
+  const getX = (i: number) => padding.left + (labels.length < 2 ? plotWidth / 2 : i / (labels.length - 1) * plotWidth);
+  const getY = (value: number) => padding.top + (1 - value / frame.maximum) * (bottom - padding.top);
+  const mainPoints = frame.main.map((value, i) => [getX(i), getY(value)] as const);
+  const path = pointsToSplinePath(mainPoints);
+  const area = mainPoints.length > 1 ? `${path} L${getX(mainPoints.length - 1)},${bottom} L${getX(0)},${bottom} Z` : '';
+  const comparisonPath = pointsToSplinePath(frame.comparison.map((value, i) => [getX(i), getY(value)] as const));
+  const active = hoverIndex !== null && hoverIndex < labels.length ? hoverIndex : null;
+  const labelStride = Math.max(1, Math.ceil(labels.length / Math.max(2, Math.floor(plotWidth / 60))));
+  const handleKey = (event: React.KeyboardEvent<SVGSVGElement>) => {
+    if (!labels.length) return;
+    if (event.key === 'Escape') { setHoverIndex(null); return; }
+    if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+    event.preventDefault();
+    setHoverIndex(event.key === 'Home' ? 0 : event.key === 'End' ? labels.length - 1 : Math.max(0, Math.min(labels.length - 1, (active ?? 0) + (event.key === 'ArrowLeft' ? -1 : 1))));
   };
-
-  const handlePointerLeave = () => {
-    setHoverIndex(null);
-  };
-
   return (
-    <div ref={containerRef} className="relative w-full select-none">
-      <svg
-        viewBox={`0 0 ${containerWidth} ${height}`}
-        width="100%"
-        height={height}
-        className="overflow-visible"
-        onPointerMove={handlePointerMove}
-        onPointerLeave={handlePointerLeave}
-      >
-        <defs>
-          <linearGradient id={gradId} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#A8DCC8" stopOpacity="0.32" />
-            <stop offset="60%" stopColor="#A8DCC8" stopOpacity="0.08" />
-            <stop offset="100%" stopColor="#A8DCC8" stopOpacity="0" />
-          </linearGradient>
-          <clipPath id={clipId}>
-            <rect ref={clipRectRef} x="0" y="0" width={containerWidth} height={height} />
-          </clipPath>
-        </defs>
-
-        {/* Grid lines */}
-        {[0, 0.5, 1].map((pct) => {
-          const y = getY(maxVal * pct);
-          return (
-            <g key={pct} className="text-content-tertiary/40">
-              <line
-                x1={padding.left}
-                x2={containerWidth - padding.right}
-                y1={y}
-                y2={y}
-                stroke="currentColor"
-                strokeWidth="1"
-                strokeDasharray="2 4"
-              />
-              <text
-                x={padding.left - 8}
-                y={y + 3}
-                textAnchor="end"
-                className="text-[10px] fill-content-tertiary font-mono"
-              >
-                {Math.round(maxVal * pct)}
-              </text>
-            </g>
-          );
-        })}
-
-        {/* X Axis Labels */}
-        {labels.map((lbl, idx) => (
-          <text
-            key={lbl + idx}
-            x={getX(idx)}
-            y={height - 6}
-            textAnchor="middle"
-            className="text-[11px] font-medium fill-content-secondary"
-          >
-            {lbl}
-          </text>
-        ))}
-
-        {/* Plot Group clipped */}
-        <g clipPath={`url(#${clipId})`}>
-          {/* Fill Area */}
-          {areaPath && <path d={areaPath} fill={`url(#${gradId})`} />}
-
-          {/* Benchmark comparison line (dashed) */}
-          {compPath && (
-            <path
-              d={compPath}
-              fill="none"
-              stroke="var(--text-tertiary)"
-              strokeWidth="1.8"
-              strokeDasharray="4 4"
-              opacity="0.6"
-            />
-          )}
-
-          {/* Main Spline line (Mint Glow) */}
-          {mainPath && (
-            <path
-              d={mainPath}
-              fill="none"
-              stroke="#A8DCC8"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          )}
-        </g>
-
-        {/* Hover Crosshair & Magnetic Dot */}
-        {hoverIndex !== null && hoverIndex < labels.length && (
-          <g className="transition-all duration-75">
-            <line
-              x1={getX(hoverIndex)}
-              x2={getX(hoverIndex)}
-              y1={padding.top}
-              y2={height - padding.bottom}
-              stroke="rgba(255, 255, 255, 0.25)"
-              strokeWidth="1.5"
-              strokeDasharray="3 3"
-            />
-            {comparisonValues && (
-              <circle
-                cx={getX(hoverIndex)}
-                cy={getY(comparisonValues[hoverIndex] ?? 0)}
-                r="3.5"
-                fill="var(--text-tertiary)"
-              />
-            )}
-            <circle
-              cx={getX(hoverIndex)}
-              cy={getY(values[hoverIndex] ?? 0)}
-              r="5"
-              fill="#A8DCC8"
-              stroke="#0A1222"
-              strokeWidth="2"
-            />
-          </g>
-        )}
+    <div ref={containerRef} className="nemo-chart">
+      <svg viewBox={`0 0 ${width} ${height}`} width="100%" height={height}
+        className="nemo-chart__svg" tabIndex={labels.length ? 0 : -1} role="group"
+        aria-label={`${seriesName} chart. Use left and right arrows, Home or End to explore.`}
+        aria-describedby={`${id}-description`} onKeyDown={handleKey}
+        onFocus={() => setHoverIndex(0)} onBlur={() => setHoverIndex(null)}
+        onPointerMove={(event) => {
+          const bounds = event.currentTarget.getBoundingClientRect();
+          setHoverIndex(nearestChartIndex((event.clientX - bounds.left) * width / bounds.width, padding.left, plotWidth, labels.length));
+        }}
+        onPointerLeave={(event) => { if (document.activeElement !== event.currentTarget) setHoverIndex(null); }}>
+        <defs><linearGradient id={`${id}-fill`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="var(--chart-peach, #efb2a2)" stopOpacity=".28" />
+          <stop offset="100%" stopColor="var(--chart-peach, #efb2a2)" stopOpacity=".015" />
+        </linearGradient></defs>
+        {[0, 0.5, 1].map((fraction) => <g key={fraction} className="nemo-chart__grid">
+          <line x1={padding.left} x2={width - padding.right} y1={getY(frame.maximum * fraction)} y2={getY(frame.maximum * fraction)} strokeDasharray="3 6" />
+          <text x={padding.left - 10} y={getY(frame.maximum * fraction) + 5} textAnchor="end">{Math.round(frame.maximum * fraction)}</text>
+        </g>)}
+        {labels.map((label, i) => i % labelStride === 0 || i === labels.length - 1 ? <text key={`${label}-${i}`} className="nemo-chart__label" x={getX(i)} y={height - 8} textAnchor="middle">{label}</text> : null)}
+        {area && <path d={area} fill={`url(#${id}-fill)`} />}
+        {comparisonPath && <path d={comparisonPath} className="nemo-chart__comparison" />}
+        {path && <path d={path} className="nemo-chart__line" />}
+        {mainPoints.length === 1 && <circle cx={mainPoints[0][0]} cy={mainPoints[0][1]} r="4" className="nemo-chart__dot" />}
+        {active !== null && <g>
+          <line className="nemo-chart__crosshair" x1={getX(active)} x2={getX(active)} y1={padding.top} y2={bottom} />
+          {frame.comparison.length > active && <circle cx={getX(active)} cy={getY(frame.comparison[active])} r="4" className="nemo-chart__comparison-dot" />}
+          <circle cx={getX(active)} cy={getY(frame.main[active] ?? 0)} r="6" className="nemo-chart__dot" />
+        </g>}
       </svg>
-
-      {/* Interactive Tooltip Badge (Floating Glass) */}
-      {hoverIndex !== null && hoverIndex < labels.length && (
-        <div
-          className="absolute pointer-events-none z-20 px-3 py-1.5 rounded-xl bg-surface/90 backdrop-blur-md border border-border-emphasis text-xs shadow-glass-pop -translate-x-1/2 -translate-y-full transition-transform duration-75"
-          style={{
-            left: `${getX(hoverIndex)}px`,
-            top: `${Math.max(10, getY(values[hoverIndex] ?? 0) - 10)}px`,
-          }}
-        >
-          <p className="font-bold text-content-primary mb-0.5">{labels[hoverIndex]}</p>
-          <div className="flex items-center gap-2 text-[11px]">
-            <span className="flex items-center gap-1 text-accent-mint font-semibold">
-              <span className="w-1.5 h-1.5 rounded-full bg-accent-mint inline-block" />
-              {seriesName}: {values[hoverIndex] ?? 0} {unit}
-            </span>
-            {comparisonValues && (
-              <span className="flex items-center gap-1 text-content-tertiary">
-                <span className="w-1.5 h-1.5 rounded-full bg-content-tertiary inline-block" />
-                {comparisonName}: {comparisonValues[hoverIndex] ?? 0}
-              </span>
-            )}
-          </div>
-        </div>
-      )}
+      <p id={`${id}-description`} className="sr-only">Values in {unit}. Exact values are available in the data table below.</p>
+      <span className="sr-only" aria-live="polite" aria-atomic="true">{active !== null ? `${labels[active]}: ${seriesName}, ${target.main[active]} ${unit}${target.comparison.length ? `; ${comparisonName}, ${target.comparison[active]} ${unit}` : ''}.` : ''}</span>
+      {active !== null && <div className="nemo-chart__tooltip" aria-hidden="true" style={{ left: Math.max(0, Math.min(Math.max(0, width - Math.min(228, width)), getX(active) - 114)), top: Math.max(0, getY(frame.main[active] ?? 0) - 95) }}>
+        <strong>{labels[active]}</strong><span><i />{seriesName}<b>{target.main[active]} {unit}</b></span>
+        {!!target.comparison.length && <span className="nemo-chart__tooltip-comparison"><i />{comparisonName}<b>{target.comparison[active]} {unit}</b></span>}
+      </div>}
+      <details className="nemo-chart__data"><summary>View chart data</summary><div className="nemo-chart__table-wrap"><table>
+        <caption>{seriesName}{target.comparison.length ? ` compared with ${comparisonName}` : ''} ({unit})</caption>
+        <thead><tr><th scope="col">Period</th><th scope="col">{seriesName}</th>{!!target.comparison.length && <th scope="col">{comparisonName}</th>}</tr></thead>
+        <tbody>{labels.map((label, i) => <tr key={`${label}-${i}`}><th scope="row">{label}</th><td>{target.main[i]}</td>{!!target.comparison.length && <td>{target.comparison[i]}</td>}</tr>)}</tbody>
+      </table></div></details>
     </div>
   );
 };

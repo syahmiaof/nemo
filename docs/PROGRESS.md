@@ -20,10 +20,17 @@
 | S5.1 | Backup, Export & Restore | Architecture Engineer | S1.1 | verified | Atomic JSON import/export with asset blobs, schema validation | 2026-10-20 |
 | S5.2 | Offline PWA Support | Interface Engineer | S1.2 | verified | Service worker caching, offline indicator, offline mutation | 2026-10-20 |
 | S5.3 | Accessibility & Responsive Polish | Interface / QA | S1.2-S5.2 | verified | WCAG 2.2 AA contrast, keyboard nav, 320-1440px testing | 2026-10-20 |
-| S6.1 | Verification Suite & Release Gate | Quality Reviewer | All | verified | Vitest 20/20 unit tests, strict typecheck, production build | 2026-10-20 |
+| S6.1 | Verification Suite & Release Gate | Quality Reviewer | All | verified | Vitest 36/36 unit tests, strict typecheck, production build | 2026-10-20 |
+| M1.1 | Tavola Motion Forensics & Video Audit | Motion Investigator | S6.1 | verified | `Screen Recording 2026-10-20 133452.mp4` 72.6s frame analysis & docs | 2026-10-20 |
+| M1.2 | Elastic Directional Pill Tabs | Creative Frontend | M1.1 | verified | `TavolaTabs.tsx` clip-path dual-edge physics with 35ms stagger | 2026-10-20 |
+| M1.3 | Coordinated Route Transition Orchestrator | Architecture Engineer | M1.2 | verified | `RouteTransition.tsx` with retained outlet & cascading `[data-enter]` | 2026-10-20 |
+| M1.4 | Animated Spline Chart System | Creative Frontend | M1.1 | verified | `TavolaSplineChart.tsx` with spline morphing & magnetic crosshair | 2026-10-20 |
+| M1.5 | Nested Tavola-Style Settings System | Interface Engineer | M1.2 | verified | `SettingsPage.tsx` with multi-section tabs, theme preview cards | 2026-10-20 |
+| M1.6 | Isolated Demo Mode Experience | Architecture Engineer | S1.1 | verified | `src/demo/`, `DemoWorkspacePanel.tsx` with 18 projects, 150 tasks | 2026-10-20 |
+| M1.7 | Release Verification & Test Suite | Quality Reviewer | All | verified | 36 passed unit tests, 0 TypeScript errors, 711 KiB PWA build | 2026-10-20 |
 
 ## Active Blockers
 - None.
 
 ## Verified Release State
-- Baseline initialization in progress.
+- Tavola Motion Forensics & High-Fidelity Reconstruction successfully integrated, tested, and verified on branch `codex/tavola-reconstruction`.

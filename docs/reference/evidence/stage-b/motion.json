@@ -1,0 +1,1539 @@
+{
+  "errors": [],
+  "url": "http://127.0.0.1:5173/insights",
+  "title": "Workspace\nInsights",
+  "routeStyle": {
+    "opacity": "1",
+    "transform": "none"
+  },
+  "uniqueClips": 6,
+  "frames": [
+    {
+      "t": 6,
+      "url": "/overview",
+      "title": "Make room for progress.",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 469px 0px 4px round 999px)"
+    },
+    {
+      "t": 23,
+      "url": "/overview",
+      "title": "Make room for progress.",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 469px 0px 4px round 999px)"
+    },
+    {
+      "t": 39,
+      "url": "/overview",
+      "title": "Make room for progress.",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 469px 0px 4px round 999px)"
+    },
+    {
+      "t": 77,
+      "url": "/projects",
+      "title": "Make room for progress.",
+      "opacity": "0.9931",
+      "transform": "matrix(1, 0, 0, 1, 0, -0.0695)",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 81,
+      "url": "/projects",
+      "title": "Make room for progress.",
+      "opacity": "0.9898",
+      "transform": "matrix(1, 0, 0, 1, 0, -0.1016)",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 95,
+      "url": "/projects",
+      "title": "Make room for progress.",
+      "opacity": "0.9759",
+      "transform": "matrix(1, 0, 0, 1, 0, -0.2409)",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 117,
+      "url": "/projects",
+      "title": "Make room for progress.",
+      "opacity": "0.9349",
+      "transform": "matrix(1, 0, 0, 1, 0, -0.651)",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 129,
+      "url": "/projects",
+      "title": "Make room for progress.",
+      "opacity": "0.9033",
+      "transform": "matrix(1, 0, 0, 1, 0, -0.967)",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 144,
+      "url": "/projects",
+      "title": "Make room for progress.",
+      "opacity": "0.8412",
+      "transform": "matrix(1, 0, 0, 1, 0, -1.588)",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 159,
+      "url": "/projects",
+      "title": "Make room for progress.",
+      "opacity": "0.763",
+      "transform": "matrix(1, 0, 0, 1, 0, -2.3704)",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 177,
+      "url": "/projects",
+      "title": "Make room for progress.",
+      "opacity": "0.6395",
+      "transform": "matrix(1, 0, 0, 1, 0, -3.605)",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 194,
+      "url": "/projects",
+      "title": "Make room for progress.",
+      "opacity": "0.499",
+      "transform": "matrix(1, 0, 0, 1, 0, -5.01)",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 209,
+      "url": "/projects",
+      "title": "Make room for progress.",
+      "opacity": "0.3379",
+      "transform": "matrix(1, 0, 0, 1, 0, -6.6211)",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 227,
+      "url": "/projects",
+      "title": "Make room for progress.",
+      "opacity": "0.2",
+      "transform": "matrix(1, 0, 0, 1, 0, -8)",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 260,
+      "url": "/projects",
+      "opacity": "0.5155",
+      "transform": "matrix(1, 0, 0, 1, 0, 10.4352)",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 266,
+      "url": "/projects",
+      "opacity": "0.5411",
+      "transform": "matrix(1, 0, 0, 1, 0, 9.8849)",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 275,
+      "url": "/projects",
+      "opacity": "0.5775",
+      "transform": "matrix(1, 0, 0, 1, 0, 9.1006)",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 336,
+      "url": "/projects",
+      "opacity": "0.7705",
+      "transform": "matrix(1, 0, 0, 1, 0, 4.9428)",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 366,
+      "url": "/projects",
+      "opacity": "0.8364",
+      "transform": "matrix(1, 0, 0, 1, 0, 3.5243)",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 377,
+      "url": "/projects",
+      "opacity": "0.8565",
+      "transform": "matrix(1, 0, 0, 1, 0, 3.0899)",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 392,
+      "url": "/projects",
+      "opacity": "0.881",
+      "transform": "matrix(1, 0, 0, 1, 0, 2.5638)",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 407,
+      "url": "/projects",
+      "opacity": "0.9021",
+      "transform": "matrix(1, 0, 0, 1, 0, 2.1079)",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 423,
+      "url": "/projects",
+      "opacity": "0.9215",
+      "transform": "matrix(1, 0, 0, 1, 0, 1.6916)",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 441,
+      "url": "/projects",
+      "opacity": "0.9396",
+      "transform": "matrix(1, 0, 0, 1, 0, 1.3006)",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 459,
+      "url": "/projects",
+      "opacity": "0.9537",
+      "transform": "matrix(1, 0, 0, 1, 0, 0.9976)",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 474,
+      "url": "/projects",
+      "opacity": "0.9645",
+      "transform": "matrix(1, 0, 0, 1, 0, 0.764)",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 491,
+      "url": "/projects",
+      "opacity": "0.9738",
+      "transform": "matrix(1, 0, 0, 1, 0, 0.5635)",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 506,
+      "url": "/projects",
+      "opacity": "0.9804",
+      "transform": "matrix(1, 0, 0, 1, 0, 0.422)",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 526,
+      "url": "/projects",
+      "opacity": "0.9871",
+      "transform": "matrix(1, 0, 0, 1, 0, 0.2769)",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 541,
+      "url": "/projects",
+      "opacity": "0.9909",
+      "transform": "matrix(1, 0, 0, 1, 0, 0.1955)",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 558,
+      "url": "/projects",
+      "opacity": "0.9941",
+      "transform": "matrix(1, 0, 0, 1, 0, 0.1265)",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 576,
+      "url": "/projects",
+      "opacity": "0.9965",
+      "transform": "matrix(1, 0, 0, 1, 0, 0.0753)",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 591,
+      "url": "/projects",
+      "opacity": "0.9979",
+      "transform": "matrix(1, 0, 0, 1, 0, 0.0461)",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 609,
+      "url": "/projects",
+      "opacity": "0.9989",
+      "transform": "matrix(1, 0, 0, 1, 0, 0.0243)",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 626,
+      "url": "/projects",
+      "opacity": "0.9995",
+      "transform": "matrix(1, 0, 0, 1, 0, 0.0114)",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 643,
+      "url": "/projects",
+      "opacity": "0.9998",
+      "transform": "matrix(1, 0, 0, 1, 0, 0.0044)",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 656,
+      "url": "/projects",
+      "opacity": "0.9999",
+      "transform": "matrix(1, 0, 0, 1, 0, 0.0016)",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 675,
+      "url": "/projects",
+      "opacity": "1",
+      "transform": "matrix(1, 0, 0, 1, 0, 0.0002)",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 695,
+      "url": "/projects",
+      "opacity": "1",
+      "transform": "matrix(1, 0, 0, 1, 0, 0)",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 710,
+      "url": "/projects",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 727,
+      "url": "/projects",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 740,
+      "url": "/projects",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 756,
+      "url": "/projects",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 773,
+      "url": "/projects",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 789,
+      "url": "/projects",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 806,
+      "url": "/projects",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 823,
+      "url": "/projects",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 841,
+      "url": "/projects",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 856,
+      "url": "/projects",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 873,
+      "url": "/projects",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 889,
+      "url": "/projects",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 906,
+      "url": "/projects",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 923,
+      "url": "/projects",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 941,
+      "url": "/projects",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 957,
+      "url": "/projects",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 972,
+      "url": "/projects",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 989,
+      "url": "/projects",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 1006,
+      "url": "/projects",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 1023,
+      "url": "/projects",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 1039,
+      "url": "/projects",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 1056,
+      "url": "/projects",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 1073,
+      "url": "/projects",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 1089,
+      "url": "/projects",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 1106,
+      "url": "/projects",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 1123,
+      "url": "/projects",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 1139,
+      "url": "/projects",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 1156,
+      "url": "/projects",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 1173,
+      "url": "/projects",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 1189,
+      "url": "/projects",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 1207,
+      "url": "/projects",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 1223,
+      "url": "/projects",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 1239,
+      "url": "/projects",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 1258,
+      "url": "/projects",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 1273,
+      "url": "/projects",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 1290,
+      "url": "/projects",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 1306,
+      "url": "/projects",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 1323,
+      "url": "/projects",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 1339,
+      "url": "/projects",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 1358,
+      "url": "/projects",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 1376,
+      "url": "/projects",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 1393,
+      "url": "/projects",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 1417,
+      "url": "/projects",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 1426,
+      "url": "/projects",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 1440,
+      "url": "/projects",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 1456,
+      "url": "/projects",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 1473,
+      "url": "/projects",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 1489,
+      "url": "/projects",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 1517,
+      "url": "/tasks",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 327px 0px 170px round 999px)"
+    },
+    {
+      "t": 1524,
+      "url": "/tasks",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 327px 0px 170px round 999px)"
+    },
+    {
+      "t": 1542,
+      "url": "/tasks",
+      "opacity": "0.9998",
+      "transform": "matrix(1, 0, 0, 1, 0, -0.0018)",
+      "clip": "inset(0px 327px 0px 170px round 999px)"
+    },
+    {
+      "t": 1556,
+      "url": "/tasks",
+      "opacity": "0.9967",
+      "transform": "matrix(1, 0, 0, 1, 0, -0.0335)",
+      "clip": "inset(0px 327px 0px 170px round 999px)"
+    },
+    {
+      "t": 1574,
+      "url": "/tasks",
+      "opacity": "0.9891",
+      "transform": "matrix(1, 0, 0, 1, 0, -0.1091)",
+      "clip": "inset(0px 327px 0px 170px round 999px)"
+    },
+    {
+      "t": 1592,
+      "url": "/tasks",
+      "opacity": "0.9689",
+      "transform": "matrix(1, 0, 0, 1, 0, -0.3114)",
+      "clip": "inset(0px 327px 0px 170px round 999px)"
+    },
+    {
+      "t": 1606,
+      "url": "/tasks",
+      "opacity": "0.9349",
+      "transform": "matrix(1, 0, 0, 1, 0, -0.651)",
+      "clip": "inset(0px 327px 0px 170px round 999px)"
+    },
+    {
+      "t": 1638,
+      "url": "/calendar",
+      "opacity": "0.8897",
+      "transform": "matrix(1, 0, 0, 1, 0, -1.1034)",
+      "clip": "inset(0px 242px 0px 234px round 999px)"
+    },
+    {
+      "t": 1645,
+      "url": "/calendar",
+      "opacity": "0.8858",
+      "transform": "matrix(1, 0, 0, 1, 0, -1.1421)",
+      "clip": "inset(0px 242px 0px 234px round 999px)"
+    },
+    {
+      "t": 1661,
+      "url": "/calendar",
+      "opacity": "0.8827",
+      "transform": "matrix(1, 0, 0, 1, 0, -1.1735)",
+      "clip": "inset(0px 242px 0px 234px round 999px)"
+    },
+    {
+      "t": 1677,
+      "url": "/calendar",
+      "opacity": "0.87",
+      "transform": "matrix(1, 0, 0, 1, 0, -1.3001)",
+      "clip": "inset(0px 242px 0px 234px round 999px)"
+    },
+    {
+      "t": 1693,
+      "url": "/calendar",
+      "opacity": "0.8491",
+      "transform": "matrix(1, 0, 0, 1, 0, -1.509)",
+      "clip": "inset(0px 242px 0px 234px round 999px)"
+    },
+    {
+      "t": 1709,
+      "url": "/calendar",
+      "opacity": "0.8145",
+      "transform": "matrix(1, 0, 0, 1, 0, -1.8556)",
+      "clip": "inset(0px 242px 0px 234px round 999px)"
+    },
+    {
+      "t": 1727,
+      "url": "/calendar",
+      "opacity": "0.7605",
+      "transform": "matrix(1, 0, 0, 1, 0, -2.3956)",
+      "clip": "inset(0px 242px 0px 234px round 999px)"
+    },
+    {
+      "t": 1759,
+      "url": "/goals",
+      "opacity": "0.6802",
+      "transform": "matrix(1, 0, 0, 1, 0, -3.1983)",
+      "clip": "inset(0px 80px 0px 416px round 999px)"
+    },
+    {
+      "t": 1764,
+      "url": "/goals",
+      "opacity": "0.6775",
+      "transform": "matrix(1, 0, 0, 1, 0, -3.2253)",
+      "clip": "inset(0px 80px 0px 416px round 999px)"
+    },
+    {
+      "t": 1776,
+      "url": "/goals",
+      "opacity": "0.676",
+      "transform": "matrix(1, 0, 0, 1, 0, -3.24)",
+      "clip": "inset(0px 80px 0px 416px round 999px)"
+    },
+    {
+      "t": 1789,
+      "url": "/goals",
+      "opacity": "0.6711",
+      "transform": "matrix(1, 0, 0, 1, 0, -3.2894)",
+      "clip": "inset(0px 80px 0px 416px round 999px)"
+    },
+    {
+      "t": 1809,
+      "url": "/goals",
+      "opacity": "0.6606",
+      "transform": "matrix(1, 0, 0, 1, 0, -3.3945)",
+      "clip": "inset(0px 80px 0px 416px round 999px)"
+    },
+    {
+      "t": 1827,
+      "url": "/goals",
+      "opacity": "0.6348",
+      "transform": "matrix(1, 0, 0, 1, 0, -3.6523)",
+      "clip": "inset(0px 80px 0px 416px round 999px)"
+    },
+    {
+      "t": 1843,
+      "url": "/goals",
+      "opacity": "0.5979",
+      "transform": "matrix(1, 0, 0, 1, 0, -4.0216)",
+      "clip": "inset(0px 80px 0px 416px round 999px)"
+    },
+    {
+      "t": 1873,
+      "url": "/projects",
+      "opacity": "0.555",
+      "transform": "matrix(1, 0, 0, 1, 0, -4.4505)",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 1876,
+      "url": "/projects",
+      "opacity": "0.5532",
+      "transform": "matrix(1, 0, 0, 1, 0, -4.4686)",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 1893,
+      "url": "/projects",
+      "opacity": "0.5532",
+      "transform": "matrix(1, 0, 0, 1, 0, -4.4686)",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 1914,
+      "url": "/projects",
+      "opacity": "0.5469",
+      "transform": "matrix(1, 0, 0, 1, 0, -4.5312)",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 1927,
+      "url": "/projects",
+      "opacity": "0.5323",
+      "transform": "matrix(1, 0, 0, 1, 0, -4.6777)",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 1943,
+      "url": "/projects",
+      "opacity": "0.5189",
+      "transform": "matrix(1, 0, 0, 1, 0, -4.8112)",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 1961,
+      "url": "/projects",
+      "opacity": "0.4941",
+      "transform": "matrix(1, 0, 0, 1, 0, -5.0591)",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 1974,
+      "url": "/projects",
+      "opacity": "0.455",
+      "transform": "matrix(1, 0, 0, 1, 0, -5.4505)",
+      "clip": "inset(0px 392px 0px 92px round 999px)"
+    },
+    {
+      "t": 2001,
+      "url": "/insights",
+      "opacity": "0.4182",
+      "transform": "matrix(1, 0, 0, 1, 0, -5.8187)",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 2006,
+      "url": "/insights",
+      "opacity": "0.4174",
+      "transform": "matrix(1, 0, 0, 1, 0, -5.8269)",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 2023,
+      "url": "/insights",
+      "opacity": "0.4169",
+      "transform": "matrix(1, 0, 0, 1, 0, -5.8321)",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 2040,
+      "url": "/insights",
+      "opacity": "0.4138",
+      "transform": "matrix(1, 0, 0, 1, 0, -5.8627)",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 2057,
+      "url": "/insights",
+      "opacity": "0.4064",
+      "transform": "matrix(1, 0, 0, 1, 0, -5.9363)",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 2076,
+      "url": "/insights",
+      "opacity": "0.396",
+      "transform": "matrix(1, 0, 0, 1, 0, -6.0404)",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 2089,
+      "url": "/insights",
+      "opacity": "0.3773",
+      "transform": "matrix(1, 0, 0, 1, 0, -6.2274)",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 2109,
+      "url": "/insights",
+      "opacity": "0.3583",
+      "transform": "matrix(1, 0, 0, 1, 0, -6.4177)",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 2127,
+      "url": "/insights",
+      "opacity": "0.3241",
+      "transform": "matrix(1, 0, 0, 1, 0, -6.7595)",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 2143,
+      "url": "/insights",
+      "opacity": "0.2842",
+      "transform": "matrix(1, 0, 0, 1, 0, -7.1583)",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 2159,
+      "url": "/insights",
+      "opacity": "0.2376",
+      "transform": "matrix(1, 0, 0, 1, 0, -7.624)",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 2223,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "0.35",
+      "transform": "matrix(1, 0, 0, 1, 0, 14)",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 2229,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "0.6368",
+      "transform": "matrix(1, 0, 0, 1, 0, 7.8227)",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 2248,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "0.6574",
+      "transform": "matrix(1, 0, 0, 1, 0, 7.38)",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 2279,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "0.7138",
+      "transform": "matrix(1, 0, 0, 1, 0, 6.1641)",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 2296,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "0.7966",
+      "transform": "matrix(1, 0, 0, 1, 0, 4.3807)",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 2313,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "0.8305",
+      "transform": "matrix(1, 0, 0, 1, 0, 3.6504)",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 2325,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "0.8634",
+      "transform": "matrix(1, 0, 0, 1, 0, 2.9424)",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 2340,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "0.8825",
+      "transform": "matrix(1, 0, 0, 1, 0, 2.5313)",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 2361,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "0.9034",
+      "transform": "matrix(1, 0, 0, 1, 0, 2.0798)",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 2375,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "0.9269",
+      "transform": "matrix(1, 0, 0, 1, 0, 1.5752)",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 2394,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "0.9405",
+      "transform": "matrix(1, 0, 0, 1, 0, 1.2811)",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 2411,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "0.9559",
+      "transform": "matrix(1, 0, 0, 1, 0, 0.9502)",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 2426,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "0.9669",
+      "transform": "matrix(1, 0, 0, 1, 0, 0.7127)",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 2443,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "0.9748",
+      "transform": "matrix(1, 0, 0, 1, 0, 0.5429)",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 2460,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "0.9819",
+      "transform": "matrix(1, 0, 0, 1, 0, 0.3892)",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 2475,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "0.9877",
+      "transform": "matrix(1, 0, 0, 1, 0, 0.2648)",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 2490,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "0.9911",
+      "transform": "matrix(1, 0, 0, 1, 0, 0.1908)",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 2511,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "0.994",
+      "transform": "matrix(1, 0, 0, 1, 0, 0.13)",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 2527,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "0.9967",
+      "transform": "matrix(1, 0, 0, 1, 0, 0.0708)",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 2545,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "0.9981",
+      "transform": "matrix(1, 0, 0, 1, 0, 0.04)",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 2559,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "0.999",
+      "transform": "matrix(1, 0, 0, 1, 0, 0.0206)",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 2575,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "0.9995",
+      "transform": "matrix(1, 0, 0, 1, 0, 0.0108)",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 2593,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "0.9998",
+      "transform": "matrix(1, 0, 0, 1, 0, 0.0044)",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 2609,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "0.9999",
+      "transform": "matrix(1, 0, 0, 1, 0, 0.0012)",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 2626,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "1",
+      "transform": "matrix(1, 0, 0, 1, 0, 0.0002)",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 2642,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "1",
+      "transform": "matrix(1, 0, 0, 1, 0, 0)",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 2659,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 2674,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 2689,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 2706,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 2723,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 2739,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 2756,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 2773,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 2789,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 2806,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 2823,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 2839,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 2856,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 2876,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 2889,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 2906,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 2924,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 2939,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 2956,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 2973,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 2989,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 3006,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 3022,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 3039,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 3056,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 3072,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 3089,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 3107,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 3123,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 3139,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 3156,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 3172,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 3189,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 3206,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 3223,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 3239,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 3256,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 3273,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 3289,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 3306,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 3323,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 3339,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 3356,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 3373,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 3389,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 3406,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 3423,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 3439,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 3456,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 3472,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 3489,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    },
+    {
+      "t": 3506,
+      "url": "/insights",
+      "title": "WorkspaceInsights",
+      "opacity": "1",
+      "transform": "none",
+      "clip": "inset(0px 4px 0px 482px round 999px)"
+    }
+  ]
+}

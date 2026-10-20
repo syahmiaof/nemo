@@ -33,3 +33,8 @@ pnpm-debug.log*
 # OS generated
 .DS_Store
 Thumbs.db
+
+# Media recordings
+*.mp4
+*.mov
+

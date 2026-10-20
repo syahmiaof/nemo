@@ -1,7 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import {
-  Settings as SettingsIcon,
   ShieldCheck,
   DownloadCloud,
   UploadCloud,
@@ -11,6 +10,10 @@ import {
   HardDrive,
   User,
   AlertTriangle,
+  FlaskConical,
+  Sliders,
+  Palette,
+  type LucideIcon,
 } from 'lucide-react';
 import { db, exportWorkspaceBackup, importWorkspaceBackup, resetWorkspaceData } from '@/db/nemoDb';
 import { Button } from '@/components/ui/Button';
@@ -20,12 +23,18 @@ import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { Modal } from '@/components/ui/Modal';
 import { useToast } from '@/components/ui/Toast';
 import type { WorkspaceSettings } from '@/domain/types';
+import { DemoWorkspacePanel } from './DemoWorkspacePanel';
+
+type SettingsTab = 'profile' | 'appearance' | 'preferences' | 'data' | 'demo';
 
 export const SettingsPage: React.FC = () => {
   const { success, error } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const settings = useLiveQuery(() => db.settings.get('default'), []);
+
+  // Active subtab
+  const [activeTab, setActiveTab] = useState<SettingsTab>('appearance');
 
   // Form states
   const [displayName, setDisplayName] = useState('');
@@ -127,7 +136,6 @@ export const SettingsPage: React.FC = () => {
       }
     };
     reader.readAsText(file);
-    // Reset file input so same file can be re-selected if desired
     e.target.value = '';
   };
 
@@ -160,202 +168,313 @@ export const SettingsPage: React.FC = () => {
     success('Workspace reset', 'All records have been cleared to default state.');
   };
 
+  const tabs: { key: SettingsTab; label: string; icon: LucideIcon }[] = [
+    { key: 'appearance', label: 'Appearance', icon: Palette },
+    { key: 'profile', label: 'Profile', icon: User },
+    { key: 'preferences', label: 'Preferences', icon: Sliders },
+    { key: 'data', label: 'Data & Backups', icon: HardDrive },
+    { key: 'demo', label: 'Demo Mode', icon: FlaskConical },
+  ];
+
   return (
-    <div className="space-y-8 max-w-4xl mx-auto animate-in fade-in duration-200">
-      {/* Privacy Manifesto Card */}
-      <div className="p-6 rounded-2xl glass-panel relative z-10 space-y-3">
-        <div className="flex items-center gap-2.5 text-accent-mint relative z-10">
-          <ShieldCheck className="w-5 h-5 flex-shrink-0" />
-          <h2 className="text-base font-bold text-content-primary">Privacy & Storage Guarantee</h2>
+    <div className="settings-page space-y-6 animate-in fade-in duration-200">
+      {/* Tavola-Style Nested Navigation Capsule */}
+      <div className="tabs" style={{ width: 'fit-content', margin: '0 auto 1.5rem auto' }}>
+        <div className="tabs__track" role="tablist">
+          {tabs.map((tab) => {
+            const Icon = tab.icon;
+            const isActive = activeTab === tab.key;
+            return (
+              <button
+                key={tab.key}
+                role="tab"
+                aria-selected={isActive}
+                onClick={() => setActiveTab(tab.key)}
+                className={`tab flex items-center gap-2 ${isActive ? 'is-active' : ''}`}
+                style={{
+                  position: 'relative',
+                  zIndex: 2,
+                  borderRadius: '999px',
+                  background: isActive ? 'var(--accent-ember, #EEB2A3)' : 'transparent',
+                  color: isActive ? '#0A1222' : 'inherit',
+                  transition: 'all 0.24s cubic-bezier(0.16, 1, 0.3, 1)',
+                }}
+              >
+                <Icon size={16} />
+                <span>{tab.label}</span>
+              </button>
+            );
+          })}
         </div>
-        <p className="text-xs text-content-secondary leading-relaxed relative z-10">
-          Nemo does not use cloud databases, tracking analytics, or external accounts. All your data lives securely in this browser’s IndexedDB storage. Remember: <strong className="text-content-primary">local-first does not mean automatically backed up</strong>. Export backups regularly to safeguard against browser cache clears or to transfer data to another machine.
-        </p>
       </div>
 
-      {/* Profile & Identity */}
-      <div className="p-6 rounded-2xl glass-panel relative z-10 space-y-5">
-        <div className="flex items-center gap-2.5 border-b border-white/[0.08] pb-3 relative z-10">
-          <User className="w-5 h-5 text-accent-mint" />
-          <h3 className="text-base font-bold text-content-primary">Workspace Profile</h3>
+      {/* Profile Panel */}
+      {activeTab === 'profile' && (
+        <div data-enter className="p-6 rounded-2xl glass-panel relative z-10 space-y-5">
+          <div className="flex items-center gap-2.5 border-b border-white/[0.08] pb-3 relative z-10">
+            <User className="w-5 h-5 text-accent-mint" />
+            <h3 className="text-base font-bold text-content-primary">Workspace Profile</h3>
+          </div>
+
+          <form onSubmit={handleSaveProfile} className="space-y-4 max-w-md relative z-10">
+            <Input
+              label="Display / Workspace Name"
+              value={displayName}
+              onChange={(e) => setDisplayName(e.target.value)}
+              placeholder="e.g. Alex's Command Center"
+              required
+              className="bg-white/[0.04] border-white/10"
+            />
+
+            <Button type="submit" size="sm">
+              Save Name
+            </Button>
+          </form>
         </div>
+      )}
 
-        <form onSubmit={handleSaveProfile} className="space-y-4 max-w-md relative z-10">
-          <Input
-            label="Display / Workspace Name"
-            value={displayName}
-            onChange={(e) => setDisplayName(e.target.value)}
-            placeholder="e.g. Alex's Command Center"
-            required
-            className="bg-white/[0.04] border-white/10"
-          />
+      {/* Appearance Panel with Tavola Luxury Cards */}
+      {activeTab === 'appearance' && (
+        <div data-enter className="space-y-6">
+          <div className="p-6 rounded-2xl glass-panel relative z-10 space-y-5">
+            <div className="flex items-center gap-2.5 border-b border-white/[0.08] pb-3 relative z-10">
+              <Palette className="w-5 h-5 text-accent-mint" />
+              <div>
+                <h3 className="text-base font-bold text-content-primary">Theme Atmosphere</h3>
+                <p className="text-xs text-content-secondary mt-0.5">
+                  A midnight room behind frosted glass or an accessible clean canvas.
+                </p>
+              </div>
+            </div>
 
-          <Button type="submit" size="sm">
-            Save Name
-          </Button>
-        </form>
-      </div>
-
-      {/* Preferences & Appearance */}
-      <div className="p-6 rounded-2xl glass-panel relative z-10 space-y-5">
-        <div className="flex items-center gap-2.5 border-b border-white/[0.08] pb-3 relative z-10">
-          <SettingsIcon className="w-5 h-5 text-accent-mint" />
-          <h3 className="text-base font-bold text-content-primary">Appearance & Behavior</h3>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 relative z-10">
-          {/* Theme Selector */}
-          <div className="space-y-2">
-            <label className="block text-xs font-medium text-content-secondary">Theme</label>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 relative z-10">
+              {/* Dark Theme Card */}
               <button
                 type="button"
                 onClick={() => {
                   setTheme('dark');
                   handleUpdatePreferences({ theme: 'dark' });
                 }}
-                className={`flex items-center justify-center gap-2 p-3 rounded-xl border text-xs font-semibold transition-all ${
+                className={`p-5 rounded-2xl border text-left transition-all ${
                   theme === 'dark'
-                    ? 'bg-white/[0.12] border-white/20 text-white font-bold shadow-sm'
-                    : 'bg-white/[0.03] border-white/10 text-content-secondary hover:text-white'
+                    ? 'border-accent-ember ring-2 ring-accent-ember/30 bg-[#0F1A2D]'
+                    : 'border-white/10 hover:border-white/20 bg-[#0F1A2D]/70'
                 }`}
               >
-                <Moon className="w-4 h-4" />
-                <span>Midnight Navy</span>
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <Moon className="w-4 h-4 text-accent-mint" />
+                    <span className="text-sm font-bold text-white">Midnight Navy</span>
+                  </div>
+                  {theme === 'dark' && (
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-accent-ember/20 text-accent-ember border border-accent-ember/40">
+                      Active
+                    </span>
+                  )}
+                </div>
+                {/* Mini preview illustration */}
+                <div className="w-full h-20 rounded-xl bg-[#0A1222] border border-white/10 p-2.5 flex gap-2 overflow-hidden">
+                  <div className="w-4 h-full rounded-md bg-[#1B2C44]" />
+                  <div className="flex-1 space-y-1.5">
+                    <div className="w-16 h-2 rounded bg-accent-ember/70" />
+                    <div className="w-full h-2 rounded bg-white/10" />
+                    <div className="w-24 h-2 rounded bg-white/10" />
+                  </div>
+                </div>
+                <p className="text-xs text-content-tertiary mt-3">
+                  Signature deep midnight aesthetic with restrained cyan, amber and ember accents.
+                </p>
               </button>
 
+              {/* Light Theme Card */}
               <button
                 type="button"
                 onClick={() => {
                   setTheme('light');
                   handleUpdatePreferences({ theme: 'light' });
                 }}
-                className={`flex items-center justify-center gap-2 p-3 rounded-xl border text-xs font-semibold transition-all ${
+                className={`p-5 rounded-2xl border text-left transition-all ${
                   theme === 'light'
-                    ? 'bg-white/[0.12] border-white/20 text-white font-bold shadow-sm'
-                    : 'bg-white/[0.03] border-white/10 text-content-secondary hover:text-white'
+                    ? 'border-accent-ember ring-2 ring-accent-ember/30 bg-[#FFFFFF]'
+                    : 'border-white/10 hover:border-white/20 bg-[#F4F7FB]'
                 }`}
               >
-                <Sun className="w-4 h-4" />
-                <span>Clean Slate</span>
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <Sun className="w-4 h-4 text-amber-500" />
+                    <span className="text-sm font-bold text-gray-900">Clean Slate</span>
+                  </div>
+                  {theme === 'light' && (
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-accent-ember/20 text-accent-ember border border-accent-ember/40">
+                      Active
+                    </span>
+                  )}
+                </div>
+                {/* Mini preview illustration */}
+                <div className="w-full h-20 rounded-xl bg-[#FFFFFF] border border-gray-300 p-2.5 flex gap-2 overflow-hidden">
+                  <div className="w-4 h-full rounded-md bg-[#EDF2F9]" />
+                  <div className="flex-1 space-y-1.5">
+                    <div className="w-16 h-2 rounded bg-[#EEB2A3]" />
+                    <div className="w-full h-2 rounded bg-gray-200" />
+                    <div className="w-24 h-2 rounded bg-gray-200" />
+                  </div>
+                </div>
+                <p className="text-xs text-gray-600 mt-3">
+                  Accessible, high-contrast daylight alternative adhering strictly to WCAG 2.2 AA.
+                </p>
               </button>
             </div>
           </div>
+        </div>
+      )}
 
-          {/* Week Start */}
-          <div className="space-y-2">
-            <Select
-              label="Calendar Week Starts On"
-              value={weekStartsOn.toString()}
-              onChange={(e) => {
-                const val = parseInt(e.target.value, 10) as 0 | 1;
-                setWeekStartsOn(val);
-                handleUpdatePreferences({ weekStartsOn: val });
-              }}
-              options={[
-                { value: '1', label: 'Monday (Standard)' },
-                { value: '0', label: 'Sunday' },
-              ]}
-            />
+      {/* Preferences Panel */}
+      {activeTab === 'preferences' && (
+        <div data-enter className="p-6 rounded-2xl glass-panel relative z-10 space-y-5">
+          <div className="flex items-center gap-2.5 border-b border-white/[0.08] pb-3 relative z-10">
+            <Sliders className="w-5 h-5 text-accent-mint" />
+            <h3 className="text-base font-bold text-content-primary">Workspace Behavior</h3>
           </div>
 
-          {/* Clock format */}
-          <div className="space-y-2">
-            <Select
-              label="Clock Format"
-              value={hourFormat}
-              onChange={(e) => {
-                const val = e.target.value as '12h' | '24h';
-                setHourFormat(val);
-                handleUpdatePreferences({ hourFormat: val });
-              }}
-              options={[
-                { value: '24h', label: '24-Hour (14:30)' },
-                { value: '12h', label: '12-Hour (2:30 PM)' },
-              ]}
-            />
-          </div>
-
-          {/* Reduced motion */}
-          <div className="space-y-2 flex flex-col justify-end">
-            <label className="flex items-center gap-2 text-xs font-medium text-content-primary cursor-pointer select-none">
-              <input
-                type="checkbox"
-                checked={reduceMotion}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 relative z-10">
+            {/* Week Start */}
+            <div className="space-y-2">
+              <Select
+                label="Calendar Week Starts On"
+                value={weekStartsOn.toString()}
                 onChange={(e) => {
-                  setReduceMotion(e.target.checked);
-                  handleUpdatePreferences({ reduceMotion: e.target.checked });
+                  const val = parseInt(e.target.value, 10) as 0 | 1;
+                  setWeekStartsOn(val);
+                  handleUpdatePreferences({ weekStartsOn: val });
                 }}
-                className="rounded border-border-subtle text-accent-mint focus:ring-accent-ring"
+                options={[
+                  { value: '1', label: 'Monday (Standard)' },
+                  { value: '0', label: 'Sunday' },
+                ]}
               />
-              <span>Respect / Force Reduced Motion</span>
-            </label>
-            <p className="text-[11px] text-content-tertiary">
-              Disables spatial transitions and decorative GSAP animations.
+            </div>
+
+            {/* Clock format */}
+            <div className="space-y-2">
+              <Select
+                label="Clock Format"
+                value={hourFormat}
+                onChange={(e) => {
+                  const val = e.target.value as '12h' | '24h';
+                  setHourFormat(val);
+                  handleUpdatePreferences({ hourFormat: val });
+                }}
+                options={[
+                  { value: '24h', label: '24-Hour (14:30)' },
+                  { value: '12h', label: '12-Hour (2:30 PM)' },
+                ]}
+              />
+            </div>
+
+            {/* Reduced motion */}
+            <div className="space-y-2 col-span-full">
+              <label className="flex items-center gap-2.5 text-xs font-semibold text-content-primary cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={reduceMotion}
+                  onChange={(e) => {
+                    setReduceMotion(e.target.checked);
+                    handleUpdatePreferences({ reduceMotion: e.target.checked });
+                  }}
+                  className="rounded border-border-subtle text-accent-mint focus:ring-accent-ring w-4 h-4"
+                />
+                <span>Respect / Force Reduced Motion</span>
+              </label>
+              <p className="text-xs text-content-secondary pl-6 leading-relaxed">
+                Immediately cancels spatial transitions and decorative GSAP timelines, ensuring accessible instant state switches.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Data & Backups Panel */}
+      {activeTab === 'data' && (
+        <div data-enter className="space-y-6">
+          {/* Privacy Guarantee Card */}
+          <div className="p-6 rounded-2xl glass-panel relative z-10 space-y-3">
+            <div className="flex items-center gap-2.5 text-accent-mint relative z-10">
+              <ShieldCheck className="w-5 h-5 flex-shrink-0" />
+              <h3 className="text-base font-bold text-content-primary">Privacy & Local Storage Guarantee</h3>
+            </div>
+            <p className="text-xs text-content-secondary leading-relaxed relative z-10">
+              Nemo operates 100% locally in your browser via IndexedDB. No accounts, no cloud sync, and no third-party telemetry. Because data lives in this browser profile, export periodic backups to keep your commitments secure.
             </p>
           </div>
+
+          {/* Backup, Export & Restore */}
+          <div className="p-6 rounded-2xl glass-panel relative z-10 space-y-5">
+            <div className="flex items-center gap-2.5 border-b border-white/[0.08] pb-3 relative z-10">
+              <HardDrive className="w-5 h-5 text-accent-mint" />
+              <h3 className="text-base font-bold text-content-primary">Data Backup & Migration</h3>
+            </div>
+
+            <p className="text-xs text-content-secondary leading-relaxed relative z-10">
+              Export your entire workspace (projects, tasks, coursework, milestones, images, and settings) into a single, validated JSON file. You can restore this file into any fresh browser instance running Nemo.
+            </p>
+
+            <div className="flex flex-wrap items-center gap-3 relative z-10">
+              <Button onClick={handleExportBackup} className="gap-2">
+                <DownloadCloud className="w-4 h-4" />
+                <span>Export Backup (.json)</span>
+              </Button>
+
+              <input
+                type="file"
+                ref={fileInputRef}
+                accept=".json,application/json"
+                onChange={handleSelectBackupFile}
+                className="hidden"
+              />
+
+              <Button
+                variant="secondary"
+                onClick={() => fileInputRef.current?.click()}
+                className="gap-2"
+              >
+                <UploadCloud className="w-4 h-4" />
+                <span>Restore Backup</span>
+              </Button>
+            </div>
+          </div>
+
+          {/* Danger Zone: Workspace Reset */}
+          <div className="p-6 rounded-2xl glass-panel border border-red-500/30 bg-red-950/15 relative z-10 space-y-4">
+            <div className="flex items-center gap-2.5 text-accent-ember relative z-10">
+              <AlertTriangle className="w-5 h-5 flex-shrink-0" />
+              <h3 className="text-base font-bold">Danger Zone: Reset Workspace</h3>
+            </div>
+
+            <p className="text-xs text-content-secondary leading-relaxed relative z-10">
+              Wiping your workspace clears all IndexedDB tables and returns Nemo to an empty first-run state. This action is immediate and cannot be undone unless you have an exported backup.
+            </p>
+
+            <div className="relative z-10">
+              <Button
+                variant="danger"
+                size="sm"
+                onClick={() => setIsResetConfirmOpen(true)}
+                className="gap-2"
+              >
+                <Trash2 className="w-4 h-4" />
+                <span>Reset All Workspace Data</span>
+              </Button>
+            </div>
+          </div>
         </div>
-      </div>
+      )}
 
-      {/* Backup, Export & Restore */}
-      <div className="p-6 rounded-2xl glass-panel relative z-10 space-y-5">
-        <div className="flex items-center gap-2.5 border-b border-white/[0.08] pb-3 relative z-10">
-          <HardDrive className="w-5 h-5 text-accent-mint" />
-          <h3 className="text-base font-bold text-content-primary">Data Backup & Migration</h3>
+      {/* Demo Mode Panel */}
+      {activeTab === 'demo' && (
+        <div data-enter>
+          <DemoWorkspacePanel />
         </div>
-
-        <p className="text-xs text-content-secondary leading-relaxed relative z-10">
-          Export your entire workspace (projects, tasks, coursework, milestones, images, and settings) into a single, validated JSON file. You can restore this file into any fresh browser instance running Nemo.
-        </p>
-
-        <div className="flex flex-wrap items-center gap-3 relative z-10">
-          <Button onClick={handleExportBackup} className="gap-2">
-            <DownloadCloud className="w-4 h-4" />
-            <span>Export Backup (.json)</span>
-          </Button>
-
-          <input
-            type="file"
-            ref={fileInputRef}
-            accept=".json,application/json"
-            onChange={handleSelectBackupFile}
-            className="hidden"
-          />
-
-          <Button
-            variant="secondary"
-            onClick={() => fileInputRef.current?.click()}
-            className="gap-2"
-          >
-            <UploadCloud className="w-4 h-4" />
-            <span>Restore Backup</span>
-          </Button>
-        </div>
-      </div>
-
-      {/* Danger Zone: Workspace Reset */}
-      <div className="p-6 rounded-2xl glass-panel border border-red-500/30 bg-red-950/15 relative z-10 space-y-4">
-        <div className="flex items-center gap-2.5 text-accent-ember relative z-10">
-          <AlertTriangle className="w-5 h-5 flex-shrink-0" />
-          <h3 className="text-base font-bold">Danger Zone: Reset Workspace</h3>
-        </div>
-
-        <p className="text-xs text-content-secondary leading-relaxed relative z-10">
-          Wiping your workspace clears all IndexedDB tables and returns Nemo to an empty first-run state. This action is immediate and cannot be undone unless you have an exported backup.
-        </p>
-
-        <div className="relative z-10">
-          <Button
-            variant="danger"
-            size="sm"
-            onClick={() => setIsResetConfirmOpen(true)}
-            className="gap-2"
-          >
-            <Trash2 className="w-4 h-4" />
-            <span>Reset All Workspace Data</span>
-          </Button>
-        </div>
-      </div>
+      )}
 
       {/* Restore Confirmation Modal */}
       <Modal

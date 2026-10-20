@@ -1,11 +1,11 @@
 # Nemo Test & Verification Report
 
 ## Baseline Status
-- **Test Framework:** Vitest (Unit / Domain / Persistence / Schema)
+- **Test Framework:** Vitest (Unit / Domain / Persistence / Schema / Chart / Demo)
 - **Environment:** Windows, Node v24.13.0, npm 11.6.2
 - **Verification Date:** 2026-10-20
-- **Total Test Suites:** 6 passed (6 total)
-- **Total Tests:** 20 passed (20 total)
+- **Total Test Suites:** 8 passed (8 total)
+- **Total Tests:** 36 passed (36 total)
 - **Strict TypeScript Check:** PASS (0 errors)
 - **Production Vite + PWA Build:** PASS (0 errors, Service Worker generated)
 
@@ -24,6 +24,9 @@
 | J9 | Portable Backup & Restore | Domain / Schema / Dexie | VERIFIED | Atomic round-trip validation, JSON envelope, rollback on invalid data |
 | J10 | Offline Capability | PWA / Workbox | VERIFIED | Service worker precache generated, offline detection & notification |
 | J11 | Responsiveness & Accessibility | CSS / Components | VERIFIED | Desktop sidebar + mobile 5-item bar, WCAG 2.2 AA contrast, dialog focus |
+| M1 | Elastic Directional Tabs | UI / Motion | VERIFIED | Clip-path directional independent edge interpolation |
+| M2 | Spline Chart Interpolation | Domain / Chart | VERIFIED | Bezier spline calculation, nearest index snapping, normalisation |
+| M3 | Isolated Demo Mode | DB / Fixtures | VERIFIED | Demo database isolated from real workspace data, full reset round-trip |
 
 ## Automated Check Log
 
@@ -31,16 +34,18 @@
 ```
  RUN  v2.1.9 C:/Users/USER/Desktop/nemo
 
- ✓ tests/unit/schemas.test.ts (4 tests) 8ms
- ✓ tests/unit/academics_calendar.test.ts (2 tests) 78ms
- ✓ tests/unit/db.test.ts (4 tests) 100ms
- ✓ tests/unit/dates.test.ts (5 tests) 10ms
- ✓ tests/unit/goals_insights.test.ts (2 tests) 71ms
- ✓ tests/unit/projects_tasks.test.ts (3 tests) 76ms
+ ✓ tests/unit/schemas.test.ts (4 tests) 13ms
+ ✓ tests/unit/academics_calendar.test.ts (2 tests) 80ms
+ ✓ tests/unit/db.test.ts (4 tests) 72ms
+ ✓ tests/unit/demo.test.ts (10 tests) 572ms
+ ✓ tests/unit/goals_insights.test.ts (2 tests) 58ms
+ ✓ tests/unit/projects_tasks.test.ts (3 tests) 74ms
+ ✓ tests/unit/chart.test.ts (6 tests) 290ms
+ ✓ tests/unit/dates.test.ts (5 tests) 5ms
 
- Test Files  6 passed (6)
-      Tests  20 passed (20)
-   Duration  3.82s
+ Test Files  8 passed (8)
+      Tests  36 passed (36)
+   Duration  8.11s
 ```
 
 ### TypeScript Strict Typecheck
@@ -57,13 +62,13 @@
 
 vite v5.4.21 building for production...
 transforming...
-✓ 1930 modules transformed.
+✓ 1939 modules transformed.
 rendering chunks...
 dist/registerSW.js                0.13 kB
 dist/manifest.webmanifest         0.40 kB
-dist/index.html                   0.95 kB
-dist/assets/index--C_71auy.css   24.33 kB
-dist/assets/index-yBtXlF4P.js   636.90 kB
-✓ built in 5.09s
+dist/index.html                   1.32 kB
+dist/assets/index-CfRT-5gY.css   60.80 kB
+dist/assets/index-R3QOb6I4.js   665.80 kB
+✓ built in 7.21s
 PWA v0.20.5: Service worker & offline precache generated.
 ```
