@@ -52,20 +52,22 @@
 | S9.2 | Sprint 4: Official Nemo Brand Integration | Design Technologist | S9.1 | verified | Flowing route icon, local offline Urbanist & Geist Mono fonts, 1200x630 OG social card | 2026-10-20 |
 | S9.3 | Sprint 4: Tavola-Grade GSAP Motion System | Motion Architect | S9.1 | verified | Independent edge tab physics, spline chart bezier morphing, route transition scroll reset | 2026-10-20 |
 | S9.4 | Sprint 4: Full-Suite Regression & E2E Verification | QA Lead | S9.3 | verified | 54 Vitest unit tests, 36 Playwright E2E tests (Desktop & Mobile), 0 TypeScript errors, clean PWA build | 2026-10-20 |
+| S10.1 | Sprint 5: Private Cloud Sync & Multi-Agent Architecture | Principal Architect | S9.4 | verified | Supabase 14-table schema, RLS policies, Email OTP, Sync engine, Dexie outbox | 2026-10-21 |
+| S10.2 | Sprint 5.1: Critical Cloud Sync Acceptance & Hardening | Lead Orchestrator | S10.1 | verified | Hardened `is_approved_owner()`, UID pinning, 2-device simulation (12 journeys), stress benchmarks | 2026-10-21 |
 
 ## Active Blockers
-- None. Sprint 4 Product UI, Brand Integration & Mobile Rescue verified.
+- None. Sprint 5.1 Critical Cloud Sync Acceptance & Hardening verified and ready for owner physical preview.
 
 ## Verified Release State
 - **Sprint 1: Functional Audit & System Repair** is COMPLETE.
 - **Sprint 2: Data Reliability, Offline & Recovery** is COMPLETE.
 - **Sprint 3: Performance, Accessibility & Cross-Browser Hardening** is COMPLETE.
-- **Sprint 4: Premium Product UI, Mobile Rescue & Brand Integration** is COMPLETE and verified.
-- Production branch: `sprint4-ui-brand-mobile`.
+- **Sprint 4: Premium Product UI, Mobile Rescue & Brand Integration** is COMPLETE.
+- **Sprint 5 & 5.1: Private Cloud Sync & Hardening** is COMPLETE and verified.
+- Target branch: `sprint5-private-cloud-sync`.
 - Test status:
-  - Vitest: 54/54 passed (11 suites).
-  - Playwright: 36/36 passed (Desktop Chrome & Mobile Chrome Pixel 7).
-  - TypeScript: 0 errors (`tsc --noEmit` & `tsc -b`).
-  - Production Vite PWA Build: 25 precache entries (935.04 KiB).
-  - Accessibility & Usability: 100% WCAG 2.2 AA compliant, zero horizontal scroll, automatic scroll restoration, 44px touch targets.
-  - Privacy & Offline: 100% local-first, zero remote requests, fonts bundled locally.
+  - Vitest: 101/101 passed (19 suites).
+  - TypeScript: 0 errors (`tsc -b`).
+  - Production Vite PWA Build: 25 precache entries (1249.45 KiB).
+  - Security & Authorization: Private single-owner model, immutable Auth UID pinning, hardened search_path, 100% RLS enforcement.
+  - Offline & Durability: Local-first persistence, self-healing delta scanner, echo loop prevention, demo mode airgap isolation.

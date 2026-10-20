@@ -3,6 +3,7 @@
 ## Sprint 2: Data Reliability, Offline & Recovery
 ## Sprint 3: Performance, Accessibility & Cross-Browser Hardening
 ## Sprint 4: Premium Product UI, Mobile Rescue & Brand Integration
+## Sprint 5 & 5.1: Private Cloud Sync & Hardening Acceptance
 
 ## Executive Summary
 Nemo is an offline-first personal productivity workspace designed for genuine production use.
@@ -11,13 +12,14 @@ Nemo is an offline-first personal productivity workspace designed for genuine pr
 - **Sprint 2** hardened IndexedDB transactional safety, atomic multi-table cascades, orphan prevention, full-fidelity backup recovery, 100% offline PWA precaching, and zero-data-egress privacy.
 - **Sprint 3** delivered algorithmic performance optimization, verified stress scalability up to 10,000 tasks/13,450 entities, achieved 100% pass across 5 browser engines, audited WCAG 2.2 AA accessibility, enforced frontend security guards, and verified zero memory accumulation over 400 SPA view transitions.
 - **Sprint 4** rescued full mobile and tablet responsiveness (320px to 1920px viewports without horizontal overflow or clipping), embedded the official Nemo visual identity and typography (local offline Urbanist and Geist Mono fonts, vector flowing route logo, high-resolution OG social metadata), restored instant scroll restoration on route navigation, eliminated layout jitter and duplicate header rules, and established Tavola-grade GSAP physics across navigation tabs, interactive spline charts, and page transitions.
+- **Sprint 5 & 5.1** introduced and hardened Private Cloud Sync with Supabase (project `koiugvkflppdvafpszrk`): 14 PostgreSQL tables with 100% Row-Level Security, immutable Auth UID pinning for the single approved owner (`syahmiaof123@gmail.com`), durable local change tracking with persistent outbox & self-healing delta scanner, echo loop prevention, demo mode airgap isolation, two-device simulation covering 12 cross-device user journeys, and stress testing up to 10,000 entities.
 
 The application has been verified through:
-- **54 Vitest unit/resilience tests** across 11 test suites.
+- **101 Vitest unit/resilience/sync tests** across 19 test suites (100% PASS).
 - **36 Playwright E2E tests** across Desktop Chrome and Mobile Chrome.
-- **TypeScript strict check:** 0 errors (tsc --noEmit & tsc -b).
-- **Production PWA build:** 25 precached assets (935.04 KiB).
-- **Zero data egress:** 100% local-first, zero remote calls, local fonts and assets.
+- **TypeScript strict check:** 0 errors (`tsc -b`).
+- **Production PWA build:** 25 precached assets (1249.45 KiB).
+- **Zero data egress in local mode:** 100% local-first, zero remote calls unless explicit authenticated cloud sync is activated by the owner.
 
 ---
 

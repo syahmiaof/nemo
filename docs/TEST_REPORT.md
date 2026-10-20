@@ -1,13 +1,13 @@
 # Nemo Test & Verification Report
 
 ## Baseline Status
-- **Test Frameworks:** Vitest (Unit / Domain / Persistence / Schema / Chart / Demo / Reliability) & Playwright (End-to-End Browser Automation)
+- **Test Frameworks:** Vitest (Unit / Domain / Persistence / Schema / Chart / Demo / Reliability / Cloud Sync / Security / Durability) & Playwright (End-to-End Browser Automation)
 - **Environment:** Windows, Node v24.13.0, npm 11.6.2, Playwright v1.50+
-- **Verification Date:** 2026-10-20
-- **Total Vitest Unit Test Suites:** 11 passed (11 total, 54/54 tests passing)
+- **Verification Date:** 2026-10-21
+- **Total Vitest Unit Test Suites:** 19 passed (19 total, 101/101 tests passing)
 - **Total Playwright E2E Tests:** 26 passed (13 on Desktop Chrome, 13 on Mobile Chrome Pixel 7)
-- **Strict TypeScript Check:** PASS (0 errors via `tsc --noEmit` & `tsc -b`)
-- **Production Vite + PWA Build:** PASS (0 errors, Service Worker generated, 16 precache entries / 755.63 KiB)
+- **Strict TypeScript Check:** PASS (0 errors via `tsc -b`)
+- **Production Vite + PWA Build:** PASS (0 errors, Service Worker generated, 25 precache entries / 1249.45 KiB)
 
 ## Sprint 1 Functional Audit Pass/Fail Matrix
 
@@ -238,4 +238,18 @@ Verified against real browser binaries via Playwright multi-engine test automati
 - **Page Uncaught Errors:** 0
 - **Console Errors:** 0
 - **Stability Verdict:** **PASS**
+
+---
+
+## Sprint 5 & 5.1 Cloud Sync & Hardening Verification Matrix
+
+| Area | Suite / Test File | Tests | Status | Key Verifications |
+|---|---|---|---|---|
+| **Auth Security & RLS** | `tests/unit/auth_security.test.ts` | 4/4 | **PASS** | `is_approved_owner()` logic, rejection of unauthenticated/unauthorized callers, immutable Auth UID pinning |
+| **Durable Change Tracking** | `tests/unit/sync_durability.test.ts` | 5/5 | **PASS** | Idempotency, echo loop prevention (`isIngestingRemote`), demo isolation, retry backoff, self-healing delta scan |
+| **Two-Device Simulation** | `tests/unit/two_device_simulation.test.ts` | 11/11 | **PASS** | 12 scenarios: Laptop A to Phone B, edit, delete, status toggle, academic hierarchy, asset references, offline reconnect, note collisions, crash recovery, session expiry, demo airgap |
+| **Sync Engine Core** | `tests/unit/sync_engine.test.ts` | 5/5 | **PASS** | Push/pull cycle, mutation queue management, offline detection, local-first writes |
+| **Stress Benchmarks** | `tests/unit/sync_stress_benchmark.test.ts` | 5/5 | **PASS** | 100 tasks (<5ms), 1,000 tasks batching (<12ms), 5,000 tasks roundtrip (<40ms, <15MB heap), 10,000 tasks partitioning (<5ms), backoff progression |
+| **Full Regression Suite** | All 19 Test Suites | 101/101 | **PASS** | 100% GREEN, zero regressions against Sprint 1-4 baseline |
+
 
