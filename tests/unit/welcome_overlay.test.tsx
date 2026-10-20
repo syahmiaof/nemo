@@ -63,14 +63,14 @@ describe('WelcomeOverlay Signature Launch Experience', () => {
 
   it('does not auto-open if session was already welcomed in current tab', () => {
     sessionStorage.setItem('nemo_session_welcomed', 'true');
-    render(<WelcomeOverlay />);
+    render(<WelcomeOverlay skipIfSessionWelcomed />);
 
     expect(screen.queryByRole('dialog', { name: /welcome to nemo/i })).not.toBeInTheDocument();
   });
 
   it('re-opens full launch experience when replayWelcomeAnimation event is dispatched', async () => {
     sessionStorage.setItem('nemo_session_welcomed', 'true');
-    render(<WelcomeOverlay />);
+    render(<WelcomeOverlay skipIfSessionWelcomed />);
 
     expect(screen.queryByRole('dialog', { name: /welcome to nemo/i })).not.toBeInTheDocument();
 

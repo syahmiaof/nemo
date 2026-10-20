@@ -30,6 +30,7 @@ export function AppShell() {
   const [quickAdd, setQuickAdd] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [askNemoOpen, setAskNemoOpen] = useState(false);
+  const [welcomeDone, setWelcomeDone] = useState(false);
   const [online, setOnline] = useState(navigator.onLine);
   const [modeError, setModeError] = useState('');
   const [timeStr, setTimeStr] = useState(() =>
@@ -89,7 +90,7 @@ export function AppShell() {
   return (
     <ToastProvider>
       <div className="nemo-app">
-        <WelcomeOverlay />
+        <WelcomeOverlay onComplete={() => setWelcomeDone(true)} />
         <ScrollRestoration />
         <a href="#main-content" className="skip-link">
           Skip to content
@@ -194,7 +195,7 @@ export function AppShell() {
         <QuickSearchModal isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
         <AskNemoDrawer isOpen={askNemoOpen} onClose={() => setAskNemoOpen(false)} />
 
-        {settings && !settings.onboardingCompleted && (
+        {settings && !settings.onboardingCompleted && welcomeDone && (
           <OnboardingModal isOpen onComplete={() => {}} settings={settings} />
         )}
       </div>

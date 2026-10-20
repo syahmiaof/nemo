@@ -6,25 +6,26 @@ import { useReducedMotion } from '@/design/useReducedMotion';
 interface WelcomeOverlayProps {
   /** Optional callback invoked when overlay completes its exit */
   onComplete?: () => void;
+  /** Whether to bypass auto-show if session was already welcomed (default: false, so hard refreshes always show) */
+  skipIfSessionWelcomed?: boolean;
 }
 
 const STORAGE_KEY_WELCOME = 'nemo_welcome_seen';
 const SESSION_KEY_SEEN = 'nemo_session_welcomed';
 
-export const WelcomeOverlay: React.FC<WelcomeOverlayProps> = ({ onComplete }) => {
+export const WelcomeOverlay: React.FC<WelcomeOverlayProps> = ({
+  onComplete,
+  skipIfSessionWelcomed = false,
+}) => {
   const reducedMotion = useReducedMotion();
   const [isOpen, setIsOpen] = useState<boolean>(() => {
-    // Only auto-show on initial cold load of the session
     if (typeof window === 'undefined') return false;
-    const sessionSeen = sessionStorage.getItem(SESSION_KEY_SEEN);
-    return !sessionSeen;
+    if (skipIfSessionWelcomed && sessionStorage.getItem(SESSION_KEY_SEEN)) {
+      return false;
+    }
+    return true;
   });
-
-  const [isAbbreviated, setIsAbbreviated] = useState<boolean>(() => {
-    if (typeof window === 'undefined') return false;
-    return !!localStorage.getItem(STORAGE_KEY_WELCOME);
-  });
-
+  const [isAbbreviated, setIsAbbreviated] = useState<boolean>(false);
   const [workspaceReady, setWorkspaceReady] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
@@ -250,7 +251,7 @@ export const WelcomeOverlay: React.FC<WelcomeOverlayProps> = ({ onComplete }) =>
           '-=0.1'
         )
         // 8. Gentle hold for contemplation before seamless handoff
-        .to({}, { duration: 0.45 });
+        .to({}, { duration: 1.2 });
     }
 
     return () => {
