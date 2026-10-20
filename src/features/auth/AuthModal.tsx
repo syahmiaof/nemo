@@ -188,6 +188,21 @@ export const AuthModal: React.FC = () => {
               </form>
             ) : (
               <form onSubmit={handleVerifyOtp} className="space-y-4">
+                <div className="p-3.5 rounded-xl bg-mint-500/10 border border-mint-500/25 text-xs text-navy-200 space-y-1.5">
+                  <p className="font-semibold text-mint-400 flex items-center gap-1.5">
+                    <span>⚡</span> 1-Klik Pautan Pantas:
+                  </p>
+                  <p className="text-[11.5px] leading-relaxed text-navy-300">
+                    Buka emel anda dan klik pautan <strong>"Confirm / Sign in"</strong>. Nemo akan automatik log masuk serta-merta tanpa perlu taip apa-apa!
+                  </p>
+                </div>
+
+                <div className="relative flex py-1 items-center">
+                  <div className="flex-grow border-t border-navy-800"></div>
+                  <span className="flex-shrink mx-2 text-[10px] uppercase tracking-wider text-navy-400 font-medium">Atau Masukkan Kod Jika Ada</span>
+                  <div className="flex-grow border-t border-navy-800"></div>
+                </div>
+
                 <div>
                   <label htmlFor="otp-token" className="block text-xs font-medium text-navy-300 mb-1.5">
                     Kod OTP 6-Digit
@@ -195,7 +210,6 @@ export const AuthModal: React.FC = () => {
                   <input
                     id="otp-token"
                     type="text"
-                    required
                     maxLength={8}
                     value={otpToken}
                     onChange={(e) => setOtpToken(e.target.value)}
@@ -204,7 +218,7 @@ export const AuthModal: React.FC = () => {
                     autoFocus
                   />
                   <p className="text-[11px] text-navy-400 mt-1">
-                    Masukkan kod 6-digit ATAU klik pautan dalam emel untuk log masuk terus ke <strong>{email}</strong>
+                    Hanya perlu diisi jika emel anda mengandungi kod angka.
                   </p>
                 </div>
 
