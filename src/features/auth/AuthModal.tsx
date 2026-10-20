@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useAuth } from './AuthContext';
-import { syncEngine } from '@/sync/syncEngine';
 import { Eye, EyeOff, Lock, CheckCircle2, AlertCircle, X, ShieldCheck, KeyRound } from 'lucide-react';
 
 export const AuthModal: React.FC = () => {
@@ -10,7 +9,6 @@ export const AuthModal: React.FC = () => {
     signInWithPassword,
     updatePassword,
     user,
-    isApprovedOwner,
     signOut,
   } = useAuth();
 
