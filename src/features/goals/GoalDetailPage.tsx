@@ -192,8 +192,8 @@ export const GoalDetailPage: React.FC = () => {
       </div>
 
       {/* Goal Summary Header */}
-      <div className="p-6 md:p-8 rounded-2xl bg-surface border border-border-subtle space-y-5 shadow-sm">
-        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+      <div className="p-6 md:p-8 rounded-2xl glass-panel relative z-10 space-y-5 shadow-2xl">
+        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 relative z-10">
           <div>
             <div className="flex items-center gap-2 mb-2">
               {goal.category && (

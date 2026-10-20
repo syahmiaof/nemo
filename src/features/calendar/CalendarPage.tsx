@@ -196,26 +196,26 @@ export const CalendarPage: React.FC = () => {
   return (
     <div className="space-y-6 animate-in fade-in duration-200">
       {/* Calendar Controls Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-2xl bg-surface border border-border-subtle">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-2xl glass-panel relative z-10">
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-1">
             <button
               onClick={handlePrev}
-              className="p-1.5 rounded-lg text-content-secondary hover:text-content-primary hover:bg-surface-hover"
+              className="p-1.5 rounded-lg text-content-secondary hover:text-content-primary hover:bg-white/[0.08] transition-colors"
               aria-label="Previous"
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
             <button
               onClick={handleNext}
-              className="p-1.5 rounded-lg text-content-secondary hover:text-content-primary hover:bg-surface-hover"
+              className="p-1.5 rounded-lg text-content-secondary hover:text-content-primary hover:bg-white/[0.08] transition-colors"
               aria-label="Next"
             >
               <ChevronRight className="w-5 h-5" />
             </button>
           </div>
 
-          <h2 className="text-base font-bold text-content-primary min-w-[140px]">{monthYearLabel}</h2>
+          <h2 className="text-base font-bold text-content-primary min-w-[140px] tracking-tight">{monthYearLabel}</h2>
 
           <Button size="sm" variant="ghost" onClick={handleToday} className="text-xs">
             Today
@@ -224,15 +224,15 @@ export const CalendarPage: React.FC = () => {
 
         <div className="flex items-center gap-2 self-end sm:self-center">
           {/* View Mode Toggle */}
-          <div className="flex p-1 rounded-lg bg-surface-hover border border-border-subtle">
+          <div className="flex p-1 rounded-xl bg-white/[0.04] border border-white/10">
             {(['month', 'week', 'agenda'] as const).map((m) => (
               <button
                 key={m}
                 onClick={() => setViewMode(m)}
-                className={`px-3 py-1 text-xs font-semibold rounded-md capitalize transition-all ${
+                className={`px-3 py-1 text-xs font-semibold rounded-lg capitalize transition-all ${
                   viewMode === m
-                    ? 'bg-elevated text-content-primary shadow-sm'
-                    : 'text-content-tertiary hover:text-content-primary'
+                    ? 'bg-white/[0.12] text-white shadow-sm border border-white/15'
+                    : 'text-content-tertiary hover:text-white'
                 }`}
               >
                 {m}
@@ -249,16 +249,16 @@ export const CalendarPage: React.FC = () => {
 
       {/* Month View Grid */}
       {viewMode === 'month' && (
-        <div className="rounded-2xl border border-border-subtle bg-surface overflow-hidden shadow-sm">
+        <div className="rounded-2xl glass-panel relative overflow-hidden shadow-sm">
           {/* Weekday headers */}
-          <div className="grid grid-cols-7 border-b border-border-subtle bg-surface-hover/50 text-center py-2 text-xs font-semibold text-content-secondary">
+          <div className="grid grid-cols-7 border-b border-white/[0.08] bg-white/[0.02] text-center py-2.5 text-xs font-semibold text-content-secondary">
             {weekdayNames.map((d) => (
               <div key={d}>{d}</div>
             ))}
           </div>
 
           {/* 42-day cells grid */}
-          <div className="grid grid-cols-7 divide-x divide-y divide-border-subtle">
+          <div className="grid grid-cols-7 divide-x divide-y divide-white/[0.06]">
             {monthDays.map((dayDate, idx) => {
               const year = dayDate.getFullYear();
               const month = String(dayDate.getMonth() + 1).padStart(2, '0');
@@ -272,15 +272,15 @@ export const CalendarPage: React.FC = () => {
               return (
                 <div
                   key={idx}
-                  className={`min-h-[105px] p-2 flex flex-col justify-between transition-colors ${
-                    !isCurrentMonth ? 'bg-surface/30 opacity-40' : 'bg-surface hover:bg-surface-hover/30'
+                  className={`min-h-[110px] p-2.5 flex flex-col justify-between transition-colors ${
+                    !isCurrentMonth ? 'bg-white/[0.01] opacity-35' : 'bg-transparent hover:bg-white/[0.02]'
                   }`}
                 >
                   <div className="flex items-center justify-between mb-1">
                     <span
                       className={`text-xs font-mono font-semibold w-6 h-6 flex items-center justify-center rounded-full ${
                         isTodayCell
-                          ? 'bg-accent-mint text-canvas font-bold'
+                          ? 'bg-accent-mint text-[#080d19] font-bold shadow-md'
                           : 'text-content-secondary'
                       }`}
                     >
@@ -294,11 +294,11 @@ export const CalendarPage: React.FC = () => {
                       <button
                         key={item.id}
                         onClick={() => handleItemClick(item)}
-                        className="w-full text-left px-1.5 py-0.5 rounded text-[10px] font-medium truncate flex items-center gap-1 transition-opacity hover:opacity-80"
+                        className="w-full text-left px-2 py-0.5 rounded-md text-[10px] font-medium truncate flex items-center gap-1 transition-all hover:scale-[1.02]"
                         style={{
-                          backgroundColor: `${item.color}25`,
+                          backgroundColor: `${item.color}20`,
                           borderLeft: `3px solid ${item.color}`,
-                          color: 'var(--text-primary)',
+                          color: '#FFFFFF',
                         }}
                         title={`${item.title} (${item.sourceType})`}
                       >

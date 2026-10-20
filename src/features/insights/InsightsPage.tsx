@@ -73,9 +73,9 @@ export const InsightsPage: React.FC = () => {
   return (
     <div className="space-y-8 animate-in fade-in duration-200">
       {/* Top Header & Year Selector */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl bg-surface border border-border-subtle">
-        <div className="flex items-center gap-3">
-          <div className="p-3 rounded-xl bg-surface-hover border border-border-subtle text-accent-mint">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl glass-panel relative z-10">
+        <div className="flex items-center gap-3 relative z-10">
+          <div className="p-3 rounded-xl bg-white/[0.06] border border-white/10 text-accent-mint">
             <BarChart3 className="w-6 h-6" />
           </div>
           <div>
@@ -86,16 +86,16 @@ export const InsightsPage: React.FC = () => {
           </div>
         </div>
 
-        <div className="flex items-center gap-2 self-start sm:self-center">
+        <div className="flex items-center gap-2 self-start sm:self-center relative z-10">
           <Calendar className="w-4 h-4 text-content-tertiary" />
           <span className="text-xs text-content-secondary font-medium">Reporting Year:</span>
           <select
             value={selectedYear}
             onChange={(e) => setSelectedYear(parseInt(e.target.value, 10))}
-            className="px-3 py-1.5 rounded-lg bg-surface-hover border border-border-subtle text-xs font-mono font-bold text-content-primary cursor-pointer"
+            className="px-3 py-1.5 rounded-xl bg-white/[0.06] border border-white/10 text-xs font-mono font-bold text-content-primary cursor-pointer"
           >
             {availableYears.map((yr) => (
-              <option key={yr} value={yr}>
+              <option key={yr} value={yr} className="bg-[#0b101e] text-white">
                 {yr}
               </option>
             ))}
@@ -117,25 +117,25 @@ export const InsightsPage: React.FC = () => {
               Projects Velocity ({selectedYear})
             </h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="p-5 rounded-2xl bg-surface border border-border-subtle">
+              <div className="p-5 rounded-2xl glass-panel relative">
                 <p className="text-xs text-content-tertiary font-medium">All-Time Projects</p>
                 <p className="text-3xl font-bold text-content-primary mt-1">{allTimeProjectsCount}</p>
                 <p className="text-[11px] text-content-tertiary mt-1">Across all years</p>
               </div>
 
-              <div className="p-5 rounded-2xl bg-surface border border-border-subtle">
+              <div className="p-5 rounded-2xl glass-panel relative">
                 <p className="text-xs text-content-tertiary font-medium">Active Now</p>
                 <p className="text-3xl font-bold text-accent-mint mt-1">{activeProjectsCount}</p>
                 <p className="text-[11px] text-content-tertiary mt-1">Currently in progress</p>
               </div>
 
-              <div className="p-5 rounded-2xl bg-surface border border-border-subtle">
+              <div className="p-5 rounded-2xl glass-panel relative">
                 <p className="text-xs text-content-tertiary font-medium">Created in {selectedYear}</p>
                 <p className="text-3xl font-bold text-content-primary mt-1">{createdInSelectedYear}</p>
                 <p className="text-[11px] text-content-tertiary mt-1">Initiatives started</p>
               </div>
 
-              <div className="p-5 rounded-2xl bg-surface border border-border-subtle">
+              <div className="p-5 rounded-2xl glass-panel relative">
                 <p className="text-xs text-content-tertiary font-medium">Completed in {selectedYear}</p>
                 <p className="text-3xl font-bold text-accent-mint mt-1">{completedInSelectedYear}</p>
                 <p className="text-[11px] text-content-tertiary mt-1">Based on actual completedAt</p>
@@ -144,8 +144,8 @@ export const InsightsPage: React.FC = () => {
           </div>
 
           {/* Monthly Completed Projects Chart */}
-          <div className="p-6 rounded-2xl bg-surface border border-border-subtle space-y-4">
-            <div className="flex items-center justify-between border-b border-border-subtle pb-3">
+          <div className="p-6 rounded-2xl glass-panel relative space-y-4">
+            <div className="flex items-center justify-between border-b border-white/[0.08] pb-3">
               <div>
                 <h3 className="text-sm font-bold text-content-primary">
                   Monthly Completed Projects ({selectedYear})
@@ -154,7 +154,7 @@ export const InsightsPage: React.FC = () => {
                   Grouped by verified completion date timestamp
                 </p>
               </div>
-              <span className="text-xs font-mono px-2 py-1 rounded bg-surface-hover border border-border-subtle text-accent-mint">
+              <span className="text-xs font-mono px-2.5 py-1 rounded-lg bg-white/[0.06] border border-white/10 text-accent-mint">
                 Total: {completedInSelectedYear}
               </span>
             </div>
@@ -199,8 +199,8 @@ export const InsightsPage: React.FC = () => {
           {/* Tasks & Academics Summary Grids */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Tasks Distribution */}
-            <div className="p-6 rounded-2xl bg-surface border border-border-subtle space-y-4">
-              <div className="flex items-center justify-between border-b border-border-subtle pb-3">
+            <div className="p-6 rounded-2xl glass-panel relative space-y-4">
+              <div className="flex items-center justify-between border-b border-white/[0.08] pb-3">
                 <h3 className="text-sm font-bold text-content-primary">Tasks Distribution</h3>
                 <span className="text-xs font-mono text-content-secondary">
                   {taskCompletionRate}% Finished
@@ -208,24 +208,24 @@ export const InsightsPage: React.FC = () => {
               </div>
 
               <div className="space-y-3">
-                <div className="flex items-center justify-between p-3 rounded-xl bg-surface-hover/50">
-                  <div className="flex items-center gap-2 text-xs">
+                <div className="flex items-center justify-between p-3.5 rounded-xl bg-white/[0.03] border border-white/5">
+                  <div className="flex items-center gap-2.5 text-xs">
                     <CheckCircle2 className="w-4 h-4 text-accent-mint" />
                     <span>Completed Tasks</span>
                   </div>
                   <span className="font-mono font-bold text-content-primary">{completedTasks.length}</span>
                 </div>
 
-                <div className="flex items-center justify-between p-3 rounded-xl bg-surface-hover/50">
-                  <div className="flex items-center gap-2 text-xs">
+                <div className="flex items-center justify-between p-3.5 rounded-xl bg-white/[0.03] border border-white/5">
+                  <div className="flex items-center gap-2.5 text-xs">
                     <Clock className="w-4 h-4 text-accent-amber" />
                     <span>Open / Pending Tasks</span>
                   </div>
                   <span className="font-mono font-bold text-content-primary">{openTasks.length}</span>
                 </div>
 
-                <div className="flex items-center justify-between p-3 rounded-xl bg-surface-hover/50">
-                  <div className="flex items-center gap-2 text-xs">
+                <div className="flex items-center justify-between p-3.5 rounded-xl bg-white/[0.03] border border-white/5">
+                  <div className="flex items-center gap-2.5 text-xs">
                     <AlertTriangle className="w-4 h-4 text-accent-ember" />
                     <span>Overdue Tasks</span>
                   </div>
@@ -237,8 +237,8 @@ export const InsightsPage: React.FC = () => {
             </div>
 
             {/* Academics Progress */}
-            <div className="p-6 rounded-2xl bg-surface border border-border-subtle space-y-4">
-              <div className="flex items-center justify-between border-b border-border-subtle pb-3">
+            <div className="p-6 rounded-2xl glass-panel relative space-y-4">
+              <div className="flex items-center justify-between border-b border-white/[0.08] pb-3">
                 <h3 className="text-sm font-bold text-content-primary">Coursework Submissions</h3>
                 <span className="text-xs font-mono text-content-secondary">
                   {totalAssignments > 0 ? Math.round((submittedAssignments / totalAssignments) * 100) : 0}% Submitted
@@ -246,24 +246,24 @@ export const InsightsPage: React.FC = () => {
               </div>
 
               <div className="space-y-3">
-                <div className="flex items-center justify-between p-3 rounded-xl bg-surface-hover/50">
-                  <div className="flex items-center gap-2 text-xs">
+                <div className="flex items-center justify-between p-3.5 rounded-xl bg-white/[0.03] border border-white/5">
+                  <div className="flex items-center gap-2.5 text-xs">
                     <BookOpen className="w-4 h-4 text-accent-mint" />
                     <span>Submitted Assignments</span>
                   </div>
                   <span className="font-mono font-bold text-content-primary">{submittedAssignments}</span>
                 </div>
 
-                <div className="flex items-center justify-between p-3 rounded-xl bg-surface-hover/50">
-                  <div className="flex items-center gap-2 text-xs">
+                <div className="flex items-center justify-between p-3.5 rounded-xl bg-white/[0.03] border border-white/5">
+                  <div className="flex items-center gap-2.5 text-xs">
                     <CheckCircle2 className="w-4 h-4 text-accent-mint" />
                     <span>Graded Coursework</span>
                   </div>
                   <span className="font-mono font-bold text-content-primary">{gradedAssignments}</span>
                 </div>
 
-                <div className="flex items-center justify-between p-3 rounded-xl bg-surface-hover/50">
-                  <div className="flex items-center gap-2 text-xs">
+                <div className="flex items-center justify-between p-3.5 rounded-xl bg-white/[0.03] border border-white/5">
+                  <div className="flex items-center gap-2.5 text-xs">
                     <Clock className="w-4 h-4 text-accent-amber" />
                     <span>Pending Deadlines</span>
                   </div>

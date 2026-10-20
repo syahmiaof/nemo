@@ -257,9 +257,9 @@ export const AcademicsPage: React.FC = () => {
   return (
     <div className="space-y-6 animate-in fade-in duration-200">
       {/* Top Header & Semester Selector */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl bg-surface border border-border-subtle">
-        <div className="flex items-center gap-3">
-          <div className="p-3 rounded-xl bg-surface-hover border border-border-subtle text-accent-mint">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl glass-panel relative z-10">
+        <div className="flex items-center gap-3 relative z-10">
+          <div className="p-3 rounded-xl bg-white/[0.06] border border-white/10 text-accent-mint">
             <GraduationCap className="w-6 h-6" />
           </div>
           <div>
@@ -333,8 +333,8 @@ export const AcademicsPage: React.FC = () => {
                     key={sub.id}
                     className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl border transition-all ${
                       isSelected
-                        ? 'bg-surface-hover border-border-emphasis text-content-primary font-semibold'
-                        : 'bg-surface/40 border-border-subtle text-content-secondary hover:text-content-primary hover:bg-surface'
+                        ? 'bg-white/[0.1] border-white/20 text-white font-semibold'
+                        : 'bg-white/[0.03] border-white/10 text-content-secondary hover:text-white hover:bg-white/[0.06]'
                     }`}
                   >
                     <button
@@ -396,9 +396,9 @@ export const AcademicsPage: React.FC = () => {
                   return (
                     <div
                       key={assign.id}
-                      className="p-5 rounded-2xl bg-surface border border-border-subtle hover:border-border-emphasis transition-all space-y-4 shadow-sm"
+                      className="p-5 rounded-2xl glass-panel relative group space-y-4 hover:border-white/20 transition-all shadow-sm"
                     >
-                      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+                      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 relative z-10">
                         <div className="space-y-1">
                           <div className="flex items-center gap-2 flex-wrap">
                             {subject && (

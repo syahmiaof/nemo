@@ -114,14 +114,14 @@ export const TasksPage: React.FC = () => {
   return (
     <div className="space-y-6 animate-in fade-in duration-200">
       {/* Top Controls */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-2xl glass-panel relative z-10">
         <div className="relative max-w-sm w-full">
           <Search className="w-4 h-4 absolute left-3 top-3 text-content-tertiary" />
           <Input
             placeholder="Search tasks by title, notes, or tags..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-9"
+            className="pl-9 bg-white/[0.04] border-white/10"
           />
         </div>
 
@@ -138,29 +138,34 @@ export const TasksPage: React.FC = () => {
       </div>
 
       {/* Segmented Filter Tabs */}
-      <div className="flex overflow-x-auto pb-1 gap-1 border-b border-border-subtle">
-        {filterTabs.map((tab) => (
-          <button
-            key={tab.key}
-            onClick={() => setActiveFilter(tab.key as any)}
-            className={`flex items-center gap-2 px-3 py-2 text-xs font-medium rounded-t-lg border-b-2 transition-all whitespace-nowrap ${
-              activeFilter === tab.key
-                ? 'border-accent-mint text-accent-mint font-semibold bg-surface/50'
-                : 'border-transparent text-content-secondary hover:text-content-primary hover:bg-surface/20'
-            }`}
-          >
-            <span>{tab.label}</span>
-            <span
-              className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono border ${
-                tab.key === 'overdue' && tab.count > 0
-                  ? 'bg-accent-ember/15 text-accent-ember border-accent-ember/30'
-                  : 'bg-surface border-border-subtle text-content-tertiary'
+      <div className="flex overflow-x-auto pb-1 gap-1.5 border-b border-white/[0.08]">
+        {filterTabs.map((tab) => {
+          const isActive = activeFilter === tab.key;
+          return (
+            <button
+              key={tab.key}
+              onClick={() => setActiveFilter(tab.key as any)}
+              className={`flex items-center gap-2 px-3.5 py-2 text-xs font-medium rounded-xl transition-all whitespace-nowrap ${
+                isActive
+                  ? 'bg-white/[0.1] text-white font-semibold border border-white/15 shadow-sm'
+                  : 'text-content-secondary hover:text-content-primary hover:bg-white/[0.03] border border-transparent'
               }`}
             >
-              {tab.count}
-            </span>
-          </button>
-        ))}
+              <span>{tab.label}</span>
+              <span
+                className={`text-[10px] px-1.5 py-0.5 rounded-md font-mono ${
+                  tab.key === 'overdue' && tab.count > 0
+                    ? 'bg-accent-ember/20 text-accent-ember border border-accent-ember/30'
+                    : isActive
+                    ? 'bg-white/[0.15] text-white'
+                    : 'bg-white/[0.05] text-content-tertiary'
+                }`}
+              >
+                {tab.count}
+              </span>
+            </button>
+          );
+        })}
       </div>
 
       {/* Task List */}
@@ -206,17 +211,17 @@ export const TasksPage: React.FC = () => {
             return (
               <div
                 key={task.id}
-                className={`flex flex-col sm:flex-row sm:items-center justify-between p-3.5 rounded-xl border transition-all gap-3 ${
+                className={`flex flex-col sm:flex-row sm:items-center justify-between p-3.5 rounded-2xl glass-panel relative group transition-all duration-200 gap-3 ${
                   isDone
-                    ? 'bg-surface/30 border-border-subtle/50 opacity-75'
-                    : 'bg-surface border-border-subtle hover:border-border-emphasis shadow-sm'
+                    ? 'opacity-65 hover:opacity-85'
+                    : 'hover:border-white/20 hover:scale-[1.005]'
                 }`}
               >
                 {/* Left: Checkbox & Info */}
-                <div className="flex items-start gap-3 min-w-0">
+                <div className="flex items-start gap-3.5 min-w-0 relative z-10">
                   <button
                     onClick={(e) => handleToggleTask(task, e)}
-                    className="text-content-tertiary hover:text-accent-mint transition-colors p-0.5 mt-0.5 flex-shrink-0"
+                    className="text-white/40 hover:text-accent-mint transition-colors p-0.5 mt-0.5 flex-shrink-0"
                     aria-label={`Mark task ${isDone ? 'incomplete' : 'complete'}`}
                   >
                     {isDone ? (
@@ -237,7 +242,7 @@ export const TasksPage: React.FC = () => {
                       </span>
 
                       {parentLabel && (
-                        <span className="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-md bg-surface-hover border border-border-subtle text-content-secondary font-mono truncate max-w-[160px]">
+                        <span className="inline-flex items-center gap-1.5 text-[10px] px-2 py-0.5 rounded-md bg-white/[0.06] border border-white/10 text-content-secondary font-mono truncate max-w-[160px]">
                           <ParentIcon className="w-3 h-3 text-accent-mint" />
                           <span className="truncate">{parentLabel}</span>
                         </span>
@@ -269,7 +274,7 @@ export const TasksPage: React.FC = () => {
                 </div>
 
                 {/* Right: Badges & Controls */}
-                <div className="flex items-center gap-2 self-end sm:self-center">
+                <div className="flex items-center gap-2 self-end sm:self-center relative z-10">
                   <PriorityBadge priority={task.priority} size="sm" />
                   <StatusBadge status={task.status} size="sm" />
 
@@ -278,7 +283,7 @@ export const TasksPage: React.FC = () => {
                       setTaskToEdit(task);
                       setIsModalOpen(true);
                     }}
-                    className="p-1.5 rounded-lg text-content-tertiary hover:text-content-primary hover:bg-surface-hover transition-colors"
+                    className="p-1.5 rounded-lg text-content-tertiary hover:text-content-primary hover:bg-white/[0.08] transition-colors"
                     title="Edit Task"
                   >
                     <Edit2 className="w-4 h-4" />
@@ -286,7 +291,7 @@ export const TasksPage: React.FC = () => {
 
                   <button
                     onClick={() => setTaskToDelete(task)}
-                    className="p-1.5 rounded-lg text-content-tertiary hover:text-accent-ember hover:bg-surface-hover transition-colors"
+                    className="p-1.5 rounded-lg text-content-tertiary hover:text-accent-ember hover:bg-white/[0.08] transition-colors"
                     title="Delete Task"
                   >
                     <Trash2 className="w-4 h-4" />

@@ -62,10 +62,10 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
     return (
       <Link
         to={`/projects/${project.id}`}
-        className="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-xl bg-surface border border-border-subtle hover:border-border-emphasis transition-all group gap-3"
+        className="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-2xl glass-panel relative group hover:border-white/20 transition-all gap-3"
       >
-        <div className="flex items-center gap-3 min-w-0">
-          <div className="w-12 h-12 rounded-lg overflow-hidden border border-border-subtle flex-shrink-0 bg-surface-solid">
+        <div className="flex items-center gap-3 min-w-0 relative z-10">
+          <div className="w-12 h-12 rounded-xl overflow-hidden border border-white/10 flex-shrink-0 bg-surface-solid">
             {coverUrl && <img src={coverUrl} alt="" className="w-full h-full object-cover" />}
           </div>
           <div className="min-w-0">
@@ -74,18 +74,18 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
                 {project.title}
               </h3>
               {project.category && (
-                <span className="text-[10px] px-1.5 py-0.5 rounded bg-surface-hover text-content-tertiary">
+                <span className="text-[10px] px-2 py-0.5 rounded-md bg-white/[0.06] text-content-secondary border border-white/10 font-mono">
                   {project.category}
                 </span>
               )}
             </div>
-            <p className="text-xs text-content-tertiary mt-0.5">
+            <p className="text-xs text-content-tertiary mt-0.5 font-mono">
               Basis: {progressLabel}
             </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-3 self-end sm:self-center">
+        <div className="flex items-center gap-3 self-end sm:self-center relative z-10">
           {project.dueDate && (
             <span className="text-xs text-content-tertiary flex items-center gap-1 font-mono">
               <Calendar className="w-3.5 h-3.5" />
@@ -102,36 +102,36 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
   return (
     <Link
       to={`/projects/${project.id}`}
-      className="flex flex-col rounded-2xl bg-surface border border-border-subtle hover:border-border-emphasis overflow-hidden transition-all group shadow-sm"
+      className="flex flex-col rounded-2xl glass-panel relative group overflow-hidden transition-all duration-300 hover:scale-[1.01] hover:shadow-2xl"
     >
       {/* Cover / Screenshot Banner */}
-      <div className="h-36 w-full overflow-hidden bg-surface-solid border-b border-border-subtle relative">
+      <div className="h-36 w-full overflow-hidden bg-surface-solid/60 border-b border-white/10 relative">
         {coverUrl && (
           <img
             src={coverUrl}
             alt=""
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90 group-hover:opacity-100"
           />
         )}
-        <div className="absolute top-3 left-3 flex items-center gap-1.5">
+        <div className="absolute top-3 left-3 flex items-center gap-1.5 z-10">
           <StatusBadge status={project.status} size="sm" />
         </div>
-        <div className="absolute top-3 right-3">
+        <div className="absolute top-3 right-3 z-10">
           <PriorityBadge priority={project.priority} size="sm" />
         </div>
       </div>
 
       {/* Body */}
-      <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
+      <div className="p-5 flex-1 flex flex-col justify-between space-y-4 relative z-10">
         <div>
           <div className="flex items-center justify-between gap-2 mb-1.5">
             {project.category && (
-              <span className="text-[10px] font-mono tracking-wider uppercase text-content-tertiary">
+              <span className="text-[10px] font-mono tracking-wider uppercase text-accent-mint font-semibold">
                 {project.category}
               </span>
             )}
             {project.clientLabel && (
-              <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-surface-hover text-content-secondary border border-border-subtle">
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-white/[0.06] text-content-secondary border border-white/10">
                 {project.clientLabel}
               </span>
             )}
@@ -152,12 +152,12 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
         <div className="space-y-1.5">
           <div className="flex items-center justify-between text-[11px] text-content-tertiary">
             <span>Progress</span>
-            <span className="font-mono">{progressLabel}</span>
+            <span className="font-mono text-white/80">{progressLabel}</span>
           </div>
-          <div className="w-full h-1.5 rounded-full bg-surface-hover overflow-hidden">
+          <div className="w-full h-1.5 rounded-full bg-white/[0.06] overflow-hidden">
             {progressPercent !== null && (
               <div
-                className="h-full bg-accent-mint rounded-full transition-all duration-300"
+                className="h-full bg-gradient-to-r from-emerald-400 to-teal-300 rounded-full transition-all duration-500 shadow-sm"
                 style={{ width: `${progressPercent}%` }}
               />
             )}
@@ -165,7 +165,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
         </div>
 
         {/* Footer Meta */}
-        <div className="pt-3 border-t border-border-subtle flex items-center justify-between text-[11px] text-content-tertiary">
+        <div className="pt-3 border-t border-white/[0.08] flex items-center justify-between text-[11px] text-content-tertiary">
           <div className="flex items-center gap-1 font-mono">
             {project.dueDate ? (
               <>

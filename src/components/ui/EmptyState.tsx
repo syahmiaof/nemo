@@ -18,14 +18,24 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
   onAction,
 }) => {
   return (
-    <div className="flex flex-col items-center justify-center p-8 md:p-12 text-center rounded-2xl border border-border-subtle bg-surface/40 my-4">
-      <div className="p-3.5 rounded-2xl bg-surface border border-border-subtle text-accent-mint mb-4 shadow-sm">
-        <Icon className="w-6 h-6" />
+    <div className="relative flex flex-col items-center justify-center p-8 sm:p-14 text-center rounded-[28px] border border-dashed border-border-subtle bg-gradient-to-b from-surface/40 to-surface/10 overflow-hidden my-4">
+      {/* Subtle radial ambient light behind the icon */}
+      <div
+        className="absolute w-44 h-44 rounded-full pointer-events-none -top-10 bg-accent-mint/10 blur-3xl"
+        aria-hidden="true"
+      />
+
+      <div className="relative p-4 rounded-2xl bg-surface/90 border border-border-emphasis text-accent-mint mb-4 shadow-glass-pop backdrop-blur-md">
+        <Icon className="w-7 h-7 stroke-[1.8]" />
       </div>
-      <h3 className="text-base font-semibold text-content-primary mb-1.5">{title}</h3>
-      <p className="text-xs text-content-secondary max-w-sm mb-5 leading-relaxed">{description}</p>
+
+      <h3 className="text-lg font-bold tracking-tight text-content-primary mb-1.5">{title}</h3>
+      <p className="text-xs text-content-secondary max-w-md mb-6 leading-relaxed font-medium">
+        {description}
+      </p>
+
       {actionLabel && onAction && (
-        <Button onClick={onAction} size="sm">
+        <Button onClick={onAction} size="md">
           {actionLabel}
         </Button>
       )}

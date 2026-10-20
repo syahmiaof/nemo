@@ -62,9 +62,9 @@ export const GoalsPage: React.FC = () => {
 
   return (
     <div className="space-y-6 animate-in fade-in duration-200">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl bg-surface border border-border-subtle">
-        <div className="flex items-center gap-3">
-          <div className="p-3 rounded-xl bg-surface-hover border border-border-subtle text-accent-mint">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl glass-panel relative z-10">
+        <div className="flex items-center gap-3 relative z-10">
+          <div className="p-3 rounded-xl bg-white/[0.06] border border-white/10 text-accent-mint">
             <Target className="w-6 h-6" />
           </div>
           <div>
@@ -82,7 +82,7 @@ export const GoalsPage: React.FC = () => {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-2 border-b border-border-subtle pb-1">
+      <div className="flex gap-1.5 border-b border-white/[0.08] pb-1 overflow-x-auto">
         {(['all', 'active', 'planned', 'paused', 'achieved'] as const).map((tab) => {
           const count = goals.filter((g) => (tab === 'all' ? true : g.status === tab)).length;
           const isActive = activeTab === tab;
@@ -91,14 +91,14 @@ export const GoalsPage: React.FC = () => {
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`flex items-center gap-2 px-3 py-1.5 text-xs font-semibold rounded-t-lg border-b-2 transition-all capitalize ${
+              className={`flex items-center gap-2 px-3.5 py-2 text-xs font-semibold rounded-xl transition-all capitalize whitespace-nowrap ${
                 isActive
-                  ? 'border-accent-mint text-accent-mint bg-surface/50'
-                  : 'border-transparent text-content-secondary hover:text-content-primary'
+                  ? 'bg-white/[0.1] text-white border border-white/15 shadow-sm'
+                  : 'text-content-secondary hover:text-white hover:bg-white/[0.03] border border-transparent'
               }`}
             >
               <span>{tab}</span>
-              <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-surface border border-border-subtle font-mono text-content-tertiary">
+              <span className={`text-[10px] px-1.5 py-0.5 rounded-md font-mono ${isActive ? 'bg-white/[0.15] text-white' : 'bg-white/[0.05] text-content-tertiary'}`}>
                 {count}
               </span>
             </button>
@@ -131,9 +131,9 @@ export const GoalsPage: React.FC = () => {
               <Link
                 key={goal.id}
                 to={`/goals/${goal.id}`}
-                className="p-5 rounded-2xl bg-surface border border-border-subtle hover:border-border-emphasis transition-all group flex flex-col justify-between space-y-4 shadow-sm"
+                className="p-5 rounded-2xl glass-panel relative group hover:border-white/20 transition-all flex flex-col justify-between space-y-4 shadow-sm"
               >
-                <div>
+                <div className="relative z-10">
                   <div className="flex items-center justify-between gap-2 mb-2">
                     {goal.category && (
                       <span className="text-[10px] font-mono uppercase tracking-wider text-accent-mint font-semibold">

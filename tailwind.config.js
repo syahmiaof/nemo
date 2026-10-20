@@ -33,7 +33,7 @@ export default {
       },
       fontFamily: {
         sans: [
-          'Geist Sans',
+          'Urbanist',
           '-apple-system',
           'BlinkMacSystemFont',
           '"Segoe UI"',
@@ -49,6 +49,10 @@ export default {
           'Consolas',
           'monospace'
         ]
+      },
+      boxShadow: {
+        glass: 'var(--shadow)',
+        'glass-pop': 'var(--shadow-pop)',
       }
     },
   },

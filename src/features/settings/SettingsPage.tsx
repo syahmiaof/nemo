@@ -163,30 +163,31 @@ export const SettingsPage: React.FC = () => {
   return (
     <div className="space-y-8 max-w-4xl mx-auto animate-in fade-in duration-200">
       {/* Privacy Manifesto Card */}
-      <div className="p-6 rounded-2xl bg-surface border border-border-subtle space-y-3">
-        <div className="flex items-center gap-2.5 text-accent-mint">
+      <div className="p-6 rounded-2xl glass-panel relative z-10 space-y-3">
+        <div className="flex items-center gap-2.5 text-accent-mint relative z-10">
           <ShieldCheck className="w-5 h-5 flex-shrink-0" />
           <h2 className="text-base font-bold text-content-primary">Privacy & Storage Guarantee</h2>
         </div>
-        <p className="text-xs text-content-secondary leading-relaxed">
+        <p className="text-xs text-content-secondary leading-relaxed relative z-10">
           Nemo does not use cloud databases, tracking analytics, or external accounts. All your data lives securely in this browser’s IndexedDB storage. Remember: <strong className="text-content-primary">local-first does not mean automatically backed up</strong>. Export backups regularly to safeguard against browser cache clears or to transfer data to another machine.
         </p>
       </div>
 
       {/* Profile & Identity */}
-      <div className="p-6 rounded-2xl bg-surface border border-border-subtle space-y-5">
-        <div className="flex items-center gap-2.5 border-b border-border-subtle pb-3">
+      <div className="p-6 rounded-2xl glass-panel relative z-10 space-y-5">
+        <div className="flex items-center gap-2.5 border-b border-white/[0.08] pb-3 relative z-10">
           <User className="w-5 h-5 text-accent-mint" />
           <h3 className="text-base font-bold text-content-primary">Workspace Profile</h3>
         </div>
 
-        <form onSubmit={handleSaveProfile} className="space-y-4 max-w-md">
+        <form onSubmit={handleSaveProfile} className="space-y-4 max-w-md relative z-10">
           <Input
             label="Display / Workspace Name"
             value={displayName}
             onChange={(e) => setDisplayName(e.target.value)}
             placeholder="e.g. Alex's Command Center"
             required
+            className="bg-white/[0.04] border-white/10"
           />
 
           <Button type="submit" size="sm">
@@ -196,13 +197,13 @@ export const SettingsPage: React.FC = () => {
       </div>
 
       {/* Preferences & Appearance */}
-      <div className="p-6 rounded-2xl bg-surface border border-border-subtle space-y-5">
-        <div className="flex items-center gap-2.5 border-b border-border-subtle pb-3">
+      <div className="p-6 rounded-2xl glass-panel relative z-10 space-y-5">
+        <div className="flex items-center gap-2.5 border-b border-white/[0.08] pb-3 relative z-10">
           <SettingsIcon className="w-5 h-5 text-accent-mint" />
           <h3 className="text-base font-bold text-content-primary">Appearance & Behavior</h3>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 relative z-10">
           {/* Theme Selector */}
           <div className="space-y-2">
             <label className="block text-xs font-medium text-content-secondary">Theme</label>
@@ -215,8 +216,8 @@ export const SettingsPage: React.FC = () => {
                 }}
                 className={`flex items-center justify-center gap-2 p-3 rounded-xl border text-xs font-semibold transition-all ${
                   theme === 'dark'
-                    ? 'bg-surface-hover border-accent-mint text-accent-mint font-bold shadow-sm'
-                    : 'bg-surface-solid border-border-subtle text-content-secondary hover:text-content-primary'
+                    ? 'bg-white/[0.12] border-white/20 text-white font-bold shadow-sm'
+                    : 'bg-white/[0.03] border-white/10 text-content-secondary hover:text-white'
                 }`}
               >
                 <Moon className="w-4 h-4" />
@@ -231,8 +232,8 @@ export const SettingsPage: React.FC = () => {
                 }}
                 className={`flex items-center justify-center gap-2 p-3 rounded-xl border text-xs font-semibold transition-all ${
                   theme === 'light'
-                    ? 'bg-surface-hover border-accent-mint text-accent-mint font-bold shadow-sm'
-                    : 'bg-surface-solid border-border-subtle text-content-secondary hover:text-content-primary'
+                    ? 'bg-white/[0.12] border-white/20 text-white font-bold shadow-sm'
+                    : 'bg-white/[0.03] border-white/10 text-content-secondary hover:text-white'
                 }`}
               >
                 <Sun className="w-4 h-4" />
@@ -297,17 +298,17 @@ export const SettingsPage: React.FC = () => {
       </div>
 
       {/* Backup, Export & Restore */}
-      <div className="p-6 rounded-2xl bg-surface border border-border-subtle space-y-5">
-        <div className="flex items-center gap-2.5 border-b border-border-subtle pb-3">
+      <div className="p-6 rounded-2xl glass-panel relative z-10 space-y-5">
+        <div className="flex items-center gap-2.5 border-b border-white/[0.08] pb-3 relative z-10">
           <HardDrive className="w-5 h-5 text-accent-mint" />
           <h3 className="text-base font-bold text-content-primary">Data Backup & Migration</h3>
         </div>
 
-        <p className="text-xs text-content-secondary leading-relaxed">
+        <p className="text-xs text-content-secondary leading-relaxed relative z-10">
           Export your entire workspace (projects, tasks, coursework, milestones, images, and settings) into a single, validated JSON file. You can restore this file into any fresh browser instance running Nemo.
         </p>
 
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3 relative z-10">
           <Button onClick={handleExportBackup} className="gap-2">
             <DownloadCloud className="w-4 h-4" />
             <span>Export Backup (.json)</span>
@@ -333,25 +334,27 @@ export const SettingsPage: React.FC = () => {
       </div>
 
       {/* Danger Zone: Workspace Reset */}
-      <div className="p-6 rounded-2xl bg-accent-ember/5 border border-accent-ember/25 space-y-4">
-        <div className="flex items-center gap-2.5 text-accent-ember">
+      <div className="p-6 rounded-2xl glass-panel border border-red-500/30 bg-red-950/15 relative z-10 space-y-4">
+        <div className="flex items-center gap-2.5 text-accent-ember relative z-10">
           <AlertTriangle className="w-5 h-5 flex-shrink-0" />
           <h3 className="text-base font-bold">Danger Zone: Reset Workspace</h3>
         </div>
 
-        <p className="text-xs text-content-secondary leading-relaxed">
+        <p className="text-xs text-content-secondary leading-relaxed relative z-10">
           Wiping your workspace clears all IndexedDB tables and returns Nemo to an empty first-run state. This action is immediate and cannot be undone unless you have an exported backup.
         </p>
 
-        <Button
-          variant="danger"
-          size="sm"
-          onClick={() => setIsResetConfirmOpen(true)}
-          className="gap-2"
-        >
-          <Trash2 className="w-4 h-4" />
-          <span>Reset All Workspace Data</span>
-        </Button>
+        <div className="relative z-10">
+          <Button
+            variant="danger"
+            size="sm"
+            onClick={() => setIsResetConfirmOpen(true)}
+            className="gap-2"
+          >
+            <Trash2 className="w-4 h-4" />
+            <span>Reset All Workspace Data</span>
+          </Button>
+        </div>
       </div>
 
       {/* Restore Confirmation Modal */}

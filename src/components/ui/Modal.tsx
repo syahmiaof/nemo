@@ -60,7 +60,7 @@ export const Modal: React.FC<ModalProps> = ({
 
   return createPortal(
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-canvas/80 backdrop-blur-sm transition-opacity"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-canvas/75 backdrop-blur-md transition-opacity"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
@@ -71,27 +71,27 @@ export const Modal: React.FC<ModalProps> = ({
       <div
         ref={contentRef}
         className={cn(
-          'w-full bg-elevated border border-border-emphasis rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]',
+          'w-full glass-panel rounded-2xl shadow-[0_24px_64px_-12px_rgba(0,0,0,0.9)] overflow-hidden flex flex-col max-h-[90vh] bg-[#0c1424]/90 backdrop-blur-2xl border border-white/10 relative',
           maxWidthClasses[maxWidth]
         )}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-white/[0.08] relative z-10">
           <div>
-            {title && <h2 className="text-base font-semibold text-content-primary">{title}</h2>}
+            {title && <h2 className="text-base font-semibold text-content-primary tracking-tight">{title}</h2>}
             {description && <p className="text-xs text-content-tertiary mt-0.5">{description}</p>}
           </div>
           <button
             onClick={onClose}
-            className="p-1 rounded-lg text-content-tertiary hover:text-content-primary hover:bg-surface-hover transition-colors"
+            className="p-1.5 rounded-xl text-content-tertiary hover:text-white hover:bg-white/[0.08] transition-colors"
             aria-label="Close dialog"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Body */}
-        <div className="p-6 overflow-y-auto space-y-4">{children}</div>
+        <div className="p-6 overflow-y-auto space-y-4 relative z-10">{children}</div>
       </div>
     </div>,
     document.body

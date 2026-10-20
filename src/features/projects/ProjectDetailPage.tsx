@@ -250,9 +250,9 @@ export const ProjectDetailPage: React.FC = () => {
       </div>
 
       {/* Main Hero Card */}
-      <div className="rounded-2xl bg-surface border border-border-subtle overflow-hidden shadow-sm">
+      <div className="rounded-2xl glass-panel relative overflow-hidden shadow-2xl">
         {/* Cover Header */}
-        <div className="h-48 md:h-64 w-full overflow-hidden bg-surface-solid border-b border-border-subtle relative">
+        <div className="h-48 md:h-64 w-full overflow-hidden bg-surface-solid/60 border-b border-white/10 relative">
           {coverUrl && <img src={coverUrl} alt="" className="w-full h-full object-cover" />}
           <div className="absolute top-4 left-4 flex items-center gap-2">
             <StatusBadge status={project.status} size="md" />

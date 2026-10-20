@@ -131,16 +131,16 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Quick Add" description="Create a commitment quickly from anywhere in Nemo.">
       {/* Type Selector Tabs */}
-      <div className="flex p-1 rounded-xl bg-surface border border-border-subtle mb-4">
+      <div className="flex p-1 rounded-xl bg-white/[0.04] border border-white/10 mb-5">
         {(['task', 'project', 'assignment', 'event'] as const).map((t) => (
           <button
             key={t}
             type="button"
             onClick={() => setItemType(t)}
-            className={`flex-1 py-1.5 text-xs font-semibold rounded-lg capitalize transition-all ${
+            className={`flex-1 py-1.5 text-xs font-semibold rounded-lg capitalize transition-all duration-200 ${
               itemType === t
-                ? 'bg-elevated text-content-primary shadow-sm border border-border-subtle'
-                : 'text-content-secondary hover:text-content-primary'
+                ? 'bg-white/[0.12] text-white shadow-sm border border-white/15'
+                : 'text-content-secondary hover:text-content-primary hover:bg-white/[0.03]'
             }`}
           >
             {t}
