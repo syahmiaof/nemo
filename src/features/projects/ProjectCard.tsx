@@ -20,23 +20,23 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
   tasks,
   viewMode = 'grid',
 }) => {
-  const [coverUrl, setCoverUrl] = useState<string>('');
+  const fallback = useMemo(() => generateTypographicCover(project.title, project.category), [project.title, project.category]);
+  const [coverUrl, setCoverUrl] = useState<string>(fallback);
 
   useEffect(() => {
     let isMounted = true;
+    setCoverUrl(fallback);
     if (project.previewBlobId) {
       db.assetBlobs.get(project.previewBlobId).then((blob) => {
         if (isMounted && blob) {
           setCoverUrl(blob.data);
         }
-      });
-    } else {
-      setCoverUrl(generateTypographicCover(project.title, project.category));
+      }).catch(() => { if (isMounted) setCoverUrl(fallback); });
     }
     return () => {
       isMounted = false;
     };
-  }, [project.previewBlobId, project.title, project.category]);
+  }, [project.previewBlobId, fallback]);
 
   // Derive genuine progress according to Invariant 6:
   // 1. If milestones exist, use completed/total milestones and label basis
@@ -75,7 +75,8 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
       >
         <div className="flex items-center gap-3 min-w-0 relative z-10">
           <div className="w-12 h-12 rounded-xl overflow-hidden border border-white/10 flex-shrink-0 bg-surface-solid">
-            {coverUrl && <img src={coverUrl} alt="" className="w-full h-full object-cover" />}
+            {coverUrl && <img src={coverUrl}
+            onError={() => { if (coverUrl !== fallback) setCoverUrl(fallback); }} alt="" className="w-full h-full object-cover" />}
           </div>
           <div className="min-w-0">
             <div className="flex items-center gap-2">
@@ -111,13 +112,14 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
   return (
     <Link
       to={`/projects/${project.id}`}
-      className="flex flex-col rounded-2xl glass-panel relative group overflow-hidden transition-all duration-300 hover:scale-[1.01] hover:shadow-2xl"
+      className="project-card flex flex-col rounded-2xl glass-panel relative group overflow-hidden transition-all duration-300 hover:scale-[1.01] hover:shadow-2xl"
     >
       {/* Cover / Screenshot Banner */}
-      <div className="h-36 w-full overflow-hidden bg-surface-solid/60 border-b border-white/10 relative">
+      <div className="project-cover h-36 w-full overflow-hidden bg-surface-solid/60 border-b border-white/10 relative">
         {coverUrl && (
           <img
             src={coverUrl}
+            onError={() => { if (coverUrl !== fallback) setCoverUrl(fallback); }}
             alt=""
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90 group-hover:opacity-100"
           />
@@ -131,7 +133,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
       </div>
 
       {/* Body */}
-      <div className="p-5 flex-1 flex flex-col justify-between space-y-4 relative z-10">
+      <div className="project-body p-5 flex-1 flex flex-col justify-between space-y-4 relative z-10">
         <div>
           <div className="flex items-center justify-between gap-2 mb-1.5">
             {project.category && (
@@ -151,7 +153,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
           </h3>
 
           {project.description && (
-            <p className="text-xs text-content-secondary line-clamp-2 mt-1 leading-relaxed">
+            <p className="project-description text-xs text-content-secondary line-clamp-2 mt-1 leading-relaxed">
               {project.description}
             </p>
           )}
@@ -166,7 +168,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
           <div className="w-full h-1.5 rounded-full bg-white/[0.06] overflow-hidden">
             {progressPercent !== null && (
               <div
-                className="h-full bg-gradient-to-r from-emerald-400 to-teal-300 rounded-full transition-all duration-500 shadow-sm"
+                className="project-progress h-full rounded-full transition-all duration-500 shadow-sm"
                 style={{ width: `${progressPercent}%` }}
               />
             )}
@@ -189,7 +191,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
           {project.techStack.length > 0 && (
             <div className="flex items-center gap-1">
               <Layers className="w-3.5 h-3.5" />
-              <span>{project.techStack.slice(0, 2).join(', ')}</span>
+              <span>{[...new Set(project.techStack)].slice(0, 2).join(', ')}</span>
             </div>
           )}
         </div>

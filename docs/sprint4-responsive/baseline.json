@@ -1,0 +1,1103 @@
+[
+  {
+    "width": 320,
+    "route": "overview",
+    "pageWidth": 320,
+    "viewport": 320,
+    "offenders": []
+  },
+  {
+    "width": 320,
+    "route": "projects",
+    "pageWidth": 320,
+    "viewport": 320,
+    "offenders": [
+      {
+        "tag": "BUTTON",
+        "cls": "flex items-center gap-2 px-3.5 py-2 text-xs font-medium rounded-xl transition-all whitespace-nowrap text-content-secondary hover:text-content-primary hover:bg-white/[0.03] border border-transparent",
+        "text": "Not Started2",
+        "right": 367
+      },
+      {
+        "tag": "SPAN",
+        "cls": "",
+        "text": "Not Started",
+        "right": 326
+      },
+      {
+        "tag": "SPAN",
+        "cls": "text-[10px] px-1.5 py-0.5 rounded-md font-mono bg-white/[0.05] text-content-tertiary",
+        "text": "2",
+        "right": 352
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "flex items-center gap-2 px-3.5 py-2 text-xs font-medium rounded-xl transition-all whitespace-nowrap text-content-secondary hover:text-content-primary hover:bg-white/[0.03] border border-transparent",
+        "text": "On Hold1",
+        "right": 472
+      },
+      {
+        "tag": "SPAN",
+        "cls": "",
+        "text": "On Hold",
+        "right": 431
+      },
+      {
+        "tag": "SPAN",
+        "cls": "text-[10px] px-1.5 py-0.5 rounded-md font-mono bg-white/[0.05] text-content-tertiary",
+        "text": "1",
+        "right": 457
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "flex items-center gap-2 px-3.5 py-2 text-xs font-medium rounded-xl transition-all whitespace-nowrap text-content-secondary hover:text-content-primary hover:bg-white/[0.03] border border-transparent",
+        "text": "Completed9",
+        "right": 593
+      },
+      {
+        "tag": "SPAN",
+        "cls": "",
+        "text": "Completed",
+        "right": 552
+      },
+      {
+        "tag": "SPAN",
+        "cls": "text-[10px] px-1.5 py-0.5 rounded-md font-mono bg-white/[0.05] text-content-tertiary",
+        "text": "9",
+        "right": 578
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "flex items-center gap-2 px-3.5 py-2 text-xs font-medium rounded-xl transition-all whitespace-nowrap text-content-secondary hover:text-content-primary hover:bg-white/[0.03] border border-transparent",
+        "text": "Archived0",
+        "right": 702
+      },
+      {
+        "tag": "SPAN",
+        "cls": "",
+        "text": "Archived",
+        "right": 661
+      },
+      {
+        "tag": "SPAN",
+        "cls": "text-[10px] px-1.5 py-0.5 rounded-md font-mono bg-white/[0.05] text-content-tertiary",
+        "text": "0",
+        "right": 687
+      }
+    ]
+  },
+  {
+    "width": 320,
+    "route": "tasks",
+    "pageWidth": 320,
+    "viewport": 320,
+    "offenders": [
+      {
+        "tag": "BUTTON",
+        "cls": "flex items-center gap-2 px-3.5 py-2 text-xs font-medium rounded-xl transition-all whitespace-nowrap text-content-secondary hover:text-content-primary hover:bg-white/[0.03] border border-transparent",
+        "text": "Upcoming33",
+        "right": 363
+      },
+      {
+        "tag": "SPAN",
+        "cls": "text-[10px] px-1.5 py-0.5 rounded-md font-mono bg-white/[0.05] text-content-tertiary",
+        "text": "33",
+        "right": 348
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "flex items-center gap-2 px-3.5 py-2 text-xs font-medium rounded-xl transition-all whitespace-nowrap text-content-secondary hover:text-content-primary hover:bg-white/[0.03] border border-transparent",
+        "text": "Overdue6",
+        "right": 472
+      },
+      {
+        "tag": "SPAN",
+        "cls": "",
+        "text": "Overdue",
+        "right": 429
+      },
+      {
+        "tag": "SPAN",
+        "cls": "text-[10px] px-1.5 py-0.5 rounded-md font-mono bg-accent-ember/20 text-accent-ember border border-accent-ember/30",
+        "text": "6",
+        "right": 457
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "flex items-center gap-2 px-3.5 py-2 text-xs font-medium rounded-xl transition-all whitespace-nowrap text-content-secondary hover:text-content-primary hover:bg-white/[0.03] border border-transparent",
+        "text": "Completed86",
+        "right": 600
+      },
+      {
+        "tag": "SPAN",
+        "cls": "",
+        "text": "Completed",
+        "right": 553
+      },
+      {
+        "tag": "SPAN",
+        "cls": "text-[10px] px-1.5 py-0.5 rounded-md font-mono bg-white/[0.05] text-content-tertiary",
+        "text": "86",
+        "right": 585
+      }
+    ]
+  },
+  {
+    "width": 320,
+    "route": "calendar",
+    "pageWidth": 320,
+    "viewport": 320,
+    "offenders": [
+      {
+        "tag": "BUTTON",
+        "cls": "inline-flex items-center justify-center font-bold rounded-full transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-ring disabled:opacity-50 disabled:pointer-events-none select-none active:scale-[0.98] px-3.5 py-1.5 h-8 gap-1.5 hover:bg-surface-hover/80 text-content-secondary hover:text-content-primary text-xs",
+        "text": "Today",
+        "right": 323
+      }
+    ]
+  },
+  {
+    "width": 320,
+    "route": "academics",
+    "pageWidth": 320,
+    "viewport": 320,
+    "offenders": [
+      {
+        "tag": "BUTTON",
+        "cls": "inline-flex items-center justify-center font-bold rounded-full transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-ring disabled:opacity-50 disabled:pointer-events-none select-none active:scale-[0.98] text-xs px-3.5 py-1.5 h-8 bg-gradient-to-br from-[#F5C8BC] to-[#EAA999] text-[#2E1813] dark:text-[#2E1813] shadow-[0_8px_22px_-10px_rgba(245,200,188,0.6)] hover:brightness-105 border border-white/20 gap-1.5",
+        "text": "New Semester",
+        "right": 402
+      },
+      {
+        "tag": "svg",
+        "cls": {},
+        "text": "",
+        "right": 324
+      },
+      {
+        "tag": "path",
+        "cls": {},
+        "text": "",
+        "right": 322
+      },
+      {
+        "tag": "SPAN",
+        "cls": "",
+        "text": "New Semester",
+        "right": 387
+      }
+    ]
+  },
+  {
+    "width": 320,
+    "route": "goals",
+    "pageWidth": 320,
+    "viewport": 320,
+    "offenders": [
+      {
+        "tag": "BUTTON",
+        "cls": "flex items-center gap-2 px-3.5 py-2 text-xs font-semibold rounded-xl transition-all capitalize whitespace-nowrap text-content-secondary hover:text-white hover:bg-white/[0.03] border border-transparent",
+        "text": "paused0",
+        "right": 383
+      },
+      {
+        "tag": "SPAN",
+        "cls": "",
+        "text": "paused",
+        "right": 342
+      },
+      {
+        "tag": "SPAN",
+        "cls": "text-[10px] px-1.5 py-0.5 rounded-md font-mono bg-white/[0.05] text-content-tertiary",
+        "text": "0",
+        "right": 368
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "flex items-center gap-2 px-3.5 py-2 text-xs font-semibold rounded-xl transition-all capitalize whitespace-nowrap text-content-secondary hover:text-white hover:bg-white/[0.03] border border-transparent",
+        "text": "achieved1",
+        "right": 495
+      },
+      {
+        "tag": "SPAN",
+        "cls": "",
+        "text": "achieved",
+        "right": 454
+      },
+      {
+        "tag": "SPAN",
+        "cls": "text-[10px] px-1.5 py-0.5 rounded-md font-mono bg-white/[0.05] text-content-tertiary",
+        "text": "1",
+        "right": 480
+      }
+    ]
+  },
+  {
+    "width": 320,
+    "route": "insights",
+    "pageWidth": 320,
+    "viewport": 320,
+    "offenders": []
+  },
+  {
+    "width": 320,
+    "route": "settings",
+    "pageWidth": 320,
+    "viewport": 320,
+    "offenders": [
+      {
+        "tag": "DIV",
+        "cls": "tabs__track",
+        "text": "AppearanceProfilePreferencesData & BackupsDemo Mode",
+        "right": 626
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "tab flex items-center gap-2 ",
+        "text": "Preferences",
+        "right": 350
+      },
+      {
+        "tag": "SPAN",
+        "cls": "",
+        "text": "Preferences",
+        "right": 338
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "tab flex items-center gap-2 ",
+        "text": "Data & Backups",
+        "right": 497
+      },
+      {
+        "tag": "svg",
+        "cls": {},
+        "text": "",
+        "right": 380
+      },
+      {
+        "tag": "line",
+        "cls": {},
+        "text": "",
+        "right": 379
+      },
+      {
+        "tag": "path",
+        "cls": {},
+        "text": "",
+        "right": 379
+      },
+      {
+        "tag": "line",
+        "cls": {},
+        "text": "",
+        "right": 368
+      },
+      {
+        "tag": "line",
+        "cls": {},
+        "text": "",
+        "right": 371
+      },
+      {
+        "tag": "SPAN",
+        "cls": "",
+        "text": "Data & Backups",
+        "right": 485
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "tab flex items-center gap-2 ",
+        "text": "Demo Mode",
+        "right": 622
+      },
+      {
+        "tag": "svg",
+        "cls": {},
+        "text": "",
+        "right": 527
+      },
+      {
+        "tag": "path",
+        "cls": {},
+        "text": "",
+        "right": 524
+      },
+      {
+        "tag": "path",
+        "cls": {},
+        "text": "",
+        "right": 521
+      },
+      {
+        "tag": "path",
+        "cls": {},
+        "text": "",
+        "right": 522
+      }
+    ]
+  },
+  {
+    "width": 320,
+    "route": "projects/demo-project-1",
+    "pageWidth": 386,
+    "viewport": 320,
+    "offenders": [
+      {
+        "tag": "BUTTON",
+        "cls": "inline-flex items-center justify-center font-bold rounded-full transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-ring disabled:opacity-50 disabled:pointer-events-none select-none active:scale-[0.98] text-xs px-3.5 py-1.5 h-8 bg-accent-ember/20 text-accent-ember hover:bg-accent-ember/30 border border-accent-ember/40 gap-1.5",
+        "text": "Delete",
+        "right": 386
+      },
+      {
+        "tag": "svg",
+        "cls": {},
+        "text": "",
+        "right": 330
+      },
+      {
+        "tag": "path",
+        "cls": {},
+        "text": "",
+        "right": 328
+      },
+      {
+        "tag": "path",
+        "cls": {},
+        "text": "",
+        "right": 327
+      },
+      {
+        "tag": "path",
+        "cls": {},
+        "text": "",
+        "right": 325
+      },
+      {
+        "tag": "SPAN",
+        "cls": "",
+        "text": "Delete",
+        "right": 371
+      }
+    ]
+  },
+  {
+    "width": 320,
+    "route": "goals/demo-goal-1",
+    "pageWidth": 320,
+    "viewport": 320,
+    "offenders": []
+  },
+  {
+    "width": 360,
+    "route": "overview",
+    "pageWidth": 360,
+    "viewport": 360,
+    "offenders": []
+  },
+  {
+    "width": 360,
+    "route": "projects",
+    "pageWidth": 360,
+    "viewport": 360,
+    "offenders": [
+      {
+        "tag": "BUTTON",
+        "cls": "flex items-center gap-2 px-3.5 py-2 text-xs font-medium rounded-xl transition-all whitespace-nowrap text-content-secondary hover:text-content-primary hover:bg-white/[0.03] border border-transparent",
+        "text": "Not Started2",
+        "right": 367
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "flex items-center gap-2 px-3.5 py-2 text-xs font-medium rounded-xl transition-all whitespace-nowrap text-content-secondary hover:text-content-primary hover:bg-white/[0.03] border border-transparent",
+        "text": "On Hold1",
+        "right": 472
+      },
+      {
+        "tag": "SPAN",
+        "cls": "",
+        "text": "On Hold",
+        "right": 431
+      },
+      {
+        "tag": "SPAN",
+        "cls": "text-[10px] px-1.5 py-0.5 rounded-md font-mono bg-white/[0.05] text-content-tertiary",
+        "text": "1",
+        "right": 457
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "flex items-center gap-2 px-3.5 py-2 text-xs font-medium rounded-xl transition-all whitespace-nowrap text-content-secondary hover:text-content-primary hover:bg-white/[0.03] border border-transparent",
+        "text": "Completed9",
+        "right": 593
+      },
+      {
+        "tag": "SPAN",
+        "cls": "",
+        "text": "Completed",
+        "right": 552
+      },
+      {
+        "tag": "SPAN",
+        "cls": "text-[10px] px-1.5 py-0.5 rounded-md font-mono bg-white/[0.05] text-content-tertiary",
+        "text": "9",
+        "right": 578
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "flex items-center gap-2 px-3.5 py-2 text-xs font-medium rounded-xl transition-all whitespace-nowrap text-content-secondary hover:text-content-primary hover:bg-white/[0.03] border border-transparent",
+        "text": "Archived0",
+        "right": 702
+      },
+      {
+        "tag": "SPAN",
+        "cls": "",
+        "text": "Archived",
+        "right": 661
+      },
+      {
+        "tag": "SPAN",
+        "cls": "text-[10px] px-1.5 py-0.5 rounded-md font-mono bg-white/[0.05] text-content-tertiary",
+        "text": "0",
+        "right": 687
+      }
+    ]
+  },
+  {
+    "width": 360,
+    "route": "tasks",
+    "pageWidth": 360,
+    "viewport": 360,
+    "offenders": [
+      {
+        "tag": "BUTTON",
+        "cls": "flex items-center gap-2 px-3.5 py-2 text-xs font-medium rounded-xl transition-all whitespace-nowrap text-content-secondary hover:text-content-primary hover:bg-white/[0.03] border border-transparent",
+        "text": "Upcoming33",
+        "right": 363
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "flex items-center gap-2 px-3.5 py-2 text-xs font-medium rounded-xl transition-all whitespace-nowrap text-content-secondary hover:text-content-primary hover:bg-white/[0.03] border border-transparent",
+        "text": "Overdue6",
+        "right": 472
+      },
+      {
+        "tag": "SPAN",
+        "cls": "",
+        "text": "Overdue",
+        "right": 429
+      },
+      {
+        "tag": "SPAN",
+        "cls": "text-[10px] px-1.5 py-0.5 rounded-md font-mono bg-accent-ember/20 text-accent-ember border border-accent-ember/30",
+        "text": "6",
+        "right": 457
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "flex items-center gap-2 px-3.5 py-2 text-xs font-medium rounded-xl transition-all whitespace-nowrap text-content-secondary hover:text-content-primary hover:bg-white/[0.03] border border-transparent",
+        "text": "Completed86",
+        "right": 600
+      },
+      {
+        "tag": "SPAN",
+        "cls": "",
+        "text": "Completed",
+        "right": 553
+      },
+      {
+        "tag": "SPAN",
+        "cls": "text-[10px] px-1.5 py-0.5 rounded-md font-mono bg-white/[0.05] text-content-tertiary",
+        "text": "86",
+        "right": 585
+      }
+    ]
+  },
+  {
+    "width": 360,
+    "route": "calendar",
+    "pageWidth": 360,
+    "viewport": 360,
+    "offenders": []
+  },
+  {
+    "width": 360,
+    "route": "academics",
+    "pageWidth": 360,
+    "viewport": 360,
+    "offenders": [
+      {
+        "tag": "BUTTON",
+        "cls": "inline-flex items-center justify-center font-bold rounded-full transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-ring disabled:opacity-50 disabled:pointer-events-none select-none active:scale-[0.98] text-xs px-3.5 py-1.5 h-8 bg-gradient-to-br from-[#F5C8BC] to-[#EAA999] text-[#2E1813] dark:text-[#2E1813] shadow-[0_8px_22px_-10px_rgba(245,200,188,0.6)] hover:brightness-105 border border-white/20 gap-1.5",
+        "text": "New Semester",
+        "right": 402
+      },
+      {
+        "tag": "SPAN",
+        "cls": "",
+        "text": "New Semester",
+        "right": 387
+      }
+    ]
+  },
+  {
+    "width": 360,
+    "route": "goals",
+    "pageWidth": 360,
+    "viewport": 360,
+    "offenders": [
+      {
+        "tag": "BUTTON",
+        "cls": "flex items-center gap-2 px-3.5 py-2 text-xs font-semibold rounded-xl transition-all capitalize whitespace-nowrap text-content-secondary hover:text-white hover:bg-white/[0.03] border border-transparent",
+        "text": "paused0",
+        "right": 383
+      },
+      {
+        "tag": "SPAN",
+        "cls": "text-[10px] px-1.5 py-0.5 rounded-md font-mono bg-white/[0.05] text-content-tertiary",
+        "text": "0",
+        "right": 368
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "flex items-center gap-2 px-3.5 py-2 text-xs font-semibold rounded-xl transition-all capitalize whitespace-nowrap text-content-secondary hover:text-white hover:bg-white/[0.03] border border-transparent",
+        "text": "achieved1",
+        "right": 495
+      },
+      {
+        "tag": "SPAN",
+        "cls": "",
+        "text": "achieved",
+        "right": 454
+      },
+      {
+        "tag": "SPAN",
+        "cls": "text-[10px] px-1.5 py-0.5 rounded-md font-mono bg-white/[0.05] text-content-tertiary",
+        "text": "1",
+        "right": 480
+      }
+    ]
+  },
+  {
+    "width": 360,
+    "route": "insights",
+    "pageWidth": 360,
+    "viewport": 360,
+    "offenders": []
+  },
+  {
+    "width": 360,
+    "route": "settings",
+    "pageWidth": 360,
+    "viewport": 360,
+    "offenders": [
+      {
+        "tag": "DIV",
+        "cls": "tabs__track",
+        "text": "AppearanceProfilePreferencesData & BackupsDemo Mode",
+        "right": 626
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "tab flex items-center gap-2 ",
+        "text": "Data & Backups",
+        "right": 497
+      },
+      {
+        "tag": "svg",
+        "cls": {},
+        "text": "",
+        "right": 380
+      },
+      {
+        "tag": "line",
+        "cls": {},
+        "text": "",
+        "right": 379
+      },
+      {
+        "tag": "path",
+        "cls": {},
+        "text": "",
+        "right": 379
+      },
+      {
+        "tag": "line",
+        "cls": {},
+        "text": "",
+        "right": 368
+      },
+      {
+        "tag": "line",
+        "cls": {},
+        "text": "",
+        "right": 371
+      },
+      {
+        "tag": "SPAN",
+        "cls": "",
+        "text": "Data & Backups",
+        "right": 485
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "tab flex items-center gap-2 ",
+        "text": "Demo Mode",
+        "right": 622
+      },
+      {
+        "tag": "svg",
+        "cls": {},
+        "text": "",
+        "right": 527
+      },
+      {
+        "tag": "path",
+        "cls": {},
+        "text": "",
+        "right": 524
+      },
+      {
+        "tag": "path",
+        "cls": {},
+        "text": "",
+        "right": 521
+      },
+      {
+        "tag": "path",
+        "cls": {},
+        "text": "",
+        "right": 522
+      },
+      {
+        "tag": "SPAN",
+        "cls": "",
+        "text": "Demo Mode",
+        "right": 610
+      }
+    ]
+  },
+  {
+    "width": 360,
+    "route": "projects/demo-project-1",
+    "pageWidth": 386,
+    "viewport": 360,
+    "offenders": [
+      {
+        "tag": "BUTTON",
+        "cls": "inline-flex items-center justify-center font-bold rounded-full transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-ring disabled:opacity-50 disabled:pointer-events-none select-none active:scale-[0.98] text-xs px-3.5 py-1.5 h-8 bg-accent-ember/20 text-accent-ember hover:bg-accent-ember/30 border border-accent-ember/40 gap-1.5",
+        "text": "Delete",
+        "right": 386
+      },
+      {
+        "tag": "SPAN",
+        "cls": "",
+        "text": "Delete",
+        "right": 371
+      }
+    ]
+  },
+  {
+    "width": 360,
+    "route": "goals/demo-goal-1",
+    "pageWidth": 360,
+    "viewport": 360,
+    "offenders": []
+  },
+  {
+    "width": 390,
+    "route": "overview",
+    "pageWidth": 390,
+    "viewport": 390,
+    "offenders": []
+  },
+  {
+    "width": 390,
+    "route": "projects",
+    "pageWidth": 390,
+    "viewport": 390,
+    "offenders": [
+      {
+        "tag": "BUTTON",
+        "cls": "flex items-center gap-2 px-3.5 py-2 text-xs font-medium rounded-xl transition-all whitespace-nowrap text-content-secondary hover:text-content-primary hover:bg-white/[0.03] border border-transparent",
+        "text": "On Hold1",
+        "right": 472
+      },
+      {
+        "tag": "SPAN",
+        "cls": "",
+        "text": "On Hold",
+        "right": 431
+      },
+      {
+        "tag": "SPAN",
+        "cls": "text-[10px] px-1.5 py-0.5 rounded-md font-mono bg-white/[0.05] text-content-tertiary",
+        "text": "1",
+        "right": 457
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "flex items-center gap-2 px-3.5 py-2 text-xs font-medium rounded-xl transition-all whitespace-nowrap text-content-secondary hover:text-content-primary hover:bg-white/[0.03] border border-transparent",
+        "text": "Completed9",
+        "right": 593
+      },
+      {
+        "tag": "SPAN",
+        "cls": "",
+        "text": "Completed",
+        "right": 552
+      },
+      {
+        "tag": "SPAN",
+        "cls": "text-[10px] px-1.5 py-0.5 rounded-md font-mono bg-white/[0.05] text-content-tertiary",
+        "text": "9",
+        "right": 578
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "flex items-center gap-2 px-3.5 py-2 text-xs font-medium rounded-xl transition-all whitespace-nowrap text-content-secondary hover:text-content-primary hover:bg-white/[0.03] border border-transparent",
+        "text": "Archived0",
+        "right": 702
+      },
+      {
+        "tag": "SPAN",
+        "cls": "",
+        "text": "Archived",
+        "right": 661
+      },
+      {
+        "tag": "SPAN",
+        "cls": "text-[10px] px-1.5 py-0.5 rounded-md font-mono bg-white/[0.05] text-content-tertiary",
+        "text": "0",
+        "right": 687
+      }
+    ]
+  },
+  {
+    "width": 390,
+    "route": "tasks",
+    "pageWidth": 390,
+    "viewport": 390,
+    "offenders": [
+      {
+        "tag": "BUTTON",
+        "cls": "flex items-center gap-2 px-3.5 py-2 text-xs font-medium rounded-xl transition-all whitespace-nowrap text-content-secondary hover:text-content-primary hover:bg-white/[0.03] border border-transparent",
+        "text": "Overdue6",
+        "right": 472
+      },
+      {
+        "tag": "SPAN",
+        "cls": "",
+        "text": "Overdue",
+        "right": 429
+      },
+      {
+        "tag": "SPAN",
+        "cls": "text-[10px] px-1.5 py-0.5 rounded-md font-mono bg-accent-ember/20 text-accent-ember border border-accent-ember/30",
+        "text": "6",
+        "right": 457
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "flex items-center gap-2 px-3.5 py-2 text-xs font-medium rounded-xl transition-all whitespace-nowrap text-content-secondary hover:text-content-primary hover:bg-white/[0.03] border border-transparent",
+        "text": "Completed86",
+        "right": 600
+      },
+      {
+        "tag": "SPAN",
+        "cls": "",
+        "text": "Completed",
+        "right": 553
+      },
+      {
+        "tag": "SPAN",
+        "cls": "text-[10px] px-1.5 py-0.5 rounded-md font-mono bg-white/[0.05] text-content-tertiary",
+        "text": "86",
+        "right": 585
+      }
+    ]
+  },
+  {
+    "width": 390,
+    "route": "calendar",
+    "pageWidth": 390,
+    "viewport": 390,
+    "offenders": []
+  },
+  {
+    "width": 390,
+    "route": "academics",
+    "pageWidth": 390,
+    "viewport": 390,
+    "offenders": [
+      {
+        "tag": "BUTTON",
+        "cls": "inline-flex items-center justify-center font-bold rounded-full transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-ring disabled:opacity-50 disabled:pointer-events-none select-none active:scale-[0.98] text-xs px-3.5 py-1.5 h-8 bg-gradient-to-br from-[#F5C8BC] to-[#EAA999] text-[#2E1813] dark:text-[#2E1813] shadow-[0_8px_22px_-10px_rgba(245,200,188,0.6)] hover:brightness-105 border border-white/20 gap-1.5",
+        "text": "New Semester",
+        "right": 402
+      }
+    ]
+  },
+  {
+    "width": 390,
+    "route": "goals",
+    "pageWidth": 390,
+    "viewport": 390,
+    "offenders": [
+      {
+        "tag": "BUTTON",
+        "cls": "flex items-center gap-2 px-3.5 py-2 text-xs font-semibold rounded-xl transition-all capitalize whitespace-nowrap text-content-secondary hover:text-white hover:bg-white/[0.03] border border-transparent",
+        "text": "achieved1",
+        "right": 495
+      },
+      {
+        "tag": "SPAN",
+        "cls": "",
+        "text": "achieved",
+        "right": 454
+      },
+      {
+        "tag": "SPAN",
+        "cls": "text-[10px] px-1.5 py-0.5 rounded-md font-mono bg-white/[0.05] text-content-tertiary",
+        "text": "1",
+        "right": 480
+      }
+    ]
+  },
+  {
+    "width": 390,
+    "route": "insights",
+    "pageWidth": 390,
+    "viewport": 390,
+    "offenders": []
+  },
+  {
+    "width": 390,
+    "route": "settings",
+    "pageWidth": 390,
+    "viewport": 390,
+    "offenders": [
+      {
+        "tag": "DIV",
+        "cls": "tabs__track",
+        "text": "AppearanceProfilePreferencesData & BackupsDemo Mode",
+        "right": 626
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "tab flex items-center gap-2 ",
+        "text": "Data & Backups",
+        "right": 497
+      },
+      {
+        "tag": "SPAN",
+        "cls": "",
+        "text": "Data & Backups",
+        "right": 485
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "tab flex items-center gap-2 ",
+        "text": "Demo Mode",
+        "right": 622
+      },
+      {
+        "tag": "svg",
+        "cls": {},
+        "text": "",
+        "right": 527
+      },
+      {
+        "tag": "path",
+        "cls": {},
+        "text": "",
+        "right": 524
+      },
+      {
+        "tag": "path",
+        "cls": {},
+        "text": "",
+        "right": 521
+      },
+      {
+        "tag": "path",
+        "cls": {},
+        "text": "",
+        "right": 522
+      },
+      {
+        "tag": "SPAN",
+        "cls": "",
+        "text": "Demo Mode",
+        "right": 610
+      }
+    ]
+  },
+  {
+    "width": 390,
+    "route": "projects/demo-project-1",
+    "pageWidth": 390,
+    "viewport": 390,
+    "offenders": []
+  },
+  {
+    "width": 390,
+    "route": "goals/demo-goal-1",
+    "pageWidth": 390,
+    "viewport": 390,
+    "offenders": []
+  },
+  {
+    "width": 768,
+    "route": "overview",
+    "pageWidth": 768,
+    "viewport": 768,
+    "offenders": []
+  },
+  {
+    "width": 768,
+    "route": "projects",
+    "pageWidth": 768,
+    "viewport": 768,
+    "offenders": [
+      {
+        "tag": "BUTTON",
+        "cls": "flex items-center gap-2 px-3.5 py-2 text-xs font-medium rounded-xl transition-all whitespace-nowrap text-content-secondary hover:text-content-primary hover:bg-white/[0.03] border border-transparent",
+        "text": "Archived0",
+        "right": 800
+      },
+      {
+        "tag": "SPAN",
+        "cls": "text-[10px] px-1.5 py-0.5 rounded-md font-mono bg-white/[0.05] text-content-tertiary",
+        "text": "0",
+        "right": 785
+      }
+    ]
+  },
+  {
+    "width": 768,
+    "route": "tasks",
+    "pageWidth": 768,
+    "viewport": 768,
+    "offenders": []
+  },
+  {
+    "width": 768,
+    "route": "calendar",
+    "pageWidth": 768,
+    "viewport": 768,
+    "offenders": []
+  },
+  {
+    "width": 768,
+    "route": "academics",
+    "pageWidth": 768,
+    "viewport": 768,
+    "offenders": []
+  },
+  {
+    "width": 768,
+    "route": "goals",
+    "pageWidth": 768,
+    "viewport": 768,
+    "offenders": []
+  },
+  {
+    "width": 768,
+    "route": "insights",
+    "pageWidth": 768,
+    "viewport": 768,
+    "offenders": []
+  },
+  {
+    "width": 768,
+    "route": "settings",
+    "pageWidth": 768,
+    "viewport": 768,
+    "offenders": []
+  },
+  {
+    "width": 768,
+    "route": "projects/demo-project-1",
+    "pageWidth": 768,
+    "viewport": 768,
+    "offenders": []
+  },
+  {
+    "width": 768,
+    "route": "goals/demo-goal-1",
+    "pageWidth": 768,
+    "viewport": 768,
+    "offenders": []
+  },
+  {
+    "width": 1440,
+    "route": "overview",
+    "pageWidth": 1440,
+    "viewport": 1440,
+    "offenders": []
+  },
+  {
+    "width": 1440,
+    "route": "projects",
+    "pageWidth": 1440,
+    "viewport": 1440,
+    "offenders": []
+  },
+  {
+    "width": 1440,
+    "route": "tasks",
+    "pageWidth": 1440,
+    "viewport": 1440,
+    "offenders": []
+  },
+  {
+    "width": 1440,
+    "route": "calendar",
+    "pageWidth": 1440,
+    "viewport": 1440,
+    "offenders": []
+  },
+  {
+    "width": 1440,
+    "route": "academics",
+    "pageWidth": 1440,
+    "viewport": 1440,
+    "offenders": []
+  },
+  {
+    "width": 1440,
+    "route": "goals",
+    "pageWidth": 1440,
+    "viewport": 1440,
+    "offenders": []
+  },
+  {
+    "width": 1440,
+    "route": "insights",
+    "pageWidth": 1440,
+    "viewport": 1440,
+    "offenders": []
+  },
+  {
+    "width": 1440,
+    "route": "settings",
+    "pageWidth": 1440,
+    "viewport": 1440,
+    "offenders": []
+  },
+  {
+    "width": 1440,
+    "route": "projects/demo-project-1",
+    "pageWidth": 1440,
+    "viewport": 1440,
+    "offenders": []
+  },
+  {
+    "width": 1440,
+    "route": "goals/demo-goal-1",
+    "pageWidth": 1440,
+    "viewport": 1440,
+    "offenders": []
+  }
+]

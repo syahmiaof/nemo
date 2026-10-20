@@ -1,10 +1,13 @@
-import { useLayoutEffect, useRef } from 'react';
+import { useRef } from 'react';
 import gsap from 'gsap';
+import { useGSAP } from '@gsap/react';
 import type { LucideIcon } from 'lucide-react';
-import { prefersReducedMotion } from '@/design/motion';
+import { useReducedMotion } from '@/design/useReducedMotion';
+gsap.registerPlugin(useGSAP);
 export function AnimatedNumber({value}:{value:number}) {
  const ref=useRef<HTMLSpanElement>(null); const state=useRef({value});
- useLayoutEffect(()=>{const draw=()=>{if(ref.current)ref.current.textContent=Math.round(state.current.value).toLocaleString();};if(prefersReducedMotion()){state.current.value=value;draw();return;} const tween=gsap.to(state.current,{value,duration:.5,ease:'power3.out',onUpdate:draw});return()=>{tween.kill();};},[value]);
+ const reduced = useReducedMotion();
+ useGSAP(()=>{const draw=()=>{if(ref.current)ref.current.textContent=Math.round(state.current.value).toLocaleString();};if(reduced){state.current.value=value;draw();return;} gsap.to(state.current,{value,duration:.5,ease:'power3.out',onUpdate:draw});},{scope:ref,dependencies:[value,reduced],revertOnUpdate:true});
  return <span ref={ref} aria-label={String(value)}>{value.toLocaleString()}</span>;
 }
 export function PageHeading({title,description,stats=[]}:{title:string;description?:string;stats?:{label:string;value:number;icon:LucideIcon;note?:string}[]}) {

@@ -145,9 +145,10 @@ export const TasksPage: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-200">
+    <div className="tasks-page space-y-6">
+      <div className="module-heading" data-enter><h1>Tasks</h1><p>Small steps. Clear priorities.</p></div>
       {/* Top Controls */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-2xl glass-panel relative z-10">
+      <div className="page-toolbar flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-2xl glass-panel relative z-10">
         <div className="relative max-w-sm w-full">
           <Search className="w-4 h-4 absolute left-3 top-3 text-content-tertiary" />
           <Input
@@ -171,12 +172,13 @@ export const TasksPage: React.FC = () => {
       </div>
 
       {/* Segmented Filter Tabs */}
-      <div className="flex overflow-x-auto pb-1 gap-1.5 border-b border-white/[0.08]">
+      <div className="page-filters flex flex-wrap pb-1 gap-1.5">
         {filterTabs.map((tab) => {
           const isActive = activeFilter === tab.key;
           return (
             <button
               key={tab.key}
+              aria-pressed={isActive}
               onClick={() => setActiveFilter(tab.key as any)}
               className={`flex items-center gap-2 px-3.5 py-2 text-xs font-medium rounded-xl transition-all whitespace-nowrap ${
                 isActive

@@ -24,6 +24,10 @@ import { Modal } from '@/components/ui/Modal';
 import { useToast } from '@/components/ui/Toast';
 import type { WorkspaceSettings } from '@/domain/types';
 import { DemoWorkspacePanel } from './DemoWorkspacePanel';
+import gsap from 'gsap';
+import { useGSAP } from '@gsap/react';
+import { useReducedMotion } from '@/design/useReducedMotion';
+gsap.registerPlugin(useGSAP);
 
 type SettingsTab = 'profile' | 'appearance' | 'preferences' | 'data' | 'demo';
 
@@ -35,6 +39,12 @@ export const SettingsPage: React.FC = () => {
 
   // Active subtab
   const [activeTab, setActiveTab] = useState<SettingsTab>('appearance');
+  const root = useRef<HTMLDivElement>(null);
+  const reduced = useReducedMotion();
+  useGSAP(() => {
+    if (reduced) return;
+    gsap.fromTo('[data-enter]', { opacity: .4, y: 8 }, { opacity: 1, y: 0, duration: .28, stagger: .04, ease: 'power2.out', clearProps: 'opacity,transform' });
+  }, {scope: root, dependencies: [activeTab, reduced], revertOnUpdate: true});
 
   // Form states
   const [displayName, setDisplayName] = useState('');
@@ -177,10 +187,11 @@ export const SettingsPage: React.FC = () => {
   ];
 
   return (
-    <div className="settings-page space-y-6 animate-in fade-in duration-200">
+    <div ref={root} className="settings-page space-y-6">
+      <div className="module-heading"><h1>Settings</h1><p>Make this space yours.</p></div>
       {/* Tavola-Style Nested Navigation Capsule */}
       <div className="tabs" style={{ width: 'fit-content', margin: '0 auto 1.5rem auto' }}>
-        <div className="tabs__track" role="tablist">
+        <div className="tabs__track" role="tablist" aria-label="Settings sections">
           {tabs.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.key;
@@ -188,6 +199,14 @@ export const SettingsPage: React.FC = () => {
               <button
                 key={tab.key}
                 role="tab"
+                id={`settings-tab-${tab.key}`}
+                aria-controls="settings-panel"
+                tabIndex={isActive ? 0 : -1}
+                onKeyDown={event => {
+                  const index = tabs.findIndex(item => item.key === activeTab);
+                  const next = event.key === 'ArrowRight' ? (index + 1) % tabs.length : event.key === 'ArrowLeft' ? (index - 1 + tabs.length) % tabs.length : event.key === 'Home' ? 0 : event.key === 'End' ? tabs.length - 1 : -1;
+                  if (next >= 0) { event.preventDefault(); setActiveTab(tabs[next].key); document.getElementById(`settings-tab-${tabs[next].key}`)?.focus(); }
+                }}
                 aria-selected={isActive}
                 onClick={() => setActiveTab(tab.key)}
                 className={`tab flex items-center gap-2 ${isActive ? 'is-active' : ''}`}
@@ -208,6 +227,7 @@ export const SettingsPage: React.FC = () => {
         </div>
       </div>
 
+      <section id="settings-panel" role="tabpanel" aria-labelledby={`settings-tab-${activeTab}`} tabIndex={0}>
       {/* Profile Panel */}
       {activeTab === 'profile' && (
         <div data-enter className="p-6 rounded-2xl glass-panel relative z-10 space-y-5">
@@ -282,7 +302,7 @@ export const SettingsPage: React.FC = () => {
                   </div>
                 </div>
                 <p className="text-xs text-content-tertiary mt-3">
-                  Signature deep midnight aesthetic with restrained cyan, amber and ember accents.
+                  Midnight navy with warm peach and soft mint accents.
                 </p>
               </button>
 
@@ -320,7 +340,7 @@ export const SettingsPage: React.FC = () => {
                   </div>
                 </div>
                 <p className="text-xs text-gray-600 mt-3">
-                  Accessible, high-contrast daylight alternative adhering strictly to WCAG 2.2 AA.
+                  A clear daylight palette with dark text and calm surfaces.
                 </p>
               </button>
             </div>
@@ -476,6 +496,7 @@ export const SettingsPage: React.FC = () => {
         </div>
       )}
 
+      </section>
       {/* Restore Confirmation Modal */}
       <Modal
         isOpen={isRestoreModalOpen}

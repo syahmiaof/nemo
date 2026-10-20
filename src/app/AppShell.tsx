@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, ScrollRestoration } from 'react-router-dom';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from '@/db/nemoDb';
 import { getWorkspaceMode, switchWorkspace } from '@/db/workspace';
@@ -41,12 +41,13 @@ export function AppShell() {
   }, []);
   const changeMode = () => {try {switchWorkspace(demo ? 'real' : 'demo');} catch(e) {setModeError(e instanceof Error ? e.message : 'Workspace could not switch.');}};
   return <ToastProvider><div className="nemo-app">
+    <ScrollRestoration />
     <a href="#main-content" className="skip-link">Skip to content</a>
     <div className="mesh" aria-hidden="true"><i className="mesh__a"/><i className="mesh__b"/></div>
     <TavolaDock onOpenQuickAdd={() => setQuickAdd(true)} settings={settings}/>
     <div className="app-shell">
       <header className="app-header">
-        <Link to="/overview" className="wordmark" aria-label="Nemo overview"><span className="brand-mark"><svg width="26" height="26" viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M7 25V7L25 25V7" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/><circle cx="25" cy="7" r="3" fill="currentColor"/></svg></span><span>nemo.</span></Link>
+        <Link to="/overview" className="wordmark" aria-label="Nemo overview"><span className="brand-mark"><img src="/nemo-icon.svg" width="48" height="48" alt="" /></span><span>nemo<span className="brand-dot">.</span></span></Link>
         <div className="header-navigation"><TavolaTabs tabs={navTabs}/></div>
         <div className="header-tools">
           <div className="header-time-pill hidden xl:inline-flex" title="Local System Time">

@@ -127,11 +127,14 @@ export function OverviewPage() {
 
   // Completion percentage for the radial weekly gauge
   const weeklyRatio = useMemo(() => {
-    const doneCount = trend.total;
+    const cutoff = new Date();
+    cutoff.setHours(0, 0, 0, 0);
+    cutoff.setDate(cutoff.getDate() - 6);
+    const doneCount = completed.filter(task => task.completedAt && new Date(task.completedAt) >= cutoff).length;
     const totalCount = doneCount + open.length;
     if (totalCount === 0) return 0;
     return Math.min(100, Math.round((doneCount / totalCount) * 100));
-  }, [trend.total, open.length]);
+  }, [completed, open.length]);
 
   const complete = async (task: Task) => {
     try {
@@ -166,7 +169,7 @@ export function OverviewPage() {
 
   const hasData = tasks.length + projects.length + assignments.length > 0;
   const displayName =
-    settings?.displayName === 'My Workspace' ? 'Alex Morgan' : settings?.displayName || 'Alex Morgan';
+    settings?.displayName || 'My Workspace';
 
   return (
     <div className="overview-page">
@@ -333,7 +336,7 @@ export function OverviewPage() {
 
                   <div className="ticket-bottom">
                     <span className="ticket-status-label">
-                      {index === 0 ? 'In Progress' : 'Focus Slot'}
+                      {task.status === 'in_progress' ? 'In progress' : 'Focus slot'}
                     </span>
                     <button
                       type="button"

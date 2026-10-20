@@ -1,0 +1,648 @@
+{
+  "results": [
+    {
+      "width": 320,
+      "route": "/overview",
+      "pageWidth": 320,
+      "viewport": 320,
+      "outside": [],
+      "masking": [],
+      "brokenImages": 0
+    },
+    {
+      "width": 320,
+      "route": "/projects",
+      "pageWidth": 320,
+      "viewport": 320,
+      "outside": [],
+      "masking": [],
+      "brokenImages": 0
+    },
+    {
+      "width": 320,
+      "route": "/tasks",
+      "pageWidth": 320,
+      "viewport": 320,
+      "outside": [],
+      "masking": [],
+      "brokenImages": 0
+    },
+    {
+      "width": 320,
+      "route": "/calendar",
+      "pageWidth": 320,
+      "viewport": 320,
+      "outside": [],
+      "masking": [],
+      "brokenImages": 0
+    },
+    {
+      "width": 320,
+      "route": "/academics",
+      "pageWidth": 320,
+      "viewport": 320,
+      "outside": [],
+      "masking": [],
+      "brokenImages": 0
+    },
+    {
+      "width": 320,
+      "route": "/goals",
+      "pageWidth": 320,
+      "viewport": 320,
+      "outside": [],
+      "masking": [],
+      "brokenImages": 0
+    },
+    {
+      "width": 320,
+      "route": "/insights",
+      "pageWidth": 320,
+      "viewport": 320,
+      "outside": [],
+      "masking": [],
+      "brokenImages": 0
+    },
+    {
+      "width": 320,
+      "route": "/settings",
+      "pageWidth": 320,
+      "viewport": 320,
+      "outside": [],
+      "masking": [],
+      "brokenImages": 0
+    },
+    {
+      "width": 320,
+      "route": "/projects/demo-project-1",
+      "pageWidth": 320,
+      "viewport": 320,
+      "outside": [],
+      "masking": [],
+      "brokenImages": 0
+    },
+    {
+      "width": 320,
+      "route": "/goals/demo-goal-1",
+      "pageWidth": 320,
+      "viewport": 320,
+      "outside": [],
+      "masking": [],
+      "brokenImages": 0
+    },
+    {
+      "width": 360,
+      "route": "/overview",
+      "pageWidth": 360,
+      "viewport": 360,
+      "outside": [],
+      "masking": [],
+      "brokenImages": 0
+    },
+    {
+      "width": 360,
+      "route": "/projects",
+      "pageWidth": 360,
+      "viewport": 360,
+      "outside": [],
+      "masking": [],
+      "brokenImages": 0
+    },
+    {
+      "width": 360,
+      "route": "/tasks",
+      "pageWidth": 360,
+      "viewport": 360,
+      "outside": [],
+      "masking": [],
+      "brokenImages": 0
+    },
+    {
+      "width": 360,
+      "route": "/calendar",
+      "pageWidth": 360,
+      "viewport": 360,
+      "outside": [],
+      "masking": [],
+      "brokenImages": 0
+    },
+    {
+      "width": 360,
+      "route": "/academics",
+      "pageWidth": 360,
+      "viewport": 360,
+      "outside": [],
+      "masking": [],
+      "brokenImages": 0
+    },
+    {
+      "width": 360,
+      "route": "/goals",
+      "pageWidth": 360,
+      "viewport": 360,
+      "outside": [],
+      "masking": [],
+      "brokenImages": 0
+    },
+    {
+      "width": 360,
+      "route": "/insights",
+      "pageWidth": 360,
+      "viewport": 360,
+      "outside": [],
+      "masking": [],
+      "brokenImages": 0
+    },
+    {
+      "width": 360,
+      "route": "/settings",
+      "pageWidth": 360,
+      "viewport": 360,
+      "outside": [],
+      "masking": [],
+      "brokenImages": 0
+    },
+    {
+      "width": 360,
+      "route": "/projects/demo-project-1",
+      "pageWidth": 360,
+      "viewport": 360,
+      "outside": [],
+      "masking": [],
+      "brokenImages": 0
+    },
+    {
+      "width": 360,
+      "route": "/goals/demo-goal-1",
+      "pageWidth": 360,
+      "viewport": 360,
+      "outside": [],
+      "masking": [],
+      "brokenImages": 0
+    },
+    {
+      "width": 375,
+      "route": "/overview",
+      "pageWidth": 375,
+      "viewport": 375,
+      "outside": [],
+      "masking": [],
+      "brokenImages": 0
+    },
+    {
+      "width": 375,
+      "route": "/projects",
+      "pageWidth": 375,
+      "viewport": 375,
+      "outside": [],
+      "masking": [],
+      "brokenImages": 0
+    },
+    {
+      "width": 375,
+      "route": "/tasks",
+      "pageWidth": 375,
+      "viewport": 375,
+      "outside": [],
+      "masking": [],
+      "brokenImages": 0
+    },
+    {
+      "width": 375,
+      "route": "/calendar",
+      "pageWidth": 375,
+      "viewport": 375,
+      "outside": [],
+      "masking": [],
+      "brokenImages": 0
+    },
+    {
+      "width": 375,
+      "route": "/academics",
+      "pageWidth": 375,
+      "viewport": 375,
+      "outside": [],
+      "masking": [],
+      "brokenImages": 0
+    },
+    {
+      "width": 375,
+      "route": "/goals",
+      "pageWidth": 375,
+      "viewport": 375,
+      "outside": [],
+      "masking": [],
+      "brokenImages": 0
+    },
+    {
+      "width": 375,
+      "route": "/insights",
+      "pageWidth": 375,
+      "viewport": 375,
+      "outside": [],
+      "masking": [],
+      "brokenImages": 0
+    },
+    {
+      "width": 375,
+      "route": "/settings",
+      "pageWidth": 375,
+      "viewport": 375,
+      "outside": [],
+      "masking": [],
+      "brokenImages": 0
+    },
+    {
+      "width": 375,
+      "route": "/projects/demo-project-1",
+      "pageWidth": 375,
+      "viewport": 375,
+      "outside": [],
+      "masking": [],
+      "brokenImages": 0
+    },
+    {
+      "width": 375,
+      "route": "/goals/demo-goal-1",
+      "pageWidth": 375,
+      "viewport": 375,
+      "outside": [],
+      "masking": [],
+      "brokenImages": 0
+    },
+    {
+      "width": 390,
+      "route": "/overview",
+      "pageWidth": 390,
+      "viewport": 390,
+      "outside": [],
+      "masking": [],
+      "brokenImages": 0
+    },
+    {
+      "width": 390,
+      "route": "/projects",
+      "pageWidth": 390,
+      "viewport": 390,
+      "outside": [],
+      "masking": [],
+      "brokenImages": 0
+    },
+    {
+      "width": 390,
+      "route": "/tasks",
+      "pageWidth": 390,
+      "viewport": 390,
+      "outside": [],
+      "masking": [],
+      "brokenImages": 0
+    },
+    {
+      "width": 390,
+      "route": "/calendar",
+      "pageWidth": 390,
+      "viewport": 390,
+      "outside": [],
+      "masking": [],
+      "brokenImages": 0
+    },
+    {
+      "width": 390,
+      "route": "/academics",
+      "pageWidth": 390,
+      "viewport": 390,
+      "outside": [],
+      "masking": [],
+      "brokenImages": 0
+    },
+    {
+      "width": 390,
+      "route": "/goals",
+      "pageWidth": 390,
+      "viewport": 390,
+      "outside": [],
+      "masking": [],
+      "brokenImages": 0
+    },
+    {
+      "width": 390,
+      "route": "/insights",
+      "pageWidth": 390,
+      "viewport": 390,
+      "outside": [],
+      "masking": [],
+      "brokenImages": 0
+    },
+    {
+      "width": 390,
+      "route": "/settings",
+      "pageWidth": 390,
+      "viewport": 390,
+      "outside": [],
+      "masking": [],
+      "brokenImages": 0
+    },
+    {
+      "width": 390,
+      "route": "/projects/demo-project-1",
+      "pageWidth": 390,
+      "viewport": 390,
+      "outside": [],
+      "masking": [],
+      "brokenImages": 0
+    },
+    {
+      "width": 390,
+      "route": "/goals/demo-goal-1",
+      "pageWidth": 390,
+      "viewport": 390,
+      "outside": [],
+      "masking": [],
+      "brokenImages": 0
+    },
+    {
+      "width": 430,
+      "route": "/overview",
+      "pageWidth": 430,
+      "viewport": 430,
+      "outside": [],
+      "masking": [],
+      "brokenImages": 0
+    },
+    {
+      "width": 430,
+      "route": "/projects",
+      "pageWidth": 430,
+      "viewport": 430,
+      "outside": [],
+      "masking": [],
+      "brokenImages": 0
+    },
+    {
+      "width": 430,
+      "route": "/tasks",
+      "pageWidth": 430,
+      "viewport": 430,
+      "outside": [],
+      "masking": [],
+      "brokenImages": 0
+    },
+    {
+      "width": 430,
+      "route": "/calendar",
+      "pageWidth": 430,
+      "viewport": 430,
+      "outside": [],
+      "masking": [],
+      "brokenImages": 0
+    },
+    {
+      "width": 430,
+      "route": "/academics",
+      "pageWidth": 430,
+      "viewport": 430,
+      "outside": [],
+      "masking": [],
+      "brokenImages": 0
+    },
+    {
+      "width": 430,
+      "route": "/goals",
+      "pageWidth": 430,
+      "viewport": 430,
+      "outside": [],
+      "masking": [],
+      "brokenImages": 0
+    },
+    {
+      "width": 430,
+      "route": "/insights",
+      "pageWidth": 430,
+      "viewport": 430,
+      "outside": [],
+      "masking": [],
+      "brokenImages": 0
+    },
+    {
+      "width": 430,
+      "route": "/settings",
+      "pageWidth": 430,
+      "viewport": 430,
+      "outside": [],
+      "masking": [],
+      "brokenImages": 0
+    },
+    {
+      "width": 430,
+      "route": "/projects/demo-project-1",
+      "pageWidth": 430,
+      "viewport": 430,
+      "outside": [],
+      "masking": [],
+      "brokenImages": 0
+    },
+    {
+      "width": 430,
+      "route": "/goals/demo-goal-1",
+      "pageWidth": 430,
+      "viewport": 430,
+      "outside": [],
+      "masking": [],
+      "brokenImages": 0
+    },
+    {
+      "width": 768,
+      "route": "/overview",
+      "pageWidth": 768,
+      "viewport": 768,
+      "outside": [],
+      "masking": [],
+      "brokenImages": 0
+    },
+    {
+      "width": 768,
+      "route": "/projects",
+      "pageWidth": 768,
+      "viewport": 768,
+      "outside": [],
+      "masking": [],
+      "brokenImages": 0
+    },
+    {
+      "width": 768,
+      "route": "/tasks",
+      "pageWidth": 768,
+      "viewport": 768,
+      "outside": [],
+      "masking": [],
+      "brokenImages": 0
+    },
+    {
+      "width": 768,
+      "route": "/calendar",
+      "pageWidth": 768,
+      "viewport": 768,
+      "outside": [],
+      "masking": [],
+      "brokenImages": 0
+    },
+    {
+      "width": 768,
+      "route": "/academics",
+      "pageWidth": 768,
+      "viewport": 768,
+      "outside": [
+        {
+          "tag": "BUTTON",
+          "cls": "inline-flex items-center justify-center font-bold rounded-full transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-ring disabled:opacity-50 disabled:pointer-events-none select-none active:scale-[0.98] text-xs px-3.5 py-1.5 h-8 bg-gradient-to-br from-[#F5C8BC] to-[#EAA999] text-[#2E1813] dark:text-[#2E1813] shadow-[0_8px_22px_-10px_rgba(245,200,188,0.6)] hover:brightness-105 border border-white/20 gap-1.5",
+          "text": "New Semester",
+          "right": 794
+        },
+        {
+          "tag": "SPAN",
+          "cls": "",
+          "text": "New Semester",
+          "right": 779
+        }
+      ],
+      "masking": [],
+      "brokenImages": 0
+    },
+    {
+      "width": 768,
+      "route": "/goals",
+      "pageWidth": 768,
+      "viewport": 768,
+      "outside": [],
+      "masking": [],
+      "brokenImages": 0
+    },
+    {
+      "width": 768,
+      "route": "/insights",
+      "pageWidth": 768,
+      "viewport": 768,
+      "outside": [],
+      "masking": [],
+      "brokenImages": 0
+    },
+    {
+      "width": 768,
+      "route": "/settings",
+      "pageWidth": 768,
+      "viewport": 768,
+      "outside": [],
+      "masking": [],
+      "brokenImages": 0
+    },
+    {
+      "width": 768,
+      "route": "/projects/demo-project-1",
+      "pageWidth": 768,
+      "viewport": 768,
+      "outside": [],
+      "masking": [],
+      "brokenImages": 0
+    },
+    {
+      "width": 768,
+      "route": "/goals/demo-goal-1",
+      "pageWidth": 768,
+      "viewport": 768,
+      "outside": [],
+      "masking": [],
+      "brokenImages": 0
+    },
+    {
+      "width": 1440,
+      "route": "/overview",
+      "pageWidth": 1440,
+      "viewport": 1440,
+      "outside": [],
+      "masking": [],
+      "brokenImages": 0
+    },
+    {
+      "width": 1440,
+      "route": "/projects",
+      "pageWidth": 1440,
+      "viewport": 1440,
+      "outside": [],
+      "masking": [],
+      "brokenImages": 0
+    },
+    {
+      "width": 1440,
+      "route": "/tasks",
+      "pageWidth": 1440,
+      "viewport": 1440,
+      "outside": [],
+      "masking": [],
+      "brokenImages": 0
+    },
+    {
+      "width": 1440,
+      "route": "/calendar",
+      "pageWidth": 1440,
+      "viewport": 1440,
+      "outside": [],
+      "masking": [],
+      "brokenImages": 0
+    },
+    {
+      "width": 1440,
+      "route": "/academics",
+      "pageWidth": 1440,
+      "viewport": 1440,
+      "outside": [],
+      "masking": [],
+      "brokenImages": 0
+    },
+    {
+      "width": 1440,
+      "route": "/goals",
+      "pageWidth": 1440,
+      "viewport": 1440,
+      "outside": [],
+      "masking": [],
+      "brokenImages": 0
+    },
+    {
+      "width": 1440,
+      "route": "/insights",
+      "pageWidth": 1440,
+      "viewport": 1440,
+      "outside": [],
+      "masking": [],
+      "brokenImages": 0
+    },
+    {
+      "width": 1440,
+      "route": "/settings",
+      "pageWidth": 1440,
+      "viewport": 1440,
+      "outside": [],
+      "masking": [],
+      "brokenImages": 0
+    },
+    {
+      "width": 1440,
+      "route": "/projects/demo-project-1",
+      "pageWidth": 1440,
+      "viewport": 1440,
+      "outside": [],
+      "masking": [],
+      "brokenImages": 0
+    },
+    {
+      "width": 1440,
+      "route": "/goals/demo-goal-1",
+      "pageWidth": 1440,
+      "viewport": 1440,
+      "outside": [],
+      "masking": [],
+      "brokenImages": 0
+    }
+  ],
+  "errors": []
+}

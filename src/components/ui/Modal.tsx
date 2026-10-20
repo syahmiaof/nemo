@@ -1,33 +1,39 @@
 import React, { useEffect, useLayoutEffect, useRef, useState, useId } from 'react';
 import { createPortal } from 'react-dom';
 import gsap from 'gsap';
+import { useGSAP } from '@gsap/react';
 import { X } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { prefersReducedMotion } from '@/design/motion';
+import { useReducedMotion } from '@/design/useReducedMotion';
+gsap.registerPlugin(useGSAP);
 export interface ModalProps {
   isOpen: boolean; onClose: () => void; title?: string; description?: string;
+  presentation?: 'dialog' | 'sheet';
   children: React.ReactNode; maxWidth?: 'sm' | 'md' | 'lg' | 'xl' | '2xl';
 }
 let openModals = 0;
 let savedOverflow = '';
-export function Modal({ isOpen, onClose, title, description, children, maxWidth = 'md' }: ModalProps) {
+export function Modal({ isOpen, onClose, title, description, children, maxWidth = 'md', presentation = 'dialog' }: ModalProps) {
   const [present, setPresent] = useState(isOpen);
   const panel = useRef<HTMLDivElement>(null);
   const overlay = useRef<HTMLDivElement>(null);
   const closeRef = useRef(onClose); closeRef.current = onClose;
   const headingId = useId();
+  const descriptionId = useId();
+  const reduced = useReducedMotion();
   useLayoutEffect(() => { if (isOpen) setPresent(true); }, [isOpen]);
-  useLayoutEffect(() => {
+  useGSAP(() => {
     if (!present || !panel.current || !overlay.current) return;
-    const context = gsap.context(() => {
-      const duration = prefersReducedMotion() ? 0 : isOpen ? .32 : .16;
-      if (isOpen) {
-        gsap.fromTo(overlay.current, { opacity: 0 }, { opacity: 1, duration });
-        gsap.fromTo(panel.current, { y: prefersReducedMotion() ? 0 : 14, scale: prefersReducedMotion() ? 1 : .985 }, { y: 0, scale: 1, duration, ease: 'power3.out' });
-      } else gsap.to(overlay.current, { opacity: 0, duration, onComplete: () => setPresent(false) });
-    });
-    return () => context.revert();
-  }, [isOpen, present]);
+    if (reduced) { if (!isOpen) setPresent(false); return; }
+    if (isOpen) {
+      gsap.fromTo(overlay.current, { opacity: 0 }, { opacity: 1, duration: .22, ease: 'power2.out', clearProps: 'opacity' });
+      gsap.fromTo(panel.current, { y: 8, scale: .96 }, { y: 0, scale: 1, duration: .3, ease: 'back.out(1.15)', clearProps: 'transform' });
+    } else {
+      const timeline = gsap.timeline({ onComplete: () => setPresent(false) });
+      timeline.to(panel.current, { y: 11, scale: .985, duration: .18, ease: 'power2.in' }, 0)
+        .to(overlay.current, { opacity: 0, duration: .18, ease: 'power2.in' }, 0);
+    }
+  }, { scope: overlay, dependencies: [isOpen, present, reduced], revertOnUpdate: true });
   useEffect(() => {
     if (!present) return;
     const previous = document.activeElement as HTMLElement | null;
@@ -53,9 +59,9 @@ export function Modal({ isOpen, onClose, title, description, children, maxWidth 
   }, [present]);
   if (!present) return null;
   const widths = { sm:'max-w-sm',md:'max-w-md',lg:'max-w-lg',xl:'max-w-xl','2xl':'max-w-2xl' };
-  return createPortal(<div ref={overlay} data-modal-overlay className="modal-overlay" onClick={event => { if(event.target === event.currentTarget) closeRef.current(); }}>
-    <div ref={panel} role="dialog" aria-modal="true" aria-labelledby={title ? headingId : undefined} aria-label={title ? undefined : 'Dialog'} tabIndex={-1} className={cn('modal-panel', widths[maxWidth])}>
-      <div className="modal-heading"><div>{title && <h2 id={headingId}>{title}</h2>}{description && <p>{description}</p>}</div><button type="button" className="icon-button" onClick={() => closeRef.current()} aria-label="Close dialog"><X size={20}/></button></div>
+  return createPortal(<div ref={overlay} data-modal-overlay className={cn("modal-overlay", presentation === "sheet" && "modal-overlay--sheet")} onClick={event => { if(event.target === event.currentTarget) closeRef.current(); }}>
+    <div ref={panel} role="dialog" aria-modal="true" aria-labelledby={title ? headingId : undefined} aria-describedby={description ? descriptionId : undefined} aria-label={title ? undefined : 'Dialog'} tabIndex={-1} className={cn('modal-panel', widths[maxWidth])}>
+      <div className="modal-heading"><div>{title && <h2 id={headingId}>{title}</h2>}{description && <p id={descriptionId}>{description}</p>}</div><button type="button" className="icon-button" onClick={() => closeRef.current()} aria-label="Close dialog"><X size={20}/></button></div>
       <div className="p-6 overflow-y-auto space-y-4">{children}</div>
     </div>
   </div>,document.body);

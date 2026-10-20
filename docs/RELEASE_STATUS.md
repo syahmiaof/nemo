@@ -1,22 +1,46 @@
-# Nemo — Sprint 1, Sprint 2 & Sprint 3 Release Status
+# Nemo — Release Status
 ## Sprint 1: Functional Audit & System Repair
 ## Sprint 2: Data Reliability, Offline & Recovery
 ## Sprint 3: Performance, Accessibility & Cross-Browser Hardening
+## Sprint 4: Premium Product UI, Mobile Rescue & Brand Integration
 
 ## Executive Summary
-All major UI/UX redesign and Tavola aesthetic reconstruction remain paused per product directive to prioritize functional excellence, database integrity, deterministic performance, cross-browser compatibility, and WCAG accessibility.
+Nemo is an offline-first personal productivity workspace designed for genuine production use.
 
 - **Sprint 1** established functional correctness, edge-case rectification, and initial Playwright E2E coverage.
 - **Sprint 2** hardened IndexedDB transactional safety, atomic multi-table cascades, orphan prevention, full-fidelity backup recovery, 100% offline PWA precaching, and zero-data-egress privacy.
-- **Sprint 3** delivered algorithmic performance optimization ($O(M+T)$ map indexing, `useDeferredValue`, 50-item progressive slicing), verified stress scalability up to 10,000 tasks/13,450 entities, achieved 100% pass across 5 browser engines (Chromium, Firefox, WebKit), audited WCAG 2.2 AA accessibility (including 400% zoom reflow), enforced frontend security guards, and verified zero memory accumulation over 400 SPA view transitions.
+- **Sprint 3** delivered algorithmic performance optimization, verified stress scalability up to 10,000 tasks/13,450 entities, achieved 100% pass across 5 browser engines, audited WCAG 2.2 AA accessibility, enforced frontend security guards, and verified zero memory accumulation over 400 SPA view transitions.
+- **Sprint 4** rescued full mobile and tablet responsiveness (320px to 1920px viewports without horizontal overflow or clipping), embedded the official Nemo visual identity and typography (local offline Urbanist and Geist Mono fonts, vector flowing route logo, high-resolution OG social metadata), restored instant scroll restoration on route navigation, eliminated layout jitter and duplicate header rules, and established Tavola-grade GSAP physics across navigation tabs, interactive spline charts, and page transitions.
 
 The application has been verified through:
 - **54 Vitest unit/resilience tests** across 11 test suites.
-- **26 Playwright E2E tests** across Desktop Chrome and Mobile Chrome.
-- **40 Cross-browser matrix tests** across 5 engine targets (Chromium Desktop/Mobile, Firefox Desktop, WebKit Desktop/Mobile).
-- **Long-session memory audit:** 50 cycles / 400 SPA view transitions with -0.82 MB heap delta.
-- **TypeScript strict check:** 0 errors (`tsc --noEmit` & `tsc -b`).
-- **Production PWA build:** 16 precached assets (760.22 KiB).
+- **36 Playwright E2E tests** across Desktop Chrome and Mobile Chrome.
+- **TypeScript strict check:** 0 errors (tsc --noEmit & tsc -b).
+- **Production PWA build:** 25 precached assets (935.04 KiB).
+- **Zero data egress:** 100% local-first, zero remote calls, local fonts and assets.
+
+---
+
+## Sprint 4 Pillar Verification Summary
+
+### 1. Mobile & Viewport Usability (320px — 1920px)
+- [x] **Zero Horizontal Scroll:** 320px, 360px, 375px, 390px, 430px, 768px, 1024px, 1440px, 1920px all reflow with 0px horizontal overflow.
+- [x] **Modal Sheet Presentation:** Mobile modals render as clean bottom sheets with safe-area bottom inset padding (`env(safe-area-inset-bottom)`).
+- [x] **Mobile More Drawer:** Bottom navigation cleanly presents the 5 primary routes and opens an accessible, focus-trapped bottom sheet for secondary modules.
+- [x] **Touch Targets:** All buttons, filters, tabs, and interactive touch controls satisfy the minimum 44px touch target standard.
+- [x] **Scroll Restoration:** Integrated `<ScrollRestoration />` and route transition scroll resets to eliminate off-screen top bar issues when switching views.
+
+### 2. Official Nemo Brand & Identity
+- [x] **Logo & Wordmark:** Vector route motif (mint start node, peach finish node, ribbon path) integrated cleanly with `nemo.` wordmark and peach dot (`#eeb2a3`).
+- [x] **Local Privacy Typography:** Removed external Google CDN font dependencies; bundled local `Urbanist` and `Geist Mono` woff2 font files in `/public/fonts/`.
+- [x] **Social Open Graph Cards:** Generated and linked high-resolution 1200x630 OG image `/brand/nemo-og.png` with complete Twitter and Facebook meta tags.
+- [x] **PWA Icons & Favicons:** Updated high-resolution 192x192, 512x512, apple-touch-icon, and maskable PWA icons.
+
+### 3. Motion & GSAP Architecture
+- [x] **Dual-Edge Independent Physics (`TavolaTabs`):** Physics-driven capsule tracking with `useGSAP`, `ResizeObserver`, and fonts-ready remeasurement without text clipping.
+- [x] **Bezier Curve Spline Morphing (`TavolaSplineChart`):** Monotonic Catmull-Rom cubic splines with interactive hover tracking and animated series tweening.
+- [x] **Route Transition Orchestration (`RouteTransition`):** Coordinated entrance and exit with immediate scroll reset to top.
+- [x] **Accessibility / Reduced Motion:** Synchronous detection of `prefers-reduced-motion` and `data-reduce-motion` across all GSAP components.
 
 ---
 

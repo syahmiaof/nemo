@@ -28,7 +28,7 @@ export const CalendarPage: React.FC = () => {
   const todayStr = getTodayLocalDateString();
 
   // View mode: month, week, or agenda
-  const [viewMode, setViewMode] = useState<'month' | 'week' | 'agenda'>('month');
+  const [viewMode, setViewMode] = useState<'month' | 'week' | 'agenda'>(() => window.matchMedia('(max-width: 767px)').matches ? 'agenda' : 'month');
   const [currentDate, setCurrentDate] = useState<Date>(() => new Date());
 
   // Standalone Event creation modal
@@ -134,17 +134,15 @@ export const CalendarPage: React.FC = () => {
   // Navigation handlers
   const handlePrev = () => {
     const d = new Date(currentDate);
-    if (viewMode === 'month') d.setMonth(d.getMonth() - 1);
-    else if (viewMode === 'week') d.setDate(d.getDate() - 7);
-    else d.setMonth(d.getMonth() - 1);
+    if (viewMode === 'week') d.setDate(d.getDate() - 7);
+    else { d.setDate(1); d.setMonth(d.getMonth() - 1); }
     setCurrentDate(d);
   };
 
   const handleNext = () => {
     const d = new Date(currentDate);
-    if (viewMode === 'month') d.setMonth(d.getMonth() + 1);
-    else if (viewMode === 'week') d.setDate(d.getDate() + 7);
-    else d.setMonth(d.getMonth() + 1);
+    if (viewMode === 'week') d.setDate(d.getDate() + 7);
+    else { d.setDate(1); d.setMonth(d.getMonth() + 1); }
     setCurrentDate(d);
   };
 
@@ -206,10 +204,10 @@ export const CalendarPage: React.FC = () => {
   const weekdayNames = weekStartsOn === 1 ? ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] : ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-200">
+    <div className="calendar-page space-y-6">
       {/* Calendar Controls Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-2xl glass-panel relative z-10">
-        <div className="flex items-center gap-3">
+      <div className="page-toolbar flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-2xl glass-panel relative z-10">
+        <div className="calendar-date-controls flex items-center gap-3">
           <div className="flex items-center gap-1">
             <button
               onClick={handlePrev}
@@ -234,12 +232,13 @@ export const CalendarPage: React.FC = () => {
           </Button>
         </div>
 
-        <div className="flex items-center gap-2 self-end sm:self-center">
+        <div className="calendar-view-controls flex items-center gap-2 self-end sm:self-center">
           {/* View Mode Toggle */}
           <div className="flex p-1 rounded-xl bg-white/[0.04] border border-white/10">
             {(['month', 'week', 'agenda'] as const).map((m) => (
               <button
                 key={m}
+                aria-pressed={viewMode === m}
                 onClick={() => setViewMode(m)}
                 className={`px-3 py-1 text-xs font-semibold rounded-lg capitalize transition-all ${
                   viewMode === m
@@ -261,7 +260,7 @@ export const CalendarPage: React.FC = () => {
 
       {/* Month View Grid */}
       {viewMode === 'month' && (
-        <div className="rounded-2xl glass-panel relative overflow-hidden shadow-sm">
+        <div className="calendar-grid-scroll rounded-2xl glass-panel relative shadow-sm" tabIndex={0} role="region" aria-label="Month calendar, scroll horizontally on small screens">
           {/* Weekday headers */}
           <div className="grid grid-cols-7 border-b border-white/[0.08] bg-white/[0.02] text-center py-2.5 text-xs font-semibold text-content-secondary">
             {weekdayNames.map((d) => (
@@ -332,7 +331,7 @@ export const CalendarPage: React.FC = () => {
 
       {/* Week View Grid */}
       {viewMode === 'week' && (
-        <div className="rounded-2xl border border-border-subtle bg-surface overflow-hidden shadow-sm">
+        <div className="calendar-grid-scroll rounded-2xl border border-border-subtle bg-surface shadow-sm" tabIndex={0} role="region" aria-label="Week calendar, scroll horizontally on small screens">
           <div className="grid grid-cols-7 border-b border-border-subtle bg-surface-hover/50 text-center py-2 text-xs font-semibold text-content-secondary">
             {weekDays.map((d, i) => (
               <div key={i}>
@@ -391,18 +390,22 @@ export const CalendarPage: React.FC = () => {
       {/* Agenda View */}
       {viewMode === 'agenda' && (
         <div className="space-y-4 max-w-3xl mx-auto">
-          {projectedItems.length === 0 ? (
+          {projectedItems.filter(item => item.date.startsWith(`${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}`)).length === 0 ? (
             <div className="p-8 text-center rounded-2xl bg-surface border border-border-subtle text-content-secondary">
               No projected deadlines or events scheduled.
             </div>
           ) : (
             projectedItems
+              .filter(item => item.date.startsWith(`${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}`))
               .sort((a, b) => a.date.localeCompare(b.date))
               .map((item) => (
                 <div
                   key={item.id}
                   onClick={() => handleItemClick(item)}
-                  className="flex items-center justify-between p-4 rounded-xl bg-surface border border-border-subtle hover:border-border-emphasis transition-all cursor-pointer group"
+                  role={item.sourceType === 'event' ? undefined : 'button'}
+                  tabIndex={item.sourceType === 'event' ? undefined : 0}
+                  onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleItemClick(item); } }}
+                  className="calendar-agenda-row flex items-center justify-between gap-3 p-4 rounded-xl bg-surface border border-border-subtle hover:border-border-emphasis transition-all cursor-pointer group"
                 >
                   <div className="flex items-center gap-3">
                     <div

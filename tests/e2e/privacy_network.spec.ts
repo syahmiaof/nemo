@@ -93,8 +93,7 @@ test.describe('Sprint 2 — Privacy & Local-First Network Audit', () => {
     );
     expect(egressedData).toHaveLength(0);
 
-    // Filter out Google fonts preconnect/stylesheet if any, verify all data requests are purely local
-    const dataEgressRequests = thirdPartyRequests.filter((req) => !req.url.includes('fonts.'));
-    expect(dataEgressRequests).toHaveLength(0);
+    // Fonts are bundled too: no third-party exceptions.
+    expect(thirdPartyRequests).toHaveLength(0);
   });
 });

@@ -267,9 +267,9 @@ export const AcademicsPage: React.FC = () => {
     : assignments;
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-200">
+    <div className="academics-page space-y-6">
       {/* Top Header & Semester Selector */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl glass-panel relative z-10">
+      <div className="page-toolbar flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl glass-panel relative z-10">
         <div className="flex items-center gap-3 relative z-10">
           <div className="p-3 rounded-xl bg-white/[0.06] border border-white/10 text-accent-mint">
             <GraduationCap className="w-6 h-6" />

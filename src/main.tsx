@@ -2,6 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './app/App';
 import './index.css';
+import './design/brand.css';
+import './design/responsive.css';
 import { initializeWorkspace } from './db/workspace';
 
 async function bootstrap() {

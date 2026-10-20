@@ -1,88 +1,93 @@
 import { useLayoutEffect, useRef } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import gsap from 'gsap';
+import { useGSAP } from '@gsap/react';
 import { prefersReducedMotion } from '@/design/motion';
+import { useReducedMotion } from '@/design/useReducedMotion';
+
+gsap.registerPlugin(useGSAP);
 
 export function TavolaTabs({ tabs }: { tabs: { to: string; label: string }[] }) {
   const { pathname } = useLocation();
+  const reduced = useReducedMotion();
   const trackRef = useRef<HTMLDivElement>(null);
   const pillRef = useRef<HTMLSpanElement>(null);
-  const initialized = useRef(false);
+  const measureRef = useRef<(instant?: boolean) => void>(() => {});
+  const tabKey = tabs.map(tab => `${tab.to}:${tab.label}`).join('|');
 
-  useLayoutEffect(() => {
+  useGSAP((_context, contextSafe) => {
     const track = trackRef.current;
     const pill = pillRef.current;
-    if (!track || !pill) return;
-
+    if (!track || !pill || !contextSafe) return;
     let disposed = false;
-    let tween: gsap.core.Tween | undefined;
-
-    const measure = (instant = false) => {
+    let initialized = false;
+    let geometry = '';
+    let animation: gsap.core.Timeline | undefined;
+    const edges = { left: 0, right: 0 };
+    const draw = () => {
+      pill.style.transform = `translate3d(${edges.left}px, 0, 0)`;
+      pill.style.width = `${Math.max(0, edges.right - edges.left)}px`;
+      pill.style.opacity = '1';
+    };
+    const read = () => {
+      const active = track.querySelector<HTMLAnchorElement>('.tab.is-active');
+      return active ? { left: active.offsetLeft, right: active.offsetLeft + active.offsetWidth } : null;
+    };
+    const signature = () => {
+      const bounds = read();
+      return `${track.offsetWidth}:${bounds?.left}:${bounds?.right}`;
+    };
+    const measure = contextSafe((instant = false) => {
       if (disposed) return;
-      const active = track.querySelector<HTMLAnchorElement>('.tab.is-active') ||
-                     track.querySelector<HTMLAnchorElement>('[aria-current="page"]');
-      if (!active) {
-        pill.style.opacity = '0';
+      const target = read();
+      animation?.kill();
+      if (!target) { gsap.set(pill, { opacity: 0 }); return; }
+      geometry = signature();
+      if (instant || !initialized || prefersReducedMotion()) {
+        Object.assign(edges, target);
+        draw();
+        initialized = true;
         return;
       }
-
-      const targetX = active.offsetLeft;
-      const targetW = active.offsetWidth;
-
-      tween?.kill();
-
-      if (instant || !initialized.current || prefersReducedMotion()) {
-        gsap.set(pill, {
-          x: targetX,
-          width: targetW,
-          opacity: 1,
-        });
-        initialized.current = true;
-      } else {
-        pill.style.opacity = '1';
-        tween = gsap.to(pill, {
-          x: targetX,
-          width: targetW,
-          duration: 0.32,
-          ease: 'power3.out',
-          overwrite: 'auto',
-        });
-      }
+      // Independent edges preserve the current shape on interruption. Labels never stretch.
+      const forward = target.left >= edges.left;
+      animation = gsap.timeline({ onUpdate: draw });
+      animation.to(edges, {
+        [forward ? 'right' : 'left']: target[forward ? 'right' : 'left'],
+        duration: .34, ease: 'power3.out',
+      }, 0).to(edges, {
+        [forward ? 'left' : 'right']: target[forward ? 'left' : 'right'],
+        duration: .46, ease: 'power3.out',
+      }, .035);
+    });
+    measureRef.current = measure;
+    measure(true);
+    const remeasure = () => {
+      // ResizeObserver's first notification must not cancel a newly started navigation.
+      if (!disposed && signature() !== geometry) measure(true);
     };
-
-    // Measure immediately
-    measure();
-
-    // Re-measure when layout / fonts settle
-    const observer = new ResizeObserver(() => measure(true));
+    const observer = new ResizeObserver(remeasure);
     observer.observe(track);
-    document.fonts?.ready?.then?.(() => measure(true));
-
-    const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const settle = () => measure(true);
-    motion.addEventListener('change', settle);
-
+    track.querySelectorAll('.tab').forEach(tab => observer.observe(tab));
+    void document.fonts?.ready.then(remeasure);
     return () => {
       disposed = true;
       observer.disconnect();
-      tween?.kill();
-      motion.removeEventListener('change', settle);
+      animation?.kill();
+      measureRef.current = () => {};
     };
-  }, [pathname]);
+  }, { scope: trackRef, dependencies: [tabKey], revertOnUpdate: true });
+
+  useLayoutEffect(() => { measureRef.current(reduced); }, [pathname, reduced]);
 
   return (
     <nav className="tabs" aria-label="Main Navigation">
       <div ref={trackRef} className="tabs__track">
         <span ref={pillRef} className="tabs__indicator" aria-hidden="true" />
-        {tabs.map((tab) => (
-          <NavLink
-            key={tab.to}
-            to={tab.to}
-            className={({ isActive }) => `tab ${isActive ? 'is-active' : ''}`}
-          >
-            {tab.label}
-          </NavLink>
-        ))}
+        {tabs.map((tab) => <NavLink key={tab.to} to={tab.to}
+          className={({ isActive }) => `tab ${isActive ? 'is-active' : ''}`}>
+          {tab.label}
+        </NavLink>)}
       </div>
     </nav>
   );

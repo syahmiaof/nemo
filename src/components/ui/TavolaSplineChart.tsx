@@ -1,8 +1,11 @@
 import React, { useState, useRef, useEffect, useId, useMemo } from 'react';
 import gsap from 'gsap';
+import { useGSAP } from '@gsap/react';
 import { nearestChartIndex, normalizeChartValues, pointsToSplinePath } from '@/domain/chart';
+import { useReducedMotion } from '@/design/useReducedMotion';
 import '@/design/charts.css';
 
+gsap.registerPlugin(useGSAP);
 interface SplineChartProps {
   labels: string[];
   values: number[];
@@ -20,9 +23,7 @@ export const TavolaSplineChart: React.FC<SplineChartProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(600);
   const [hoverIndex, setHoverIndex] = useState<number | null>(null);
-  const [reduced, setReduced] = useState(() => typeof window !== 'undefined' && (
-    window.matchMedia('(prefers-reduced-motion: reduce)').matches || document.documentElement.dataset.reduceMotion === 'true'
-  ));
+  const reduced = useReducedMotion();
   const id = useId().replace(/:/g, '');
   // Content keys avoid restarting an unchanged chart on live-query renders.
   const dataKey = JSON.stringify([normalizeChartValues(values, labels.length), comparisonValues ? normalizeChartValues(comparisonValues, labels.length) : []]);
@@ -45,17 +46,7 @@ export const TavolaSplineChart: React.FC<SplineChartProps> = ({
     return () => observer.disconnect();
   }, []);
 
-  useEffect(() => {
-    const media = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const update = () => setReduced(media.matches || document.documentElement.dataset.reduceMotion === 'true');
-    const observer = new MutationObserver(update);
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-reduce-motion'] });
-    media.addEventListener('change', update);
-    update();
-    return () => { observer.disconnect(); media.removeEventListener('change', update); };
-  }, []);
-
-  useEffect(() => {
+  useGSAP(() => {
     const initial = !initialized.current;
     initialized.current = true;
     if (reduced) { frameRef.current = target; setFrame(target); return; }
@@ -64,9 +55,10 @@ export const TavolaSplineChart: React.FC<SplineChartProps> = ({
     const start = initial
       ? { main: target.main.map(() => 0), comparison: target.comparison.map(() => 0), maximum: target.maximum }
       : compatible ? previous : target;
+    frameRef.current = start;
+    setFrame(start);
     const progress = { value: 0 };
-    const context = gsap.context(() => {
-      gsap.to(progress, {
+    gsap.to(progress, {
         value: 1, duration: initial ? 0.85 : 0.5, ease: 'power2.out',
         onUpdate: () => {
           const mix = (from: number, to: number) => from + (to - from) * progress.value;
@@ -79,10 +71,8 @@ export const TavolaSplineChart: React.FC<SplineChartProps> = ({
           setFrame(next);
         },
         onComplete: () => { frameRef.current = target; setFrame(target); },
-      });
-    }, containerRef);
-    return () => context.revert();
-  }, [target, reduced]);
+    });
+  }, { scope: containerRef, dependencies: [target, reduced], revertOnUpdate: true });
 
   const padding = { left: 38, right: 20, top: 26, bottom: 34 };
   const plotWidth = Math.max(1, width - padding.left - padding.right);
@@ -103,7 +93,7 @@ export const TavolaSplineChart: React.FC<SplineChartProps> = ({
     setHoverIndex(event.key === 'Home' ? 0 : event.key === 'End' ? labels.length - 1 : Math.max(0, Math.min(labels.length - 1, (active ?? 0) + (event.key === 'ArrowLeft' ? -1 : 1))));
   };
   return (
-    <div ref={containerRef} className="nemo-chart">
+    <div ref={containerRef} className="nemo-chart" data-motion={reduced ? 'reduced' : 'full'}>
       <svg viewBox={`0 0 ${width} ${height}`} width="100%" height={height}
         className="nemo-chart__svg" tabIndex={labels.length ? 0 : -1} role="group"
         aria-label={`${seriesName} chart. Use left and right arrows, Home or End to explore.`}
@@ -111,7 +101,7 @@ export const TavolaSplineChart: React.FC<SplineChartProps> = ({
         onFocus={() => setHoverIndex(0)} onBlur={() => setHoverIndex(null)}
         onPointerMove={(event) => {
           const bounds = event.currentTarget.getBoundingClientRect();
-          setHoverIndex(nearestChartIndex((event.clientX - bounds.left) * width / bounds.width, padding.left, plotWidth, labels.length));
+          if (bounds.width > 0) setHoverIndex(nearestChartIndex((event.clientX - bounds.left) * width / bounds.width, padding.left, plotWidth, labels.length));
         }}
         onPointerLeave={(event) => { if (document.activeElement !== event.currentTarget) setHoverIndex(null); }}>
         <defs><linearGradient id={`${id}-fill`} x1="0" y1="0" x2="0" y2="1">
@@ -135,7 +125,7 @@ export const TavolaSplineChart: React.FC<SplineChartProps> = ({
       </svg>
       <p id={`${id}-description`} className="sr-only">Values in {unit}. Exact values are available in the data table below.</p>
       <span className="sr-only" aria-live="polite" aria-atomic="true">{active !== null ? `${labels[active]}: ${seriesName}, ${target.main[active]} ${unit}${target.comparison.length ? `; ${comparisonName}, ${target.comparison[active]} ${unit}` : ''}.` : ''}</span>
-      {active !== null && <div className="nemo-chart__tooltip" aria-hidden="true" style={{ left: Math.max(0, Math.min(Math.max(0, width - Math.min(228, width)), getX(active) - 114)), top: Math.max(0, getY(frame.main[active] ?? 0) - 95) }}>
+      {active !== null && <div className="nemo-chart__tooltip" aria-hidden="true" style={{ transform: `translate3d(${Math.max(0, Math.min(Math.max(0, width - Math.min(228, width)), getX(active) - 114))}px, ${Math.max(0, getY(frame.main[active] ?? 0) - 95)}px, 0)` }}>
         <strong>{labels[active]}</strong><span><i />{seriesName}<b>{target.main[active]} {unit}</b></span>
         {!!target.comparison.length && <span className="nemo-chart__tooltip-comparison"><i />{comparisonName}<b>{target.comparison[active]} {unit}</b></span>}
       </div>}

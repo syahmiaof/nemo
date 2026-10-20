@@ -61,8 +61,8 @@ export const GoalsPage: React.FC = () => {
   });
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-200">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl glass-panel relative z-10">
+    <div className="goals-page space-y-6">
+      <div className="page-toolbar flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl glass-panel relative z-10">
         <div className="flex items-center gap-3 relative z-10">
           <div className="p-3 rounded-xl bg-white/[0.06] border border-white/10 text-accent-mint">
             <Target className="w-6 h-6" />
@@ -82,7 +82,7 @@ export const GoalsPage: React.FC = () => {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1.5 border-b border-white/[0.08] pb-1 overflow-x-auto">
+      <div className="page-filters flex flex-wrap gap-1.5 pb-1">
         {(['all', 'active', 'planned', 'paused', 'achieved'] as const).map((tab) => {
           const count = goals.filter((g) => (tab === 'all' ? true : g.status === tab)).length;
           const isActive = activeTab === tab;

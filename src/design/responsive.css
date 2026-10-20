@@ -1,0 +1,120 @@
+/* Layout repairs: page content reflows; only explicitly labelled data regions scroll. */
+.app-header { grid-template-columns: minmax(130px, .8fr) minmax(0, 4fr) auto; }
+.header-navigation, .header-tools, .page-toolbar > *, .route-content .grid > * { min-width: 0; }
+.header-time-pill { flex-shrink: 0; white-space: nowrap; }
+.module-heading h1 { font-size: clamp(30px, 3vw, 42px); font-weight: 650; line-height: 1.1; letter-spacing: -.04em; }
+.module-heading p { margin-top: 8px; font-size: 14px; color: var(--text-secondary); }
+.tabs { overflow: visible; }
+.header-navigation .tabs { max-width: none; }
+.header-navigation .tab { padding-inline: clamp(10px, 1.1vw, 18px); }
+.settings-page > .tabs { width: 100% !important; background: transparent; box-shadow: none; backdrop-filter: none; }
+.settings-page .tabs__track { flex-wrap: wrap; width: 100%; gap: 6px; }
+.settings-page .tab { min-height: 44px; background: var(--glass-2); }
+.page-filters { gap: 8px; }
+.page-filters button { min-height: 44px; }
+.page-toolbar { padding-bottom: 4px; }
+.project-card { min-width: 0; }
+.project-card .project-cover img { object-fit: cover; }
+.project-card .project-body > div > div { flex-wrap: wrap; }
+.project-card .project-body { overflow-wrap: anywhere; }
+.overview-middle-grid .overview-project-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.overview-middle-grid .overview-project-grid .project-card:last-child { display: flex; }
+.overview-middle-grid .overview-project-grid .project-card:nth-child(n+3) { grid-column: 1 / -1; }
+.modal-panel { min-width: 0; }
+.modal-heading { flex-shrink: 0; }
+.modal-heading h2 { overflow-wrap: anywhere; }
+.modal-panel > .overflow-y-auto { min-height: 0; overscroll-behavior: contain; }
+.modal-panel input, .modal-panel select, .modal-panel textarea { max-width: 100%; min-width: 0; }
+.modal-panel .grid > *, .modal-panel .flex > * { min-width: 0; }
+.calendar-grid-scroll { overflow-x: auto; }
+.calendar-grid-scroll > .grid { min-width: 660px; }
+.calendar-agenda-row > div { min-width: 0; }
+.calendar-agenda-row h4, .calendar-agenda-row p { overflow-wrap: anywhere; }
+.calendar-date-controls, .calendar-view-controls { flex-wrap: wrap; }
+.calendar-date-controls h2 { min-width: 0; }
+.calendar-view-controls button, .calendar-date-controls button { min-height: 44px; }
+.calendar-date-controls button[aria-label] { min-width: 44px; }
+.route-content :is(h1,h2,h3,h4,p) { overflow-wrap: anywhere; }
+.route-content select { max-width: 100%; }
+.route-content input { min-width: 0; }
+.focus-picker-select { min-width: 0; }
+.ticket-context { flex-wrap: wrap; }
+.ticket-remove, .ticket-complete, .completion-ring { min-width: 44px; min-height: 44px; }
+.ticket-remove { display: grid; place-items: center; margin: -8px -8px -8px 0; }
+:is(button,a,input,select,textarea,[tabindex]):focus-visible { outline: 2px solid var(--accent-mint); outline-offset: 4px; }
+@media (max-width: 1280px) {
+  .header-time-pill { display: none !important; }
+}
+@media (min-width: 1001px) and (max-width: 1450px) {
+  .header-tools { gap: 6px; }
+  .wordmark { font-size: 27px; gap: 9px; }
+  .app-header { grid-template-columns: 155px minmax(0,1fr) auto; gap: 12px; }
+  .header-navigation .tab { padding-inline: 10px; font-size: 13px; }
+}
+@media (max-width: 1100px) {
+  .academics-page .page-toolbar { flex-direction: column; align-items: stretch; }
+  .academics-page .page-toolbar > .flex { flex-wrap: wrap; }
+  .overview-middle-grid { grid-template-columns: minmax(0,1fr); }
+  .overview-bottom-grid { grid-template-columns: minmax(0,1fr); }
+  .room-gauge-body { display: grid; grid-template-columns: 180px 1fr; gap: 12px 24px; text-align: left; align-items: center; }
+  .room-gauge-body > :last-child { grid-column: 1 / -1; }
+}
+@media (min-width: 768px) and (max-width: 1000px) {
+  .app-header { grid-template-columns: 1fr auto; }
+  .header-navigation .tab { padding-inline: 12px; font-size: 13px; }
+  .dock { left: 20px; right: auto; top: 50%; bottom: auto; transform: translateY(-50%); flex-direction: column; margin: 0; }
+  .focus-stack { grid-template-columns: minmax(0,1fr); }
+}
+@media (max-width: 767px) {
+  .header-time-pill { display: none; }
+  .app-shell { padding-inline: max(16px, env(safe-area-inset-left)) max(16px, env(safe-area-inset-right)); }
+  .app-header { grid-template-columns: minmax(0,1fr) auto; gap: 8px; }
+  .workspace-strip { flex-wrap: wrap; row-gap: 10px; margin-bottom: 26px; }
+  .workspace-status { max-width: 100%; font-size: 12px; }
+  .workspace-switch { font-size: 12px; min-height: 36px; margin-left: auto; }
+  .overview-primary, .overview-middle-grid, .overview-bottom-grid { gap: 18px; }
+  .overview-middle-grid .overview-project-grid { grid-template-columns: minmax(0,1fr); }
+  .room-gauge-body { display: flex; text-align: center; }
+  .page-stats { padding-block: 14px; border-block: 1px solid var(--border-subtle); gap: 16px; }
+  .page-stat dd { font-size: 27px; }
+  .page-stat dt { line-height: 1.4; }
+  .panel-heading .icon-button { width: 44px; height: 44px; }
+  .panel-heading h2 { flex-basis: calc(100% - 64px); }
+  .productivity-panel .panel-heading .segmented { order: 3; }
+  .productivity-panel .panel-heading .icon-button { order: 2; }
+  .segmented button { min-height: 36px; }
+  .chart-legend { flex-wrap: wrap; gap: 10px 18px; }
+  .section-heading { align-items: flex-start; gap: 12px; }
+  .section-heading > a { min-height: 44px; }
+  .operational-panel, .room-gauge-panel { padding: 20px; }
+  .page-toolbar > .flex { flex-wrap: wrap; }
+  .page-toolbar > .self-end { align-self: stretch; justify-content: space-between; }
+  .page-toolbar input { font-size: 16px; }
+  .page-filters > button { padding: 8px 12px; font-size: 13px; }
+  .settings-page .tab { font-size: 13px; padding: 9px 13px; }
+  .settings-page > .tabs { margin-bottom: 18px !important; }
+  .modal-overlay { padding: max(12px, env(safe-area-inset-top)) 12px max(12px, env(safe-area-inset-bottom)); }
+  .modal-panel { max-height: calc(100dvh - 32px - env(safe-area-inset-top) - env(safe-area-inset-bottom)); }
+  .modal-panel input, .modal-panel select, .modal-panel textarea { font-size: 16px; }
+  .modal-overlay--sheet { align-items: flex-end; padding: 0; }
+  .modal-overlay--sheet .modal-panel { border-radius: 26px 26px 0 0; padding-bottom: env(safe-area-inset-bottom); max-height: 90dvh; }
+  .route-content .flex > .min-w-0 { overflow-wrap: anywhere; }
+  .calendar-view-controls { justify-content: space-between; }
+  .calendar-agenda-row { flex-wrap: wrap; }
+  .calendar-agenda-row > div { flex: 1 1 190px; }
+  .route-content button[aria-label] { min-width: 40px; min-height: 40px; }
+  .route-content [class*="opacity-0"] { opacity: 1; }
+  .route-content [class*="max-w-5xl"] > .flex > .flex { flex-wrap: wrap; }
+}
+@media (max-width: 479px) {
+  .modal-panel .grid-cols-2, .modal-panel .grid-cols-3 { grid-template-columns: minmax(0,1fr); }
+  .modal-panel form > .flex, .modal-panel .border-t.flex { flex-wrap: wrap; }
+  .modal-panel form > .flex > button { flex: 1; }
+  .page-heading h1 { font-size: 32px; }
+  .page-stat dt { font-size: 11px; }
+  .calendar-date-controls { gap: 8px; }
+  .calendar-view-controls { align-self: stretch; }
+  .calendar-view-controls > div { flex: 1; }
+  .calendar-view-controls > div > button { padding-inline: 9px; }
+  .project-card .project-cover { aspect-ratio: 1.8; }
+}

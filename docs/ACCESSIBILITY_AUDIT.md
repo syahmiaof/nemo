@@ -1,4 +1,3 @@
-# Nemo — WCAG 2.2 AA Accessibility Audit Report
 
 **Sprint:** Sprint 3 — Performance, Accessibility & Cross-Browser Hardening  
 **Date:** 2026-10-20  

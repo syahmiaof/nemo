@@ -1,0 +1,39 @@
+@font-face {
+  font-family: Urbanist;
+  font-style: normal;
+  font-weight: 300 900;
+  font-display: swap;
+  src: url('/fonts/urbanist-latin.woff2') format('woff2');
+}
+@font-face {
+  font-family: Urbanist;
+  font-style: normal;
+  font-weight: 300 900;
+  font-display: swap;
+  src: url('/fonts/urbanist-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020-202F,U+20A0-20AB,U+20AD-20C4,U+2113,U+2C60-2C7F,U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Geist Mono';
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url('/fonts/geist-mono-latin.woff2') format('woff2');
+}
+.wordmark .brand-mark {
+  background: transparent;
+  box-shadow: none;
+  width: 48px;
+  height: 48px;
+  flex: 0 0 auto;
+}
+.brand-mark img { display: block; width: 100%; height: 100%; }
+.brand-dot { color: #eeb2a3; }
+[data-theme="light"] .brand-dot { color: #a24f3d; }
+.mobile-nav a, .mobile-nav button { min-height: 48px; }
+.more-modules a { min-height: 64px; }
+@media (max-width: 767px) {
+  .wordmark .brand-mark { width: 40px; height: 40px; }
+  .header-tools .icon-button, .header-tools .profile-button { min-width: 44px; width: 44px; height: 44px; }
+  .more-modules p { overflow-wrap: anywhere; }
+}
