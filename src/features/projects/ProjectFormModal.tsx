@@ -7,7 +7,7 @@ import { Select } from '@/components/ui/Select';
 import { useToast } from '@/components/ui/Toast';
 import { db } from '@/db/nemoDb';
 import { generateId } from '@/lib/ids';
-import { isValidWebUrl } from '@/lib/utils';
+import { isValidWebUrl, getProjectWebPreviewUrl } from '@/lib/utils';
 import { resizeAndCompressCover } from '@/lib/avatar';
 import type { Project, Priority, ProjectStatus } from '@/domain/types';
 
@@ -348,6 +348,21 @@ export const ProjectFormModal: React.FC<ProjectFormModalProps> = ({
           {imageBlobData && (
             <div className="mt-2 rounded-xl overflow-hidden border border-border-subtle max-h-36 w-full">
               <img src={imageBlobData} alt="Preview" className="w-full h-36 object-cover" />
+            </div>
+          )}
+          {!imageBlobData && getProjectWebPreviewUrl(liveUrl) && (
+            <div className="mt-2 rounded-xl overflow-hidden border border-accent-mint/30 bg-surface-subtle p-2 space-y-1.5">
+              <div className="flex items-center justify-between text-[11px] text-accent-mint font-medium px-1">
+                <span>Auto URL Preview (WhatsApp-style)</span>
+                <span className="text-[10px] text-content-tertiary">Generated from Live URL</span>
+              </div>
+              <div className="rounded-lg overflow-hidden border border-border-subtle max-h-36 w-full">
+                <img
+                  src={getProjectWebPreviewUrl(liveUrl)!}
+                  alt="Live URL Preview"
+                  className="w-full h-36 object-cover"
+                />
+              </div>
             </div>
           )}
         </div>

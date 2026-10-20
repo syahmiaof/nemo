@@ -19,6 +19,24 @@ export function isValidWebUrl(url?: string | null): boolean {
 }
 
 /**
+ * Returns an automatic high-resolution website screenshot preview URL
+ * (similar to WhatsApp / Slack link previews) without requiring manual upload.
+ */
+export function getProjectWebPreviewUrl(liveUrl?: string | null): string | null {
+  if (!liveUrl || typeof liveUrl !== 'string') return null;
+  const raw = liveUrl.trim();
+  if (!raw) return null;
+  const normalized = raw.startsWith('http://') || raw.startsWith('https://') ? raw : `https://${raw}`;
+  try {
+    const parsed = new URL(normalized);
+    if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') return null;
+    return `https://v1.screenshot.11ty.dev/${encodeURIComponent(parsed.href)}/opengraph/`;
+  } catch {
+    return null;
+  }
+}
+
+/**
  * Escapes XML/SVG special characters to prevent markup injection or parsing failure.
  */
 function escapeXml(unsafe: string): string {

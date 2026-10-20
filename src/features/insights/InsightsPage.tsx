@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { BarChart3, FolderKanban, CheckCircle2, BookOpen, ArrowUpRight } from 'lucide-react';
+import { BarChart3, FolderKanban, CheckCircle2, BookOpen, ArrowUpRight, Target } from 'lucide-react';
 import { db } from '@/db/nemoDb';
 import { isOverdue } from '@/lib/dates';
 import { monthlyCounts } from '@/domain/chart';
@@ -13,14 +13,20 @@ export const InsightsPage: React.FC = () => {
   const [selectedYear, setSelectedYear] = useState(currentYear);
   const [series, setSeries] = useState<'tasks' | 'projects'>('tasks');
   const data = useLiveQuery(async () => {
-    const [projects, tasks, assignments] = await Promise.all([
-      db.projects.toArray(), db.tasks.toArray(), db.assignments.toArray(),
+    const [projects, tasks, assignments, goals, milestones] = await Promise.all([
+      db.projects.toArray(),
+      db.tasks.toArray(),
+      db.assignments.toArray(),
+      db.goals.toArray(),
+      db.milestones.toArray(),
     ]);
-    return { projects, tasks, assignments };
+    return { projects, tasks, assignments, goals, milestones };
   }, []);
   const projects = data?.projects ?? [];
   const tasks = data?.tasks ?? [];
   const assignments = data?.assignments ?? [];
+  const goals = data?.goals ?? [];
+  const milestones = data?.milestones ?? [];
   const {
     years,
     values,
@@ -40,8 +46,17 @@ export const InsightsPage: React.FC = () => {
     progressAngle,
     submitted,
     graded,
+    activeGoalsCount,
+    completedGoalsCount,
+    totalMilestonesCount,
+    completedMilestonesCount,
+    goalRate,
   } = useMemo(() => {
-    const yrs = new Set([currentYear, selectedYear]);
+    const yrs = new Set<number>();
+    for (let y = currentYear - 4; y <= currentYear + 4; y++) {
+      yrs.add(y);
+    }
+    yrs.add(selectedYear);
     for (let i = 0; i < projects.length; i++) {
       const item = projects[i];
       if (item.createdAt) {
@@ -97,6 +112,12 @@ export const InsightsPage: React.FC = () => {
       if (a.status === 'graded') gCount++;
     }
 
+    const aGoals = goals.filter((g) => g.status === 'active').length;
+    const cGoals = goals.filter((g) => g.status === 'achieved').length;
+    const tMilestones = milestones.length;
+    const cMilestones = milestones.filter((m) => m.completedAt || (m as any).completed).length;
+    const gRate = goals.length ? Math.round((cGoals / goals.length) * 100) : 0;
+
     return {
       years: yrs,
       values: vals,
@@ -116,8 +137,13 @@ export const InsightsPage: React.FC = () => {
       progressAngle: pAngle,
       submitted: sCount,
       graded: gCount,
+      activeGoalsCount: aGoals,
+      completedGoalsCount: cGoals,
+      totalMilestonesCount: tMilestones,
+      completedMilestonesCount: cMilestones,
+      goalRate: gRate,
     };
-  }, [projects, tasks, assignments, currentYear, selectedYear, series]);
+  }, [projects, tasks, assignments, goals, milestones, currentYear, selectedYear, series]);
 
   return (
     <div className="insights-page">
@@ -126,6 +152,7 @@ export const InsightsPage: React.FC = () => {
         <div className="insights-head-stat"><span className="insights-stat-icon"><FolderKanban size={22} /></span><div><strong>{projects.length}</strong><span>All-time projects</span></div></div>
         <div className="insights-head-stat"><span className="insights-stat-icon"><BarChart3 size={22} /></span><div><strong>{activeProjects}</strong><span>Active right now</span></div></div>
         <div className="insights-head-stat"><span className="insights-stat-icon"><CheckCircle2 size={22} /></span><div><strong>{done}</strong><span>Tasks completed</span></div></div>
+        <div className="insights-head-stat"><span className="insights-stat-icon"><Target size={22} /></span><div><strong>{activeGoalsCount}</strong><span>Active goals</span></div></div>
         <label className="insights-year"><span className="sr-only">Reporting year</span><select value={selectedYear} onChange={(event) => setSelectedYear(Number(event.target.value))}>{[...years].sort((a, b) => b - a).map((year) => <option key={year}>{year}</option>)}</select></label>
       </header>
 
@@ -163,9 +190,10 @@ export const InsightsPage: React.FC = () => {
         </section>
       </div>
 
-      <div className="insights-bottom-grid">
+      <div className="insights-bottom-grid grid grid-cols-1 md:grid-cols-3 gap-4">
         <section className="glass-panel insights-bottom-panel"><div className="insights-panel-heading"><h2>Project momentum</h2><ArrowUpRight size={22} aria-hidden="true" /></div><div className="insights-bottom-metrics"><div><strong>{createdInYear}</strong><span>Created in {selectedYear}</span></div><div><strong>{monthlyCounts(projects.map((project) => project.completedAt), selectedYear).reduce((sum, value) => sum + value, 0)}</strong><span>Completed in {selectedYear}</span></div><div><strong>{activeProjects}</strong><span>In progress now</span></div></div></section>
-        <section className="glass-panel insights-bottom-panel"><div className="insights-panel-heading"><h2>Academic progress</h2><BookOpen size={22} aria-hidden="true" /></div><div className="insights-bottom-metrics"><div><strong>{assignments.length}</strong><span>Total assignments</span></div><div><strong>{submitted}</strong><span>Submitted or graded</span></div><div><strong>{graded}</strong><span>Graded</span></div></div></section>
+        <section className="glass-panel insights-bottom-panel"><div className="insights-panel-heading"><h2>Academic progress</h2><BookOpen size={22} aria-hidden="true" /></div><div className="insights-bottom-metrics"><div><strong>{assignments.length}</strong><span>Total assignments</span></div><div><strong>{submitted}</strong><span>Submitted / graded</span></div><div><strong>{graded}</strong><span>Graded</span></div></div></section>
+        <section className="glass-panel insights-bottom-panel"><div className="insights-panel-heading"><h2>Goal ambition</h2><Target size={22} aria-hidden="true" /></div><div className="insights-bottom-metrics"><div><strong>{activeGoalsCount}</strong><span>Active goals</span></div><div><strong>{completedGoalsCount}</strong><span>Goals reached</span></div><div><strong>{completedMilestonesCount}/{totalMilestonesCount}</strong><span>Milestones ({goalRate}%)</span></div></div></section>
       </div>
       <p className="insights-source">Calculated from your workspace on this device. No simulated metrics.</p>
     </div>

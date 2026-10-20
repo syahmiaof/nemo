@@ -477,12 +477,19 @@ class SyncEngine {
           });
           targetAvatarBlobId = newBlobId;
         }
-      } else if (remoteProfile.avatar_url === null && targetAvatarBlobId) {
-        const existing = await db.assetBlobs.where('ownerType').equals('profile').toArray();
-        for (const item of existing) {
-          await db.assetBlobs.delete(item.id);
+      } else if (!remoteProfile.avatar_url && targetAvatarBlobId) {
+        // If remote has no avatar, but local does, push the local avatar up to cloud
+        const localBlob = await db.assetBlobs.get(targetAvatarBlobId);
+        if (localBlob?.data) {
+          try {
+            await supabase
+              .from('profiles')
+              .update({ avatar_url: localBlob.data, updated_at: new Date().toISOString() })
+              .eq('id', userId);
+          } catch (pushErr) {
+            console.warn('Could not push local avatar to remote profile:', pushErr);
+          }
         }
-        targetAvatarBlobId = undefined;
       }
 
       await db.settings.update('default', {

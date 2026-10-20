@@ -63,13 +63,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
 
     // 1. Check existing session on cold start
-    supabase.auth.getSession().then(({ data: { session: initialSession } }) => {
+    supabase.auth.getSession().then(async ({ data: { session: initialSession } }) => {
       setSession(initialSession);
       const currentUser = initialSession?.user ?? null;
       setUser(currentUser);
 
       if (currentUser?.email) {
-        const approved = currentUser.email.toLowerCase() === APPROVED_OWNER_EMAIL.toLowerCase();
+        const approved = await checkOwnerApproval(currentUser.email);
         setIsApprovedOwner(approved);
         if (approved) {
           syncEngine.setAuthenticatedUser(currentUser.id, currentUser.email);

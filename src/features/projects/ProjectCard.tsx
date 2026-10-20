@@ -4,7 +4,7 @@ import { Calendar, Layers } from 'lucide-react';
 import { PriorityBadge, StatusBadge } from '@/components/ui/Badge';
 import { db } from '@/db/nemoDb';
 import { formatDisplayDate } from '@/lib/dates';
-import { generateTypographicCover } from '@/lib/utils';
+import { generateTypographicCover, getProjectWebPreviewUrl } from '@/lib/utils';
 import type { Project, Milestone, Task } from '@/domain/types';
 
 interface ProjectCardProps {
@@ -21,22 +21,24 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
   viewMode = 'grid',
 }) => {
   const fallback = useMemo(() => generateTypographicCover(project.title, project.category), [project.title, project.category]);
-  const [coverUrl, setCoverUrl] = useState<string>(fallback);
+  const webPreview = useMemo(() => getProjectWebPreviewUrl(project.liveUrl), [project.liveUrl]);
+  const defaultCover = webPreview || fallback;
+  const [coverUrl, setCoverUrl] = useState<string>(defaultCover);
 
   useEffect(() => {
     let isMounted = true;
-    setCoverUrl(fallback);
+    setCoverUrl(defaultCover);
     if (project.previewBlobId) {
       db.assetBlobs.get(project.previewBlobId).then((blob) => {
         if (isMounted && blob) {
           setCoverUrl(blob.data);
         }
-      }).catch(() => { if (isMounted) setCoverUrl(fallback); });
+      }).catch(() => { if (isMounted) setCoverUrl(defaultCover); });
     }
     return () => {
       isMounted = false;
     };
-  }, [project.previewBlobId, fallback]);
+  }, [project.previewBlobId, defaultCover]);
 
   // Derive genuine progress according to Invariant 6:
   // 1. If milestones exist, use completed/total milestones and label basis

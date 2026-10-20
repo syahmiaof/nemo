@@ -24,7 +24,7 @@ import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { useToast } from '@/components/ui/Toast';
 import { formatDisplayDate } from '@/lib/dates';
 import { generateId } from '@/lib/ids';
-import { generateTypographicCover, isValidWebUrl } from '@/lib/utils';
+import { generateTypographicCover, isValidWebUrl, getProjectWebPreviewUrl } from '@/lib/utils';
 import { ProjectFormModal } from './ProjectFormModal';
 import type { Milestone, Task } from '@/domain/types';
 
@@ -65,7 +65,8 @@ export const ProjectDetailPage: React.FC = () => {
         if (isMounted && blob) setCoverUrl(blob.data);
       });
     } else if (project) {
-      setCoverUrl(generateTypographicCover(project.title, project.category));
+      const webPreview = getProjectWebPreviewUrl(project.liveUrl);
+      setCoverUrl(webPreview || generateTypographicCover(project.title, project.category));
     }
     return () => {
       isMounted = false;

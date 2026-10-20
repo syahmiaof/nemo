@@ -18,6 +18,7 @@ import { useAuth } from '@/features/auth/AuthContext';
 import { useSync } from '@/sync/useSync';
 import { syncEngine } from '@/sync/syncEngine';
 import { useToast } from '@/components/ui/Toast';
+import { AdminMembersPanel } from './AdminMembersPanel';
 
 export const AccountSyncPanel: React.FC = () => {
   const { user, openAuthModal, signOut, updatePassword, currentPassword } = useAuth();
@@ -382,6 +383,11 @@ export const AccountSyncPanel: React.FC = () => {
           </div>
         )}
       </div>
+
+      {/* Admin Panel: Only for Primary Workspace Owner */}
+      {user && user.email?.toLowerCase() === 'syahmiaof123@gmail.com' && (
+        <AdminMembersPanel />
+      )}
     </div>
   );
 };

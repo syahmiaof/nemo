@@ -4,7 +4,6 @@ import {
   Search,
   Plus,
   Bot,
-  Crosshair,
   Settings,
 } from 'lucide-react';
 import type { WorkspaceSettings } from '@/domain/types';
@@ -58,21 +57,9 @@ export const TavolaDock: React.FC<TavolaDockProps> = ({
         <span className="dock__tip">Ask Nemo</span>
       </button>
 
-      {/* 4. Today's Focus Shortcut */}
-      <NavLink
-        to="/overview#todays-focus"
-        className={({ isActive }) =>
-          `dock__btn ${isActive ? 'is-active text-accent-ember' : 'text-content-secondary hover:text-content-primary'} hover:scale-105 active:scale-95 transition-all`
-        }
-        aria-label="Today's Focus"
-      >
-        <Crosshair className="w-5 h-5 stroke-[2.2]" />
-        <span className="dock__tip">Today's Focus</span>
-      </NavLink>
-
       <span className="w-6 h-[1px] bg-border-subtle mx-auto my-0.5" aria-hidden="true" />
 
-      {/* 5. Settings Link */}
+      {/* 4. Settings Link */}
       <NavLink
         to="/settings"
         className={({ isActive }) =>

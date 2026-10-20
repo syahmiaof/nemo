@@ -23,8 +23,8 @@ const navTabs = [
   { to: '/overview', label: 'Overview' },
   { to: '/projects', label: 'Projects' },
   { to: '/tasks', label: 'Tasks' },
-  { to: '/calendar', label: 'Calendar' },
   { to: '/academics', label: 'Academics' },
+  { to: '/calendar', label: 'Calendar' },
   { to: '/goals', label: 'Goals' },
   { to: '/insights', label: 'Insights' },
 ];

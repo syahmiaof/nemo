@@ -5,6 +5,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Plus,
+  Calendar,
 } from 'lucide-react';
 import { db } from '@/db/nemoDb';
 import { Button } from '@/components/ui/Button';
@@ -192,10 +193,35 @@ export const CalendarPage: React.FC = () => {
     success('Event created');
   };
 
-  const monthYearLabel = currentDate.toLocaleString('en-US', {
-    month: 'long',
-    year: 'numeric',
-  });
+  const todayActual = new Date();
+  const todayDisplayString = `Today is ${todayActual.getDate()} ${todayActual.toLocaleString('en-US', { month: 'long' })} ${todayActual.getFullYear()}`;
+
+  const monthsList = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+  ];
+
+  const currentYearNum = currentDate.getFullYear();
+  const currentMonthNum = currentDate.getMonth();
+
+  const yearsRange = useMemo(() => {
+    const list: number[] = [];
+    const base = new Date().getFullYear();
+    for (let y = base - 4; y <= base + 5; y++) {
+      list.push(y);
+    }
+    return list;
+  }, []);
+
+  const handleMonthChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newMonth = parseInt(e.target.value, 10);
+    setCurrentDate(new Date(currentYearNum, newMonth, 1));
+  };
+
+  const handleYearChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newYear = parseInt(e.target.value, 10);
+    setCurrentDate(new Date(newYear, currentMonthNum, 1));
+  };
 
   // Days for month grid
   const monthDays = useMemo(() => {
@@ -213,29 +239,57 @@ export const CalendarPage: React.FC = () => {
     <div className="calendar-page space-y-6">
       {/* Calendar Controls Bar */}
       <div className="page-toolbar flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-2xl glass-panel relative z-10">
-        <div className="calendar-date-controls flex items-center gap-3">
+        <div className="calendar-date-controls flex flex-wrap items-center gap-2.5">
           <div className="flex items-center gap-1">
             <button
               onClick={handlePrev}
-              className="p-1.5 rounded-lg text-content-secondary hover:text-content-primary hover:bg-white/[0.08] transition-colors"
-              aria-label="Previous"
+              className="p-1.5 rounded-lg text-content-secondary hover:text-content-primary hover:bg-white/[0.08] transition-colors cursor-pointer"
+              aria-label="Previous month"
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
             <button
               onClick={handleNext}
-              className="p-1.5 rounded-lg text-content-secondary hover:text-content-primary hover:bg-white/[0.08] transition-colors"
-              aria-label="Next"
+              className="p-1.5 rounded-lg text-content-secondary hover:text-content-primary hover:bg-white/[0.08] transition-colors cursor-pointer"
+              aria-label="Next month"
             >
               <ChevronRight className="w-5 h-5" />
             </button>
           </div>
 
-          <h2 className="text-base font-bold text-content-primary min-w-[140px] tracking-tight">{monthYearLabel}</h2>
+          {/* Month & Year Selectors for instant jumping */}
+          <div className="flex items-center gap-1.5">
+            <select
+              value={currentMonthNum}
+              onChange={handleMonthChange}
+              className="px-2.5 py-1.5 rounded-xl bg-surface border border-border-subtle text-xs font-bold text-content-primary cursor-pointer hover:border-white/20 transition-colors"
+              aria-label="Select month"
+            >
+              {monthsList.map((m, idx) => (
+                <option key={m} value={idx}>{m}</option>
+              ))}
+            </select>
+
+            <select
+              value={currentYearNum}
+              onChange={handleYearChange}
+              className="px-2.5 py-1.5 rounded-xl bg-surface border border-border-subtle text-xs font-bold text-content-primary cursor-pointer hover:border-white/20 transition-colors font-mono"
+              aria-label="Select year"
+            >
+              {yearsRange.map((y) => (
+                <option key={y} value={y}>{y}</option>
+              ))}
+            </select>
+          </div>
 
           <Button size="sm" variant="ghost" onClick={handleToday} className="text-xs">
             Today
           </Button>
+
+          <span className="text-xs text-accent-mint font-semibold px-2.5 py-1 rounded-full bg-accent-mint/10 border border-accent-mint/20 hidden md:inline-flex items-center gap-1.5">
+            <Calendar className="w-3.5 h-3.5" />
+            <span>{todayDisplayString}</span>
+          </span>
         </div>
 
         <div className="calendar-view-controls flex items-center gap-2 self-end sm:self-center">

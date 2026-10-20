@@ -1,5 +1,6 @@
 import { db as defaultDb, type NemoDatabase } from '@/db/nemoDb';
 import type { AssetBlob } from '@/domain/types';
+import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 
 export interface CompressedImageResult {
   dataUrl: string;
@@ -185,6 +186,21 @@ export async function saveProfileAvatar(
     });
   });
 
+  // Direct remote cloud synchronization for immediate cross-device parity
+  if (isSupabaseConfigured) {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user?.id) {
+        await supabase
+          .from('profiles')
+          .update({ avatar_url: compressed.dataUrl, updated_at: now })
+          .eq('id', user.id);
+      }
+    } catch (cloudErr) {
+      console.warn('Direct avatar cloud update deferred to sync engine:', cloudErr);
+    }
+  }
+
   return newBlobId;
 }
 
@@ -192,6 +208,7 @@ export async function saveProfileAvatar(
  * Removes the active profile avatar:
  * 1. Deletes avatar asset blobs from db.assetBlobs
  * 2. Clears avatarBlobId in db.settings
+ * 3. Immediately syncs null avatar to Supabase profile
  */
 export async function removeProfileAvatar(
   targetDb: NemoDatabase = defaultDb
@@ -205,6 +222,20 @@ export async function removeProfileAvatar(
       avatarBlobId: undefined,
     });
   });
+
+  if (isSupabaseConfigured) {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user?.id) {
+        await supabase
+          .from('profiles')
+          .update({ avatar_url: null, updated_at: new Date().toISOString() })
+          .eq('id', user.id);
+      }
+    } catch (cloudErr) {
+      console.warn('Direct avatar cloud removal deferred:', cloudErr);
+    }
+  }
 }
 
 

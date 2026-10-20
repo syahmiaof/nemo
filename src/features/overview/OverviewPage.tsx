@@ -37,6 +37,7 @@ export function OverviewPage() {
   const projects = useLiveQuery(() => db.projects.toArray(), []) || [];
   const milestones = useLiveQuery(() => db.milestones.toArray(), []) || [];
   const assignments = useLiveQuery(() => db.assignments.toArray(), []) || [];
+  const goals = useLiveQuery(() => db.goals.toArray(), []) || [];
   const selections =
     useLiveQuery(
       () => db.focusSelections.where('effectiveLocalDate').equals(today).toArray(),
@@ -63,9 +64,28 @@ export function OverviewPage() {
     }
 
     const activeList = projects.filter((p) => p.status === 'in_progress' && !p.archivedAt);
-    const focusedList = selections
+    const manualFocused = selections
       .map((s) => taskMap.get(s.taskId))
       .filter((t): t is Task => !!t && t.status !== 'done');
+    const manualIds = new Set(manualFocused.map((t) => t.id));
+
+    // Auto-link high priority & today-due tasks to fill up to 3 slots
+    const priorityCandidates = openList
+      .filter((t) => !manualIds.has(t.id))
+      .sort((a, b) => {
+        const pScore = (p: string) => (p === 'high' ? 3 : p === 'medium' ? 2 : 1);
+        const pDiff = pScore(b.priority) - pScore(a.priority);
+        if (pDiff !== 0) return pDiff;
+        return (a.dueDate || '9999').localeCompare(b.dueDate || '9999');
+      });
+
+    const focusedList = [...manualFocused];
+    for (const cand of priorityCandidates) {
+      if (focusedList.length >= 3) break;
+      if (cand.priority === 'high' || (cand.dueDate && cand.dueDate <= today)) {
+        focusedList.push(cand);
+      }
+    }
 
     const next = [...openList]
       .sort((a, b) => (a.dueDate || '9999').localeCompare(b.dueDate || '9999'))
@@ -134,6 +154,26 @@ export function OverviewPage() {
     if (totalCount === 0) return 0;
     return Math.min(100, Math.round((doneCount / totalCount) * 100));
   }, [completed, open.length]);
+
+  // Derived goal progress for motivational visual cards
+  const goalStats = useMemo(() => {
+    const activeGoals = goals.filter((g) => g.status === 'active');
+    const completedGoals = goals.filter((g) => g.status === 'achieved');
+    const goalMilestones = milestones.filter((m) => m.ownerType === 'goal');
+    const doneMilestones = goalMilestones.filter((m) => !!m.completedAt);
+    const milestoneRate =
+      goalMilestones.length > 0
+        ? Math.round((doneMilestones.length / goalMilestones.length) * 100)
+        : activeGoals.length > 0 ? 0 : 100;
+
+    return {
+      activeGoals,
+      completedGoals,
+      goalMilestones,
+      doneMilestones,
+      milestoneRate,
+    };
+  }, [goals, milestones]);
 
   const complete = async (task: Task) => {
     try {
@@ -482,6 +522,150 @@ export function OverviewPage() {
           </div>
         </section>
       </div>
+
+      {/* Motivational Goals in Motion Visual Section */}
+      <section className="glass-panel goals-motion-panel mt-6 p-6 rounded-2xl relative overflow-hidden" data-enter aria-labelledby="goals-motion-title">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-accent-mint/15 border border-accent-mint/30 flex items-center justify-center text-accent-mint">
+              <Target size={20} />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h2 id="goals-motion-title" className="text-base font-bold text-content-primary">
+                  Goals in motion
+                </h2>
+                <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-accent-mint/15 text-accent-mint border border-accent-mint/30">
+                  {goalStats.activeGoals.length} Active
+                </span>
+              </div>
+              <p className="text-xs text-content-secondary mt-0.5">
+                Every milestone achieved brings your vision one step closer to reality.
+              </p>
+            </div>
+          </div>
+
+          <Link
+            to="/goals"
+            className="self-start sm:self-auto inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface-subtle hover:bg-surface border border-border-subtle text-xs font-semibold text-content-primary hover:text-accent-mint transition-colors"
+          >
+            <span>Explore all goals</span>
+            <ArrowUpRight size={14} />
+          </Link>
+        </div>
+
+        {/* Ambition Progress Bar & Stats */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-5">
+          <div className="p-3.5 rounded-xl bg-surface-subtle border border-border-subtle flex flex-col justify-between">
+            <span className="text-[11px] text-content-tertiary font-medium">Active Ambitions</span>
+            <div className="flex items-baseline gap-2 mt-1">
+              <strong className="text-xl font-bold text-content-primary">{goalStats.activeGoals.length}</strong>
+              <span className="text-xs text-content-secondary font-mono">goals ongoing</span>
+            </div>
+          </div>
+
+          <div className="p-3.5 rounded-xl bg-surface-subtle border border-border-subtle flex flex-col justify-between">
+            <span className="text-[11px] text-content-tertiary font-medium">Milestones Reached</span>
+            <div className="flex items-baseline gap-2 mt-1">
+              <strong className="text-xl font-bold text-accent-mint">{goalStats.doneMilestones.length}</strong>
+              <span className="text-xs text-content-secondary font-mono">of {goalStats.goalMilestones.length} total</span>
+            </div>
+          </div>
+
+          <div className="p-3.5 rounded-xl bg-surface-subtle border border-border-subtle flex flex-col justify-between">
+            <div className="flex items-center justify-between text-[11px] text-content-tertiary">
+              <span className="font-medium">Overall Ambition Rate</span>
+              <span className="font-mono text-content-primary font-semibold">{goalStats.milestoneRate}%</span>
+            </div>
+            <div className="w-full h-2 rounded-full bg-white/[0.08] overflow-hidden mt-2">
+              <div
+                className="h-full rounded-full transition-all duration-700 shadow-sm"
+                style={{
+                  width: `${goalStats.milestoneRate}%`,
+                  background: 'linear-gradient(90deg, #A8DCC8 0%, #EFB2A2 100%)',
+                }}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Active Goal Spotlight Cards */}
+        {goalStats.activeGoals.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+            {goalStats.activeGoals.slice(0, 3).map((goal) => {
+              const gMilestones = milestones.filter(
+                (m) => m.ownerType === 'goal' && m.ownerId === goal.id
+              );
+              const gDone = gMilestones.filter((m) => m.completedAt).length;
+              const gRate = gMilestones.length > 0 ? Math.round((gDone / gMilestones.length) * 100) : 0;
+              const nextPending = gMilestones.find((m) => !m.completedAt);
+
+              return (
+                <div
+                  key={goal.id}
+                  className="p-4 rounded-xl bg-surface-solid/80 border border-white/[0.08] hover:border-accent-mint/40 transition-colors flex flex-col justify-between space-y-3 group"
+                >
+                  <div>
+                    <div className="flex items-center justify-between gap-2 mb-1.5">
+                      {goal.category ? (
+                        <span className="text-[10px] font-mono tracking-wider uppercase text-accent-mint font-semibold">
+                          {goal.category}
+                        </span>
+                      ) : (
+                        <span className="text-[10px] text-content-tertiary font-mono">General</span>
+                      )}
+                      {goal.targetDate && (
+                        <span className="text-[10px] text-content-tertiary font-mono">
+                          Target: {formatShortDate(goal.targetDate)}
+                        </span>
+                      )}
+                    </div>
+
+                    <h3 className="text-sm font-bold text-content-primary group-hover:text-accent-mint transition-colors line-clamp-1">
+                      {goal.title}
+                    </h3>
+                    {goal.why && (
+                      <p className="text-xs text-content-secondary line-clamp-2 mt-1 italic opacity-80">
+                        "{goal.why}"
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="space-y-1.5 pt-2 border-t border-white/[0.06]">
+                    <div className="flex items-center justify-between text-[11px] text-content-tertiary">
+                      <span className="truncate max-w-[160px]">
+                        {nextPending ? `Next: ${nextPending.title}` : gMilestones.length > 0 ? 'All milestones achieved!' : 'No milestones set'}
+                      </span>
+                      <span className="font-mono text-content-primary font-semibold shrink-0">
+                        {gDone}/{gMilestones.length} ({gRate}%)
+                      </span>
+                    </div>
+                    <div className="w-full h-1.5 rounded-full bg-white/[0.08] overflow-hidden">
+                      <div
+                        className="h-full rounded-full transition-all duration-500 bg-accent-mint"
+                        style={{ width: `${gRate}%` }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="p-4 rounded-xl bg-surface-subtle border border-border-subtle flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+            <p className="text-content-secondary">
+              Set your first high-level ambition and break it into achievable milestones.
+            </p>
+            <Link
+              to="/goals"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-accent-mint hover:bg-accent-mint/90 text-navy-950 font-semibold text-xs transition-colors shrink-0"
+            >
+              <Plus size={14} />
+              <span>Set a Goal</span>
+            </Link>
+          </div>
+        )}
+      </section>
 
       {/* Operational Footer (Tavola 3-Column Footer analogue) */}
       <div className="overview-bottom-grid" data-enter>
