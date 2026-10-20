@@ -1,0 +1,10 @@
+node_modules
+*.mp4
+*.mov
+*.zip
+*.docx
+playwright-report
+test-results
+NEMO_ANTIGRAVITY_HANDOFF
+Workspace_Syahmi_Phase0_Package
+.git
