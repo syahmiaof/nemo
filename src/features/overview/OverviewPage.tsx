@@ -186,7 +186,7 @@ export function OverviewPage() {
 
   const focus = async (id: string) => {
     try {
-      await db.transaction('rw', [db.focusSelections, db.tasks], async () => {
+      await db.transaction('rw', [db.focusSelections, db.tasks, db.syncMutations], async () => {
         const chosen = await db.focusSelections.where('effectiveLocalDate').equals(today).toArray();
         const allTasks = await db.tasks.toArray();
         const activeFocus = chosen.filter((s) => {

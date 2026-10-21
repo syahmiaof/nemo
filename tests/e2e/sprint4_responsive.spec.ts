@@ -31,7 +31,7 @@ test.describe('Sprint 4 — responsive, branding and motion regressions', () => 
         await page.goto(`/${route}`);
         await expect(page.locator('main')).toBeVisible();
         await page.evaluate(() => document.fonts.ready);
-        await expect(page.locator('.workspace-status')).toContainText('DEMO');
+        await expect(page.getByText(/Demo Workspace: Exploring fictional sample data/)).toBeVisible();
         await assertReflow(page);
       }
     }
@@ -76,8 +76,8 @@ test.describe('Sprint 4 — responsive, branding and motion regressions', () => 
     await page.goto('/settings');
     await page.getByRole('tab', {name: 'Appearance', exact: true}).focus();
     await page.keyboard.press('End');
-    await expect(page.getByRole('tab', {name: 'Demo Mode'})).toBeFocused();
-    await expect(page.getByRole('tab', {name: 'Demo Mode'})).toHaveAttribute('aria-selected', 'true');
+    await expect(page.getByRole('tab', {name: 'About & Notice'})).toBeFocused();
+    await expect(page.getByRole('tab', {name: 'About & Notice'})).toHaveAttribute('aria-selected', 'true');
     await page.getByRole('tab', {name: 'Data & Backups'}).click();
     await expect(page.getByRole('button', {name: /Export Backup/})).toBeVisible();
     await assertReflow(page);
@@ -120,7 +120,7 @@ test.describe('Sprint 4 — responsive, branding and motion regressions', () => 
     await page.emulateMedia({reducedMotion:'reduce'});
     await expect(page.locator('.nemo-chart')).toHaveAttribute('data-motion','reduced');
     await page.getByRole('button',{name:'Projects',exact:true}).click();
-    await expect(page.locator('.route-content')).toHaveCSS('opacity','1');
+    await expect.poll(() => page.locator('.route-content').evaluate(el => Number(getComputedStyle(el).opacity))).toBeGreaterThan(0.99);
     expect(errors).toEqual([]);
   });
 });

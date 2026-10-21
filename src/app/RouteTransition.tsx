@@ -30,6 +30,12 @@ export function RouteTransition() {
   useGSAP(() => {
     const node = root.current;
     if (!node) return;
+    if (reduced) {
+      // A rapid route change can leave the outgoing GSAP opacity on the shared outlet.
+      // Clear it as soon as reduced motion is enabled so the next route is fully readable.
+      gsap.killTweensOf(node);
+      gsap.set(node, { clearProps: 'opacity,transform' });
+    }
     if (display.key !== location.key) {
       if (reduced) {
         window.scrollTo(0, 0);
@@ -37,17 +43,19 @@ export function RouteTransition() {
         return;
       }
       const cards = visibleCards(node);
-      if (cards.length) gsap.to(cards, {
-        clipPath: 'inset(0 4% 0 4% round 20px)', scale: .97, y: -6,
-        duration: .19, ease: 'power2.in', stagger: .012,
-      });
-      gsap.to(node, {
-        opacity: .2, y: -8, duration: .21, ease: 'power2.in',
+      const exit = gsap.timeline({
         onComplete: () => {
           window.scrollTo(0, 0);
           setDisplay(latest.current);
         },
       });
+      if (cards.length) exit.to(cards, {
+        clipPath: 'inset(0 4% 0 4% round 20px)', scale: .97, y: -6,
+        duration: .19, ease: 'power2.in', stagger: .012,
+      }, 0);
+      exit.to(node, {
+        opacity: .2, y: -8, duration: .21, ease: 'power2.in',
+      }, 0);
       return;
     }
     if (reduced) return;
