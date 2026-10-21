@@ -6,20 +6,22 @@ const remote = vi.hoisted(() => ({
   selectErrors: {} as Record<string, Error | null>,
   upsertErrors: {} as Record<string, Error | null>,
   upsertCalls: [] as Array<{ table: string; rows: unknown }>,
+  updateCalls: [] as Array<{ table: string; values: unknown; filters: Array<[string, unknown]> }>,
 }));
 
 vi.mock('@/lib/supabase', () => {
   const builderFor = (table: string) => {
+    const filters: Array<[string, unknown]> = [];
     const result = () => ({ data: remote.rows[table] || [], error: remote.selectErrors[table] || null });
     const builder: any = {
       select: () => builder,
-      eq: () => builder,
+      eq: (column: string, value: unknown) => { filters.push([column, value]); return builder; },
       maybeSingle: async () => ({ data: remote.rows[table]?.[0] || null, error: remote.selectErrors[table] || null }),
       upsert: async (rows: unknown) => {
         remote.upsertCalls.push({ table, rows });
         return { data: null, error: remote.upsertErrors[table] || null };
       },
-      update: () => builder,
+      update: (values: unknown) => { remote.updateCalls.push({ table, values, filters }); return builder; },
       delete: () => builder,
       then: (resolve: (value: unknown) => unknown, reject: (reason: unknown) => unknown) =>
         Promise.resolve(result()).then(resolve, reject),
@@ -65,6 +67,7 @@ describe('Sprint 5.4 sync integrity', () => {
     remote.selectErrors = {};
     remote.upsertErrors = {};
     remote.upsertCalls = [];
+    remote.updateCalls = [];
     await Promise.all([
       db.syncMutations.clear(),
       syncDb.syncMutations.clear(),
@@ -189,6 +192,61 @@ describe('Sprint 5.4 sync integrity', () => {
     expect(result.success).toBe(false);
     expect(result.error).toContain('Pull tasks failed');
     expect(syncEngine.getState().status).toBe('error');
+  });
+
+  it('soft-deletes assets with owner scope so offline devices retain a durable tombstone', async () => {
+    await (syncEngine as any).applyOutboxMutation({
+      id: 'delete-cover-mutation', entityType: 'assetBlob', entityId: 'cover-1', operation: 'DELETE', payload: { id: 'cover-1' },
+      clientTimestamp: '2026-10-21T00:00:00.000Z', status: 'pending', retryCount: 0, createdAt: '2026-10-21T00:00:00.000Z',
+    }, 'account-a');
+
+    expect(remote.updateCalls).toHaveLength(1);
+    expect(remote.updateCalls[0].table).toBe('workspace_assets');
+    expect(remote.updateCalls[0].values).toMatchObject({ is_deleted: true });
+    expect(remote.updateCalls[0].filters).toEqual([['id', 'cover-1'], ['user_id', 'account-a']]);
+  });
+
+  it('applies asset tombstones including profile assets without re-downloading them', async () => {
+    await seedLocal(db.assetBlobs, {
+      id: 'deleted-avatar', ownerType: 'profile', ownerId: 'default', mimeType: 'image/webp', size: 10,
+      data: 'stale-avatar', createdAt: '2026-10-20T00:00:00.000Z',
+    });
+    await seedLocal(db.assetBlobs, {
+      id: 'deleted-cover', ownerType: 'project', ownerId: 'project-1', mimeType: 'image/webp', size: 10,
+      data: 'stale-cover', createdAt: '2026-10-20T00:00:00.000Z',
+    });
+    remote.rows.workspace_assets = [
+      { id: 'deleted-avatar', user_id: 'account-a', owner_type: 'profile', is_deleted: true, updated_at: '2026-10-21T00:00:00.000Z' },
+      { id: 'deleted-cover', user_id: 'account-a', owner_type: 'project', is_deleted: true, updated_at: '2026-10-21T00:00:00.000Z' },
+    ];
+    syncEngine.setAuthenticatedUser('account-a', 'a@example.test');
+    stopScheduledSync();
+    (syncEngine as any).isIngesting = true;
+    try {
+      await (syncEngine as any).pullRemoteDelta();
+    } finally {
+      (syncEngine as any).isIngesting = false;
+    }
+
+    expect(await db.assetBlobs.get('deleted-avatar')).toBeUndefined();
+    expect(await db.assetBlobs.get('deleted-cover')).toBeUndefined();
+  });
+
+  it('uploads live asset replacements with is_deleted reset to false', async () => {
+    const asset = {
+      id: 'replacement-cover', ownerType: 'project', ownerId: 'project-1', mimeType: 'image/webp', size: 10,
+      data: 'new-cover', createdAt: '2026-10-21T00:00:00.000Z',
+    };
+    await seedLocal(db.assetBlobs, asset);
+    syncEngine.setAuthenticatedUser('account-a', 'a@example.test');
+    stopScheduledSync();
+    await syncEngine.enqueueMutation('assetBlob', asset.id, 'UPSERT', asset);
+
+    await (syncEngine as any).pushPendingMutations();
+
+    expect(remote.upsertCalls).toHaveLength(1);
+    expect(remote.upsertCalls[0].table).toBe('workspace_assets');
+    expect(remote.upsertCalls[0].rows).toMatchObject({ is_deleted: false, id: 'replacement-cover', user_id: 'account-a' });
   });
 
   it('surfaces mutation push failures instead of reporting a synced state', async () => {

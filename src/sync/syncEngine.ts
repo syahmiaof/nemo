@@ -344,14 +344,10 @@ class SyncEngine {
     if (!tableName) return;
 
     if (mut.operation === 'DELETE') {
-      // Workspace assets do not have an is_deleted column in the deployed
-      // schema. Remove those objects directly; every other sync table keeps a
-      // tombstone so offline devices can propagate the delete on their next pull.
-      const query = mut.entityType === 'assetBlob'
-        ? supabase.from(tableName).delete().eq('id', mut.entityId).eq('user_id', userId)
-        : supabase.from(tableName).update({ is_deleted: true, updated_at: new Date().toISOString() })
-          .eq('id', mut.entityId)
-          .eq('user_id', userId);
+      const query = supabase.from(tableName)
+        .update({ is_deleted: true, updated_at: new Date().toISOString() })
+        .eq('id', mut.entityId)
+        .eq('user_id', userId);
       const { error } = await query;
 
       if (error) throw error;
@@ -498,11 +494,12 @@ class SyncEngine {
     // Pull workspace assets (covers, screenshots, attachments)
     const remoteAssets = await this.fetchRemoteRows('workspace_assets', userId);
     for (const row of remoteAssets) {
-      if (row.owner_type === 'profile') continue;
-      if (row.is_deleted === true) await this.applyRemoteTombstone('assetBlob', row);
-      else {
-        await db.assetBlobs.put(mappers.assetBlob.toLocal(row));
+      if (row.is_deleted === true) {
+        await this.applyRemoteTombstone('assetBlob', row);
+        continue;
       }
+      if (row.owner_type === 'profile') continue;
+      await db.assetBlobs.put(mappers.assetBlob.toLocal(row));
     }
 
     // Pull profile settings & avatar

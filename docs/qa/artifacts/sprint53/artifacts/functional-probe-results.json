@@ -1,0 +1,52 @@
+{
+  "startedAt": "2026-10-21T02:23:05.123Z",
+  "checks": [
+    {
+      "name": "Demo counts",
+      "error": "TimeoutError: locator.innerText: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('.workspace-status')\u001b[22m\n"
+    },
+    {
+      "name": "Ask Nemo suggested intents",
+      "answers": [
+        {
+          "question": "What tasks are due today?",
+          "answer": "Tasks Due Today\n10:23 AM\n\nYou have 5 tasks scheduled for completion today.\n\nConnect persisted data · Forma Commerce\n\nDefine acceptance criteria and record the outcome for Forma\n\nHIGH\n\nPlan next week’s priorities\n\nHIGH\n\nReview the learning journal\n\nMEDIUM\n\nBack up the current workspace\n\nURGENT\n\nMap the primary user journey · Harbour Booking\n\nDefine acceptance criteria and record the outcome for Harbou\n\nLOW\n\nSUGGESTED QUESTIONS\n\nToday's focus tasks"
+        },
+        {
+          "question": "Overdue tasks",
+          "answer": "Overdue Tasks\n10:23 AM\n\nYou have 6 overdue tasks that need attention.\n\nValidate the domain model · Orbit Analytics\n\nDue Oct 16, 2026\n\nOVERDUE\n\nBuild the core workflow · Orbit Analytics\n\nDue Oct 18, 2026\n\nOVERDUE\n\nBuild the core workflow · Forma Commerce\n\nDue Oct 19, 2026\n\nOVERDUE\n\nValidate the domain model · Atlas API Gateway\n\nDue Oct 20, 2026\n\nOVERDUE\n\nConnect persisted data · Orbit Analytics\n\nDue Oct 20, 2026\n\nOVERDUE\n\nMap the primary user jour"
+        },
+        {
+          "question": "Active projects",
+          "answer": "Active Projects\n10:23 AM\n\nYou have 6 active projects currently in flight.\n\nOrbit Analytics\n\nDue Nov 2, 2026\n\nHIGH\n\nForma Commerce\n\nDue Nov 7, 2026\n\nMEDIUM\n\nCloud Infrastructure Lab\n\nDue Nov 12, 2026\n\nURGENT\n\nPulse Mobile\n\nDue Nov 17, 2026\n\nLOW\n\nAtlas API Gateway\n\nDue Nov 22, 2026\n\nHIGH\n\nAcademy Learning Portal\n\nDue Nov 27, 2026\n\nMEDIUM\n\nSUGGESTED QUESTIONS\n\nClosest project deadline\nProject progress summary\nUpcoming milestones"
+        },
+        {
+          "question": "Tasks finished this month",
+          "answer": "Tasks Finished This Month\n10:23 AM\n\nHigh velocity! You have completed 14 tasks this calendar month.\n\nMap the primary user journey · Orbit Analytics\n\nCompleted on Oct 21, 2026\n\nDONE\n\nValidate the domain model · Forma Commerce\n\nCompleted on Oct 18, 2026\n\nDONE\n\nTidy the development environment\n\nCompleted on Oct 20, 2026\n\nDONE\n\nMap the primary user journey · Cloud Infrastructure Lab\n\nCompleted on Oct 17, 2026\n\nDONE\n\nValidate the domain model · Cloud "
+        },
+        {
+          "question": "Active goals",
+          "answer": "Active Goals\n10:23 AM\n\nYou are actively pursuing 4 strategic goals.\n\nShip a polished portfolio\n\nTarget: Nov 20, 2026\n\nACTIVE\n\nBuild dependable cloud skills\n\nTarget: Dec 4, 2026\n\nACTIVE\n\nCreate a sustainable freelance practice\n\nTarget: Dec 18, 2026\n\nACTIVE\n\nImprove accessible interface design\n\nTarget: Jan 1, 2027\n\nACTIVE\n\nSUGGESTED QUESTIONS\n\nUpcoming milestones\nActive projects\nToday's focus tasks"
+        },
+        {
+          "question": "What is the moon made of?",
+          "answer": "Ask Nemo Assistant\n10:23 AM\n\nI am your offline, privacy-first Nemo assistant. I compute answers instantly from your local workspace data. Here are questions you can ask me:\n\nSUGGESTED QUESTIONS\n\nWhat tasks are due today?\nOverdue tasks\nAssignments due this week\nActive projects\nClosest project deadline\nToday's focus tasks\nTasks finished this month\nUpcoming milestones\nActive goals\nProject progress summary"
+        }
+      ]
+    },
+    {
+      "name": "Avatar upload replace remove and workspace isolation",
+      "uploaded": 1,
+      "replaced": 1,
+      "persisted": 1,
+      "removed": 0,
+      "fallback": "AM"
+    },
+    {
+      "name": "Backup export",
+      "filename": "nemo_backup_2026-10-21_v1.json",
+      "artifact": "C:\\Users\\USER\\Desktop\\nemo\\docs\\qa\\artifacts\\sprint53\\artifacts\\disposable-demo-backup.json"
+    }
+  ],
+  "errors": []
+}

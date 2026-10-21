@@ -1,0 +1,220 @@
+{
+  "createdAt": "2026-10-21T02:28:43.905Z",
+  "viewport": "390x844",
+  "routes": [
+    "overview",
+    "projects",
+    "tasks",
+    "calendar",
+    "academics",
+    "goals",
+    "insights",
+    "settings"
+  ],
+  "results": [
+    {
+      "engine": "chromium",
+      "route": "overview",
+      "pass": true,
+      "width": 390,
+      "scrollWidth": 390,
+      "heading": "Make room for progress."
+    },
+    {
+      "engine": "chromium",
+      "route": "projects",
+      "pass": true,
+      "width": 390,
+      "scrollWidth": 390,
+      "heading": "Projects"
+    },
+    {
+      "engine": "chromium",
+      "route": "tasks",
+      "pass": true,
+      "width": 390,
+      "scrollWidth": 390,
+      "heading": "Tasks"
+    },
+    {
+      "engine": "chromium",
+      "route": "calendar",
+      "pass": true,
+      "width": 390,
+      "scrollWidth": 390,
+      "heading": ""
+    },
+    {
+      "engine": "chromium",
+      "route": "academics",
+      "pass": true,
+      "width": 390,
+      "scrollWidth": 390,
+      "heading": ""
+    },
+    {
+      "engine": "chromium",
+      "route": "goals",
+      "pass": true,
+      "width": 390,
+      "scrollWidth": 390,
+      "heading": ""
+    },
+    {
+      "engine": "chromium",
+      "route": "insights",
+      "pass": true,
+      "width": 390,
+      "scrollWidth": 390,
+      "heading": "WorkspaceInsights"
+    },
+    {
+      "engine": "chromium",
+      "route": "settings",
+      "pass": true,
+      "width": 390,
+      "scrollWidth": 390,
+      "heading": "Settings"
+    },
+    {
+      "engine": "chromium",
+      "consoleErrors": []
+    },
+    {
+      "engine": "firefox",
+      "route": "overview",
+      "pass": true,
+      "width": 390,
+      "scrollWidth": 390,
+      "heading": "Make room for progress."
+    },
+    {
+      "engine": "firefox",
+      "route": "projects",
+      "pass": true,
+      "width": 390,
+      "scrollWidth": 390,
+      "heading": "Projects"
+    },
+    {
+      "engine": "firefox",
+      "route": "tasks",
+      "pass": true,
+      "width": 390,
+      "scrollWidth": 390,
+      "heading": "Tasks"
+    },
+    {
+      "engine": "firefox",
+      "route": "calendar",
+      "pass": true,
+      "width": 390,
+      "scrollWidth": 390,
+      "heading": ""
+    },
+    {
+      "engine": "firefox",
+      "route": "academics",
+      "pass": true,
+      "width": 390,
+      "scrollWidth": 390,
+      "heading": ""
+    },
+    {
+      "engine": "firefox",
+      "route": "goals",
+      "pass": true,
+      "width": 390,
+      "scrollWidth": 390,
+      "heading": ""
+    },
+    {
+      "engine": "firefox",
+      "route": "insights",
+      "pass": true,
+      "width": 390,
+      "scrollWidth": 390,
+      "heading": "WorkspaceInsights"
+    },
+    {
+      "engine": "firefox",
+      "route": "settings",
+      "pass": true,
+      "width": 390,
+      "scrollWidth": 390,
+      "heading": "Settings"
+    },
+    {
+      "engine": "firefox",
+      "consoleErrors": []
+    },
+    {
+      "engine": "webkit",
+      "route": "overview",
+      "pass": true,
+      "width": 384,
+      "scrollWidth": 384,
+      "heading": "Make room for progress."
+    },
+    {
+      "engine": "webkit",
+      "route": "projects",
+      "pass": true,
+      "width": 384,
+      "scrollWidth": 384,
+      "heading": "Projects"
+    },
+    {
+      "engine": "webkit",
+      "route": "tasks",
+      "pass": true,
+      "width": 390,
+      "scrollWidth": 390,
+      "heading": "Tasks"
+    },
+    {
+      "engine": "webkit",
+      "route": "calendar",
+      "pass": true,
+      "width": 390,
+      "scrollWidth": 390,
+      "heading": ""
+    },
+    {
+      "engine": "webkit",
+      "route": "academics",
+      "pass": true,
+      "width": 390,
+      "scrollWidth": 390,
+      "heading": ""
+    },
+    {
+      "engine": "webkit",
+      "route": "goals",
+      "pass": true,
+      "width": 390,
+      "scrollWidth": 390,
+      "heading": ""
+    },
+    {
+      "engine": "webkit",
+      "route": "insights",
+      "pass": true,
+      "width": 384,
+      "scrollWidth": 384,
+      "heading": "WorkspaceInsights"
+    },
+    {
+      "engine": "webkit",
+      "route": "settings",
+      "pass": true,
+      "width": 384,
+      "scrollWidth": 384,
+      "heading": "Settings"
+    },
+    {
+      "engine": "webkit",
+      "consoleErrors": []
+    }
+  ]
+}

@@ -365,6 +365,7 @@ export const mappers = {
         mime_type: local.mimeType,
         size: local.size,
         data: local.data,
+        is_deleted: false,
         created_at: local.createdAt,
         updated_at: new Date().toISOString(),
       };
