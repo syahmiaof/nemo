@@ -302,14 +302,15 @@ export const CalendarPage: React.FC = () => {
             </select>
           </div>
 
-          <Button size="sm" variant="ghost" onClick={handleToday} className="text-xs">
-            Today
-          </Button>
-
-          <span className="text-xs text-accent-mint font-semibold px-2.5 py-1 rounded-full bg-accent-mint/10 border border-accent-mint/20 hidden md:inline-flex items-center gap-1.5">
-            <Calendar className="w-3.5 h-3.5" />
+          <button
+            type="button"
+            onClick={handleToday}
+            className="text-xs font-medium text-content-secondary hover:text-content-primary transition-colors flex items-center gap-1.5 px-2 py-1 rounded-lg hover:bg-white/[0.06] cursor-pointer"
+            title="Jump to today"
+          >
+            <Calendar className="w-3.5 h-3.5 text-content-tertiary" />
             <span>{todayDisplayString}</span>
-          </span>
+          </button>
         </div>
 
         <div className="calendar-view-controls flex items-center gap-2 self-end sm:self-center">

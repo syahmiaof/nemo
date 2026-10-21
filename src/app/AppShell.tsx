@@ -118,6 +118,17 @@ export function AppShell() {
 
               <div className="header-tools">
                 <SyncIndicator />
+                {demo && (
+                  <button
+                    type="button"
+                    onClick={changeMode}
+                    className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-500/15 border border-amber-500/35 text-amber-300 hover:bg-amber-500/25 transition-all text-xs font-semibold cursor-pointer shadow-sm"
+                    title="Currently in Demo Mode. Click to return to your real workspace."
+                  >
+                    <FlaskConical size={13} className="text-amber-400" />
+                    <span>Demo Mode &bull; Exit</span>
+                  </button>
+                )}
                 <div className="header-time-pill hidden xl:inline-flex" title="Local System Time">
                   <span className="live-pulse" />
                   <span>{timeStr}</span>
@@ -157,13 +168,16 @@ export function AppShell() {
             </header>
 
             {demo && (
-              <div className="workspace-strip">
-                <span className="workspace-status">
-                  <FlaskConical size={13} />
-                  <span>DEMO WORKSPACE · Fictional data</span>
-                </span>
-                <button onClick={changeMode} className="workspace-switch">
-                  Return to my workspace
+              <div className="flex items-center justify-between px-3.5 py-1.5 rounded-xl bg-amber-500/[0.08] border border-amber-500/25 text-xs text-amber-200/90 mb-3.5 transition-all">
+                <div className="flex items-center gap-2">
+                  <FlaskConical size={14} className="text-amber-400 flex-shrink-0" />
+                  <span><strong>Demo Workspace:</strong> Exploring fictional sample data. Personal records remain isolated and safe.</span>
+                </div>
+                <button
+                  onClick={changeMode}
+                  className="text-amber-300 hover:text-white font-semibold underline underline-offset-2 ml-3 flex-shrink-0 cursor-pointer"
+                >
+                  Return to my workspace &rarr;
                 </button>
               </div>
             )}

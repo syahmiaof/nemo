@@ -62,7 +62,7 @@ function projectCover(index: number, title: string, createdAt: string): AssetBlo
     `<g stroke="${ink}" stroke-width="2" fill="none"><path d="m350 210 150-150 150 150-150 150Z"/><path d="m390 210 110-110 110 110-110 110Z"/><path d="m430 210 70-70 70 70-70 70Z"/></g><circle cx="500" cy="210" r="30" fill="${accent}"/>`,
     `<path d="M340 330 430 90 520 330Z" fill="${ink}"/><path d="M470 330 560 90 650 330Z" fill="${accent}"/><path d="M490 275h100" stroke="${background}" stroke-width="10"/>`,
   ];
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 440"><rect width="800" height="440" fill="${background}"/><path d="M40 55H260M40 380H760" stroke="${ink}" opacity=".3"/><text x="40" y="100" font-family="sans-serif" font-size="14" letter-spacing="4" fill="${accent}">NEMO / STUDIO ${String(index + 1).padStart(2, '0')}</text><text x="40" y="330" font-family="sans-serif" font-size="40" font-weight="600" fill="${ink}">${title.split(' ')[0]}</text><text x="40" y="358" font-family="sans-serif" font-size="13" letter-spacing="2" fill="${accent}">FICTIONAL PROJECT</text>${motifs[index % motifs.length]}</svg>`;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 440"><rect width="800" height="440" fill="${background}"/><path d="M40 55H260M40 380H760" stroke="${ink}" opacity=".3"/><text x="40" y="330" font-family="sans-serif" font-size="40" font-weight="600" fill="${ink}">${title.split(' ')[0]}</text>${motifs[index % motifs.length]}</svg>`;
   return {
     id: `demo-cover-${index + 1}`, ownerType: 'project', ownerId: `demo-project-${index + 1}`,
     mimeType: 'image/svg+xml', size: new TextEncoder().encode(svg).length,
@@ -158,10 +158,15 @@ export function createDemoFixtures(anchor = new Date()): FixtureData {
     const previous = subjectIndex >= 3;
     const status = previous ? 'graded' : index === 0 ? 'submitted' : index === 1 ? 'in_progress' : 'not_started';
     const due = previous ? -180 + index * 20 : [-3, 0, 7, 18][index] + subjectIndex * 2;
+    const isExamItem = index === 3;
+    const finalTitle = isExamItem ? `Exam: ${title}` : title;
+    const finalDesc = isExamItem
+      ? `[EXAM] Comprehensive exam covering core ${subject.title.toLowerCase()} curriculum. Exam Hall B, Seat ${12 + subjectIndex}.`
+      : `Apply the ${subject.title.toLowerCase()} concepts to a practical case study.`;
     return {
-      id: `demo-assignment-${subjectIndex * 4 + index + 1}`, subjectId: subject.id, title, status,
-      description: `Apply the ${subject.title.toLowerCase()} concepts to a practical case study.`,
-      dueDate: date(due), dueTime: '23:59', weightPercent: 25,
+      id: `demo-assignment-${subjectIndex * 4 + index + 1}`, subjectId: subject.id, title: finalTitle, status,
+      description: finalDesc,
+      dueDate: date(due), dueTime: isExamItem ? '09:00' : '23:59', weightPercent: 25,
       scoreObtained: previous ? 74 + Math.floor(random() * 22) : undefined,
       scoreMaximum: previous ? 100 : undefined,
       submittedAt: previous || status === 'submitted' ? iso(due - 2) : undefined,
