@@ -45,7 +45,7 @@ export interface ScrollMotionOptions {
  *
  * Scoped with useGSAP for clean teardown on unmount or key change.
  * Respects prefersReducedMotion(): instantly makes elements visible with zero transition.
- * Uses clearProps: 'transform,opacity' on completion to avoid subpixel rendering issues.
+ * Uses clearProps: 'transform,opacity,clipPath' on completion to avoid subpixel rendering issues.
  */
 export function useScrollMotion<T extends HTMLElement = HTMLDivElement>(
   options: ScrollMotionOptions = {}
@@ -90,7 +90,7 @@ export function useScrollMotion<T extends HTMLElement = HTMLDivElement>(
             opacity: 1,
             y: 0,
             scale: 1,
-            clearProps: 'transform,opacity',
+            clearProps: 'transform,opacity,clipPath',
           });
         }
         return;
@@ -104,7 +104,7 @@ export function useScrollMotion<T extends HTMLElement = HTMLDivElement>(
             opacity: 1,
             y: 0,
             scale: 1,
-            clearProps: 'transform,opacity',
+            clearProps: 'transform,opacity,clipPath',
           });
         }
         return;
@@ -175,7 +175,7 @@ export function useScrollMotion<T extends HTMLElement = HTMLDivElement>(
               delay: index * stagger,
               ease,
               overwrite: 'auto',
-              clearProps: 'transform,opacity',
+              clearProps: 'transform,opacity,clipPath',
             }
           );
         });
@@ -219,7 +219,7 @@ export function useScrollMotion<T extends HTMLElement = HTMLDivElement>(
                 delay: index * stagger,
                 ease,
                 overwrite: 'auto',
-                clearProps: 'transform,opacity',
+                clearProps: 'transform,opacity,clipPath',
               });
             });
           }
@@ -302,7 +302,7 @@ export function useScrollMotion<T extends HTMLElement = HTMLDivElement>(
                     duration: 0.45,
                     ease,
                     overwrite: 'auto',
-                    clearProps: 'transform,opacity',
+                    clearProps: 'transform,opacity,clipPath',
                   }
                 );
               }
@@ -325,7 +325,7 @@ export function useScrollMotion<T extends HTMLElement = HTMLDivElement>(
         trackedElements.forEach((el) => {
           gsap.killTweensOf(el);
           gsap.getTweensOf(el).forEach((t) => t.kill());
-          gsap.set(el, { clearProps: 'transform,opacity' });
+          gsap.set(el, { clearProps: 'transform,opacity,clipPath' });
         });
         trackedElements.clear();
       };

@@ -90,9 +90,9 @@ export function RouteTransition() {
         { y: 16, opacity: 0 },
         { y: 0, opacity: 1, duration: .6, stagger: .045, ease: 'power3.out', clearProps: 'transform,opacity' }, .12);
       if (cards.length) timeline.fromTo(cards,
-        { opacity: 0, y: 22, scale: .96, clipPath: 'inset(0 50% 0 50% round 24px)' },
-        { opacity: 1, y: 0, scale: 1, clipPath: 'inset(0 0% 0 0% round 24px)', duration: .85,
-          stagger: .055, ease: 'expo.out', clearProps: 'transform,opacity,clipPath' }, .10);
+        { opacity: 0, y: 16, scale: .98 },
+        { opacity: 1, y: 0, scale: 1, duration: .5,
+          stagger: .035, ease: 'power3.out', clearProps: 'transform,opacity,clipPath' }, .08);
     };
 
     // If WelcomeOverlay is currently active on launch/refresh, synchronize entrance with overlay dismiss
