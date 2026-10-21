@@ -1,6 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { db } from '@/db/nemoDb';
-import { syncDb } from '@/sync/syncDb';
 import { mergeTaskEntities, mergeTextField, resolveGenericLWW } from '@/sync/conflictResolver';
 import { mappers } from '@/sync/mappers';
 import { syncEngine } from '@/sync/syncEngine';
@@ -8,7 +7,7 @@ import type { Task, Project } from '@/domain/types';
 
 describe('Sprint 5 — Sync Engine & Conflict Resolution', () => {
   beforeEach(async () => {
-    await syncDb.syncMutations.clear();
+    await db.syncMutations.clear();
     await db.tasks.clear();
     await db.projects.clear();
   });
@@ -105,6 +104,10 @@ describe('Sprint 5 — Sync Engine & Conflict Resolution', () => {
 
   describe('Offline Outbox Queueing', () => {
     it('atomically enqueues mutations into Dexie syncMutations table', async () => {
+      syncEngine.setAuthenticatedUser('test-owner', null);
+      const engine = syncEngine as any;
+      if (engine.syncTimer) clearTimeout(engine.syncTimer);
+      engine.syncTimer = null;
       await syncEngine.enqueueMutation('task', 'task_999', 'UPSERT', {
         id: 'task_999',
         title: 'Offline Task Verification',
@@ -114,11 +117,13 @@ describe('Sprint 5 — Sync Engine & Conflict Resolution', () => {
       const pendingCount = await syncEngine.updatePendingCount();
       expect(pendingCount).toBe(1);
 
-      const queued = await syncDb.syncMutations.toArray();
+      const queued = await db.syncMutations.toArray();
       expect(queued.length).toBe(1);
       expect(queued[0].entityType).toBe('task');
       expect(queued[0].entityId).toBe('task_999');
       expect(queued[0].status).toBe('pending');
+      expect(queued[0].ownerUserId).toBe('test-owner');
+      syncEngine.setAuthenticatedUser(null, null);
     });
   });
 });

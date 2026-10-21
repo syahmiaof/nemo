@@ -9,6 +9,11 @@ export class NemoSyncDatabase extends Dexie {
     this.version(1).stores({
       syncMutations: 'id, entityType, entityId, status, createdAt',
     });
+    // v1 mutations intentionally remain ownerless after this upgrade. They are
+    // quarantined until the workspace owner explicitly chooses a recovery path.
+    this.version(2).stores({
+      syncMutations: 'id, entityType, entityId, status, createdAt, ownerUserId, [ownerUserId+status]',
+    });
   }
 }
 

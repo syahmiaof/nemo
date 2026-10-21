@@ -217,6 +217,7 @@ export async function atomicDeleteProject(database: NemoDatabase, projectId: str
     database.tasks,
     database.milestones,
     database.assetBlobs,
+    database.syncMutations,
   ], async () => {
     // 1. Delete project record
     await database.projects.delete(projectId);
@@ -250,6 +251,7 @@ export async function atomicDeleteTask(database: NemoDatabase, taskId: string): 
     database.tasks,
     database.focusSelections,
     database.goalTaskLinks,
+    database.syncMutations,
   ], async () => {
     await database.tasks.delete(taskId);
     await database.focusSelections.where('taskId').equals(taskId).delete();
@@ -272,6 +274,7 @@ export async function atomicSetTaskStatus(
   await database.transaction('rw', [
     database.tasks,
     database.focusSelections,
+    database.syncMutations,
   ], async () => {
     await database.tasks.update(taskId, {
       status: nextStatus,
@@ -295,6 +298,7 @@ export async function atomicDeleteAssignment(database: NemoDatabase, assignmentI
     database.tasks,
     database.focusSelections,
     database.goalTaskLinks,
+    database.syncMutations,
   ], async () => {
     const childTasks = await database.tasks.where('parentId').equals(assignmentId).toArray();
     for (const t of childTasks) {
@@ -317,6 +321,7 @@ export async function atomicDeleteSubject(database: NemoDatabase, subjectId: str
     database.focusSelections,
     database.goalTaskLinks,
     database.calendarEvents,
+    database.syncMutations,
   ], async () => {
     const assignments = await database.assignments.where('subjectId').equals(subjectId).toArray();
     for (const a of assignments) {
@@ -345,6 +350,7 @@ export async function atomicDeleteSemester(database: NemoDatabase, semesterId: s
     database.focusSelections,
     database.goalTaskLinks,
     database.calendarEvents,
+    database.syncMutations,
   ], async () => {
     const subjects = await database.subjects.where('semesterId').equals(semesterId).toArray();
     for (const s of subjects) {
@@ -374,6 +380,7 @@ export async function atomicDeleteGoal(database: NemoDatabase, goalId: string): 
     database.goals,
     database.milestones,
     database.goalTaskLinks,
+    database.syncMutations,
   ], async () => {
     await database.goals.delete(goalId);
     await database.milestones.where('ownerId').equals(goalId).delete();
@@ -385,7 +392,7 @@ export async function atomicDeleteGoal(database: NemoDatabase, goalId: string): 
  * Scans and purges unreferenced project asset blobs to prevent storage bloat.
  */
 export async function cleanupOrphanAssetBlobs(database: NemoDatabase): Promise<number> {
-  return await database.transaction('rw', [database.assetBlobs, database.projects], async () => {
+  return await database.transaction('rw', [database.assetBlobs, database.projects, database.syncMutations], async () => {
     const allBlobs = await database.assetBlobs.toArray();
     const projects = await database.projects.toArray();
     const validBlobIds = new Set(projects.map((p) => p.previewBlobId).filter(Boolean));

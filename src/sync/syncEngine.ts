@@ -25,6 +25,7 @@ class SyncEngine {
   private currentUserId: string | null = null;
   private currentUserEmail: string | null = null;
   private isIngesting = false;
+  private legacyOutboxMigrated = false;
 
   constructor() {
     if (typeof window !== 'undefined') {
@@ -42,6 +43,17 @@ class SyncEngine {
 
   public isIngestingRemote(): boolean {
     return this.isIngesting;
+  }
+
+  public getAuthenticatedUserId(): string | null {
+    return this.currentUserId;
+  }
+
+  public onLocalMutation(): void {
+    setTimeout(() => { void this.updatePendingCount(); }, 0);
+    if (this.currentUserId && typeof navigator !== 'undefined' && navigator.onLine) {
+      this.scheduleSync(1000);
+    }
   }
 
   public getState(): SyncState {
@@ -75,6 +87,7 @@ class SyncEngine {
         status: 'local_only',
         ownerEmail: undefined,
         errorMessage: undefined,
+        pendingCount: 0,
       });
       return;
     }
@@ -85,6 +98,7 @@ class SyncEngine {
       ownerEmail: email || undefined,
       errorMessage: undefined,
     });
+    void this.updatePendingCount();
 
     if (isOnline) {
       this.scheduleSync(500);
@@ -93,7 +107,9 @@ class SyncEngine {
 
   public async updatePendingCount(): Promise<number> {
     try {
-      const count = await syncDb.syncMutations.where('status').equals('pending').count();
+      const count = this.currentUserId
+        ? await db.syncMutations.where('[ownerUserId+status]').equals([this.currentUserId, 'pending']).count()
+        : 0;
       this.updateState({ pendingCount: count });
       return count;
     } catch {
@@ -121,6 +137,7 @@ class SyncEngine {
     try {
       const mutation: SyncMutation = {
         id: `mut_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+        ownerUserId: this.currentUserId || undefined,
         entityType,
         entityId,
         operation,
@@ -131,7 +148,7 @@ class SyncEngine {
         createdAt: new Date().toISOString(),
       };
 
-      await syncDb.syncMutations.put(mutation);
+      await db.syncMutations.put(mutation);
       await this.updatePendingCount();
 
       if (this.currentUserId && navigator.onLine) {
@@ -139,6 +156,7 @@ class SyncEngine {
       }
     } catch (err) {
       console.warn('Failed to enqueue sync mutation:', err);
+      throw err;
     }
   }
 
@@ -178,6 +196,7 @@ class SyncEngine {
     this.updateState({ status: 'syncing', errorMessage: undefined });
 
     try {
+      await this.migrateLegacyOutbox();
       // Step 1: Push pending local mutations to Supabase
       await this.pushPendingMutations();
 
@@ -201,6 +220,7 @@ class SyncEngine {
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Sync failed';
       console.error('Nemo Sync Engine error:', err);
+      await this.updatePendingCount();
       this.updateState({
         status: 'error',
         errorMessage: message,
@@ -218,29 +238,90 @@ class SyncEngine {
     if (!this.currentUserId) return;
     const userId = this.currentUserId;
 
-    const pending = await syncDb.syncMutations
-      .where('status')
-      .equals('pending')
+    const pending = await db.syncMutations
+      .where('[ownerUserId+status]')
+      .equals([userId, 'pending'])
       .limit(50)
       .toArray();
 
     if (!pending.length) return;
 
+    const failures: string[] = [];
     for (const mut of pending) {
+      if (this.currentUserId !== userId) {
+        throw new Error('Account changed during sync; remaining mutations were kept in the outbox.');
+      }
       try {
-        await this.applyOutboxMutation(mut, userId);
-        await syncDb.syncMutations.delete(mut.id);
+        const shouldApply = await this.isMutationCurrent(mut);
+        if (shouldApply) await this.applyOutboxMutation(mut, userId);
+        await db.syncMutations.delete(mut.id);
       } catch (err) {
         console.warn(`Mutation push failed for ${mut.id}:`, err);
         const retryCount = mut.retryCount + 1;
         const lastError = err instanceof Error ? err.message : 'Unknown network failure';
-        await syncDb.syncMutations.update(mut.id, {
+        await db.syncMutations.update(mut.id, {
           retryCount,
           lastError,
           status: retryCount > 5 ? 'failed' : 'pending',
         });
+        failures.push(`${mut.entityType} ${mut.entityId}: ${lastError}`);
       }
     }
+    if (failures.length) {
+      throw new Error(`${failures.length} mutation(s) failed to sync. ${failures[0]}`);
+    }
+  }
+
+  /**
+   * Copy old outbox rows into the new same-database WAL without deleting or
+   * modifying the original records. Ownerless copies remain quarantined.
+   */
+  private async migrateLegacyOutbox(): Promise<void> {
+    if (this.legacyOutboxMigrated) return;
+    const legacyRows = await syncDb.syncMutations.toArray();
+    if (!legacyRows.length) {
+      this.legacyOutboxMigrated = true;
+      return;
+    }
+    await db.transaction('rw', [db.syncMutations], async () => {
+      for (const row of legacyRows) {
+        const existing = await db.syncMutations.get(row.id);
+        if (!existing) {
+          await db.syncMutations.put({ ...row, ownerUserId: undefined, status: 'pending' });
+        }
+      }
+    });
+    this.legacyOutboxMigrated = true;
+  }
+
+  /**
+   * A WAL write happens before its corresponding local write completes. Verify
+   * the committed local state before applying it, so a rolled-back/aborted
+   * IndexedDB operation cannot create or delete a remote record by itself.
+   */
+  private async isMutationCurrent(mut: SyncMutation): Promise<boolean> {
+    const tables: Record<SyncEntityType, { get: (id: string) => Promise<unknown> }> = {
+      project: db.projects,
+      task: db.tasks,
+      milestone: db.milestones,
+      semester: db.semesters,
+      subject: db.subjects,
+      assignment: db.assignments,
+      calendarEvent: db.calendarEvents,
+      goal: db.goals,
+      goalTaskLink: db.goalTaskLinks,
+      focusSelection: db.focusSelections,
+      settings: db.settings,
+      assetBlob: db.assetBlobs,
+    };
+    const current = await tables[mut.entityType].get(mut.entityId);
+    if (mut.operation === 'DELETE') return current === undefined;
+    if (!current || typeof current !== 'object') return false;
+    // A newer local write supersedes this queued snapshot. Its own outbox
+    // record will carry the current payload and be processed separately.
+    return Object.entries(mut.payload).every(([key, queuedValue]) =>
+      JSON.stringify((current as Record<string, unknown>)[key]) === JSON.stringify(queuedValue)
+    );
   }
 
   private async applyOutboxMutation(mut: SyncMutation, userId: string): Promise<void> {
@@ -263,12 +344,15 @@ class SyncEngine {
     if (!tableName) return;
 
     if (mut.operation === 'DELETE') {
-      // Soft delete on cloud
-      const { error } = await supabase
-        .from(tableName)
-        .update({ is_deleted: true, updated_at: new Date().toISOString() })
-        .eq('id', mut.entityId)
-        .eq('user_id', userId);
+      // Workspace assets do not have an is_deleted column in the deployed
+      // schema. Remove those objects directly; every other sync table keeps a
+      // tombstone so offline devices can propagate the delete on their next pull.
+      const query = mut.entityType === 'assetBlob'
+        ? supabase.from(tableName).delete().eq('id', mut.entityId).eq('user_id', userId)
+        : supabase.from(tableName).update({ is_deleted: true, updated_at: new Date().toISOString() })
+          .eq('id', mut.entityId)
+          .eq('user_id', userId);
+      const { error } = await query;
 
       if (error) throw error;
       return;
@@ -309,149 +393,125 @@ class SyncEngine {
     const userId = this.currentUserId;
 
     // Pull tasks
-    const { data: remoteTasks, error: taskErr } = await supabase
-      .from('tasks')
-      .select('*')
-      .eq('user_id', userId)
-      .eq('is_deleted', false);
+    const remoteTasks = await this.fetchRemoteRows('tasks', userId);
+    for (const remoteRow of remoteTasks) {
+      if (remoteRow.is_deleted === true) {
+        await this.applyRemoteTombstone('task', remoteRow);
+        continue;
+      }
+      const local = await db.tasks.get(remoteRow.id);
+      const remoteTask = mappers.task.toLocal(remoteRow);
 
-    if (!taskErr && remoteTasks) {
-      for (const remoteRow of remoteTasks) {
-        const local = await db.tasks.get(remoteRow.id);
-        const remoteTask = mappers.task.toLocal(remoteRow);
-
-        if (!local) {
-          await db.tasks.put(remoteTask);
-        } else {
-          const { resolved } = mergeTaskEntities(local, remoteRow);
-          const mergedLocal = mappers.task.toLocal(resolved);
-          await db.tasks.put(mergedLocal);
-        }
+      if (!local) {
+        await db.tasks.put(remoteTask);
+      } else {
+        const { resolved } = mergeTaskEntities(local, remoteRow);
+        const mergedLocal = mappers.task.toLocal(resolved);
+        await db.tasks.put(mergedLocal);
       }
     }
 
     // Pull projects
-    const { data: remoteProjects, error: projErr } = await supabase
-      .from('projects')
-      .select('*')
-      .eq('user_id', userId)
-      .eq('is_deleted', false);
+    const remoteProjects = await this.fetchRemoteRows('projects', userId);
+    for (const remoteRow of remoteProjects) {
+      if (remoteRow.is_deleted === true) {
+        await this.applyRemoteTombstone('project', remoteRow);
+        continue;
+      }
+      const local = await db.projects.get(remoteRow.id);
+      const remoteProj = mappers.project.toLocal(remoteRow);
 
-    if (!projErr && remoteProjects) {
-      for (const remoteRow of remoteProjects) {
-        const local = await db.projects.get(remoteRow.id);
-        const remoteProj = mappers.project.toLocal(remoteRow);
-
-        if (!local) {
-          await db.projects.put(remoteProj);
-        } else {
-          const { resolved } = resolveGenericLWW(local, remoteProj);
-          await db.projects.put(resolved);
-        }
+      if (!local) {
+        await db.projects.put(remoteProj);
+      } else {
+        const { resolved } = resolveGenericLWW(local, remoteProj);
+        await db.projects.put(resolved);
       }
     }
 
     // Pull milestones
-    const { data: remoteMilestones } = await supabase
-      .from('milestones')
-      .select('*')
-      .eq('user_id', userId)
-      .eq('is_deleted', false);
-
-    if (remoteMilestones) {
-      for (const row of remoteMilestones) {
+    const remoteMilestones = await this.fetchRemoteRows('milestones', userId);
+    for (const row of remoteMilestones) {
+      if (row.is_deleted === true) await this.applyRemoteTombstone('milestone', row);
+      else {
         await db.milestones.put(mappers.milestone.toLocal(row));
       }
     }
 
     // Pull academics (semesters, subjects, assignments)
-    const { data: remoteSemesters } = await supabase
-      .from('semesters')
-      .select('*')
-      .eq('user_id', userId)
-      .eq('is_deleted', false);
-    if (remoteSemesters) {
-      for (const row of remoteSemesters) {
+    const remoteSemesters = await this.fetchRemoteRows('semesters', userId);
+    for (const row of remoteSemesters) {
+      if (row.is_deleted === true) await this.applyRemoteTombstone('semester', row);
+      else {
         await db.semesters.put(mappers.semester.toLocal(row));
       }
     }
 
-    const { data: remoteSubjects } = await supabase
-      .from('subjects')
-      .select('*')
-      .eq('user_id', userId)
-      .eq('is_deleted', false);
-    if (remoteSubjects) {
-      for (const row of remoteSubjects) {
+    const remoteSubjects = await this.fetchRemoteRows('subjects', userId);
+    for (const row of remoteSubjects) {
+      if (row.is_deleted === true) await this.applyRemoteTombstone('subject', row);
+      else {
         await db.subjects.put(mappers.subject.toLocal(row));
       }
     }
 
-    const { data: remoteAssignments } = await supabase
-      .from('assignments')
-      .select('*')
-      .eq('user_id', userId)
-      .eq('is_deleted', false);
-    if (remoteAssignments) {
-      for (const row of remoteAssignments) {
+    const remoteAssignments = await this.fetchRemoteRows('assignments', userId);
+    for (const row of remoteAssignments) {
+      if (row.is_deleted === true) await this.applyRemoteTombstone('assignment', row);
+      else {
         await db.assignments.put(mappers.assignment.toLocal(row));
       }
     }
 
     // Pull calendar events
-    const { data: remoteEvents } = await supabase
-      .from('calendar_events')
-      .select('*')
-      .eq('user_id', userId)
-      .eq('is_deleted', false);
-    if (remoteEvents) {
-      for (const row of remoteEvents) {
+    const remoteEvents = await this.fetchRemoteRows('calendar_events', userId);
+    for (const row of remoteEvents) {
+      if (row.is_deleted === true) await this.applyRemoteTombstone('calendarEvent', row);
+      else {
         await db.calendarEvents.put(mappers.calendarEvent.toLocal(row));
       }
     }
 
     // Pull goals & links
-    const { data: remoteGoals } = await supabase
-      .from('goals')
-      .select('*')
-      .eq('user_id', userId)
-      .eq('is_deleted', false);
-    if (remoteGoals) {
-      for (const row of remoteGoals) {
+    const remoteGoals = await this.fetchRemoteRows('goals', userId);
+    for (const row of remoteGoals) {
+      if (row.is_deleted === true) await this.applyRemoteTombstone('goal', row);
+      else {
         await db.goals.put(mappers.goal.toLocal(row));
       }
     }
 
-    const { data: remoteLinks } = await supabase
-      .from('goal_task_links')
-      .select('*')
-      .eq('user_id', userId)
-      .eq('is_deleted', false);
-    if (remoteLinks) {
-      for (const row of remoteLinks) {
+    const remoteLinks = await this.fetchRemoteRows('goal_task_links', userId);
+    for (const row of remoteLinks) {
+      if (row.is_deleted === true) await this.applyRemoteTombstone('goalTaskLink', row);
+      else {
         await db.goalTaskLinks.put(mappers.goalTaskLink.toLocal(row));
       }
     }
 
+    const remoteFocusSelections = await this.fetchRemoteRows('focus_selections', userId);
+    for (const row of remoteFocusSelections) {
+      if (row.is_deleted === true) await this.applyRemoteTombstone('focusSelection', row);
+      else await db.focusSelections.put(mappers.focusSelection.toLocal(row));
+    }
+
     // Pull workspace assets (covers, screenshots, attachments)
-    const { data: remoteAssets } = await supabase
-      .from('workspace_assets')
-      .select('*')
-      .eq('user_id', userId);
-    if (remoteAssets) {
-      for (const row of remoteAssets) {
-        if (row.owner_type !== 'profile') {
-          await db.assetBlobs.put(mappers.assetBlob.toLocal(row));
-        }
+    const remoteAssets = await this.fetchRemoteRows('workspace_assets', userId);
+    for (const row of remoteAssets) {
+      if (row.owner_type === 'profile') continue;
+      if (row.is_deleted === true) await this.applyRemoteTombstone('assetBlob', row);
+      else {
+        await db.assetBlobs.put(mappers.assetBlob.toLocal(row));
       }
     }
 
     // Pull profile settings & avatar
-    const { data: remoteProfile } = await supabase
+    const { data: remoteProfile, error: profileError } = await supabase
       .from('profiles')
       .select('*')
       .eq('id', userId)
       .maybeSingle();
+    if (profileError) throw new Error(`Pull profiles failed: ${profileError.message}`);
 
     if (remoteProfile) {
       const currentSettings = await db.settings.get('default');
@@ -519,11 +579,50 @@ class SyncEngine {
     }
   }
 
+  private async fetchRemoteRows(table: string, userId: string): Promise<Record<string, any>[]> {
+    // Include tombstones so a device that was offline can apply remote deletes.
+    const { data, error } = await supabase
+      .from(table as any)
+      .select('*')
+      .eq('user_id', userId);
+    if (error) throw new Error(`Pull ${table} failed: ${error.message}`);
+    return (data || []) as Record<string, any>[];
+  }
+
+  private async applyRemoteTombstone(entityType: SyncEntityType, row: Record<string, any>): Promise<void> {
+    const tables: Record<SyncEntityType, { get: (key: string) => Promise<unknown>; delete: (key: string) => Promise<unknown> }> = {
+      project: db.projects,
+      task: db.tasks,
+      milestone: db.milestones,
+      semester: db.semesters,
+      subject: db.subjects,
+      assignment: db.assignments,
+      calendarEvent: db.calendarEvents,
+      goal: db.goals,
+      goalTaskLink: db.goalTaskLinks,
+      focusSelection: db.focusSelections,
+      settings: db.settings,
+      assetBlob: db.assetBlobs,
+    };
+    const table = tables[entityType];
+    const local = await table.get(row.id);
+    if (local && typeof local === 'object') {
+      const localRecord = local as Record<string, unknown>;
+      const localTimestamp = typeof localRecord.updatedAt === 'string'
+        ? localRecord.updatedAt
+        : typeof localRecord.createdAt === 'string' ? localRecord.createdAt : undefined;
+      const remoteTimestamp = typeof row.updated_at === 'string' ? row.updated_at : undefined;
+      if (localTimestamp && remoteTimestamp && localTimestamp > remoteTimestamp) return;
+    }
+    await table.delete(row.id);
+  }
+
   /**
    * Upload all local records to the cloud account.
    * Used on initial authenticated consent.
    */
   public async uploadAllLocalData(userId: string): Promise<{ success: boolean; count: number; error?: string }> {
+    let uploadCount = 0;
     try {
       const [
         settings,
@@ -553,7 +652,11 @@ class SyncEngine {
         db.assetBlobs.toArray(),
       ]);
 
-      let uploadCount = 0;
+      const upsert = async (table: string, rows: Record<string, unknown>[], label: string) => {
+        const { error } = await supabase.from(table as any).upsert(rows);
+        if (error) throw new Error(`Upload ${label} failed: ${error.message}`);
+        uploadCount += rows.length;
+      };
 
       if (settings) {
         let avatarData: string | null = null;
@@ -563,83 +666,71 @@ class SyncEngine {
             avatarData = blob.data;
           }
         }
-        await supabase.from('profiles').upsert(
-          mappers.settings.toRemote(settings, userId, this.currentUserEmail || undefined, avatarData)
-        );
-        uploadCount++;
+        await upsert('profiles', [mappers.settings.toRemote(settings, userId, this.currentUserEmail || undefined, avatarData)], 'profile settings');
       }
 
       if (projects.length) {
         const rows = projects.map((p) => mappers.project.toRemote(p, userId));
-        await supabase.from('projects').upsert(rows);
-        uploadCount += projects.length;
+        await upsert('projects', rows, 'projects');
       }
 
       if (tasks.length) {
         const rows = tasks.map((t) => mappers.task.toRemote(t, userId));
-        await supabase.from('tasks').upsert(rows);
-        uploadCount += tasks.length;
+        await upsert('tasks', rows, 'tasks');
       }
 
       if (milestones.length) {
         const rows = milestones.map((m) => mappers.milestone.toRemote(m, userId));
-        await supabase.from('milestones').upsert(rows);
-        uploadCount += milestones.length;
+        await upsert('milestones', rows, 'milestones');
       }
 
       if (semesters.length) {
         const rows = semesters.map((s) => mappers.semester.toRemote(s, userId));
-        await supabase.from('semesters').upsert(rows);
-        uploadCount += semesters.length;
+        await upsert('semesters', rows, 'semesters');
       }
 
       if (subjects.length) {
         const rows = subjects.map((s) => mappers.subject.toRemote(s, userId));
-        await supabase.from('subjects').upsert(rows);
-        uploadCount += subjects.length;
+        await upsert('subjects', rows, 'subjects');
       }
 
       if (assignments.length) {
         const rows = assignments.map((a) => mappers.assignment.toRemote(a, userId));
-        await supabase.from('assignments').upsert(rows);
-        uploadCount += assignments.length;
+        await upsert('assignments', rows, 'assignments');
       }
 
       if (calendarEvents.length) {
         const rows = calendarEvents.map((e) => mappers.calendarEvent.toRemote(e, userId));
-        await supabase.from('calendar_events').upsert(rows);
-        uploadCount += calendarEvents.length;
+        await upsert('calendar_events', rows, 'calendar events');
       }
 
       if (goals.length) {
         const rows = goals.map((g) => mappers.goal.toRemote(g, userId));
-        await supabase.from('goals').upsert(rows);
-        uploadCount += goals.length;
+        await upsert('goals', rows, 'goals');
       }
 
       if (goalTaskLinks.length) {
         const rows = goalTaskLinks.map((l) => mappers.goalTaskLink.toRemote(l, userId));
-        await supabase.from('goal_task_links').upsert(rows);
-        uploadCount += goalTaskLinks.length;
+        await upsert('goal_task_links', rows, 'goal links');
       }
 
       if (focusSelections.length) {
         const rows = focusSelections.map((f) => mappers.focusSelection.toRemote(f, userId));
-        await supabase.from('focus_selections').upsert(rows);
-        uploadCount += focusSelections.length;
+        await upsert('focus_selections', rows, 'focus selections');
       }
 
       const nonProfileAssets = assetBlobs.filter((b) => b.ownerType !== 'profile');
       if (nonProfileAssets.length) {
         const rows = nonProfileAssets.map((b) => mappers.assetBlob.toRemote(b, userId));
-        await supabase.from('workspace_assets').upsert(rows);
-        uploadCount += nonProfileAssets.length;
+        await upsert('workspace_assets', rows, 'workspace assets');
       }
 
+      // Ownerless/legacy mutations deliberately stay quarantined. They cannot
+      // be safely attributed from the current session alone.
       return { success: true, count: uploadCount };
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Initial upload failed';
-      return { success: false, count: 0, error: message };
+      return { success: false, count: uploadCount, error: message };
     }
   }
 }

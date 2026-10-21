@@ -12,6 +12,7 @@ import type {
   GoalTaskLink,
   FocusSelection,
   AssetBlob,
+  SyncMutation,
 } from '@/domain/types';
 import { BackupSchema, type BackupData } from '@/domain/schemas';
 import { databaseNameForMode, getWorkspaceMode, REAL_DATABASE_NAME } from './workspaceMode';
@@ -33,6 +34,7 @@ export class NemoDatabase extends Dexie {
   goalTaskLinks!: EntityTable<GoalTaskLink, 'id'>;
   focusSelections!: EntityTable<FocusSelection, 'id'>;
   assetBlobs!: EntityTable<AssetBlob, 'id'>;
+  syncMutations!: EntityTable<SyncMutation, 'id'>;
 
   constructor(name = REAL_DATABASE_NAME) {
     super(name);
@@ -50,7 +52,21 @@ export class NemoDatabase extends Dexie {
       focusSelections: 'id, taskId, effectiveLocalDate, [effectiveLocalDate+taskId]',
       assetBlobs: 'id, ownerType, ownerId, mimeType, createdAt',
     });
-
+    this.version(2).stores({
+      settings: 'id',
+      projects: 'id, status, priority, dueDate, createdAt, completedAt',
+      tasks: 'id, status, priority, dueDate, parentType, parentId, createdAt, completedAt',
+      milestones: 'id, ownerType, ownerId, targetDate, completedAt, order',
+      semesters: 'id, status, createdAt',
+      subjects: 'id, semesterId, createdAt',
+      assignments: 'id, subjectId, status, dueDate, submittedAt, createdAt',
+      calendarEvents: 'id, startAt, endAt, isAllDay, subjectId, createdAt',
+      goals: 'id, status, targetDate, createdAt, achievedAt',
+      goalTaskLinks: 'id, goalId, taskId, [goalId+taskId]',
+      focusSelections: 'id, taskId, effectiveLocalDate, [effectiveLocalDate+taskId]',
+      assetBlobs: 'id, ownerType, ownerId, mimeType, createdAt',
+      syncMutations: 'id, entityType, entityId, status, createdAt, ownerUserId, [ownerUserId+status]',
+    });
 
   }
 }
@@ -185,6 +201,7 @@ export async function importWorkspaceBackup(jsonContent: string): Promise<{ succ
       db.goalTaskLinks,
       db.focusSelections,
       db.assetBlobs,
+      db.syncMutations,
     ], async () => {
       // Clear existing records
       await Promise.all([
@@ -241,6 +258,7 @@ export async function resetWorkspaceData(): Promise<void> {
     db.goalTaskLinks,
     db.focusSelections,
     db.assetBlobs,
+    db.syncMutations,
   ], async () => {
     await Promise.all([
       db.settings.clear(),

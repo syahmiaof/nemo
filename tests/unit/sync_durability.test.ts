@@ -1,6 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { db } from '@/db/nemoDb';
-import { syncDb } from '@/sync/syncDb';
 import { syncEngine } from '@/sync/syncEngine';
 import { getWorkspaceMode, REAL_DATABASE_NAME, DEMO_DATABASE_NAME } from '@/db/workspaceMode';
 
@@ -8,7 +7,7 @@ describe('Sprint 5.1 — Durable Local Change Tracking & Resilience', () => {
   beforeEach(async () => {
     await db.tasks.clear();
     await db.projects.clear();
-    await syncDb.syncMutations.clear();
+    await db.syncMutations.clear();
   });
 
   it('preserves idempotency during outbox retries (zero duplicate records)', async () => {
@@ -25,7 +24,7 @@ describe('Sprint 5.1 — Durable Local Change Tracking & Resilience', () => {
       status: 'in_progress',
     });
 
-    const pending = await syncDb.syncMutations.where('entityId').equals('task_idempotent_1').toArray();
+    const pending = await db.syncMutations.where('entityId').equals('task_idempotent_1').toArray();
     expect(pending.length).toBeGreaterThanOrEqual(1);
 
     // Both mutations reference the exact same entityId, so applying them sequentially results in 1 entity
@@ -61,7 +60,7 @@ describe('Sprint 5.1 — Durable Local Change Tracking & Resilience', () => {
       title: 'Resilient Project',
     });
 
-    const mutations = await syncDb.syncMutations.toArray();
+    const mutations = await db.syncMutations.toArray();
     expect(mutations.length).toBe(1);
 
     const mut = mutations[0];
@@ -69,12 +68,12 @@ describe('Sprint 5.1 — Durable Local Change Tracking & Resilience', () => {
     expect(mut.status).toBe('pending');
 
     // Simulate retry increment
-    await syncDb.syncMutations.update(mut.id, {
+    await db.syncMutations.update(mut.id, {
       retryCount: 1,
       lastError: 'Simulated 503 Service Unavailable',
     });
 
-    const updatedMut = await syncDb.syncMutations.get(mut.id);
+    const updatedMut = await db.syncMutations.get(mut.id);
     expect(updatedMut?.retryCount).toBe(1);
     expect(updatedMut?.lastError).toContain('503');
     expect(updatedMut?.status).toBe('pending');

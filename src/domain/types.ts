@@ -201,6 +201,8 @@ export type SyncEntityType =
 
 export interface SyncMutation {
   id: string;
+  /** The account allowed to receive this mutation. Missing means quarantined legacy/local-only data. */
+  ownerUserId?: string;
   entityType: SyncEntityType;
   entityId: string;
   operation: 'UPSERT' | 'DELETE';
