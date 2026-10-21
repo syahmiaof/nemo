@@ -78,7 +78,7 @@ export async function ensureSettings(): Promise<WorkspaceSettings> {
     weekStartsOn: 1, // Monday default
     hourFormat: '24h',
     reduceMotion: false,
-    onboardingCompleted: false,
+    onboardingCompleted: true,
     databaseVersion: 1,
   };
   await db.settings.put(defaultSettings);

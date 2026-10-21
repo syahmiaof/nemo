@@ -161,7 +161,7 @@ export async function auditDatabaseIntegrity(database: NemoDatabase): Promise<In
       weekStartsOn: 1,
       hourFormat: '24h',
       reduceMotion: false,
-      onboardingCompleted: false,
+      onboardingCompleted: true,
       databaseVersion: 1,
     },
     projects,

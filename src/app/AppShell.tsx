@@ -9,7 +9,6 @@ import { MobileNav } from './MobileNav';
 import { QuickAddModal } from './QuickAddModal';
 import { QuickSearchModal } from './QuickSearchModal';
 import { AskNemoDrawer } from '@/features/assistant/AskNemoDrawer';
-import { OnboardingModal } from './OnboardingModal';
 import { ToastProvider } from '@/components/ui/Toast';
 import { Plus, FlaskConical } from 'lucide-react';
 import { RouteTransition } from './RouteTransition';
@@ -83,7 +82,7 @@ export function AppShell() {
     <AuthProvider>
       <ToastProvider>
         <div className="nemo-app">
-          <WelcomeOverlay autoShow={false} onComplete={() => setWelcomeDone(true)} />
+          <WelcomeOverlay onComplete={() => setWelcomeDone(true)} />
           <ScrollRestoration />
           <a href="#main-content" className="skip-link">
             Skip to content
@@ -176,7 +175,7 @@ export function AppShell() {
             )}
 
             <main id="main-content" tabIndex={-1}>
-              <RouteTransition />
+              <RouteTransition key={welcomeDone ? 'ready' : 'intro'} />
             </main>
           </div>
 
@@ -192,10 +191,6 @@ export function AppShell() {
           <QuickAddModal isOpen={quickAdd} onClose={() => setQuickAdd(false)} />
           <QuickSearchModal isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
           <AskNemoDrawer isOpen={askNemoOpen} onClose={() => setAskNemoOpen(false)} />
-
-          {settings && !settings.onboardingCompleted && welcomeDone && (
-            <OnboardingModal isOpen onComplete={() => {}} settings={settings} />
-          )}
         </div>
       </ToastProvider>
     </AuthProvider>

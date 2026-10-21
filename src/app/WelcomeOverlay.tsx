@@ -255,7 +255,7 @@ export const WelcomeOverlay: React.FC<WelcomeOverlayProps> = ({
           '-=0.1'
         )
         // 8. Gentle hold for contemplation before seamless handoff
-        .to({}, { duration: 1.2 });
+        .to({}, { duration: 0.5 });
     }
 
     return () => {
