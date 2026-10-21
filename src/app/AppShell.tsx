@@ -83,7 +83,7 @@ export function AppShell() {
     <AuthProvider>
       <ToastProvider>
         <div className="nemo-app">
-          <WelcomeOverlay onComplete={() => setWelcomeDone(true)} />
+          <WelcomeOverlay autoShow={false} onComplete={() => setWelcomeDone(true)} />
           <ScrollRestoration />
           <a href="#main-content" className="skip-link">
             Skip to content

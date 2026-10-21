@@ -38,6 +38,15 @@ export const AccountSyncPanel: React.FC = () => {
   const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
   const [passwordFeedback, setPasswordFeedback] = useState<{ type: 'error' | 'success'; message: string } | null>(null);
 
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      success('Logged out', 'You have been signed out of Nemo Cloud.');
+    } catch {
+      toastError('Error', 'Unable to sign out.');
+    }
+  };
+
   const handleManualSync = async () => {
     const res = await triggerSync();
     if (res.success) {
@@ -374,11 +383,11 @@ export const AccountSyncPanel: React.FC = () => {
             </button>
 
             <button
-              onClick={signOut}
-              className="text-red-400/80 hover:text-red-400 transition-colors inline-flex items-center gap-1.5 font-medium cursor-pointer"
+              onClick={handleSignOut}
+              className="text-red-400 hover:text-red-300 transition-colors inline-flex items-center gap-1.5 font-medium cursor-pointer"
             >
               <LogOut className="w-3.5 h-3.5" />
-              <span>Sign Out</span>
+              <span>Log Out</span>
             </button>
           </div>
         )}

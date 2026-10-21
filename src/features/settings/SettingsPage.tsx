@@ -16,6 +16,7 @@ import {
   Palette,
   Cloud,
   Upload,
+  LogOut,
   type LucideIcon,
 } from 'lucide-react';
 import { db, exportWorkspaceBackup, importWorkspaceBackup, resetWorkspaceData } from '@/db/nemoDb';
@@ -31,18 +32,31 @@ import { AccountSyncPanel } from './AccountSyncPanel';
 import { getInitials, saveProfileAvatar, removeProfileAvatar } from '@/lib/avatar';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 import { syncEngine } from '@/sync/syncEngine';
+import { useAuth } from '@/features/auth/AuthContext';
+import { replayWelcomeAnimation } from '@/app/WelcomeOverlay';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { useReducedMotion } from '@/design/useReducedMotion';
 import { MotionTitle } from '@/components/ui/MotionTitle';
 gsap.registerPlugin(useGSAP);
 
-type SettingsTab = 'profile' | 'account_sync' | 'appearance' | 'preferences' | 'data' | 'demo';
+type SettingsTab = 'appearance' | 'profile' | 'account_sync' | 'preferences' | 'data' | 'demo' | 'about';
 
 export const SettingsPage: React.FC = () => {
   const { success, error } = useToast();
+  const { user, signOut, openAuthModal } = useAuth();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const avatarInputRef = useRef<HTMLInputElement>(null);
+
+  const handleLogout = async () => {
+    try {
+      await signOut();
+      success('Logged out', 'You have been signed out of Nemo Cloud.');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Sign out failed';
+      error('Error', msg);
+    }
+  };
 
   const settings = useLiveQuery(() => db.settings.get('default'), []);
   const avatarBlob = useLiveQuery(
@@ -255,11 +269,47 @@ export const SettingsPage: React.FC = () => {
     { key: 'preferences', label: 'Preferences', icon: Sliders },
     { key: 'data', label: 'Data & Backups', icon: HardDrive },
     { key: 'demo', label: 'Demo Mode', icon: FlaskConical },
+    { key: 'about', label: 'About & Notice', icon: Sparkles },
   ];
 
   return (
     <div ref={root} className="settings-page space-y-6">
-      <div className="module-heading"><MotionTitle text="Settings"/><p>Make this space yours.</p></div>
+      <div className="module-heading flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div>
+          <MotionTitle text="Settings" />
+          <p>Make this space yours.</p>
+        </div>
+        {user ? (
+          <div className="flex items-center gap-3 bg-white/[0.04] border border-white/10 px-3.5 py-2 rounded-xl">
+            <div className="text-right hidden sm:block">
+              <div className="text-xs font-semibold text-white">{user.email}</div>
+              <div className="text-[10px] text-accent-mint flex items-center justify-end gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-accent-mint inline-block" />
+                Cloud Connected
+              </div>
+            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleLogout}
+              className="text-red-400 hover:text-red-300 hover:bg-red-500/10 gap-1.5 text-xs font-medium"
+            >
+              <LogOut className="w-3.5 h-3.5" />
+              <span>Log Out</span>
+            </Button>
+          </div>
+        ) : (
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={openAuthModal}
+            className="gap-1.5 text-xs"
+          >
+            <Cloud className="w-3.5 h-3.5 text-accent-mint" />
+            <span>Sign In to Cloud</span>
+          </Button>
+        )}
+      </div>
       {/* Tavola-Style Nested Navigation Capsule */}
       <div className="tabs" style={{ width: 'fit-content', margin: '0 auto 1.5rem auto' }}>
         <div className="tabs__track" role="tablist" aria-label="Settings sections">
@@ -386,6 +436,39 @@ export const SettingsPage: React.FC = () => {
               Save Name
             </Button>
           </form>
+
+          {/* Dedicated Account & Session Management */}
+          <div className="p-4 rounded-xl bg-white/[0.03] border border-white/[0.08] relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h4 className="text-sm font-semibold text-white">Active Session & Cloud Account</h4>
+              <p className="text-xs text-content-secondary mt-0.5">
+                {user ? `Currently signed in as ${user.email}.` : 'Currently in local offline mode.'}
+              </p>
+            </div>
+            {user ? (
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={handleLogout}
+                className="gap-1.5 text-red-400 hover:text-red-300 hover:bg-red-500/10 w-fit"
+              >
+                <LogOut className="w-4 h-4" />
+                <span>Log Out</span>
+              </Button>
+            ) : (
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                onClick={openAuthModal}
+                className="gap-1.5 w-fit"
+              >
+                <Cloud className="w-4 h-4 text-accent-mint" />
+                <span>Sign In to Sync</span>
+              </Button>
+            )}
+          </div>
         </div>
       )}
 
@@ -707,6 +790,74 @@ export const SettingsPage: React.FC = () => {
       {activeTab === 'demo' && (
         <div data-enter>
           <DemoWorkspacePanel />
+        </div>
+      )}
+
+      {/* About & Welcome Notice Panel */}
+      {activeTab === 'about' && (
+        <div data-enter className="space-y-6">
+          <div className="p-6 rounded-2xl glass-panel relative z-10 space-y-5">
+            <div className="flex items-center gap-2.5 border-b border-white/[0.08] pb-3 relative z-10">
+              <Sparkles className="w-5 h-5 text-accent-mint" />
+              <div>
+                <h3 className="text-base font-bold text-content-primary">Welcome to Nemo</h3>
+                <p className="text-xs text-content-secondary mt-0.5">
+                  The intentional workspace for focused work, coursework, projects, and goals.
+                </p>
+              </div>
+            </div>
+
+            <div className="space-y-4 text-xs text-content-secondary leading-relaxed relative z-10">
+              <p>
+                <strong className="text-white">Track it, finish it.</strong> Nemo is designed as a calm, distraction-free command center that prioritizes your commitments without noisy popups or overwhelming feeds.
+              </p>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 pt-2">
+                <div className="p-3.5 rounded-xl bg-white/[0.03] border border-white/[0.08]">
+                  <div className="font-semibold text-accent-mint text-sm mb-1">100% Local Durability</div>
+                  <p className="text-[11px] text-content-tertiary">
+                    All your records live directly in your browser's IndexedDB. Full speed, zero latency, and works completely offline.
+                  </p>
+                </div>
+                <div className="p-3.5 rounded-xl bg-white/[0.03] border border-white/[0.08]">
+                  <div className="font-semibold text-accent-ember text-sm mb-1">Seamless Cloud Sync</div>
+                  <p className="text-[11px] text-content-tertiary">
+                    When you sign in, changes sync smoothly across your laptop, phone, and tablet with end-to-end cryptographic integrity.
+                  </p>
+                </div>
+                <div className="p-3.5 rounded-xl bg-white/[0.03] border border-white/[0.08]">
+                  <div className="font-semibold text-white text-sm mb-1">Zero Telemetry</div>
+                  <p className="text-[11px] text-content-tertiary">
+                    No third-party trackers, no invasive analytics, and no spammy emails. Only you control your workspace data.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="pt-2 flex flex-wrap items-center gap-3 relative z-10">
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => {
+                  replayWelcomeAnimation();
+                  success('Brand Animation', 'Playing signature Nemo welcome intro.');
+                }}
+                className="gap-2 text-xs"
+              >
+                <Sparkles className="w-3.5 h-3.5 text-accent-mint" />
+                <span>Replay Brand Intro Animation</span>
+              </Button>
+            </div>
+          </div>
+
+          <div className="p-5 rounded-2xl border border-white/[0.08] bg-white/[0.02] flex items-center justify-between text-xs text-content-tertiary">
+            <div>
+              <span className="font-semibold text-white">Nemo Workspace</span> &bull; Version 0.1.0
+            </div>
+            <div className="font-mono text-[11px]">
+              Tavola Motion Release
+            </div>
+          </div>
         </div>
       )}
 

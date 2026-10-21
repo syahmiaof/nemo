@@ -6,8 +6,10 @@ import { useReducedMotion } from '@/design/useReducedMotion';
 interface WelcomeOverlayProps {
   /** Optional callback invoked when overlay completes its exit */
   onComplete?: () => void;
-  /** Whether to bypass auto-show if session was already welcomed (default: false, so hard refreshes always show) */
+  /** Whether to bypass auto-show if session was already welcomed (default: false) */
   skipIfSessionWelcomed?: boolean;
+  /** Whether to auto-show on initial render. Default true. If false, only opens when triggered manually */
+  autoShow?: boolean;
 }
 
 const STORAGE_KEY_WELCOME = 'nemo_welcome_seen';
@@ -16,9 +18,11 @@ const SESSION_KEY_SEEN = 'nemo_session_welcomed';
 export const WelcomeOverlay: React.FC<WelcomeOverlayProps> = ({
   onComplete,
   skipIfSessionWelcomed = false,
+  autoShow = true,
 }) => {
   const reducedMotion = useReducedMotion();
   const [isOpen, setIsOpen] = useState<boolean>(() => {
+    if (!autoShow) return false;
     if (typeof window === 'undefined') return false;
     if (skipIfSessionWelcomed && sessionStorage.getItem(SESSION_KEY_SEEN)) {
       return false;

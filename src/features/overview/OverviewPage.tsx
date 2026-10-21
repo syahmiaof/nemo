@@ -321,7 +321,7 @@ export function OverviewPage() {
             seriesName="This week"
             comparisonName="Previous 7 days"
             unit={metric}
-            height={274}
+            height={205}
           />
         </section>
 
