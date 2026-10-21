@@ -75,7 +75,7 @@ export const MobileNav: React.FC<MobileNavProps> = ({
 
     const navRect = nav.getBoundingClientRect();
     const targetRect = target.getBoundingClientRect();
-    const pillWidth = Math.min(targetRect.width - 4, 72);
+    const pillWidth = Math.min(targetRect.width - 14, 60);
     const left = targetRect.left - navRect.left + (targetRect.width - pillWidth) / 2;
 
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -124,7 +124,7 @@ export const MobileNav: React.FC<MobileNavProps> = ({
       if (!target) return;
       const navRect = nav.getBoundingClientRect();
       const targetRect = target.getBoundingClientRect();
-      const pillWidth = Math.min(targetRect.width - 4, 72);
+      const pillWidth = Math.min(targetRect.width - 14, 60);
       const left = targetRect.left - navRect.left + (targetRect.width - pillWidth) / 2;
       gsap.set(pill, { x: left, width: pillWidth });
     };
@@ -139,13 +139,13 @@ export const MobileNav: React.FC<MobileNavProps> = ({
       <nav
         ref={navRef}
         aria-label="Mobile Navigation"
-        className="mobile-nav md:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#0A1222]/85 backdrop-blur-2xl border-t border-white/[0.08] shadow-[0_-8px_32px_rgba(0,0,0,0.45)] flex items-center justify-around h-16 px-1 safe-area-pb overflow-hidden"
+        className="mobile-nav md:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#0A1222]/90 backdrop-blur-2xl border-t border-white/[0.08] shadow-[0_-8px_32px_rgba(0,0,0,0.45)] flex items-center justify-around h-14 px-1 safe-area-pb overflow-hidden"
       >
         {/* Animated Sliding Glass Fluid Pill Indicator */}
         <div
           ref={pillRef}
           aria-hidden="true"
-          className="mobile-nav__pill absolute left-0 top-1.5 bottom-1.5 rounded-2xl pointer-events-none bg-gradient-to-b from-accent-mint/20 via-accent-mint/10 to-transparent border border-accent-mint/35 shadow-[0_2px_14px_rgba(168,220,200,0.18),inset_0_1px_0_rgba(255,255,255,0.25)] backdrop-blur-md"
+          className="mobile-nav__pill absolute left-0 top-1.5 h-[44px] rounded-xl pointer-events-none bg-gradient-to-b from-accent-mint/20 via-accent-mint/10 to-transparent border border-accent-mint/35 shadow-[0_2px_12px_rgba(168,220,200,0.18),inset_0_1px_0_rgba(255,255,255,0.25)] backdrop-blur-md"
           style={{ opacity: 0 }}
         />
 
