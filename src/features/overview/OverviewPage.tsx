@@ -374,24 +374,23 @@ export function OverviewPage() {
             seriesName="This week"
             comparisonName="Previous 7 days"
             unit={metric}
-            height={165}
+            height={135}
           />
         </section>
 
-        {/* Right Tactical Stack: Today's Focus & Spark of Focus */}
-        <div className="overview-right-stack">
-          <FocusSlotsSection
-            focused={focused}
-            projects={projects}
-            selections={selections}
-            openTasks={open}
-            onComplete={complete}
-            onRemoveFocus={removeFocus}
-            onAddFocus={focus}
-          />
+        {/* Center Tactical Panel: Today's Focus Slots */}
+        <FocusSlotsSection
+          focused={focused}
+          projects={projects}
+          selections={selections}
+          openTasks={open}
+          onComplete={complete}
+          onRemoveFocus={removeFocus}
+          onAddFocus={focus}
+        />
 
-          <SparkOfFocusCard />
-        </div>
+        {/* Right Inspirational Panel: Spark of Focus */}
+        <SparkOfFocusCard />
       </div>
 
       {/* Middle Grid: Weekly Momentum Donut Gauge + Active Projects (In the making) */}

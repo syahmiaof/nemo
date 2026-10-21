@@ -105,7 +105,7 @@ export const SparkOfFocusCard: React.FC<SparkOfFocusCardProps> = ({ className })
         }
       }}
       className={cn(
-        'glass-panel p-3.5 sm:p-4 rounded-2xl relative overflow-hidden flex flex-col justify-between min-h-[145px] transition-all border border-border-subtle hover:border-border-emphasis',
+        'glass-panel p-3.5 sm:p-4 rounded-2xl relative overflow-hidden flex flex-col justify-between h-full min-h-[160px] transition-all border border-border-subtle hover:border-border-emphasis',
         className
       )}
       aria-label="Spark of focus motivational quote"
@@ -173,7 +173,7 @@ export const SparkOfFocusCard: React.FC<SparkOfFocusCardProps> = ({ className })
             )}
           />
           <span className="text-[11px] font-mono">
-            {isPaused ? 'Paused' : 'Transforms every 5s'}
+            {isPaused ? 'Paused' : 'Transforms every ~3s'}
           </span>
         </div>
 
