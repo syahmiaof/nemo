@@ -43,7 +43,7 @@ test.describe('Sprint 4 — responsive, branding and motion regressions', () => 
     await page.goto('/overview');
     const more = page.getByRole('button', {name: 'Open more navigation options'});
     await more.click();
-    const dialog = page.getByRole('dialog', {name: 'More Modules'});
+    const dialog = page.getByRole('dialog', {name: 'Workspace Utilities & Modules'});
     await expect(dialog).toBeVisible();
     await dialog.getByRole('link', {name: /Settings/}).focus();
     await page.keyboard.press('Tab');

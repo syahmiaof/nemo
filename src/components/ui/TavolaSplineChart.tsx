@@ -21,6 +21,7 @@ export const TavolaSplineChart: React.FC<SplineChartProps> = ({
   labels, values, comparisonValues, seriesName = 'This week', comparisonName = 'Last week', unit = 'tasks', height = 300,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const revealRef = useRef<SVGRectElement>(null);
   const [width, setWidth] = useState(600);
   const [hoverIndex, setHoverIndex] = useState<number | null>(null);
   const reduced = useReducedMotion();
@@ -52,14 +53,12 @@ export const TavolaSplineChart: React.FC<SplineChartProps> = ({
     if (reduced) { frameRef.current = target; setFrame(target); return; }
     const previous = frameRef.current;
     const compatible = previous.main.length === target.main.length && previous.comparison.length === target.comparison.length;
-    const start = initial
-      ? { main: target.main.map(() => 0), comparison: target.comparison.map(() => 0), maximum: target.maximum }
-      : compatible ? previous : target;
+    const start = initial ? target : compatible ? previous : target;
     frameRef.current = start;
     setFrame(start);
     const progress = { value: 0 };
     gsap.to(progress, {
-        value: 1, duration: initial ? 0.85 : 0.5, ease: 'power2.out',
+        value: 1, duration: initial ? 0 : 0.9, ease: 'power3.inOut',
         onUpdate: () => {
           const mix = (from: number, to: number) => from + (to - from) * progress.value;
           const next: ChartFrame = {
@@ -73,6 +72,15 @@ export const TavolaSplineChart: React.FC<SplineChartProps> = ({
         onComplete: () => { frameRef.current = target; setFrame(target); },
     });
   }, { scope: containerRef, dependencies: [target, reduced], revertOnUpdate: true });
+
+  useGSAP(() => {
+    const reveal = revealRef.current;
+    if (!reveal) return;
+    if (reduced) { gsap.set(reveal, { attr: { width: '100%' } }); return; }
+    gsap.fromTo(reveal, { attr: { width: '0%' } }, {
+      attr: { width: '100%' }, duration: 1.4, ease: 'power2.inOut',
+    });
+  }, { scope: containerRef, dependencies: [reduced], revertOnUpdate: true });
 
   const padding = { left: 38, right: 20, top: 26, bottom: 34 };
   const plotWidth = Math.max(1, width - padding.left - padding.right);
@@ -107,15 +115,17 @@ export const TavolaSplineChart: React.FC<SplineChartProps> = ({
         <defs><linearGradient id={`${id}-fill`} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor="var(--chart-peach, #efb2a2)" stopOpacity=".28" />
           <stop offset="100%" stopColor="var(--chart-peach, #efb2a2)" stopOpacity=".015" />
-        </linearGradient></defs>
+        </linearGradient><clipPath id={`${id}-reveal`}><rect ref={revealRef} x="0" y="0" width="100%" height="100%" /></clipPath></defs>
         {[0, 0.5, 1].map((fraction) => <g key={fraction} className="nemo-chart__grid">
           <line x1={padding.left} x2={width - padding.right} y1={getY(frame.maximum * fraction)} y2={getY(frame.maximum * fraction)} strokeDasharray="3 6" />
           <text x={padding.left - 10} y={getY(frame.maximum * fraction) + 5} textAnchor="end">{Math.round(frame.maximum * fraction)}</text>
         </g>)}
         {labels.map((label, i) => i % labelStride === 0 || i === labels.length - 1 ? <text key={`${label}-${i}`} className="nemo-chart__label" x={getX(i)} y={height - 8} textAnchor="middle">{label}</text> : null)}
-        {area && <path d={area} fill={`url(#${id}-fill)`} />}
-        {comparisonPath && <path d={comparisonPath} className="nemo-chart__comparison" />}
-        {path && <path d={path} className="nemo-chart__line" />}
+        <g clipPath={`url(#${id}-reveal)`}>
+          {area && <path d={area} fill={`url(#${id}-fill)`} />}
+          {comparisonPath && <path d={comparisonPath} className="nemo-chart__comparison" />}
+          {path && <path d={path} className="nemo-chart__line" />}
+        </g>
         {mainPoints.length === 1 && <circle cx={mainPoints[0][0]} cy={mainPoints[0][1]} r="4" className="nemo-chart__dot" />}
         {active !== null && <g>
           <line className="nemo-chart__crosshair" x1={getX(active)} x2={getX(active)} y1={padding.top} y2={bottom} />

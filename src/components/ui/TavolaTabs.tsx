@@ -12,13 +12,15 @@ export function TavolaTabs({ tabs }: { tabs: { to: string; label: string }[] }) 
   const reduced = useReducedMotion();
   const trackRef = useRef<HTMLDivElement>(null);
   const pillRef = useRef<HTMLSpanElement>(null);
+  const inkRef = useRef<HTMLDivElement>(null);
   const measureRef = useRef<(instant?: boolean) => void>(() => {});
   const tabKey = tabs.map(tab => `${tab.to}:${tab.label}`).join('|');
 
   useGSAP((_context, contextSafe) => {
     const track = trackRef.current;
     const pill = pillRef.current;
-    if (!track || !pill || !contextSafe) return;
+    const ink = inkRef.current;
+    if (!track || !pill || !ink || !contextSafe) return;
     let disposed = false;
     let initialized = false;
     let geometry = '';
@@ -28,6 +30,7 @@ export function TavolaTabs({ tabs }: { tabs: { to: string; label: string }[] }) 
       pill.style.transform = `translate3d(${edges.left}px, 0, 0)`;
       pill.style.width = `${Math.max(0, edges.right - edges.left)}px`;
       pill.style.opacity = '1';
+      ink.style.clipPath = `inset(0 ${Math.max(0, track.offsetWidth - edges.right)}px 0 ${Math.max(0, edges.left)}px round 999px)`;
     };
     const read = () => {
       const active = track.querySelector<HTMLAnchorElement>('.tab.is-active');
@@ -51,14 +54,14 @@ export function TavolaTabs({ tabs }: { tabs: { to: string; label: string }[] }) 
       }
       // Independent edges preserve the current shape on interruption. Labels never stretch.
       const forward = target.left >= edges.left;
-      animation = gsap.timeline({ onUpdate: draw });
+      animation = gsap.timeline({ onUpdate: draw, onComplete: draw });
       animation.to(edges, {
         [forward ? 'right' : 'left']: target[forward ? 'right' : 'left'],
-        duration: .34, ease: 'power3.out',
+        duration: forward ? .36 : .55, ease: 'power3.inOut',
       }, 0).to(edges, {
         [forward ? 'left' : 'right']: target[forward ? 'left' : 'right'],
-        duration: .46, ease: 'power3.out',
-      }, .035);
+        duration: forward ? .55 : .36, ease: 'power3.out',
+      }, 0);
     });
     measureRef.current = measure;
     measure(true);
@@ -88,6 +91,9 @@ export function TavolaTabs({ tabs }: { tabs: { to: string; label: string }[] }) 
           className={({ isActive }) => `tab ${isActive ? 'is-active' : ''}`}>
           {tab.label}
         </NavLink>)}
+        <div ref={inkRef} className="tabs__ink" aria-hidden="true">
+          {tabs.map((tab) => <span key={tab.to} className="tab">{tab.label}</span>)}
+        </div>
       </div>
     </nav>
   );

@@ -301,9 +301,23 @@ body {
   color: var(--text-primary);
 }
 .tab.is-active {
-  color: #2E1813;
+  color: var(--text-secondary);
   font-weight: 600;
 }
+.tabs__ink {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  width: 100%;
+  padding: 4px;
+  pointer-events: none;
+  clip-path: inset(0 100% 0 0 round 999px);
+}
+.tabs__ink .tab { color: #2E1813; }
+.tabs__ink .tab:hover { color: #2E1813; }
 .tabs__indicator {
   position: absolute;
   top: 4px;
@@ -631,6 +645,8 @@ body {font-weight:500;line-height:1.45;}
 .primary-action {background:var(--ember-grad);color:var(--on-ember);}.secondary-action {background:var(--glass-2);border:1px solid var(--border-emphasis);}
 .empty-inline,.empty-copy {padding:28px;color:var(--text-secondary);font-size:14px;}.empty-inline {grid-column:1/-1;}.empty-inline a {color:var(--accent-mint);}
 .route-content {min-width:0;}.route-content>* {min-width:0;}
+.motion-word { display: inline-block; overflow: hidden; vertical-align: bottom; padding-bottom: .12em; margin-bottom: -.12em; white-space: nowrap; }
+.motion-letter { display: inline-block; transform-origin: center bottom; }
 .project-card {padding:10px;}.project-card .project-cover {height:auto;aspect-ratio:1.9;border-radius:20px;border:0;}
 .project-card h3 {font-size:21px;line-height:1.2;}.project-card .project-body {padding:17px 9px 10px;}
 .project-card .project-description {font-size:14px;}.project-card .project-progress {background:var(--accent-mint);}
@@ -704,8 +720,10 @@ input::placeholder,textarea::placeholder {opacity:1;}
 
 :root[data-theme="light"] .tab.is-active,
 :root[data-theme="daylight"] .tab.is-active {
-  color: #FFFFFF;
+  color: #334155;
 }
+:root[data-theme="light"] .tabs__ink .tab,
+:root[data-theme="daylight"] .tabs__ink .tab { color: #2E1813; }
 
 :root[data-theme="light"] .glass-panel,
 :root[data-theme="daylight"] .glass-panel {
@@ -915,8 +933,9 @@ input::placeholder,textarea::placeholder {opacity:1;}
 }
 
 :root[data-theme="aurora"] .tab.is-active {
-  color: #070B14;
+  color: var(--text-secondary);
 }
+:root[data-theme="aurora"] .tabs__ink .tab { color: #070B14; }
 
 :root[data-theme="aurora"] .tabs__indicator {
   background: linear-gradient(135deg, #34D399, #F5C8BC);

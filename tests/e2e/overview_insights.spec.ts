@@ -1,20 +1,13 @@
 import { test, expect } from '@playwright/test';
+import { gotoReady } from './gotoReady';
 
 test.describe('Overview & Insights Functional Audit', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/');
-    const skipBtn = page.getByRole('button', { name: 'Skip customization' });
-    try {
-      await skipBtn.waitFor({ state: 'visible', timeout: 3500 });
-      await skipBtn.click();
-      await skipBtn.waitFor({ state: 'hidden', timeout: 3500 });
-    } catch {
-      // already completed/dismissed
-    }
+    await gotoReady(page, '/');
   });
 
   test('Dashboard metrics and Today Focus match real data', async ({ page }) => {
-    await page.goto('/overview');
+    await gotoReady(page, '/overview');
     await page.waitForLoadState('networkidle');
 
     // Page heading is rendered
@@ -39,7 +32,7 @@ test.describe('Overview & Insights Functional Audit', () => {
   });
 
   test('Insights page displays accurate analytics and year selection', async ({ page }) => {
-    await page.goto('/insights');
+    await gotoReady(page, '/insights');
     await page.waitForLoadState('networkidle');
 
     // Verify main headings

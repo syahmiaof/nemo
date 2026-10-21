@@ -32,6 +32,8 @@ import { generateId } from '@/lib/ids';
 import { formatDisplayDate, isOverdue, getTodayLocalDateString } from '@/lib/dates';
 import { isValidWebUrl } from '@/lib/utils';
 import type { Assignment, AssignmentStatus, Task } from '@/domain/types';
+import { useCollectionMotion } from '@/design/useCollectionMotion';
+import { MotionTitle } from '@/components/ui/MotionTitle';
 
 export const AcademicsPage: React.FC = () => {
   const { success, error } = useToast();
@@ -326,6 +328,7 @@ export const AcademicsPage: React.FC = () => {
 
   const assignmentCount = subjectDeliverables.filter((a) => !isExamEntity(a)).length;
   const examCount = subjectDeliverables.filter((a) => isExamEntity(a)).length;
+  const assignmentsRef = useCollectionMotion<HTMLDivElement>(`${selectedSemesterId}:${selectedSubjectId}:${filterType}:${filteredAssignments.map((assignment) => assignment.id).join(',')}`);
 
   return (
     <div className="academics-page space-y-6">
@@ -336,7 +339,7 @@ export const AcademicsPage: React.FC = () => {
             <GraduationCap className="w-6 h-6" />
           </div>
           <div>
-            <h2 className="text-lg font-bold text-content-primary">Academic Track</h2>
+            <MotionTitle as="h2" text="Academic Track" className="text-lg font-bold text-content-primary" />
             <p className="text-xs text-content-secondary">
               Organize semesters, courses, and submission deliverables.
             </p>
@@ -559,7 +562,7 @@ export const AcademicsPage: React.FC = () => {
                 onAction={() => handleOpenAssignmentModal()}
               />
             ) : (
-              <div className="space-y-4">
+              <div ref={assignmentsRef} className="space-y-4">
                 {filteredAssignments.map((assign) => {
                   const subject = subjects.find((s) => s.id === assign.subjectId);
                   const isExam = isExamEntity(assign);

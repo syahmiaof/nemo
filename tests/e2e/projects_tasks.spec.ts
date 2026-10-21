@@ -1,23 +1,14 @@
 import { test, expect } from '@playwright/test';
+import { gotoReady } from './gotoReady';
 
 test.describe('Projects & Unified Tasks Functional Audit', () => {
   test.beforeEach(async ({ page }) => {
-    // Open application
-    await page.goto('/');
-    // Dismiss onboarding modal if present
-    const skipBtn = page.getByRole('button', { name: 'Skip customization' });
-    try {
-      await skipBtn.waitFor({ state: 'visible', timeout: 4000 });
-      await skipBtn.click();
-      await skipBtn.waitFor({ state: 'hidden', timeout: 4000 });
-    } catch {
-      // Modal was already completed/dismissed
-    }
+    await gotoReady(page, '/');
   });
 
   test('Create, edit, complete, archive and delete project', async ({ page }) => {
     // Navigate to projects
-    await page.goto('/projects');
+    await gotoReady(page, '/projects');
     await page.waitForLoadState('networkidle');
 
     // 1. Create a new project
@@ -77,7 +68,7 @@ test.describe('Projects & Unified Tasks Functional Audit', () => {
     await expect(page.getByText('Project archived')).toBeVisible();
 
     // Go to projects list and verify archived tab
-    await page.goto('/projects');
+    await gotoReady(page, '/projects');
     await page.getByRole('button', { name: /Archived/ }).click();
     await expect(page.getByRole('heading', { name: 'E2E Alpha Project Updated' })).toBeVisible();
 
@@ -92,7 +83,7 @@ test.describe('Projects & Unified Tasks Functional Audit', () => {
   });
 
   test('Create, edit, complete and reopen canonical tasks', async ({ page }) => {
-    await page.goto('/tasks');
+    await gotoReady(page, '/tasks');
     await page.waitForLoadState('networkidle');
 
     // 1. Create a task
@@ -130,12 +121,12 @@ test.describe('Projects & Unified Tasks Functional Audit', () => {
     await expect(page.getByText('Verify Storage Quota Engine', { exact: true })).not.toBeVisible();
   });
 
-  test('Today Focus enforces maximum 3 active slots and allows replacement on complete', async ({ page }) => {
-    await page.goto('/overview');
+  test('Today Focus keeps 3 slots and backfills a due-today task on completion', async ({ page }) => {
+    await gotoReady(page, '/overview');
     await page.waitForLoadState('networkidle');
 
     // Ensure we start with clean slate for focus testing
-    await page.goto('/tasks');
+    await gotoReady(page, '/tasks');
     // Create 4 standalone tasks
     for (const name of ['Focus Alpha', 'Focus Beta', 'Focus Gamma', 'Focus Delta']) {
       await page.getByRole('button', { name: 'New Task' }).click();
@@ -145,7 +136,7 @@ test.describe('Projects & Unified Tasks Functional Audit', () => {
     }
 
     // Go to overview and add first 3 tasks
-    await page.goto('/overview');
+    await gotoReady(page, '/overview');
     await page.waitForLoadState('networkidle');
 
     for (const name of ['Focus Alpha', 'Focus Beta', 'Focus Gamma']) {
@@ -166,16 +157,10 @@ test.describe('Projects & Unified Tasks Functional Audit', () => {
     await alphaComplete.click();
     await page.waitForTimeout(400);
 
-    // Verify slot freed up: 2 of 3 active slots and picker is visible again
-    await expect(page.getByText('2 of 3 active slots')).toBeVisible();
-    await expect(page.locator('#focus-choice')).toBeVisible();
-
-    // Add Focus Delta to the freed slot
-    await page.locator('#focus-choice').selectOption({ label: 'Focus Delta' });
-    await page.waitForTimeout(300);
-
-    // Verify back to 3 slots
+    // Due-today tasks backfill an open slot automatically.
     await expect(page.getByText('3 of 3 active slots')).toBeVisible();
+    await expect(page.locator('#focus-choice')).not.toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Focus Alpha' })).not.toBeVisible();
     await expect(page.getByRole('heading', { name: 'Focus Delta' })).toBeVisible();
   });
 });

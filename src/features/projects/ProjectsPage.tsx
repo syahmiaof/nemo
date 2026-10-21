@@ -8,6 +8,8 @@ import { EmptyState } from '@/components/ui/EmptyState';
 import { ProjectCard } from './ProjectCard';
 import { ProjectFormModal } from './ProjectFormModal';
 import type { ProjectStatus, Milestone, Task } from '@/domain/types';
+import { useCollectionMotion } from '@/design/useCollectionMotion';
+import { MotionTitle } from '@/components/ui/MotionTitle';
 
 export const ProjectsPage: React.FC = () => {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
@@ -86,6 +88,7 @@ export const ProjectsPage: React.FC = () => {
   const visibleProjects = useMemo(() => {
     return filteredProjects.slice(0, visibleCount);
   }, [filteredProjects, visibleCount]);
+  const cardsRef = useCollectionMotion<HTMLDivElement>(`${activeTab}:${viewMode}:${visibleProjects.map((project) => project.id).join(',')}`);
 
   const tabOptions = [
     { key: 'all', label: 'All Active' },
@@ -98,7 +101,7 @@ export const ProjectsPage: React.FC = () => {
 
   return (
     <div className="projects-page space-y-6">
-      <div className="module-heading" data-enter><h1>Projects</h1><p>A home for the work you want to finish.</p></div>
+      <div className="module-heading" data-enter><MotionTitle text="Projects"/><p>A home for the work you want to finish.</p></div>
       {/* Top Controls Bar */}
       <div className="page-toolbar flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-2xl glass-panel relative z-10">
         {/* Search Input */}
@@ -189,6 +192,7 @@ export const ProjectsPage: React.FC = () => {
       ) : (
         <div className="space-y-6">
           <div
+            ref={cardsRef}
             className={
               viewMode === 'grid'
                 ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5'

@@ -33,6 +33,7 @@ import { syncEngine } from '@/sync/syncEngine';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { useReducedMotion } from '@/design/useReducedMotion';
+import { MotionTitle } from '@/components/ui/MotionTitle';
 gsap.registerPlugin(useGSAP);
 
 type SettingsTab = 'profile' | 'account_sync' | 'appearance' | 'preferences' | 'data' | 'demo';
@@ -51,10 +52,14 @@ export const SettingsPage: React.FC = () => {
   // Active subtab
   const [activeTab, setActiveTab] = useState<SettingsTab>('appearance');
   const root = useRef<HTMLDivElement>(null);
+  const animatedTab = useRef(false);
   const reduced = useReducedMotion();
   useGSAP(() => {
+    if (!animatedTab.current) { animatedTab.current = true; return; }
     if (reduced) return;
-    gsap.fromTo('[data-enter]', { opacity: .4, y: 8 }, { opacity: 1, y: 0, duration: .28, stagger: .04, ease: 'power2.out', clearProps: 'opacity,transform' });
+    gsap.fromTo('[data-enter]', { opacity: 0, y: 14 }, {
+      opacity: 1, y: 0, duration: .55, stagger: .045, ease: 'power3.out', clearProps: 'opacity,transform',
+    });
   }, {scope: root, dependencies: [activeTab, reduced], revertOnUpdate: true});
 
   // Form states
@@ -237,7 +242,7 @@ export const SettingsPage: React.FC = () => {
 
   return (
     <div ref={root} className="settings-page space-y-6">
-      <div className="module-heading"><h1>Settings</h1><p>Make this space yours.</p></div>
+      <div className="module-heading"><MotionTitle text="Settings"/><p>Make this space yours.</p></div>
       {/* Tavola-Style Nested Navigation Capsule */}
       <div className="tabs" style={{ width: 'fit-content', margin: '0 auto 1.5rem auto' }}>
         <div className="tabs__track" role="tablist" aria-label="Settings sections">

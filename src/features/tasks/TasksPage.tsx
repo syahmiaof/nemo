@@ -24,6 +24,8 @@ import { getTodayLocalDateString, formatDisplayDate, isOverdue, isUpcoming } fro
 import { animateTaskCompletion } from '@/design/motion';
 import { TaskFormModal } from './TaskFormModal';
 import type { Task } from '@/domain/types';
+import { useCollectionMotion } from '@/design/useCollectionMotion';
+import { MotionTitle } from '@/components/ui/MotionTitle';
 
 export const TasksPage: React.FC = () => {
   const [activeFilter, setActiveFilter] = useState<'all' | 'today' | 'upcoming' | 'overdue' | 'done'>('all');
@@ -123,6 +125,7 @@ export const TasksPage: React.FC = () => {
   const visibleTasks = useMemo(() => {
     return filteredTasks.slice(0, visibleCount);
   }, [filteredTasks, visibleCount]);
+  const tasksRef = useCollectionMotion<HTMLDivElement>(`${activeFilter}:${visibleTasks.map((task) => task.id).join(',')}`);
 
   const handleToggleTask = async (task: Task, e: React.MouseEvent<HTMLButtonElement>) => {
     const nextStatus = task.status === 'done' ? 'todo' : 'done';
@@ -146,7 +149,7 @@ export const TasksPage: React.FC = () => {
 
   return (
     <div className="tasks-page space-y-6">
-      <div className="module-heading" data-enter><h1>Tasks</h1><p>Small steps. Clear priorities.</p></div>
+      <div className="module-heading" data-enter><MotionTitle text="Tasks"/><p>Small steps. Clear priorities.</p></div>
       {/* Top Controls */}
       <div className="page-toolbar flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-2xl glass-panel relative z-10">
         <div className="relative max-w-sm w-full">
@@ -224,7 +227,7 @@ export const TasksPage: React.FC = () => {
           }
         />
       ) : (
-        <div className="space-y-2.5">
+        <div ref={tasksRef} className="space-y-2.5">
           {visibleTasks.map((task) => {
             const isDone = task.status === 'done';
             const isTaskOverdue = task.dueDate && isOverdue(task.dueDate) && !isDone;

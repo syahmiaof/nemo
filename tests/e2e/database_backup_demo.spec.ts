@@ -1,20 +1,13 @@
 import { test, expect } from '@playwright/test';
+import { gotoReady } from './gotoReady';
 
 test.describe('Privacy, Database & Demo Functional Audit', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/');
-    const skipBtn = page.getByRole('button', { name: 'Skip customization' });
-    try {
-      await skipBtn.waitFor({ state: 'visible', timeout: 3500 });
-      await skipBtn.click();
-      await skipBtn.waitFor({ state: 'hidden', timeout: 3500 });
-    } catch {
-      // already completed/dismissed
-    }
+    await gotoReady(page, '/');
   });
 
   test('IndexedDB data survives page reload', async ({ page }) => {
-    await page.goto('/tasks');
+    await gotoReady(page, '/tasks');
     await page.waitForLoadState('networkidle');
 
     // Create a task
@@ -37,7 +30,7 @@ test.describe('Privacy, Database & Demo Functional Audit', () => {
   });
 
   test('Demo and real workspace data remain strictly isolated', async ({ page }) => {
-    await page.goto('/overview');
+    await gotoReady(page, '/overview');
     await page.waitForLoadState('networkidle');
 
     // Enter Demo Mode from workspace strip
@@ -51,7 +44,7 @@ test.describe('Privacy, Database & Demo Functional Audit', () => {
     await expect(page.getByText('DEMO WORKSPACE · Fictional data')).toBeVisible();
 
     // Go to projects in Demo Mode
-    await page.goto('/projects');
+    await gotoReady(page, '/projects');
     await page.waitForLoadState('networkidle');
 
     // Verify fictional demo projects exist
@@ -62,12 +55,13 @@ test.describe('Privacy, Database & Demo Functional Audit', () => {
     await page.waitForTimeout(1000);
 
     // Verify we are back in Real Mode
-    await expect(page.getByText('Personal workspace · Saved on this device')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'No projects in this view' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Orbit Analytics' })).not.toBeVisible();
     await expect(page.getByText('DEMO WORKSPACE · Fictional data')).not.toBeVisible();
   });
 
   test('Backup validation rejects malformed JSON and preserves database', async ({ page }) => {
-    await page.goto('/settings');
+    await gotoReady(page, '/settings');
     await page.waitForLoadState('networkidle');
 
     // Click on Data & Backups tab

@@ -1,16 +1,9 @@
 import { test, expect } from '@playwright/test';
+import { gotoReady } from './gotoReady';
 
 test.describe('Sprint 2 — Privacy & Local-First Network Audit', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/');
-    const skipBtn = page.getByRole('button', { name: 'Skip customization' });
-    try {
-      await skipBtn.waitFor({ state: 'visible', timeout: 3500 });
-      await skipBtn.click();
-      await skipBtn.waitFor({ state: 'hidden', timeout: 3500 });
-    } catch {
-      // already completed/dismissed
-    }
+    await gotoReady(page, '/');
   });
 
   test('asserts zero data egress, zero analytics/trackers, and total local-first execution', async ({ page }) => {
@@ -26,7 +19,7 @@ test.describe('Sprint 2 — Privacy & Local-First Network Audit', () => {
     });
 
     // 1. Visit projects and create sensitive project
-    await page.goto('/projects');
+    await gotoReady(page, '/projects');
     await page.waitForLoadState('networkidle');
 
     const privateTitle = `Confidential Client Project ${Date.now()}`;
@@ -37,7 +30,7 @@ test.describe('Sprint 2 — Privacy & Local-First Network Audit', () => {
     await expect(page.getByText(privateTitle, { exact: true })).toBeVisible();
 
     // 2. Create confidential task
-    await page.goto('/tasks');
+    await gotoReady(page, '/tasks');
     await page.waitForLoadState('networkidle');
     const privateTask = `Confidential Security Audit Task ${Date.now()}`;
     await page.getByRole('button', { name: 'New Task' }).click();
@@ -46,7 +39,7 @@ test.describe('Sprint 2 — Privacy & Local-First Network Audit', () => {
     await expect(page.getByText(privateTask, { exact: true })).toBeVisible();
 
     // 3. Export backup from settings
-    await page.goto('/settings');
+    await gotoReady(page, '/settings');
     await page.waitForLoadState('networkidle');
 
     // Click 'Data & Backups' tab

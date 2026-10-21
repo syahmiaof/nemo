@@ -1,4 +1,6 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef } from 'react';
+import gsap from 'gsap';
+import { useGSAP } from '@gsap/react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -22,6 +24,9 @@ import {
 } from '@/lib/dates';
 import { generateId } from '@/lib/ids';
 import type { ProjectedCalendarItem } from '@/domain/types';
+import { useReducedMotion } from '@/design/useReducedMotion';
+
+gsap.registerPlugin(useGSAP);
 
 export const CalendarPage: React.FC = () => {
   const navigate = useNavigate();
@@ -31,6 +36,21 @@ export const CalendarPage: React.FC = () => {
   // View mode: month, week, or agenda
   const [viewMode, setViewMode] = useState<'month' | 'week' | 'agenda'>(() => window.matchMedia('(max-width: 767px)').matches ? 'agenda' : 'month');
   const [currentDate, setCurrentDate] = useState<Date>(() => new Date());
+  const motionRoot = useRef<HTMLDivElement>(null);
+  const lastPeriod = useRef<number | null>(null);
+  const reduced = useReducedMotion();
+  useGSAP(() => {
+    const period = currentDate.getTime();
+    const previous = lastPeriod.current;
+    lastPeriod.current = period;
+    if (previous === null || reduced || !motionRoot.current) return;
+    const region = motionRoot.current.querySelector<HTMLElement>('.calendar-grid-scroll, .calendar-agenda');
+    if (!region) return;
+    const direction = period >= previous ? 1 : -1;
+    gsap.fromTo(region, { x: 24 * direction, opacity: .35 }, {
+      x: 0, opacity: 1, duration: .55, ease: 'power3.out', clearProps: 'transform,opacity',
+    });
+  }, { scope: motionRoot, dependencies: [currentDate, viewMode, reduced], revertOnUpdate: true });
 
   // Standalone Event creation modal
   const [isEventModalOpen, setIsEventModalOpen] = useState(false);
@@ -236,7 +256,7 @@ export const CalendarPage: React.FC = () => {
   const weekdayNames = weekStartsOn === 1 ? ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] : ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
   return (
-    <div className="calendar-page space-y-6">
+    <div ref={motionRoot} className="calendar-page space-y-6">
       {/* Calendar Controls Bar */}
       <div className="page-toolbar flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-2xl glass-panel relative z-10">
         <div className="calendar-date-controls flex flex-wrap items-center gap-2.5">
@@ -449,7 +469,7 @@ export const CalendarPage: React.FC = () => {
 
       {/* Agenda View */}
       {viewMode === 'agenda' && (
-        <div className="space-y-4 max-w-3xl mx-auto">
+        <div className="calendar-agenda space-y-4 max-w-3xl mx-auto">
           {projectedItems.filter(item => item.date.startsWith(`${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}`)).length === 0 ? (
             <div className="p-8 text-center rounded-2xl bg-surface border border-border-subtle text-content-secondary">
               No projected deadlines or events scheduled.

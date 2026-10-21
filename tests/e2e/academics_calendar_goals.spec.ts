@@ -1,20 +1,13 @@
 import { test, expect } from '@playwright/test';
+import { gotoReady } from './gotoReady';
 
 test.describe('Academics, Calendar & Goals Functional Audit', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/');
-    const skipBtn = page.getByRole('button', { name: 'Skip customization' });
-    try {
-      await skipBtn.waitFor({ state: 'visible', timeout: 3500 });
-      await skipBtn.click();
-      await skipBtn.waitFor({ state: 'hidden', timeout: 3500 });
-    } catch {
-      // already completed/dismissed
-    }
+    await gotoReady(page, '/');
   });
 
   test('Create semester, subject, assignment, add subtask and submit', async ({ page }) => {
-    await page.goto('/academics');
+    await gotoReady(page, '/academics');
     await page.waitForLoadState('networkidle');
 
     // 1. Create a semester
@@ -47,7 +40,7 @@ test.describe('Academics, Calendar & Goals Functional Audit', () => {
 
     // 5. Submit assignment
     await page.locator('button[title="Edit Assignment"]').first().click();
-    await page.getByLabel('Status').selectOption('submitted');
+    await page.getByLabel('Status', { exact: true }).selectOption('submitted');
     await page.getByLabel('Submission URL').fill('https://portal.university.edu/submit/123');
     await page.getByRole('dialog').getByRole('button', { name: 'Save Changes' }).click();
     await expect(page.getByText(/submitted/i).first()).toBeVisible();
@@ -55,7 +48,7 @@ test.describe('Academics, Calendar & Goals Functional Audit', () => {
 
   test('Calendar events and projected deadlines remain accurate', async ({ page }) => {
     // 1. Create a task with explicit due date
-    await page.goto('/tasks');
+    await gotoReady(page, '/tasks');
     await page.waitForLoadState('networkidle');
 
     const todayDate = new Date();
@@ -68,7 +61,7 @@ test.describe('Academics, Calendar & Goals Functional Audit', () => {
     await expect(page.getByText('Calendar Scheduled Deliverable', { exact: true })).toBeVisible();
 
     // 2. Open Calendar page
-    await page.goto('/calendar');
+    await gotoReady(page, '/calendar');
     await page.waitForLoadState('networkidle');
 
     // Verify projected task appears in calendar
@@ -96,7 +89,7 @@ test.describe('Academics, Calendar & Goals Functional Audit', () => {
   });
 
   test('Goal milestones and linked tasks update correct progress', async ({ page }) => {
-    await page.goto('/goals');
+    await gotoReady(page, '/goals');
     await page.waitForLoadState('networkidle');
 
     // 1. Create a goal

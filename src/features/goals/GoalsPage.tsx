@@ -14,6 +14,8 @@ import { useToast } from '@/components/ui/Toast';
 import { generateId } from '@/lib/ids';
 import { formatDisplayDate } from '@/lib/dates';
 import type { GoalStatus } from '@/domain/types';
+import { useCollectionMotion } from '@/design/useCollectionMotion';
+import { MotionTitle } from '@/components/ui/MotionTitle';
 
 export const GoalsPage: React.FC = () => {
   const { success, error } = useToast();
@@ -59,6 +61,7 @@ export const GoalsPage: React.FC = () => {
     if (activeTab !== 'all' && g.status !== activeTab) return false;
     return true;
   });
+  const goalsRef = useCollectionMotion<HTMLDivElement>(`${activeTab}:${filteredGoals.map((goal) => goal.id).join(',')}`);
 
   return (
     <div className="goals-page space-y-6">
@@ -68,7 +71,7 @@ export const GoalsPage: React.FC = () => {
             <Target className="w-6 h-6" />
           </div>
           <div>
-            <h2 className="text-lg font-bold text-content-primary">Long-term Goals</h2>
+            <MotionTitle as="h2" text="Long-term Goals" className="text-lg font-bold text-content-primary" />
             <p className="text-xs text-content-secondary">
               Track major objectives, measure progress through verified milestones, and connect everyday tasks.
             </p>
@@ -115,7 +118,7 @@ export const GoalsPage: React.FC = () => {
           onAction={() => setIsModalOpen(true)}
         />
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div ref={goalsRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {filteredGoals.map((goal) => {
             const goalMilestones = milestones.filter((m) => m.ownerId === goal.id);
             let progressLabel = 'No measurable milestones yet';

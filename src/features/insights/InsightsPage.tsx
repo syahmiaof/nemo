@@ -1,10 +1,16 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef } from 'react';
+import gsap from 'gsap';
+import { useGSAP } from '@gsap/react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { BarChart3, FolderKanban, CheckCircle2, BookOpen, ArrowUpRight, Target } from 'lucide-react';
 import { db } from '@/db/nemoDb';
 import { isOverdue } from '@/lib/dates';
 import { monthlyCounts } from '@/domain/chart';
 import { TavolaSplineChart } from '@/components/ui/TavolaSplineChart';
+import { useReducedMotion } from '@/design/useReducedMotion';
+import { MotionTitle } from '@/components/ui/MotionTitle';
+
+gsap.registerPlugin(useGSAP);
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
@@ -12,6 +18,8 @@ export const InsightsPage: React.FC = () => {
   const currentYear = new Date().getFullYear();
   const [selectedYear, setSelectedYear] = useState(currentYear);
   const [series, setSeries] = useState<'tasks' | 'projects'>('tasks');
+  const motionRoot = useRef<HTMLDivElement>(null);
+  const reduced = useReducedMotion();
   const data = useLiveQuery(async () => {
     const [projects, tasks, assignments, goals, milestones] = await Promise.all([
       db.projects.toArray(),
@@ -145,10 +153,20 @@ export const InsightsPage: React.FC = () => {
     };
   }, [projects, tasks, assignments, goals, milestones, currentYear, selectedYear, series]);
 
+  useGSAP(() => {
+    if (reduced || !data) return;
+    gsap.fromTo('.insights-donut', { scale: .82, rotate: -35, opacity: .3 }, {
+      scale: 1, rotate: 0, opacity: 1, duration: 1, ease: 'expo.out', clearProps: 'transform,opacity',
+    });
+    gsap.fromTo('.insights-bar > span', { scaleX: 0, transformOrigin: 'left center' }, {
+      scaleX: 1, duration: .9, stagger: .09, ease: 'power3.out', clearProps: 'transform',
+    });
+  }, { scope: motionRoot, dependencies: [data, reduced], revertOnUpdate: true });
+
   return (
-    <div className="insights-page">
+    <div ref={motionRoot} className="insights-page">
       <header className="insights-header">
-        <h1>Workspace<br />Insights</h1>
+        <MotionTitle text="Workspace Insights" breakAfterFirstWord />
         <div className="insights-head-stat"><span className="insights-stat-icon"><FolderKanban size={22} /></span><div><strong>{projects.length}</strong><span>All-time projects</span></div></div>
         <div className="insights-head-stat"><span className="insights-stat-icon"><BarChart3 size={22} /></span><div><strong>{activeProjects}</strong><span>Active right now</span></div></div>
         <div className="insights-head-stat"><span className="insights-stat-icon"><CheckCircle2 size={22} /></span><div><strong>{done}</strong><span>Tasks completed</span></div></div>
