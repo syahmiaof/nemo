@@ -29,6 +29,7 @@ import type { WorkspaceSettings } from '@/domain/types';
 import { DemoWorkspacePanel } from './DemoWorkspacePanel';
 import { AccountSyncPanel } from './AccountSyncPanel';
 import { getInitials, saveProfileAvatar, removeProfileAvatar } from '@/lib/avatar';
+import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 import { syncEngine } from '@/sync/syncEngine';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
@@ -123,15 +124,31 @@ export const SettingsPage: React.FC = () => {
 
   const handleSaveProfile = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!displayName.trim()) {
+    const cleanName = displayName.trim();
+    if (!cleanName) {
       error('Name cannot be empty');
       return;
     }
     await db.settings.update('default', {
-      displayName: displayName.trim(),
+      displayName: cleanName,
     });
+
+    if (isSupabaseConfigured) {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user?.id) {
+          await supabase
+            .from('profiles')
+            .update({ display_name: cleanName, updated_at: new Date().toISOString() })
+            .eq('id', user.id);
+        }
+      } catch (cloudErr) {
+        console.warn('Direct name cloud update deferred:', cloudErr);
+      }
+    }
+
     syncEngine.syncNow().catch(() => {});
-    success('Profile updated');
+    success('Profile updated', 'Workspace display name saved and synced across devices.');
   };
 
   const handleUpdatePreferences = async (updates: Partial<WorkspaceSettings>) => {

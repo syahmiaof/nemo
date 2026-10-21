@@ -31,10 +31,10 @@ export async function resizeAndCompressImage(
   targetSize = 256,
   quality = 0.85
 ): Promise<CompressedImageResult> {
-  return new Promise((resolve, reject) => {
-    // If running in an environment without DOM image/canvas support (e.g. Node/basic jsdom),
-    // fallback to direct Base64 encoding.
-    if (typeof window === 'undefined' || typeof document === 'undefined') {
+  // If running in an environment without DOM image/canvas support (e.g. Node/basic jsdom),
+  // fallback to direct Base64 encoding.
+  if (typeof window === 'undefined' || typeof document === 'undefined') {
+    return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.onload = () => {
         const result = reader.result as string;
@@ -46,8 +46,55 @@ export async function resizeAndCompressImage(
       };
       reader.onerror = () => reject(new Error('Failed to read image file'));
       reader.readAsDataURL(file);
-      return;
+    });
+  }
+
+  // Fast-path: modern browser hardware-accelerated decode via createImageBitmap
+  if (typeof createImageBitmap === 'function') {
+    try {
+      const bitmap = await createImageBitmap(file);
+      const canvas = document.createElement('canvas');
+      canvas.width = targetSize;
+      canvas.height = targetSize;
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        let sx = 0;
+        let sy = 0;
+        let sWidth = bitmap.width;
+        let sHeight = bitmap.height;
+
+        if (sWidth > sHeight) {
+          sWidth = sHeight;
+          sx = (bitmap.width - sHeight) / 2;
+        } else if (sHeight > sWidth) {
+          sHeight = sWidth;
+          sy = (bitmap.height - sWidth) / 2;
+        }
+
+        ctx.drawImage(bitmap, sx, sy, sWidth, sHeight, 0, 0, targetSize, targetSize);
+        bitmap.close();
+
+        let outputMime = 'image/webp';
+        let outputDataUrl = canvas.toDataURL(outputMime, quality);
+        if (!outputDataUrl.startsWith('data:image/webp')) {
+          outputMime = 'image/jpeg';
+          outputDataUrl = canvas.toDataURL(outputMime, quality);
+        }
+        const base64Content = outputDataUrl.split(',')[1] || '';
+        return {
+          dataUrl: outputDataUrl,
+          mimeType: outputMime,
+          size: Math.round((base64Content.length * 3) / 4),
+        };
+      }
+    } catch {
+      // Fallback to Image element below
     }
+  }
+
+  return new Promise((resolve, reject) => {
+    const isTestEnvironment = typeof navigator !== 'undefined' && /jsdom/i.test(navigator.userAgent);
+    const fallbackDelay = isTestEnvironment ? 60 : 15000;
 
     const reader = new FileReader();
     reader.onerror = () => reject(new Error('Failed to read image file'));
@@ -55,14 +102,13 @@ export async function resizeAndCompressImage(
       const dataUrl = reader.result as string;
       const img = new Image();
 
-      // If running in jsdom/mock environments where Image.onload never triggers, fallback gracefully
       const fallbackTimer = setTimeout(() => {
         resolve({
           dataUrl,
           mimeType: file.type || 'image/jpeg',
           size: file.size,
         });
-      }, 60);
+      }, fallbackDelay);
 
       img.onload = () => {
         clearTimeout(fallbackTimer);
@@ -73,7 +119,6 @@ export async function resizeAndCompressImage(
           const ctx = canvas.getContext('2d');
 
           if (!ctx) {
-            // If 2D context is not supported (e.g. mock test environment), resolve with original
             resolve({
               dataUrl,
               mimeType: file.type || 'image/webp',
@@ -101,17 +146,14 @@ export async function resizeAndCompressImage(
 
           ctx.drawImage(img, sx, sy, sWidth, sHeight, 0, 0, targetSize, targetSize);
 
-          // Attempt WebP export, falling back to JPEG
           let outputMime = 'image/webp';
           let outputDataUrl = canvas.toDataURL(outputMime, quality);
 
-          // If browser doesn't support toDataURL for image/webp, it returns image/png
           if (!outputDataUrl.startsWith('data:image/webp')) {
             outputMime = 'image/jpeg';
             outputDataUrl = canvas.toDataURL(outputMime, quality);
           }
 
-          // Compute approx byte size from base64 string
           const base64Content = outputDataUrl.split(',')[1] || '';
           const estimatedSize = Math.round((base64Content.length * 3) / 4);
 
@@ -121,7 +163,6 @@ export async function resizeAndCompressImage(
             size: estimatedSize,
           });
         } catch {
-          // If canvas operations throw, fallback gracefully
           resolve({
             dataUrl,
             mimeType: file.type || 'image/jpeg',
@@ -132,7 +173,6 @@ export async function resizeAndCompressImage(
 
       img.onerror = () => {
         clearTimeout(fallbackTimer);
-        // If image loading fails, e.g. mock environment
         resolve({
           dataUrl,
           mimeType: file.type || 'image/jpeg',
@@ -264,6 +304,9 @@ export async function resizeAndCompressCover(
       return;
     }
 
+    const isTestEnvironment = typeof navigator !== 'undefined' && /jsdom/i.test(navigator.userAgent);
+    const fallbackDelay = isTestEnvironment ? 60 : 15000;
+
     const reader = new FileReader();
     reader.onerror = () => reject(new Error('Failed to read image file'));
     reader.onload = () => {
@@ -276,7 +319,7 @@ export async function resizeAndCompressCover(
           mimeType: file.type || 'image/jpeg',
           size: file.size,
         });
-      }, 80);
+      }, fallbackDelay);
 
       img.onload = () => {
         clearTimeout(fallbackTimer);

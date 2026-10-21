@@ -19,6 +19,19 @@ export function isValidWebUrl(url?: string | null): boolean {
 }
 
 /**
+ * Checks if a string is a direct image URL.
+ */
+export function isDirectImageUrl(url?: string | null): boolean {
+  if (!url || typeof url !== 'string') return false;
+  const clean = url.trim().toLowerCase();
+  if (clean.startsWith('data:image/')) return true;
+  return /\.(png|jpe?g|webp|gif|svg|avif)(\?.*)?$/i.test(clean) ||
+    clean.includes('images.unsplash.com') ||
+    clean.includes('imgur.com') ||
+    clean.includes('res.cloudinary.com');
+}
+
+/**
  * Returns an automatic high-resolution website screenshot preview URL
  * (similar to WhatsApp / Slack link previews) without requiring manual upload.
  */
@@ -30,7 +43,31 @@ export function getProjectWebPreviewUrl(liveUrl?: string | null): string | null 
   try {
     const parsed = new URL(normalized);
     if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') return null;
-    return `https://v1.screenshot.11ty.dev/${encodeURIComponent(parsed.href)}/opengraph/`;
+    
+    // If it's already a direct image URL, return as-is
+    if (isDirectImageUrl(normalized)) {
+      return normalized;
+    }
+    
+    // High-performance, reliable screenshot preview API
+    return `https://api.microlink.io/?url=${encodeURIComponent(normalized)}&screenshot=true&meta=false&embed=screenshot.url`;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Secondary fallback screenshot generator if primary service fails
+ */
+export function getFallbackWebPreviewUrl(liveUrl?: string | null): string | null {
+  if (!liveUrl || typeof liveUrl !== 'string') return null;
+  const raw = liveUrl.trim();
+  if (!raw) return null;
+  const normalized = raw.startsWith('http://') || raw.startsWith('https://') ? raw : `https://${raw}`;
+  try {
+    const parsed = new URL(normalized);
+    if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') return null;
+    return `https://image.thum.io/get/width/600/crop/340/${normalized}`;
   } catch {
     return null;
   }

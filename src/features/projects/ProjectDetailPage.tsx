@@ -24,7 +24,7 @@ import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { useToast } from '@/components/ui/Toast';
 import { formatDisplayDate } from '@/lib/dates';
 import { generateId } from '@/lib/ids';
-import { generateTypographicCover, isValidWebUrl, getProjectWebPreviewUrl } from '@/lib/utils';
+import { generateTypographicCover, isValidWebUrl, getProjectWebPreviewUrl, getFallbackWebPreviewUrl } from '@/lib/utils';
 import { ProjectFormModal } from './ProjectFormModal';
 import type { Milestone, Task } from '@/domain/types';
 
@@ -241,7 +241,21 @@ export const ProjectDetailPage: React.FC = () => {
       <div className="rounded-2xl glass-panel relative overflow-hidden shadow-2xl">
         {/* Cover Header */}
         <div className="h-48 md:h-64 w-full overflow-hidden bg-surface-solid/60 border-b border-white/10 relative">
-          {coverUrl && <img src={coverUrl} alt="" className="w-full h-full object-cover" />}
+          {coverUrl && (
+            <img
+              src={coverUrl}
+              onError={() => {
+                const fb = getFallbackWebPreviewUrl(project.liveUrl);
+                if (fb && coverUrl !== fb) {
+                  setCoverUrl(fb);
+                } else {
+                  setCoverUrl(generateTypographicCover(project.title, project.category));
+                }
+              }}
+              alt=""
+              className="w-full h-full object-cover"
+            />
+          )}
           <div className="absolute top-4 left-4 flex items-center gap-2">
             <StatusBadge status={project.status} size="md" />
             <PriorityBadge priority={project.priority} size="md" />

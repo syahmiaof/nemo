@@ -511,12 +511,12 @@ export function OverviewPage() {
           </div>
 
           <div className="overview-project-grid">
-            {active.slice(0, 2).map((p) => (
+            {(active.length > 0 ? active : projects.filter((p) => !p.archivedAt)).slice(0, 2).map((p) => (
               <ProjectCard key={p.id} project={p} milestones={milestones} tasks={tasks} />
             ))}
-            {active.length === 0 && (
+            {projects.filter((p) => !p.archivedAt).length === 0 && (
               <div className="glass-panel empty-inline">
-                No active projects yet. <Link to="/projects">Start your first project →</Link>
+                No projects yet. <Link to="/projects">Start your first project →</Link>
               </div>
             )}
           </div>

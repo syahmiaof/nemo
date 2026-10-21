@@ -492,8 +492,22 @@ class SyncEngine {
         }
       }
 
+      // Bidirectional display name synchronization
+      let targetDisplayName = currentSettings?.displayName || 'My Workspace';
+      if (remoteProfile.display_name && remoteProfile.display_name.trim()) {
+        targetDisplayName = remoteProfile.display_name.trim();
+      } else if (currentSettings?.displayName && currentSettings.displayName !== 'My Workspace') {
+        // If local has custom name but remote is empty, push local to remote
+        try {
+          await supabase
+            .from('profiles')
+            .update({ display_name: currentSettings.displayName, updated_at: new Date().toISOString() })
+            .eq('id', userId);
+        } catch {}
+      }
+
       await db.settings.update('default', {
-        displayName: remoteProfile.display_name || currentSettings?.displayName || 'My Workspace',
+        displayName: targetDisplayName,
         theme: (remoteProfile.theme as any) || currentSettings?.theme || 'dark',
         accent: (remoteProfile.accent as any) || currentSettings?.accent || 'mint',
         weekStartsOn: remoteProfile.week_starts_on ?? currentSettings?.weekStartsOn ?? 1,

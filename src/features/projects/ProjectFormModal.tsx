@@ -7,7 +7,7 @@ import { Select } from '@/components/ui/Select';
 import { useToast } from '@/components/ui/Toast';
 import { db } from '@/db/nemoDb';
 import { generateId } from '@/lib/ids';
-import { isValidWebUrl, getProjectWebPreviewUrl } from '@/lib/utils';
+import { isValidWebUrl, getProjectWebPreviewUrl, getFallbackWebPreviewUrl } from '@/lib/utils';
 import { resizeAndCompressCover } from '@/lib/avatar';
 import type { Project, Priority, ProjectStatus } from '@/domain/types';
 
@@ -34,6 +34,7 @@ export const ProjectFormModal: React.FC<ProjectFormModalProps> = ({
   const [liveUrl, setLiveUrl] = useState('');
   const [repoUrl, setRepoUrl] = useState('');
   const [notes, setNotes] = useState('');
+  const [customPreviewUrl, setCustomPreviewUrl] = useState('');
   const [imageBlobData, setImageBlobData] = useState<string | null>(null);
   const [isImageDirty, setIsImageDirty] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -57,8 +58,15 @@ export const ProjectFormModal: React.FC<ProjectFormModalProps> = ({
 
       if (projectToEdit.previewBlobId) {
         db.assetBlobs.get(projectToEdit.previewBlobId).then((blob) => {
-          if (blob) setImageBlobData(blob.data);
+          if (blob) {
+            setImageBlobData(blob.data);
+            if (blob.data.startsWith('http')) {
+              setCustomPreviewUrl(blob.data);
+            }
+          }
         });
+      } else {
+        setCustomPreviewUrl('');
       }
     } else {
       setTitle('');
@@ -73,6 +81,7 @@ export const ProjectFormModal: React.FC<ProjectFormModalProps> = ({
       setLiveUrl('');
       setRepoUrl('');
       setNotes('');
+      setCustomPreviewUrl('');
       setImageBlobData(null);
       setIsImageDirty(false);
     }
@@ -321,12 +330,53 @@ export const ProjectFormModal: React.FC<ProjectFormModalProps> = ({
           />
         </div>
 
-        {/* Cover Image Upload (Local blob, zero cloud dependency) */}
-        <div className="space-y-1.5">
+        {/* Cover Image / Web Preview */}
+        <div className="space-y-2">
           <label className="block text-xs font-medium text-content-secondary">
-            Project Screenshot / Cover Image (Stored locally in IndexedDB)
+            Project Screenshot / Cover Preview
           </label>
-          <div className="flex items-center gap-3">
+          
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+            <Input
+              placeholder="Paste Image URL or Web Preview Link (e.g. https://...)"
+              value={customPreviewUrl}
+              onChange={(e) => {
+                const val = e.target.value;
+                setCustomPreviewUrl(val);
+                if (val.trim()) {
+                  const resolved = getProjectWebPreviewUrl(val.trim()) || val.trim();
+                  setImageBlobData(resolved);
+                  setIsImageDirty(true);
+                } else {
+                  setImageBlobData(null);
+                  setIsImageDirty(true);
+                }
+              }}
+              className="flex-1 text-xs"
+            />
+            {liveUrl.trim() && (
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                onClick={() => {
+                  const generated = getProjectWebPreviewUrl(liveUrl.trim());
+                  if (generated) {
+                    setCustomPreviewUrl(generated);
+                    setImageBlobData(generated);
+                    setIsImageDirty(true);
+                    success('Preview Generated', 'Fetched live web screenshot for preview.');
+                  }
+                }}
+                className="text-xs whitespace-nowrap shrink-0"
+              >
+                Fetch from Live URL
+              </Button>
+            )}
+          </div>
+
+          <div className="flex items-center gap-3 pt-1">
+            <span className="text-[11px] text-content-tertiary">Or upload file:</span>
             <input
               type="file"
               accept="image/*"
@@ -338,29 +388,52 @@ export const ProjectFormModal: React.FC<ProjectFormModalProps> = ({
                 type="button"
                 variant="ghost"
                 size="sm"
-                onClick={() => setImageBlobData(null)}
+                onClick={() => {
+                  setImageBlobData(null);
+                  setCustomPreviewUrl('');
+                  setIsImageDirty(true);
+                }}
                 className="text-accent-ember text-xs"
               >
                 Remove
               </Button>
             )}
           </div>
+
           {imageBlobData && (
-            <div className="mt-2 rounded-xl overflow-hidden border border-border-subtle max-h-36 w-full">
-              <img src={imageBlobData} alt="Preview" className="w-full h-36 object-cover" />
+            <div className="mt-2 rounded-xl overflow-hidden border border-accent-mint/40 max-h-40 w-full relative group">
+              <img
+                src={imageBlobData}
+                alt="Active Cover Preview"
+                className="w-full h-40 object-cover"
+                onError={() => {
+                  const fb = getFallbackWebPreviewUrl(liveUrl);
+                  if (fb && imageBlobData !== fb) {
+                    setImageBlobData(fb);
+                  }
+                }}
+              />
+              <span className="absolute bottom-2 right-2 px-2.5 py-1 rounded-md bg-navy-950/85 text-[10px] text-accent-mint font-semibold border border-accent-mint/30 shadow-md">
+                Active Cover Preview
+              </span>
             </div>
           )}
+
           {!imageBlobData && getProjectWebPreviewUrl(liveUrl) && (
             <div className="mt-2 rounded-xl overflow-hidden border border-accent-mint/30 bg-surface-subtle p-2 space-y-1.5">
               <div className="flex items-center justify-between text-[11px] text-accent-mint font-medium px-1">
                 <span>Auto URL Preview (WhatsApp-style)</span>
-                <span className="text-[10px] text-content-tertiary">Generated from Live URL</span>
+                <span className="text-[10px] text-content-tertiary">Live web screenshot</span>
               </div>
               <div className="rounded-lg overflow-hidden border border-border-subtle max-h-36 w-full">
                 <img
                   src={getProjectWebPreviewUrl(liveUrl)!}
                   alt="Live URL Preview"
                   className="w-full h-36 object-cover"
+                  onError={(e) => {
+                    const fb = getFallbackWebPreviewUrl(liveUrl);
+                    if (fb) (e.target as HTMLImageElement).src = fb;
+                  }}
                 />
               </div>
             </div>

@@ -4,7 +4,7 @@ import { Calendar, Layers } from 'lucide-react';
 import { PriorityBadge, StatusBadge } from '@/components/ui/Badge';
 import { db } from '@/db/nemoDb';
 import { formatDisplayDate } from '@/lib/dates';
-import { generateTypographicCover, getProjectWebPreviewUrl } from '@/lib/utils';
+import { generateTypographicCover, getProjectWebPreviewUrl, getFallbackWebPreviewUrl } from '@/lib/utils';
 import type { Project, Milestone, Task } from '@/domain/types';
 
 interface ProjectCardProps {
@@ -24,6 +24,15 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
   const webPreview = useMemo(() => getProjectWebPreviewUrl(project.liveUrl), [project.liveUrl]);
   const defaultCover = webPreview || fallback;
   const [coverUrl, setCoverUrl] = useState<string>(defaultCover);
+
+  const handleImageError = () => {
+    const secondary = getFallbackWebPreviewUrl(project.liveUrl);
+    if (secondary && coverUrl !== secondary && coverUrl !== fallback) {
+      setCoverUrl(secondary);
+    } else if (coverUrl !== fallback) {
+      setCoverUrl(fallback);
+    }
+  };
 
   useEffect(() => {
     let isMounted = true;
@@ -77,8 +86,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
       >
         <div className="flex items-center gap-3 min-w-0 relative z-10">
           <div className="w-12 h-12 rounded-xl overflow-hidden border border-white/10 flex-shrink-0 bg-surface-solid">
-            {coverUrl && <img src={coverUrl}
-            onError={() => { if (coverUrl !== fallback) setCoverUrl(fallback); }} alt="" className="w-full h-full object-cover" />}
+            {coverUrl && <img src={coverUrl} onError={handleImageError} alt="" className="w-full h-full object-cover" />}
           </div>
           <div className="min-w-0">
             <div className="flex items-center gap-2">
@@ -121,7 +129,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
         {coverUrl && (
           <img
             src={coverUrl}
-            onError={() => { if (coverUrl !== fallback) setCoverUrl(fallback); }}
+            onError={handleImageError}
             alt=""
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90 group-hover:opacity-100"
           />
