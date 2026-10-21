@@ -213,7 +213,7 @@ export async function saveProfileAvatar(
     createdAt: now,
   };
 
-  await targetDb.transaction('rw', [targetDb.assetBlobs, targetDb.settings], async () => {
+  await targetDb.transaction('rw', [targetDb.assetBlobs, targetDb.settings, targetDb.syncMutations], async () => {
     // Clean up previous avatar blobs for profile
     const existing = await targetDb.assetBlobs.where('ownerType').equals('profile').toArray();
     for (const item of existing) {
@@ -253,7 +253,7 @@ export async function saveProfileAvatar(
 export async function removeProfileAvatar(
   targetDb: NemoDatabase = defaultDb
 ): Promise<void> {
-  await targetDb.transaction('rw', [targetDb.assetBlobs, targetDb.settings], async () => {
+  await targetDb.transaction('rw', [targetDb.assetBlobs, targetDb.settings, targetDb.syncMutations], async () => {
     const existing = await targetDb.assetBlobs.where('ownerType').equals('profile').toArray();
     for (const item of existing) {
       await targetDb.assetBlobs.delete(item.id);
