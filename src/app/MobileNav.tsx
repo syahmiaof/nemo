@@ -58,6 +58,7 @@ export const MobileNav: React.FC<MobileNavProps> = ({
   const tabRefs = useRef<(HTMLAnchorElement | HTMLButtonElement | null)[]>([]);
   const pillRef = useRef<HTMLDivElement | null>(null);
   const isInitialMount = useRef(true);
+  const prevIndexRef = useRef(activeIndex);
 
   useLayoutEffect(() => {
     const nav = navRef.current;
@@ -74,29 +75,40 @@ export const MobileNav: React.FC<MobileNavProps> = ({
 
     const navRect = nav.getBoundingClientRect();
     const targetRect = target.getBoundingClientRect();
-    const pillWidth = Math.min(targetRect.width - 6, 68);
+    const pillWidth = Math.min(targetRect.width - 4, 72);
     const left = targetRect.left - navRect.left + (targetRect.width - pillWidth) / 2;
 
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     if (isInitialMount.current || prefersReducedMotion) {
-      gsap.set(pill, { x: left, width: pillWidth, opacity: 1 });
+      gsap.set(pill, { x: left, width: pillWidth, opacity: 1, scaleX: 1 });
       isInitialMount.current = false;
     } else {
-      gsap.to(pill, {
+      const direction = activeIndex >= prevIndexRef.current ? 1 : -1;
+      prevIndexRef.current = activeIndex;
+
+      // WhatsApp / iOS fluid elasticity: slight morph/stretch in direction of movement
+      const tl = gsap.timeline();
+      tl.to(pill, {
         x: left,
         width: pillWidth,
         opacity: 1,
-        duration: 0.4,
+        duration: 0.38,
         ease: 'power3.out',
       });
+      tl.fromTo(
+        pill,
+        { scaleX: 1.14, transformOrigin: direction > 0 ? 'left center' : 'right center' },
+        { scaleX: 1, duration: 0.42, ease: 'back.out(1.6)' },
+        0
+      );
 
       const icon = target.querySelector('svg');
       if (icon) {
         gsap.fromTo(
           icon,
-          { scale: 0.78, y: 2 },
-          { scale: 1, y: 0, duration: 0.38, ease: 'back.out(2)' }
+          { scale: 0.76, y: 2.5 },
+          { scale: 1.08, y: -1, duration: 0.36, ease: 'back.out(2.4)' }
         );
       }
     }
@@ -112,7 +124,7 @@ export const MobileNav: React.FC<MobileNavProps> = ({
       if (!target) return;
       const navRect = nav.getBoundingClientRect();
       const targetRect = target.getBoundingClientRect();
-      const pillWidth = Math.min(targetRect.width - 6, 68);
+      const pillWidth = Math.min(targetRect.width - 4, 72);
       const left = targetRect.left - navRect.left + (targetRect.width - pillWidth) / 2;
       gsap.set(pill, { x: left, width: pillWidth });
     };
@@ -123,22 +135,23 @@ export const MobileNav: React.FC<MobileNavProps> = ({
 
   return (
     <>
-      {/* 5-item Bottom Bar with GSAP Fluid Pill Indicator */}
+      {/* 5-item Bottom Bar with iOS Glass Fluid Navigation */}
       <nav
         ref={navRef}
         aria-label="Mobile Navigation"
-        className="mobile-nav md:hidden fixed bottom-0 left-0 right-0 z-40 bg-elevated/95 backdrop-blur-md border-t border-border-subtle flex items-center justify-around h-16 px-1 safe-area-pb overflow-hidden"
+        className="mobile-nav md:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#0A1222]/85 backdrop-blur-2xl border-t border-white/[0.08] shadow-[0_-8px_32px_rgba(0,0,0,0.45)] flex items-center justify-around h-16 px-1 safe-area-pb overflow-hidden"
       >
-        {/* Animated Sliding Pill Indicator */}
+        {/* Animated Sliding Glass Fluid Pill Indicator */}
         <div
           ref={pillRef}
           aria-hidden="true"
-          className="mobile-nav__pill absolute left-0 top-2 bottom-2 rounded-xl pointer-events-none bg-accent-mint/15 border border-accent-mint/30 shadow-sm"
+          className="mobile-nav__pill absolute left-0 top-1.5 bottom-1.5 rounded-2xl pointer-events-none bg-gradient-to-b from-accent-mint/20 via-accent-mint/10 to-transparent border border-accent-mint/35 shadow-[0_2px_14px_rgba(168,220,200,0.18),inset_0_1px_0_rgba(255,255,255,0.25)] backdrop-blur-md"
           style={{ opacity: 0 }}
         />
 
         {mainTabs.map((item, idx) => {
           const Icon = item.icon;
+          const isCurrent = activeIndex === idx;
           return (
             <NavLink
               key={item.to}
@@ -146,13 +159,16 @@ export const MobileNav: React.FC<MobileNavProps> = ({
               ref={(el) => { tabRefs.current[idx] = el; }}
               className={({ isActive }) =>
                 cn(
-                  'relative z-10 flex flex-col items-center justify-center flex-1 py-1 text-[11px] font-medium transition-colors select-none',
-                  isActive ? 'text-accent-mint font-semibold' : 'text-content-secondary hover:text-content-primary'
+                  'relative z-10 flex flex-col items-center justify-center flex-1 py-1 text-[11px] font-medium transition-all select-none',
+                  isActive ? 'text-accent-mint font-semibold' : 'text-content-secondary hover:text-content-primary active:scale-95'
                 )
               }
             >
-              <Icon className="w-5 h-5 mb-0.5" />
-              <span>{item.label}</span>
+              <Icon className="w-5 h-5 mb-0.5 transition-transform" />
+              <span className="leading-tight">{item.label}</span>
+              {isCurrent && (
+                <span className="w-1 h-1 rounded-full bg-accent-mint shadow-[0_0_6px_#a8dcc8] mt-0.5" />
+              )}
             </NavLink>
           );
         })}
@@ -162,15 +178,18 @@ export const MobileNav: React.FC<MobileNavProps> = ({
           ref={(el) => { tabRefs.current[4] = el; }}
           onClick={() => setIsMoreOpen(true)}
           className={cn(
-            'relative z-10 flex flex-col items-center justify-center flex-1 py-1 text-[11px] font-medium transition-colors select-none',
-            isMoreOpen || moreActive ? 'text-accent-mint font-semibold' : 'text-content-secondary hover:text-content-primary'
+            'relative z-10 flex flex-col items-center justify-center flex-1 py-1 text-[11px] font-medium transition-all select-none',
+            isMoreOpen || moreActive ? 'text-accent-mint font-semibold' : 'text-content-secondary hover:text-content-primary active:scale-95'
           )}
           aria-label="Open more navigation options"
           aria-haspopup="dialog"
           aria-expanded={isMoreOpen}
         >
-          <MoreHorizontal className="w-5 h-5 mb-0.5" />
-          <span>More</span>
+          <MoreHorizontal className="w-5 h-5 mb-0.5 transition-transform" />
+          <span className="leading-tight">More</span>
+          {activeIndex === 4 && (
+            <span className="w-1 h-1 rounded-full bg-accent-mint shadow-[0_0_6px_#a8dcc8] mt-0.5" />
+          )}
         </button>
       </nav>
 

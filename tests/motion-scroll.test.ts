@@ -312,8 +312,10 @@ describe('Tier 1: Feature Coverage (R1 - R8)', () => {
       );
 
       expect(screen.getByText('Weekly momentum')).toBeDefined();
-      expect(screen.getByText('Finished: 17')).toBeDefined();
-      expect(screen.getByText('Open: 3')).toBeDefined();
+      expect(screen.getByText('Done this week')).toBeDefined();
+      expect(screen.getByText('17')).toBeDefined();
+      expect(screen.getByText('Tasks pending')).toBeDefined();
+      expect(screen.getByText('3')).toBeDefined();
       expect(screen.getByText('85%')).toBeDefined();
       const circle = container.querySelector('.gauge-donut-svg circle:nth-child(2)');
       expect(circle).not.toBeNull();

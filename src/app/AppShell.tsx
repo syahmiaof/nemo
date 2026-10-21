@@ -21,6 +21,7 @@ import { AuthModal } from '@/features/auth/AuthModal';
 import { SyncIndicator } from '@/components/ui/SyncIndicator';
 import { formatClockTime } from '@/lib/timeFormat';
 import { useReducedMotion } from '@/design/useReducedMotion';
+import { AuroraStarfield } from '@/design/AuroraStarfield';
 
 gsap.registerPlugin(useGSAP);
 
@@ -112,7 +113,12 @@ export function AppShell() {
             <i className="mesh__a" />
             <i className="mesh__b" />
           </div>
-          {settings?.theme === 'aurora' && <div className="aurora-backdrop" aria-hidden="true" />}
+          {settings?.theme === 'aurora' && (
+            <>
+              <div className="aurora-backdrop" aria-hidden="true" />
+              <AuroraStarfield />
+            </>
+          )}
 
           {/* Dedicated Global Utility Rail */}
           <TavolaDock

@@ -277,10 +277,13 @@ export const AskNemoDrawer: React.FC<AskNemoDrawerProps> = ({
         ref={drawerRef}
         className="relative w-full sm:max-w-md h-full bg-[#0B1322] border-l border-white/10 shadow-2xl flex flex-col z-10"
       >
-        {/* Header */}
-        <header className="p-4 border-b border-white/10 flex items-center justify-between bg-[#0F1A2D]/80 backdrop-blur-md">
+        {/* Header with Safe-Area Clearance for Dynamic Island / Notches */}
+        <header
+          className="px-4 py-3 border-b border-white/10 flex items-center justify-between bg-[#0F1A2D]/95 backdrop-blur-md sticky top-0 z-20 shrink-0"
+          style={{ paddingTop: 'max(14px, env(safe-area-inset-top, 14px))' }}
+        >
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-accent-mint/15 border border-accent-mint/30 flex items-center justify-center text-accent-mint">
+            <div className="w-8 h-8 rounded-lg bg-accent-mint/15 border border-accent-mint/30 flex items-center justify-center text-accent-mint shrink-0">
               <Bot className="w-5 h-5" />
             </div>
             <div>
@@ -297,12 +300,12 @@ export const AskNemoDrawer: React.FC<AskNemoDrawerProps> = ({
             </div>
           </div>
 
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-2">
             <button
               type="button"
               onClick={handleClearHistory}
               title="Reset conversation"
-              className="p-1.5 text-content-secondary hover:text-content-primary rounded-lg hover:bg-white/[0.06] transition-colors"
+              className="p-2 min-w-[38px] min-h-[38px] flex items-center justify-center text-content-secondary hover:text-content-primary rounded-xl hover:bg-white/[0.08] active:scale-95 transition-all"
               aria-label="Clear chat history"
             >
               <RotateCcw className="w-4 h-4" />
@@ -310,7 +313,7 @@ export const AskNemoDrawer: React.FC<AskNemoDrawerProps> = ({
             <button
               type="button"
               onClick={handleClose}
-              className="p-1.5 text-content-secondary hover:text-content-primary rounded-lg hover:bg-white/[0.06] transition-colors"
+              className="p-2 min-w-[42px] min-h-[42px] flex items-center justify-center text-white hover:text-white rounded-xl bg-white/[0.08] hover:bg-white/[0.16] active:scale-95 transition-all border border-white/15 shadow-sm"
               aria-label="Close Ask Nemo drawer"
             >
               <X className="w-5 h-5" />
@@ -433,8 +436,11 @@ export const AskNemoDrawer: React.FC<AskNemoDrawerProps> = ({
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Input Footer */}
-        <footer className="p-3 border-t border-white/10 bg-[#0F1A2D]/80 backdrop-blur-md">
+        {/* Input Footer with safe-area padding for home indicator */}
+        <footer
+          className="p-3 border-t border-white/10 bg-[#0F1A2D]/90 backdrop-blur-md shrink-0"
+          style={{ paddingBottom: 'max(12px, env(safe-area-inset-bottom, 12px))' }}
+        >
           <form
             onSubmit={(e) => {
               e.preventDefault();

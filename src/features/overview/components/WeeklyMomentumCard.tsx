@@ -186,21 +186,48 @@ export const WeeklyMomentumCard: React.FC<WeeklyMomentumCardProps> = ({
         </div>
 
         <div ref={legendRef} className="gauge-legend-list">
-          <div className="gauge-legend-item">
-            <span className="dot dot-mint" />
-            <span>Finished: {finishedCount}</span>
+          <div className="gauge-legend-item flex items-center justify-between p-2 rounded-xl bg-white/[0.03] border border-white/[0.06]">
+            <div className="flex items-center gap-2 min-w-0">
+              <span className="dot dot-mint shrink-0" />
+              <div className="flex flex-col min-w-0">
+                <span className="text-[12px] font-semibold text-content-primary truncate">Done this week</span>
+                <span className="text-[10px] text-content-tertiary">Tasks completed</span>
+              </div>
+            </div>
+            <span className="text-sm font-bold text-accent-mint pl-1 shrink-0">{finishedCount}</span>
           </div>
-          <div className="gauge-legend-item">
-            <span className="dot dot-peach" />
-            <span>Open: {openCount}</span>
+
+          <div className="gauge-legend-item flex items-center justify-between p-2 rounded-xl bg-white/[0.03] border border-white/[0.06]">
+            <div className="flex items-center gap-2 min-w-0">
+              <span className="dot dot-peach shrink-0" />
+              <div className="flex flex-col min-w-0">
+                <span className="text-[12px] font-semibold text-content-primary truncate">Tasks pending</span>
+                <span className="text-[10px] text-content-tertiary">To-dos remaining</span>
+              </div>
+            </div>
+            <span className="text-sm font-bold text-accent-ember pl-1 shrink-0">{openCount}</span>
           </div>
-          <div className="gauge-legend-item">
-            <span className="dot dot-amber" />
-            <span>Projects: {activeProjectCount}</span>
+
+          <div className="gauge-legend-item flex items-center justify-between p-2 rounded-xl bg-white/[0.03] border border-white/[0.06]">
+            <div className="flex items-center gap-2 min-w-0">
+              <span className="dot dot-amber shrink-0" />
+              <div className="flex flex-col min-w-0">
+                <span className="text-[12px] font-semibold text-content-primary truncate">Active projects</span>
+                <span className="text-[10px] text-content-tertiary">In progress</span>
+              </div>
+            </div>
+            <span className="text-sm font-bold text-amber-300 pl-1 shrink-0">{activeProjectCount}</span>
           </div>
-          <div className="gauge-legend-item">
-            <span className="dot dot-slate" />
-            <span>Study: {academicCount}</span>
+
+          <div className="gauge-legend-item flex items-center justify-between p-2 rounded-xl bg-white/[0.03] border border-white/[0.06]">
+            <div className="flex items-center gap-2 min-w-0">
+              <span className="dot dot-slate shrink-0" />
+              <div className="flex flex-col min-w-0">
+                <span className="text-[12px] font-semibold text-content-primary truncate">Coursework</span>
+                <span className="text-[10px] text-content-tertiary">Upcoming study</span>
+              </div>
+            </div>
+            <span className="text-sm font-bold text-sky-300 pl-1 shrink-0">{academicCount}</span>
           </div>
         </div>
 
@@ -208,8 +235,8 @@ export const WeeklyMomentumCard: React.FC<WeeklyMomentumCardProps> = ({
           <span className="status-live-dot" />
           <span>
             {overdueCount > 0
-              ? `${overdueCount} items require prompt attention`
-              : 'All priority deliverables on schedule'}
+              ? `${overdueCount} item${overdueCount > 1 ? 's' : ''} require attention`
+              : 'All commitments on schedule'}
           </span>
         </div>
       </div>

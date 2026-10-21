@@ -49,13 +49,17 @@ describe('Overview Signature GSAP Motion System', () => {
     expect(circle).not.toBeNull();
 
     // Check legend items
-    expect(screen.getByText('Finished: 12')).toBeDefined();
-    expect(screen.getByText('Open: 4')).toBeDefined();
-    expect(screen.getByText('Projects: 3')).toBeDefined();
-    expect(screen.getByText('Study: 2')).toBeDefined();
+    expect(screen.getByText('Done this week')).toBeDefined();
+    expect(screen.getByText('12')).toBeDefined();
+    expect(screen.getByText('Tasks pending')).toBeDefined();
+    expect(screen.getByText('4')).toBeDefined();
+    expect(screen.getByText('Active projects')).toBeDefined();
+    expect(screen.getByText('3')).toBeDefined();
+    expect(screen.getByText('Coursework')).toBeDefined();
+    expect(screen.getByText('2')).toBeDefined();
 
     // Check status pill
-    expect(screen.getByText('All priority deliverables on schedule')).toBeDefined();
+    expect(screen.getByText('All commitments on schedule')).toBeDefined();
   });
 
   it('WeeklyMomentumCard displays overdue warning when overdue items exist', () => {
@@ -74,7 +78,7 @@ describe('Overview Signature GSAP Motion System', () => {
       )
     );
 
-    expect(screen.getByText('3 items require prompt attention')).toBeDefined();
+    expect(screen.getByText('3 items require attention')).toBeDefined();
   });
 
   it('FocusSlotsSection renders active focus tickets with tone classes and allows completion and removal', async () => {

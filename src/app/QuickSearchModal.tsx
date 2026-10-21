@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import {
   Search,
   X,
+  ArrowLeft,
   CheckSquare,
   FolderGit2,
   GraduationCap,
@@ -308,7 +309,8 @@ export const QuickSearchModal: React.FC<QuickSearchModalProps> = ({ isOpen, onCl
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-start justify-center pt-16 sm:pt-24 p-4"
+      className="fixed inset-0 z-50 flex items-start justify-center p-3 sm:p-4"
+      style={{ paddingTop: 'max(14px, env(safe-area-inset-top, 14px))' }}
       role="dialog"
       aria-modal="true"
       aria-label="Quick Search"
@@ -324,27 +326,46 @@ export const QuickSearchModal: React.FC<QuickSearchModalProps> = ({ isOpen, onCl
       {/* Palette Panel with entrance animation */}
       <div
         ref={panelRef}
-        className="relative w-full max-w-lg bg-[#0E1729] border border-white/10 rounded-2xl shadow-2xl overflow-hidden z-10 flex flex-col"
+        className="relative w-full max-w-lg sm:mt-16 bg-[#0E1729] border border-white/10 rounded-2xl shadow-2xl overflow-hidden z-10 flex flex-col"
       >
-        {/* Search Input Bar */}
-        <div className="flex items-center px-4 border-b border-white/10 bg-[#132038]">
-          <Search className="w-5 h-5 text-content-tertiary flex-shrink-0" />
+        {/* Search Input Bar with Mobile Back Header */}
+        <div className="flex items-center px-3 sm:px-4 border-b border-white/10 bg-[#132038]">
+          {/* Mobile Back Button */}
+          <button
+            type="button"
+            onClick={handleClose}
+            className="sm:hidden mr-1 p-2 min-w-[36px] min-h-[36px] flex items-center justify-center text-accent-mint hover:text-white rounded-lg active:scale-95 transition-transform shrink-0"
+            aria-label="Back to workspace"
+          >
+            <ArrowLeft className="w-5 h-5" />
+          </button>
+
+          <Search className="w-5 h-5 text-content-tertiary flex-shrink-0 hidden sm:block" />
           <input
             ref={inputRef}
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search tasks, projects, coursework, goals..."
-            className="w-full bg-transparent border-0 px-3 py-3.5 text-sm text-white placeholder-content-tertiary focus:outline-none focus:ring-0"
+            className="w-full bg-transparent border-0 px-2 sm:px-3 py-3.5 text-sm text-white placeholder-content-tertiary focus:outline-none focus:ring-0"
           />
-          {query && (
+          {query ? (
             <button
               type="button"
               onClick={() => setQuery('')}
-              className="p-1 text-content-tertiary hover:text-white rounded"
+              className="p-1.5 text-content-tertiary hover:text-white rounded-lg active:scale-95 transition-all"
               aria-label="Clear search query"
             >
               <X className="w-4 h-4" />
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={handleClose}
+              className="sm:hidden text-xs font-semibold text-accent-mint hover:text-white px-2 py-1 rounded-md"
+              aria-label="Cancel search"
+            >
+              Cancel
             </button>
           )}
           <kbd className="hidden sm:inline-block text-[10px] font-mono px-1.5 py-0.5 rounded bg-white/10 text-content-tertiary ml-2">
