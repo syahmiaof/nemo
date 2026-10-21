@@ -197,7 +197,7 @@ export const InsightsPage: React.FC = () => {
         <section className="glass-panel insights-distribution" aria-labelledby="task-mix-title">
           <div className="insights-panel-heading"><h2 id="task-mix-title">Task mix</h2><span>{tasks.length} total</span></div>
           <div className="insights-donut" role="img" aria-label={`${completionRate}% completed: ${done} done, ${inProgress} in progress, ${toDo} to do`} style={{ background: tasks.length ? `conic-gradient(from -90deg, var(--chart-peach, #efb2a2) 0deg ${doneAngle}deg, #a8dcca ${doneAngle}deg ${doneAngle + progressAngle}deg, #ecd59a ${doneAngle + progressAngle}deg 360deg)` : 'var(--border-subtle)' }}>
-            <div><strong>{tasks.length ? <><AnimatedNumber value={completionRate} />%</> : '—'}</strong><span>{tasks.length ? 'completed' : 'No tasks yet'}</span></div>
+            <div><strong>{tasks.length ? <><AnimatedNumber value={completionRate} />%</> : '—'}</strong><span className="insights-donut-label">{tasks.length ? 'completed' : 'No tasks yet'}</span></div>
           </div>
           <div className="insights-distribution-rows">
             {[{ name: 'Completed', count: done, color: 'var(--chart-peach, #efb2a2)' }, { name: 'In progress', count: inProgress, color: '#a8dcca' }, { name: 'To do', count: toDo, color: '#ecd59a' }].map((item) => <div key={item.name}>
