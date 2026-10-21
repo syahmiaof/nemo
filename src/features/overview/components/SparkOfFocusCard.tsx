@@ -103,7 +103,7 @@ export const SparkOfFocusCard: React.FC<SparkOfFocusCardProps> = ({ className })
         }
       }}
       className={cn(
-        'glass-panel p-5 rounded-2xl relative overflow-hidden flex flex-col justify-between min-h-[220px] transition-all border border-border-subtle hover:border-border-emphasis',
+        'glass-panel p-3.5 sm:p-4 rounded-2xl relative overflow-hidden flex flex-col justify-between min-h-[145px] transition-all border border-border-subtle hover:border-border-emphasis',
         className
       )}
       aria-label="Spark of focus motivational quote"
@@ -119,7 +119,7 @@ export const SparkOfFocusCard: React.FC<SparkOfFocusCardProps> = ({ className })
       />
 
       {/* Card Header: Icon, Title & Category Badge */}
-      <div className="flex items-center justify-between gap-3 relative z-20 mb-2">
+      <div className="flex items-center justify-between gap-3 relative z-20 mb-1">
         <div className="flex items-center gap-2 text-accent-mint">
           <Wand2 size={16} className="text-accent-mint animate-pulse" />
           <h2 className="text-sm font-bold uppercase tracking-wider text-content-primary">
@@ -133,12 +133,12 @@ export const SparkOfFocusCard: React.FC<SparkOfFocusCardProps> = ({ className })
       </div>
 
       {/* Main Quote Area (DOM text at rest; Canvas during active particle morph) */}
-      <div className="flex-1 flex items-center justify-center relative min-h-[110px] py-2 px-3 z-10 select-none">
+      <div className="flex-1 flex items-center justify-center relative min-h-[68px] py-1 px-2 z-10 select-none">
         {/* Real Accessible DOM Typography */}
         <p
           ref={quoteTextRef}
           className={cn(
-            'text-lg sm:text-xl md:text-2xl font-semibold text-center leading-snug tracking-tight text-content-primary transition-opacity duration-300 font-heading max-w-lg',
+            'text-base sm:text-lg font-semibold text-center leading-snug tracking-tight text-content-primary transition-opacity duration-300 font-heading max-w-md',
             isTransitioning && particleHasStarted ? 'opacity-0' : 'opacity-100'
           )}
         >
@@ -155,13 +155,13 @@ export const SparkOfFocusCard: React.FC<SparkOfFocusCardProps> = ({ className })
           onTransitionStart={handleTransitionStart}
           onTransitionComplete={handleTransitionComplete}
           theme={theme}
-          fontSize={22}
+          fontSize={18}
           className="absolute inset-0 w-full h-full pointer-events-none z-20"
         />
       </div>
 
       {/* Footer Controls: Status Indicator & Playback Buttons */}
-      <div className="flex items-center justify-between text-xs text-content-tertiary relative z-20 pt-2 border-t border-border-subtle/50">
+      <div className="flex items-center justify-between text-xs text-content-tertiary relative z-20 pt-1.5 border-t border-border-subtle/50">
         <div className="flex items-center gap-2">
           <span
             className={cn(

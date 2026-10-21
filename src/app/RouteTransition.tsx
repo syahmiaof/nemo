@@ -76,23 +76,23 @@ export function RouteTransition() {
         opacity: 1, y: 0, duration: .35, ease: 'power2.out', clearProps: 'transform,opacity',
       }, 0);
       if (letters.length) timeline.fromTo(letters,
-        { yPercent: 115, rotation: 6, opacity: 0 },
+        { yPercent: 120, rotation: 7, opacity: 0 },
         { yPercent: 0, rotation: 0, opacity: 1, duration: .85, stagger: .022,
           ease: 'power4.out', clearProps: 'transform,opacity' }, 0);
       else if (heading) timeline.fromTo(heading,
         { yPercent: 55, opacity: 0, clipPath: 'inset(0 0 90% 0)' },
-        { yPercent: 0, opacity: 1, clipPath: 'inset(0 0 0% 0)', duration: .72,
+        { yPercent: 0, opacity: 1, clipPath: 'inset(0 0 0% 0)', duration: .75,
           ease: 'power4.out', clearProps: 'transform,opacity,clipPath' }, 0);
       if (stats.length) timeline.fromTo(stats,
-        { y: 12, opacity: 0 },
-        { y: 0, opacity: 1, duration: .55, stagger: .045, ease: 'power3.out', clearProps: 'transform,opacity' }, .08);
+        { y: 16, opacity: 0 },
+        { y: 0, opacity: 1, duration: .6, stagger: .045, ease: 'power3.out', clearProps: 'transform,opacity' }, .08);
       if (extras.length) timeline.fromTo(extras,
-        { y: 12, opacity: 0 },
-        { y: 0, opacity: 1, duration: .55, stagger: .045, ease: 'power3.out', clearProps: 'transform,opacity' }, .12);
+        { y: 16, opacity: 0 },
+        { y: 0, opacity: 1, duration: .6, stagger: .045, ease: 'power3.out', clearProps: 'transform,opacity' }, .12);
       if (cards.length) timeline.fromTo(cards,
-        { opacity: 0, y: 14, scale: .98 },
-        { opacity: 1, y: 0, scale: 1, duration: .45,
-          stagger: .035, ease: 'power2.out', clearProps: 'transform,opacity' }, .08);
+        { opacity: 0, y: 22, scale: .96, clipPath: 'inset(0 50% 0 50% round 24px)' },
+        { opacity: 1, y: 0, scale: 1, clipPath: 'inset(0 0% 0 0% round 24px)', duration: .85,
+          stagger: .055, ease: 'expo.out', clearProps: 'transform,opacity,clipPath' }, .10);
     };
 
     // If WelcomeOverlay is currently active on launch/refresh, synchronize entrance with overlay dismiss

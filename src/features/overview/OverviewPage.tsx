@@ -322,7 +322,7 @@ export function OverviewPage() {
             seriesName="This week"
             comparisonName="Previous 7 days"
             unit={metric}
-            height={205}
+            height={165}
           />
         </section>
 
@@ -388,7 +388,7 @@ export function OverviewPage() {
 
             {focused.length === 0 && (
               <div className="focus-empty">
-                <Target size={32} />
+                <Target size={24} />
                 <h3>One thing at a time.</h3>
                 <p>Choose up to three tasks and give them your complete focus.</p>
               </div>
