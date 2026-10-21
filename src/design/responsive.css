@@ -60,7 +60,9 @@
   .room-gauge-body > :last-child { grid-column: 1 / -1; }
 }
 @media (min-width: 768px) and (max-width: 1000px) {
-  .app-header { grid-template-columns: 1fr auto; }
+  .app-header { display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-rows: auto auto; align-items: center; }
+  .header-navigation { grid-column: 1 / -1; grid-row: 2; justify-self: center; width: 100%; margin-top: 7px; }
+  .header-tools { grid-column: 2; grid-row: 1; }
   .header-navigation .tab { padding-inline: 13px; font-size: 14px; }
   .dock { left: 20px; right: auto; top: 50%; bottom: auto; transform: translateY(-50%); flex-direction: column; margin: 0; }
   .focus-stack { grid-template-columns: minmax(0,1fr); }
@@ -107,6 +109,7 @@
   .route-content [class*="max-w-5xl"] > .flex > .flex { flex-wrap: wrap; }
 }
 @media (max-width: 479px) {
+  .header-tools .demo-mode-pill { display: none; }
   .modal-panel .grid-cols-2, .modal-panel .grid-cols-3 { grid-template-columns: minmax(0,1fr); }
   .modal-panel form > .flex, .modal-panel .border-t.flex { flex-wrap: wrap; }
   .modal-panel form > .flex > button { flex: 1; }

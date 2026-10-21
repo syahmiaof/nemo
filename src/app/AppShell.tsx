@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { Link, useLocation, ScrollRestoration } from 'react-router-dom';
 import gsap from 'gsap';
+import { useGSAP } from '@gsap/react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from '@/db/nemoDb';
 import { getWorkspaceMode, switchWorkspace } from '@/db/workspace';
@@ -19,6 +20,9 @@ import { AuthProvider } from '@/features/auth/AuthContext';
 import { AuthModal } from '@/features/auth/AuthModal';
 import { SyncIndicator } from '@/components/ui/SyncIndicator';
 import { formatClockTime } from '@/lib/timeFormat';
+import { useReducedMotion } from '@/design/useReducedMotion';
+
+gsap.registerPlugin(useGSAP);
 
 const navTabs = [
   { to: '/overview', label: 'Overview' },
@@ -30,24 +34,7 @@ const navTabs = [
   { to: '/insights', label: 'Insights' },
 ];
 
-export function AppShell() {
-  const location = useLocation();
-  const quickAddBtnRef = useRef<HTMLButtonElement>(null);
-  const [quickAdd, setQuickAdd] = useState(false);
-  const [searchOpen, setSearchOpen] = useState(false);
-  const [askNemoOpen, setAskNemoOpen] = useState(false);
-  const [modeError, setModeError] = useState('');
-  useEffect(() => {
-    if (!quickAddBtnRef.current) return;
-    gsap.fromTo(
-      quickAddBtnRef.current,
-      { rotate: -60, scale: 0.85 },
-      { rotate: 0, scale: 1, duration: 0.42, ease: 'back.out(1.8)' }
-    );
-  }, [location.pathname]);
-
-  const settings = useLiveQuery(() => db.settings.get('default'), []);
-  const hourFormat = settings?.hourFormat ?? '24h';
+function HeaderClock({ hourFormat }: { hourFormat: '12h' | '24h' }) {
   const [timeStr, setTimeStr] = useState(() => formatClockTime(new Date(), hourFormat));
 
   useEffect(() => {
@@ -56,6 +43,34 @@ export function AppShell() {
     const timer = setInterval(updateTime, 15000);
     return () => clearInterval(timer);
   }, [hourFormat]);
+
+  return (
+    <div className="header-time-pill hidden xl:inline-flex" title="Local System Time">
+      <span className="live-pulse" />
+      <span>{timeStr}</span>
+    </div>
+  );
+}
+
+export function AppShell() {
+  const location = useLocation();
+  const quickAddBtnRef = useRef<HTMLButtonElement>(null);
+  const [quickAdd, setQuickAdd] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [askNemoOpen, setAskNemoOpen] = useState(false);
+  const [modeError, setModeError] = useState('');
+  const reducedMotion = useReducedMotion();
+  useGSAP(() => {
+    if (!quickAddBtnRef.current || reducedMotion) return;
+    gsap.fromTo(
+      quickAddBtnRef.current,
+      { rotate: -60, scale: 0.85 },
+      { rotate: 0, scale: 1, duration: 0.42, ease: 'back.out(1.8)' }
+    );
+  }, { dependencies: [location.pathname, reducedMotion], revertOnUpdate: true });
+
+  const settings = useLiveQuery(() => db.settings.get('default'), []);
+  const hourFormat = settings?.hourFormat ?? '24h';
 
   const demo = getWorkspaceMode() === 'demo';
 
@@ -135,10 +150,7 @@ export function AppShell() {
                     <span>Demo Mode &bull; Exit</span>
                   </button>
                 )}
-                <div className="header-time-pill hidden xl:inline-flex" title="Local System Time">
-                  <span className="live-pulse" />
-                  <span>{timeStr}</span>
-                </div>
+                <HeaderClock hourFormat={hourFormat} />
                 <div className="hidden 2xl:flex flex-col items-end text-right px-1 leading-tight select-none">
                   <span className="text-xs font-semibold text-content-primary truncate max-w-[140px]">
                     {settings?.displayName || 'My Workspace'}

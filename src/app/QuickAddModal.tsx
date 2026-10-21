@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
+import gsap from 'gsap';
+import { useGSAP } from '@gsap/react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
@@ -10,6 +12,31 @@ import { db } from '@/db/nemoDb';
 import { generateId } from '@/lib/ids';
 import { getTodayLocalDateString } from '@/lib/dates';
 import type { Priority } from '@/domain/types';
+import { useReducedMotion } from '@/design/useReducedMotion';
+
+gsap.registerPlugin(useGSAP);
+
+type QuickAddType = 'task' | 'project' | 'assignment' | 'event';
+
+interface QuickAddDraft {
+  title: string;
+  description: string;
+  priority: Priority;
+  dueDate: string;
+  selectedProjectId: string;
+  selectedSubjectId: string;
+}
+
+const createDraft = (): QuickAddDraft => ({
+  title: '',
+  description: '',
+  priority: 'medium',
+  dueDate: getTodayLocalDateString(),
+  selectedProjectId: '',
+  selectedSubjectId: '',
+});
+
+const TYPES: QuickAddType[] = ['task', 'project', 'assignment', 'event'];
 
 interface QuickAddModalProps {
   isOpen: boolean;
@@ -22,14 +49,56 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
   onClose,
   defaultType = 'task',
 }) => {
-  const [itemType, setItemType] = useState<'task' | 'project' | 'assignment' | 'event'>(defaultType);
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [priority, setPriority] = useState<Priority>('medium');
-  const [dueDate, setDueDate] = useState(getTodayLocalDateString());
-  const [selectedProjectId, setSelectedProjectId] = useState<string>('');
-  const [selectedSubjectId, setSelectedSubjectId] = useState<string>('');
+  const [itemType, setItemType] = useState<QuickAddType>(defaultType);
+  const [drafts, setDrafts] = useState<Record<QuickAddType, QuickAddDraft>>(() => ({
+    task: createDraft(), project: createDraft(), assignment: createDraft(), event: createDraft(),
+  }));
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const tabsRef = useRef<HTMLDivElement>(null);
+  const indicatorRef = useRef<HTMLSpanElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const tabButtonRefs = useRef<Array<HTMLButtonElement | null>>([]);
+  const reducedMotion = useReducedMotion();
+
+  const { title, description, priority, dueDate, selectedProjectId, selectedSubjectId } = drafts[itemType];
+
+  const updateDraft = (patch: Partial<QuickAddDraft>) => {
+    setDrafts((current) => ({
+      ...current,
+      [itemType]: { ...current[itemType], ...patch },
+    }));
+  };
+
+  useGSAP(() => {
+    const tabs = tabsRef.current;
+    const indicator = indicatorRef.current;
+    const panel = panelRef.current;
+    const selectedIndex = TYPES.indexOf(itemType);
+    const selectedTab = tabButtonRefs.current[selectedIndex];
+    if (!tabs || !indicator || !panel || !selectedTab) return;
+
+    const left = selectedTab.offsetLeft;
+    const width = selectedTab.offsetWidth;
+    if (reducedMotion) {
+      gsap.set(indicator, { x: left, width, opacity: 1 });
+      gsap.set(panel, { clearProps: 'opacity,transform' });
+      return;
+    }
+
+    gsap.to(indicator, {
+      x: left,
+      width,
+      opacity: 1,
+      duration: 0.36,
+      ease: 'power3.out',
+      overwrite: 'auto',
+    });
+    gsap.fromTo(panel,
+      { opacity: 0.35, y: 5 },
+      { opacity: 1, y: 0, duration: 0.24, ease: 'power2.out', clearProps: 'opacity,transform', overwrite: 'auto' },
+    );
+  }, { scope: rootRef, dependencies: [itemType, isOpen, reducedMotion], revertOnUpdate: false });
 
   const { success, error } = useToast();
 
@@ -37,12 +106,19 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
   const subjects = useLiveQuery(() => db.subjects.toArray(), []) || [];
 
   const resetForm = () => {
-    setTitle('');
-    setDescription('');
-    setPriority('medium');
-    setDueDate(getTodayLocalDateString());
-    setSelectedProjectId('');
-    setSelectedSubjectId('');
+    setDrafts((current) => ({ ...current, [itemType]: createDraft() }));
+  };
+
+  const handleTabKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>, index: number) => {
+    let nextIndex: number | undefined;
+    if (event.key === 'ArrowRight') nextIndex = (index + 1) % TYPES.length;
+    else if (event.key === 'ArrowLeft') nextIndex = (index - 1 + TYPES.length) % TYPES.length;
+    else if (event.key === 'Home') nextIndex = 0;
+    else if (event.key === 'End') nextIndex = TYPES.length - 1;
+    if (nextIndex === undefined) return;
+    event.preventDefault();
+    setItemType(TYPES[nextIndex]);
+    tabButtonRefs.current[nextIndex]?.focus();
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -133,17 +209,26 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Quick Add" description="Create a commitment quickly from anywhere in Nemo.">
+      <div ref={rootRef}>
       {/* Type Selector Tabs */}
-      <div className="flex p-1 rounded-xl bg-white/[0.04] border border-white/10 mb-5">
-        {(['task', 'project', 'assignment', 'event'] as const).map((t) => (
+      <div ref={tabsRef} role="tablist" aria-label="Commitment type" className="relative flex p-1 rounded-xl bg-white/[0.04] border border-white/10 mb-5 isolate">
+        <span ref={indicatorRef} aria-hidden="true" className="absolute inset-y-1 left-0 rounded-lg bg-white/[0.12] border border-white/15 shadow-sm pointer-events-none opacity-0" />
+        {TYPES.map((t, index) => (
           <button
             key={t}
+            ref={(element) => { tabButtonRefs.current[index] = element; }}
             type="button"
             onClick={() => setItemType(t)}
-            className={`flex-1 py-1.5 text-xs font-semibold rounded-lg capitalize transition-all duration-200 ${
+            onKeyDown={(event) => handleTabKeyDown(event, index)}
+            role="tab"
+            id={`quick-add-tab-${t}`}
+            aria-controls="quick-add-tab-panel"
+            aria-selected={itemType === t}
+            tabIndex={itemType === t ? 0 : -1}
+            className={`relative z-10 flex-1 py-1.5 text-xs font-semibold rounded-lg capitalize transition-colors duration-200 ${
               itemType === t
-                ? 'bg-white/[0.12] text-white shadow-sm border border-white/15'
-                : 'text-content-secondary hover:text-content-primary hover:bg-white/[0.03]'
+                ? 'text-white'
+                : 'text-content-secondary hover:text-content-primary'
             }`}
           >
             {t}
@@ -151,13 +236,14 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
         ))}
       </div>
 
+      <div ref={panelRef} id="quick-add-tab-panel" role="tabpanel" aria-labelledby={`quick-add-tab-${itemType}`}>
       <form onSubmit={handleSubmit} className="space-y-4">
         <Input
           label={`${itemType.charAt(0).toUpperCase() + itemType.slice(1)} Title`}
           placeholder={`e.g. ${itemType === 'project' ? 'Nemo Redesign' : itemType === 'assignment' ? 'Algorithm Analysis' : 'Finish auth flow'}`}
           value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          autoFocus
+          onChange={(e) => updateDraft({ title: e.target.value })}
+          autoFocus={isOpen}
           required
         />
 
@@ -166,13 +252,13 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
             label="Due / Target Date"
             type="date"
             value={dueDate}
-            onChange={(e) => setDueDate(e.target.value)}
+            onChange={(e) => updateDraft({ dueDate: e.target.value })}
           />
 
           <Select
             label="Priority"
             value={priority}
-            onChange={(e) => setPriority(e.target.value as Priority)}
+            onChange={(e) => updateDraft({ priority: e.target.value as Priority })}
             options={[
               { value: 'low', label: 'Low Priority' },
               { value: 'medium', label: 'Medium Priority' },
@@ -187,7 +273,7 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
           <Select
             label="Link to Project (Optional)"
             value={selectedProjectId}
-            onChange={(e) => setSelectedProjectId(e.target.value)}
+            onChange={(e) => updateDraft({ selectedProjectId: e.target.value })}
             options={[
               { value: '', label: 'None (Standalone Task)' },
               ...projects.map((p) => ({ value: p.id, label: p.title })),
@@ -201,7 +287,7 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
             <Select
               label="Subject"
               value={selectedSubjectId}
-              onChange={(e) => setSelectedSubjectId(e.target.value)}
+              onChange={(e) => updateDraft({ selectedSubjectId: e.target.value })}
               options={subjects.map((s) => ({ value: s.id, label: `${s.code ? s.code + ' - ' : ''}${s.title}` }))}
             />
           ) : (
@@ -215,7 +301,7 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
           label="Notes / Description (Optional)"
           placeholder="Add details, links, or expectations..."
           value={description}
-          onChange={(e) => setDescription(e.target.value)}
+          onChange={(e) => updateDraft({ description: e.target.value })}
           rows={3}
         />
 
@@ -228,6 +314,8 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
           </Button>
         </div>
       </form>
+      </div>
+      </div>
     </Modal>
   );
 };

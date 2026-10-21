@@ -10,8 +10,12 @@ export interface GlyphSampleOptions {
   fontSize?: number;
   fontFamily?: string;
   fontWeight?: string | number;
+  /** A CSS font shorthand captured from the rendered quote when available. */
+  font?: string;
   lineHeight?: number;
   maxParticles?: number;
+  maxTextWidth?: number;
+  dpr?: number;
 }
 
 /**
@@ -54,8 +58,11 @@ export function sampleTextGlyphs(options: GlyphSampleOptions): Point[] {
     fontSize = 24,
     fontFamily = 'Urbanist, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
     fontWeight = 600,
+    font,
     lineHeight = 1.35,
     maxParticles = 650,
+    maxTextWidth: requestedTextWidth,
+    dpr: requestedDpr,
   } = options;
 
   if (typeof document === 'undefined' || width <= 0 || height <= 0 || !text.trim()) {
@@ -63,7 +70,7 @@ export function sampleTextGlyphs(options: GlyphSampleOptions): Point[] {
   }
 
   const canvas = document.createElement('canvas');
-  const dpr = Math.min(typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1, 2);
+  const dpr = Math.min(Math.max(requestedDpr ?? (typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1), 1), 2);
   canvas.width = Math.max(Math.floor(width * dpr), 100);
   canvas.height = Math.max(Math.floor(height * dpr), 60);
 
@@ -71,12 +78,12 @@ export function sampleTextGlyphs(options: GlyphSampleOptions): Point[] {
   if (!ctx) return [];
 
   ctx.scale(dpr, dpr);
-  ctx.font = `${fontWeight} ${fontSize}px ${fontFamily}`;
+  ctx.font = font || `${fontWeight} ${fontSize}px ${fontFamily}`;
   ctx.fillStyle = '#FFFFFF';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
 
-  const maxTextWidth = Math.max(width - 40, 100);
+  const maxTextWidth = Math.max(Math.min(requestedTextWidth ?? width - 24, width), 80);
   const lines = wrapText(ctx, text, maxTextWidth);
   const totalLineHeight = fontSize * lineHeight;
   const startY = height / 2 - ((lines.length - 1) * totalLineHeight) / 2;
@@ -88,38 +95,33 @@ export function sampleTextGlyphs(options: GlyphSampleOptions): Point[] {
 
   const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
   const data = imgData.data;
-  const rawPoints: Point[] = [];
-
-  // Determine sampling density based on pixel canvas dimensions to respect maxParticles
+  // Count first, then select evenly among covered pixels. This bounds point
+  // allocations even for long copy or a high-DPR display.
   const step = Math.max(Math.floor(dpr * 2), 2);
-
+  let covered = 0;
   for (let y = 0; y < canvas.height; y += step) {
     for (let x = 0; x < canvas.width; x += step) {
-      const idx = (y * canvas.width + x) * 4;
-      const alpha = data[idx + 3];
-      if (alpha > 130) {
-        rawPoints.push({
-          x: x / dpr,
-          y: y / dpr,
-        });
-      }
+      if (data[(y * canvas.width + x) * 4 + 3] > 130) covered++;
     }
   }
 
-  if (rawPoints.length === 0) {
+  if (covered === 0 || maxParticles <= 0) {
     return [];
   }
-
-  // Downsample or shuffle if count exceeds maxParticles
-  if (rawPoints.length > maxParticles) {
-    const stride = rawPoints.length / maxParticles;
-    const sampled: Point[] = [];
-    for (let i = 0; i < maxParticles; i++) {
-      const idx = Math.min(Math.floor(i * stride), rawPoints.length - 1);
-      sampled.push(rawPoints[idx]);
+  const count = Math.min(covered, Math.floor(maxParticles));
+  const stride = covered / count;
+  const points: Point[] = [];
+  let seen = 0;
+  let nextSample = 0;
+  for (let y = 0; y < canvas.height && points.length < count; y += step) {
+    for (let x = 0; x < canvas.width && points.length < count; x += step) {
+      if (data[(y * canvas.width + x) * 4 + 3] <= 130) continue;
+      if (seen >= nextSample) {
+        points.push({ x: (x + step / 2) / dpr, y: (y + step / 2) / dpr });
+        nextSample += stride;
+      }
+      seen++;
     }
-    return sampled;
   }
-
-  return rawPoints;
+  return points;
 }

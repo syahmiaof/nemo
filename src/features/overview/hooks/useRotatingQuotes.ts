@@ -7,6 +7,7 @@ export interface UseRotatingQuotesOptions {
   intervalMs?: number;
   initialPaused?: boolean;
   shuffle?: boolean;
+  isActive?: boolean;
 }
 
 export interface UseRotatingQuotesReturn {
@@ -23,6 +24,7 @@ export interface UseRotatingQuotesReturn {
   currentIndex: number;
   deck: MotivationalQuote[];
   prefersReducedMotion: boolean;
+  isDocumentVisible: boolean;
 }
 
 /**
@@ -64,12 +66,12 @@ export function useRotatingQuotes(options: UseRotatingQuotesOptions = {}): UseRo
     intervalMs = 5000,
     initialPaused = false,
     shuffle = true,
+    isActive = true,
   } = options;
 
   const reducedMotion = useReducedMotion();
   const [isPaused, setIsPaused] = useState<boolean>(initialPaused);
   const [isTransitioning, setIsTransitioning] = useState<boolean>(false);
-  const transitionTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Track document visibility
   const [isDocumentVisible, setIsDocumentVisible] = useState<boolean>(() => {
@@ -115,20 +117,9 @@ export function useRotatingQuotes(options: UseRotatingQuotesOptions = {}): UseRo
 
   // Advance to next quote in the shuffled deck
   const advanceNext = useCallback(() => {
-    if (transitionTimeoutRef.current) {
-      clearTimeout(transitionTimeoutRef.current);
-      transitionTimeoutRef.current = null;
-    }
-
-    if (!reducedMotionRef.current) {
-      setIsTransitioning(true);
-      transitionTimeoutRef.current = setTimeout(() => {
-        setIsTransitioning(false);
-        transitionTimeoutRef.current = null;
-      }, 400);
-    } else {
-      setIsTransitioning(false);
-    }
+    // The consumer owns the transition lifecycle. The old 400ms timeout
+    // raced the 1.7s particle tween and could expose DOM text over the canvas.
+    setIsTransitioning(!reducedMotionRef.current);
 
     setDeckState((prev) => {
       const { deck: currentDeck, upcomingDeck: currentUpcoming, currentIndex: currentIdx } = prev;
@@ -161,16 +152,6 @@ export function useRotatingQuotes(options: UseRotatingQuotesOptions = {}): UseRo
     });
   }, []);
 
-  // Clean up any pending transition timeouts on unmount
-  useEffect(() => {
-    return () => {
-      if (transitionTimeoutRef.current) {
-        clearTimeout(transitionTimeoutRef.current);
-        transitionTimeoutRef.current = null;
-      }
-    };
-  }, []);
-
   // Control pause actions
   const togglePause = useCallback(() => {
     setIsPaused((prev) => !prev);
@@ -185,7 +166,7 @@ export function useRotatingQuotes(options: UseRotatingQuotesOptions = {}): UseRo
   }, []);
 
   // Automatic rotation timer of active visibility
-  const shouldRotate = !isPaused && isDocumentVisible && !reducedMotion;
+  const shouldRotate = !isPaused && isActive && isDocumentVisible && !reducedMotion;
 
   useEffect(() => {
     if (!shouldRotate || intervalMs <= 0) {
@@ -225,5 +206,6 @@ export function useRotatingQuotes(options: UseRotatingQuotesOptions = {}): UseRo
     currentIndex,
     deck,
     prefersReducedMotion: reducedMotion,
+    isDocumentVisible,
   };
 }

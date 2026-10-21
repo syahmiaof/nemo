@@ -33,10 +33,6 @@ export const TavolaSplineChart: React.FC<SplineChartProps> = ({
     const maximum = Math.max(4, Math.ceil(Math.max(0, ...main, ...comparison) / 4) * 4);
     return { main, comparison, maximum };
   }, [dataKey]);
-  const [frame, setFrame] = useState(target);
-  const frameRef = useRef(frame);
-  const initialized = useRef(false);
-
   useEffect(() => {
     const element = containerRef.current;
     if (!element) return;
@@ -48,32 +44,6 @@ export const TavolaSplineChart: React.FC<SplineChartProps> = ({
   }, []);
 
   useGSAP(() => {
-    const initial = !initialized.current;
-    initialized.current = true;
-    if (reduced) { frameRef.current = target; setFrame(target); return; }
-    const previous = frameRef.current;
-    const compatible = previous.main.length === target.main.length && previous.comparison.length === target.comparison.length;
-    const start = initial ? target : compatible ? previous : target;
-    frameRef.current = start;
-    setFrame(start);
-    const progress = { value: 0 };
-    gsap.to(progress, {
-        value: 1, duration: initial ? 0 : 0.9, ease: 'power3.inOut',
-        onUpdate: () => {
-          const mix = (from: number, to: number) => from + (to - from) * progress.value;
-          const next: ChartFrame = {
-            main: target.main.map((value, i) => mix(start.main[i], value)),
-            comparison: target.comparison.map((value, i) => mix(start.comparison[i], value)),
-            maximum: mix(start.maximum, target.maximum),
-          };
-          frameRef.current = next;
-          setFrame(next);
-        },
-        onComplete: () => { frameRef.current = target; setFrame(target); },
-    });
-  }, { scope: containerRef, dependencies: [target, reduced], revertOnUpdate: true });
-
-  useGSAP(() => {
     const reveal = revealRef.current;
     if (!reveal) return;
     if (reduced) { gsap.set(reveal, { attr: { width: '100%' } }); return; }
@@ -82,6 +52,10 @@ export const TavolaSplineChart: React.FC<SplineChartProps> = ({
     });
   }, { scope: containerRef, dependencies: [reduced], revertOnUpdate: true });
 
+  // Keep geometry derived from the canonical data. The previous implementation
+  // called React setState on every GSAP tick, rebuilding every SVG path at 60fps.
+  // The chart's SVG reveal supplies motion without rerendering the whole page.
+  const frame: ChartFrame = target;
   const padding = { left: 38, right: 20, top: 26, bottom: 34 };
   const plotWidth = Math.max(1, width - padding.left - padding.right);
   const bottom = height - padding.bottom;

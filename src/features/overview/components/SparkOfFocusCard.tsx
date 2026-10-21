@@ -19,6 +19,11 @@ export const SparkOfFocusCard: React.FC<SparkOfFocusCardProps> = ({ className })
     ? 'aurora'
     : 'midnight';
 
+  const [isInViewport, setIsInViewport] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
+  const isAutoActive = isInViewport && !isHovered && !isFocused;
+
   const {
     currentQuote,
     isPaused,
@@ -27,11 +32,31 @@ export const SparkOfFocusCard: React.FC<SparkOfFocusCardProps> = ({ className })
     isTransitioning,
     setTransitioning,
     prefersReducedMotion,
-  } = useRotatingQuotes({ intervalMs: 5200 });
+    isDocumentVisible,
+  } = useRotatingQuotes({ intervalMs: 5200, isActive: isAutoActive });
 
   const [displayedQuote, setDisplayedQuote] = useState(currentQuote);
-  const [previousQuoteText, setPreviousQuoteText] = useState(currentQuote.text);
   const containerRef = useRef<HTMLDivElement>(null);
+  const quoteTextRef = useRef<HTMLParagraphElement>(null);
+  const currentQuoteRef = useRef(currentQuote);
+  const pointerFocusedRef = useRef(false);
+  currentQuoteRef.current = currentQuote;
+  const isActive = isInViewport && !isHovered && !isFocused && isDocumentVisible;
+  const [particleHasStarted, setParticleHasStarted] = useState(false);
+
+  useEffect(() => {
+    const element = containerRef.current;
+    if (!element) return;
+    if (!('IntersectionObserver' in window)) {
+      setIsInViewport(true);
+      return;
+    }
+    const observer = new IntersectionObserver(([entry]) => {
+      setIsInViewport(entry.isIntersecting && entry.intersectionRatio >= 0.1);
+    }, { threshold: [0, 0.1] });
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
 
   // When currentQuote changes, initiate particle morph transition
   useEffect(() => {
@@ -39,22 +64,44 @@ export const SparkOfFocusCard: React.FC<SparkOfFocusCardProps> = ({ className })
 
     if (prefersReducedMotion) {
       setDisplayedQuote(currentQuote);
+      setParticleHasStarted(false);
       return;
     }
 
-    setPreviousQuoteText(displayedQuote.text);
+    setParticleHasStarted(false);
     setTransitioning(true);
   }, [currentQuote, displayedQuote, prefersReducedMotion, setTransitioning]);
 
   const handleTransitionComplete = useCallback(() => {
-    setDisplayedQuote(currentQuote);
+    setDisplayedQuote(currentQuoteRef.current);
+    setParticleHasStarted(false);
     setTransitioning(false);
-  }, [currentQuote, setTransitioning]);
+  }, [setTransitioning]);
+
+  const handleTransitionStart = useCallback(() => {
+    setParticleHasStarted(true);
+  }, []);
 
   return (
     <section
       ref={containerRef}
       data-enter
+      onPointerEnter={() => setIsHovered(true)}
+      onPointerDown={() => { pointerFocusedRef.current = true; }}
+      onPointerLeave={() => {
+        setIsHovered(false);
+        if (pointerFocusedRef.current) {
+          pointerFocusedRef.current = false;
+          setIsFocused(false);
+        }
+      }}
+      onFocusCapture={() => setIsFocused(true)}
+      onBlurCapture={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
+          pointerFocusedRef.current = false;
+          setIsFocused(false);
+        }
+      }}
       className={cn(
         'glass-panel p-5 rounded-2xl relative overflow-hidden flex flex-col justify-between min-h-[220px] transition-all border border-border-subtle hover:border-border-emphasis',
         className
@@ -89,26 +136,28 @@ export const SparkOfFocusCard: React.FC<SparkOfFocusCardProps> = ({ className })
       <div className="flex-1 flex items-center justify-center relative min-h-[110px] py-2 px-3 z-10 select-none">
         {/* Real Accessible DOM Typography */}
         <p
+          ref={quoteTextRef}
           className={cn(
             'text-lg sm:text-xl md:text-2xl font-semibold text-center leading-snug tracking-tight text-content-primary transition-opacity duration-300 font-heading max-w-lg',
-            isTransitioning ? 'opacity-0' : 'opacity-100'
+            isTransitioning && particleHasStarted ? 'opacity-0' : 'opacity-100'
           )}
         >
           &ldquo;{displayedQuote.text}&rdquo;
         </p>
 
         {/* Live Stardust Canvas Particle Engine */}
-        {isTransitioning && (
-          <ParticleTextCanvas
-            oldQuote={`“${previousQuoteText}”`}
-            newQuote={`“${currentQuote.text}”`}
-            isTransitioning={isTransitioning}
-            onTransitionComplete={handleTransitionComplete}
-            theme={theme}
-            fontSize={22}
-            className="absolute inset-0 w-full h-full pointer-events-none z-20"
-          />
-        )}
+        <ParticleTextCanvas
+          oldQuote={`“${displayedQuote.text}”`}
+          newQuote={`“${currentQuote.text}”`}
+          isTransitioning={isTransitioning}
+          isActive={isActive}
+          textElementRef={quoteTextRef}
+          onTransitionStart={handleTransitionStart}
+          onTransitionComplete={handleTransitionComplete}
+          theme={theme}
+          fontSize={22}
+          className="absolute inset-0 w-full h-full pointer-events-none z-20"
+        />
       </div>
 
       {/* Footer Controls: Status Indicator & Playback Buttons */}

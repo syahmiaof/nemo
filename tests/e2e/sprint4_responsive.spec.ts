@@ -1,4 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
+import { gotoReady } from './gotoReady';
 
 async function assertReflow(page: Page) {
   const result = await page.evaluate(() => {
@@ -58,6 +59,33 @@ test.describe('Sprint 4 — responsive, branding and motion regressions', () => 
     await expect(page.locator('body')).not.toHaveCSS('overflow', 'hidden');
   });
 
+  test('mobile navigation stays fixed to the visible viewport', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.addInitScript(() => localStorage.setItem('nemo:workspace-mode', 'demo'));
+    await gotoReady(page, '/overview');
+
+    const nav = page.getByRole('navigation', { name: 'Mobile Navigation' });
+    await expect(nav).toBeVisible();
+    const bounds = await nav.evaluate((element) => {
+      const rect = element.getBoundingClientRect();
+      const style = getComputedStyle(element);
+      return {
+        position: style.position,
+        top: rect.top,
+        bottom: rect.bottom,
+        height: rect.height,
+        viewportHeight: window.innerHeight,
+      };
+    });
+
+    expect(bounds.position).toBe('fixed');
+    expect(bounds.height).toBeGreaterThan(0);
+    expect(bounds.top).toBeGreaterThanOrEqual(0);
+    expect(bounds.bottom).toBeLessThanOrEqual(bounds.viewportHeight + 1);
+    expect(bounds.bottom).toBeGreaterThan(bounds.viewportHeight - 2);
+    await page.screenshot({ path: 'docs/evidence/sprint61/mobile-nav-restored.png' });
+  });
+
   test('320px forms keep fields and submit actions reachable; settings supports keyboard tabs', async ({ page }) => {
     await page.setViewportSize({width: 320, height: 640});
     await page.addInitScript(() => localStorage.setItem('nemo:workspace-mode', 'demo'));
@@ -69,6 +97,7 @@ test.describe('Sprint 4 — responsive, branding and motion regressions', () => 
     const submit = dialog.getByRole('button', {name: 'Create Project', exact: true});
     await submit.scrollIntoViewIfNeeded();
     await expect(submit).toBeInViewport();
+    await expect.poll(() => dialog.evaluate((element) => getComputedStyle(element).transform)).toBe('none');
     const bounds = await dialog.boundingBox();
     expect(bounds!.width).toBeLessThanOrEqual(320);
     await page.keyboard.press('Escape');

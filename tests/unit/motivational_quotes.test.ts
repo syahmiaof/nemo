@@ -202,7 +202,7 @@ describe('useRotatingQuotes Hook', () => {
     expect(result.current.isPaused).toBe(true);
   });
 
-  it('manual advanceNext moves immediately to nextQuote and triggers transition', () => {
+  it('manual advance keeps transition active until the consumer reports completion', () => {
     const { result } = renderHook(() => useRotatingQuotes());
 
     const firstQuote = result.current.currentQuote;
@@ -216,10 +216,16 @@ describe('useRotatingQuotes Hook', () => {
     expect(result.current.currentQuote.id).not.toBe(firstQuote.id);
     expect(result.current.isTransitioning).toBe(true);
 
-    // Fast forward transition window (400ms)
+    // There is no independent timeout that can race the 1.7s visual transition.
     act(() => {
       vi.advanceTimersByTime(400);
     });
+    expect(result.current.isTransitioning).toBe(true);
+    act(() => {
+      vi.advanceTimersByTime(1300);
+    });
+    expect(result.current.isTransitioning).toBe(true);
+    act(() => result.current.setTransitioning(false));
     expect(result.current.isTransitioning).toBe(false);
   });
 
@@ -261,6 +267,21 @@ describe('useRotatingQuotes Hook', () => {
     act(() => {
       vi.advanceTimersByTime(5000);
     });
+    expect(result.current.currentQuote.id).not.toBe(initialQuote.id);
+  });
+
+  it('pauses automatic rotation while its consumer is inactive', () => {
+    const { result, rerender } = renderHook(
+      ({ active }) => useRotatingQuotes({ intervalMs: 1000, shuffle: false, isActive: active }),
+      { initialProps: { active: false } }
+    );
+    const initialQuote = result.current.currentQuote;
+
+    act(() => vi.advanceTimersByTime(2000));
+    expect(result.current.currentQuote.id).toBe(initialQuote.id);
+
+    rerender({ active: true });
+    act(() => vi.advanceTimersByTime(1000));
     expect(result.current.currentQuote.id).not.toBe(initialQuote.id);
   });
 
@@ -329,9 +350,8 @@ describe('useRotatingQuotes Hook', () => {
     expect(result.current.currentIndex).toBe(0);
   });
 
-  it('cleans up timers cleanly on unmount', () => {
+  it('cleans up the rotation interval cleanly on unmount', () => {
     const clearIntervalSpy = vi.spyOn(globalThis, 'clearInterval');
-    const clearTimeoutSpy = vi.spyOn(globalThis, 'clearTimeout');
 
     const { unmount, result } = renderHook(() => useRotatingQuotes({ intervalMs: 5000 }));
 
@@ -342,9 +362,7 @@ describe('useRotatingQuotes Hook', () => {
     unmount();
 
     expect(clearIntervalSpy).toHaveBeenCalled();
-    expect(clearTimeoutSpy).toHaveBeenCalled();
 
     clearIntervalSpy.mockRestore();
-    clearTimeoutSpy.mockRestore();
   });
 });
