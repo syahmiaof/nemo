@@ -18,7 +18,6 @@ import { TavolaSplineChart } from '@/components/ui/TavolaSplineChart';
 import { useReducedMotion } from '@/design/useReducedMotion';
 import { MotionTitle } from '@/components/ui/MotionTitle';
 import { AnimatedNumber } from '@/components/ui/PageHeading';
-import { useScrollMotion } from '@/design/useScrollMotion';
 
 gsap.registerPlugin(useGSAP);
 
@@ -325,19 +324,7 @@ export const InsightsPage: React.FC = () => {
     };
   }, [data, reduced]);
 
-  // Bi-directional scroll reveal across all chart panels & metric cards
-  const scrollContainerRef = useScrollMotion<HTMLDivElement>({
-    selector: '.glass-panel',
-    stagger: 0.06,
-    y: 22,
-    scale: 0.98,
-    duration: 0.65,
-    ease: 'power3.out',
-    bidirectional: true,
-    threshold: 0.05,
-    rootMargin: '0px 0px 50px 0px',
-    key: `${selectedYear}:${series}:${tasks.length}:${projects.length}`,
-  });
+
 
   return (
     <div ref={motionRoot} className="insights-page">
@@ -404,7 +391,7 @@ export const InsightsPage: React.FC = () => {
       </header>
 
       {/* Main Insights Content Grid with Bi-directional Scroll Motion */}
-      <div ref={scrollContainerRef} className="space-y-5">
+      <div className="space-y-5">
         {/* 7-Day Velocity Spline Chart Section */}
         <section
           className="glass-panel insights-velocity-section border border-white/10 shadow-md"
