@@ -122,7 +122,7 @@ export const ProfileQuickMenu: React.FC<ProfileQuickMenuProps> = ({ className })
   };
 
   return (
-    <div ref={menuRef} className={cn('relative inline-block', className)}>
+    <div ref={menuRef} className={cn('relative inline-flex items-center shrink-0', className)}>
       {/* Hidden File Input for Avatar Upload */}
       <input
         ref={fileInputRef}
@@ -177,7 +177,7 @@ export const ProfileQuickMenu: React.FC<ProfileQuickMenuProps> = ({ className })
         <div
           role="dialog"
           aria-label="Quick Settings & Profile"
-          className="profile-quick-menu absolute right-0 top-full mt-2.5 w-80 max-w-[calc(100vw-32px)] rounded-2xl glass-panel shadow-pop border border-border-emphasis/60 p-4 space-y-4 z-50 backdrop-blur-xl animate-in fade-in zoom-in-95 duration-200"
+          style={{ position: 'absolute', top: 'calc(100% + 10px)', right: 0, zIndex: 1000 }} className="profile-quick-menu !absolute w-80 max-w-[calc(100vw-32px)] rounded-2xl glass-panel shadow-pop border border-border-emphasis/60 p-4 space-y-4 z-50 backdrop-blur-xl animate-in fade-in zoom-in-95 duration-200"
         >
           {/* Header: Avatar, Name & Edit */}
           <div className="flex items-center gap-3 pb-3 border-b border-border-subtle">

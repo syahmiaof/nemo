@@ -139,7 +139,7 @@ export function AppShell() {
                   <span className="live-pulse" />
                   <span>{timeStr}</span>
                 </div>
-                <div className="hidden sm:flex flex-col items-end text-right px-1 leading-tight select-none">
+                <div className="hidden 2xl:flex flex-col items-end text-right px-1 leading-tight select-none">
                   <span className="text-xs font-semibold text-content-primary truncate max-w-[140px]">
                     {settings?.displayName || 'My Workspace'}
                   </span>
