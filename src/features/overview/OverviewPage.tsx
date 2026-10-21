@@ -249,7 +249,17 @@ export function OverviewPage() {
   };
 
   const hasData = tasks.length + projects.length + assignments.length > 0;
-  const activeProjects = (active.length > 0 ? active : projects.filter((p) => !p.archivedAt)).slice(0, 2);
+  // Active / in the making projects for Overview:
+  // Strictly EXCLUDE completed and archived projects.
+  // Show in_progress projects, or on_hold projects when none are in_progress.
+  const activeProjects = projects
+    .filter((p) => !p.archivedAt && p.status !== 'completed' && (p.status === 'in_progress' || p.status === 'on_hold'))
+    .sort((a, b) => {
+      if (a.status === 'in_progress' && b.status !== 'in_progress') return -1;
+      if (b.status === 'in_progress' && a.status !== 'in_progress') return 1;
+      return 0;
+    })
+    .slice(0, 2);
 
   return (
     <div ref={pageContainerRef} className="overview-page">
