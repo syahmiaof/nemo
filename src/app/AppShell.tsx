@@ -6,6 +6,7 @@ import { db } from '@/db/nemoDb';
 import { getWorkspaceMode, switchWorkspace } from '@/db/workspace';
 import { TavolaTabs } from '@/components/ui/TavolaTabs';
 import { TavolaDock } from '@/components/ui/TavolaDock';
+import { ProfileQuickMenu } from '@/components/ui/ProfileQuickMenu';
 import { MobileNav } from './MobileNav';
 import { QuickAddModal } from './QuickAddModal';
 import { QuickSearchModal } from './QuickSearchModal';
@@ -14,7 +15,6 @@ import { ToastProvider } from '@/components/ui/Toast';
 import { Plus, FlaskConical } from 'lucide-react';
 import { RouteTransition } from './RouteTransition';
 import { WelcomeOverlay } from './WelcomeOverlay';
-import { getInitials } from '@/lib/avatar';
 import { AuthProvider } from '@/features/auth/AuthContext';
 import { AuthModal } from '@/features/auth/AuthModal';
 import { SyncIndicator } from '@/components/ui/SyncIndicator';
@@ -56,10 +56,6 @@ export function AppShell() {
     const timer = setInterval(updateTime, 15000);
     return () => clearInterval(timer);
   }, [hourFormat]);
-  const avatarBlob = useLiveQuery(
-    () => (settings?.avatarBlobId ? db.assetBlobs.get(settings.avatarBlobId) : undefined),
-    [settings?.avatarBlobId]
-  );
 
   const demo = getWorkspaceMode() === 'demo';
 
@@ -154,27 +150,13 @@ export function AppShell() {
                 <button
                   ref={quickAddBtnRef}
                   type="button"
-                  className="icon-button"
+                  className="icon-button md:hidden"
                   onClick={() => setQuickAdd(true)}
                   aria-label="Quick Add"
                 >
                   <Plus size={21} />
                 </button>
-                <Link
-                  to="/settings"
-                  className="profile-button overflow-hidden"
-                  aria-label="Profile and settings"
-                >
-                  {avatarBlob?.data ? (
-                    <img
-                      src={avatarBlob.data}
-                      alt={settings?.displayName || 'Profile'}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    getInitials(settings?.displayName)
-                  )}
-                </Link>
+                <ProfileQuickMenu />
               </div>
             </header>
 

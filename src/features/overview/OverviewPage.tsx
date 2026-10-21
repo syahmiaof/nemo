@@ -21,6 +21,7 @@ import { TavolaSplineChart } from '@/components/ui/TavolaSplineChart';
 import { PageHeading, AnimatedNumber } from '@/components/ui/PageHeading';
 import { ProjectCard } from '@/features/projects/ProjectCard';
 import { QuickAddModal } from '@/app/QuickAddModal';
+import { SparkOfFocusCard } from './components/SparkOfFocusCard';
 import { getTodayLocalDateString, formatShortDate, parseLocalDateString } from '@/lib/dates';
 import type { Task } from '@/domain/types';
 
@@ -325,7 +326,8 @@ export function OverviewPage() {
           />
         </section>
 
-        {/* Right Tactical Panel: Today's Focus (Tavola "On the pass" analogue) */}
+        {/* Right Tactical Stack: Today's Focus & Spark of Focus */}
+        <div className="overview-right-stack">
         <section className="glass-panel focus-panel" data-enter aria-labelledby="focus-title">
           <div className="panel-heading">
             <h2 id="focus-title">Today's focus</h2>
@@ -419,6 +421,9 @@ export function OverviewPage() {
             )}
           </div>
         </section>
+
+          <SparkOfFocusCard />
+        </div>
       </div>
 
       {/* Middle Grid: Weekly Momentum Donut Gauge + Active Projects (Tavola "The room" & "Still to come" analogue) */}
