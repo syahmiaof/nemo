@@ -41,7 +41,7 @@ test.describe('Privacy, Database & Demo Functional Audit', () => {
     }
 
     // Verify Demo Mode banner is visible
-    await expect(page.getByText('DEMO WORKSPACE · Fictional data')).toBeVisible();
+    await expect(page.getByText(/Demo Workspace: Exploring fictional sample data/)).toBeVisible();
 
     // Go to projects in Demo Mode
     await gotoReady(page, '/projects');
@@ -57,7 +57,7 @@ test.describe('Privacy, Database & Demo Functional Audit', () => {
     // Verify we are back in Real Mode
     await expect(page.getByRole('heading', { name: 'No projects in this view' })).toBeVisible();
     await expect(page.getByRole('heading', { name: 'Orbit Analytics' })).not.toBeVisible();
-    await expect(page.getByText('DEMO WORKSPACE · Fictional data')).not.toBeVisible();
+    await expect(page.getByText(/Demo Workspace: Exploring fictional sample data/)).not.toBeVisible();
   });
 
   test('Backup validation rejects malformed JSON and preserves database', async ({ page }) => {

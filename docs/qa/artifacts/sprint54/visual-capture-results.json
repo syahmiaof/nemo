@@ -1,0 +1,344 @@
+{
+  "base": "http://127.0.0.1:4174",
+  "capturedAt": "2026-10-21T04:12:51.605Z",
+  "count": 48,
+  "errors": [],
+  "captures": [
+    {
+      "theme": "Midnight",
+      "viewport": "390x844",
+      "route": "overview",
+      "file": "midnight-mobile-overview.png",
+      "pageTitle": "Make room for progress. Track your daily priorities, projects, and commitments. 6 Active projects "
+    },
+    {
+      "theme": "Midnight",
+      "viewport": "390x844",
+      "route": "projects",
+      "file": "midnight-mobile-projects.png",
+      "pageTitle": "Projects A home for the work you want to finish. New Project All Active 18 In Progress 6 Not Start"
+    },
+    {
+      "theme": "Midnight",
+      "viewport": "390x844",
+      "route": "tasks",
+      "file": "midnight-mobile-tasks.png",
+      "pageTitle": "Tasks Small steps. Clear priorities. New Task All Tasks 64 Due Today 5 Upcoming 33 Overdue 6 Compl"
+    },
+    {
+      "theme": "Midnight",
+      "viewport": "390x844",
+      "route": "calendar",
+      "file": "midnight-mobile-calendar.png",
+      "pageTitle": "January February March April May June July August September October November December 2022 2023 2024"
+    },
+    {
+      "theme": "Midnight",
+      "viewport": "390x844",
+      "route": "academics",
+      "file": "midnight-mobile-academics.png",
+      "pageTitle": "Academic Track Organize semesters, courses, and submission deliverables. Software Engineering · Cu"
+    },
+    {
+      "theme": "Midnight",
+      "viewport": "390x844",
+      "route": "goals",
+      "file": "midnight-mobile-goals.png",
+      "pageTitle": "Long-term Goals Track major objectives, measure progress through verified milestones, and connect e"
+    },
+    {
+      "theme": "Midnight",
+      "viewport": "390x844",
+      "route": "insights",
+      "file": "midnight-mobile-insights.png",
+      "pageTitle": "Workspace Insights 18 All-time projects 6 Active right now 86 Tasks completed 4 Active goals Reporti"
+    },
+    {
+      "theme": "Midnight",
+      "viewport": "390x844",
+      "route": "settings",
+      "file": "midnight-mobile-settings.png",
+      "pageTitle": "Settings Make this space yours. Sign In to Cloud Appearance Profile Account & Sync Preferences Dat"
+    },
+    {
+      "theme": "Midnight",
+      "viewport": "1440x900",
+      "route": "overview",
+      "file": "midnight-desktop-overview.png",
+      "pageTitle": "Make room for progress. Track your daily priorities, projects, and commitments. 6 Active projects "
+    },
+    {
+      "theme": "Midnight",
+      "viewport": "1440x900",
+      "route": "projects",
+      "file": "midnight-desktop-projects.png",
+      "pageTitle": "Projects A home for the work you want to finish. New Project All Active 18 In Progress 6 Not Start"
+    },
+    {
+      "theme": "Midnight",
+      "viewport": "1440x900",
+      "route": "tasks",
+      "file": "midnight-desktop-tasks.png",
+      "pageTitle": "Tasks Small steps. Clear priorities. New Task All Tasks 64 Due Today 5 Upcoming 33 Overdue 6 Compl"
+    },
+    {
+      "theme": "Midnight",
+      "viewport": "1440x900",
+      "route": "calendar",
+      "file": "midnight-desktop-calendar.png",
+      "pageTitle": "January February March April May June July August September October November December 2022 2023 2024"
+    },
+    {
+      "theme": "Midnight",
+      "viewport": "1440x900",
+      "route": "academics",
+      "file": "midnight-desktop-academics.png",
+      "pageTitle": "Academic Track Organize semesters, courses, and submission deliverables. Software Engineering · Cu"
+    },
+    {
+      "theme": "Midnight",
+      "viewport": "1440x900",
+      "route": "goals",
+      "file": "midnight-desktop-goals.png",
+      "pageTitle": "Long-term Goals Track major objectives, measure progress through verified milestones, and connect e"
+    },
+    {
+      "theme": "Midnight",
+      "viewport": "1440x900",
+      "route": "insights",
+      "file": "midnight-desktop-insights.png",
+      "pageTitle": "Workspace Insights 18 All-time projects 6 Active right now 86 Tasks completed 4 Active goals Reporti"
+    },
+    {
+      "theme": "Midnight",
+      "viewport": "1440x900",
+      "route": "settings",
+      "file": "midnight-desktop-settings.png",
+      "pageTitle": "Settings Make this space yours. Sign In to Cloud Appearance Profile Account & Sync Preferences Dat"
+    },
+    {
+      "theme": "Daylight",
+      "viewport": "390x844",
+      "route": "overview",
+      "file": "daylight-mobile-overview.png",
+      "pageTitle": "Make room for progress. Track your daily priorities, projects, and commitments. 6 Active projects "
+    },
+    {
+      "theme": "Daylight",
+      "viewport": "390x844",
+      "route": "projects",
+      "file": "daylight-mobile-projects.png",
+      "pageTitle": "Projects A home for the work you want to finish. New Project All Active 18 In Progress 6 Not Start"
+    },
+    {
+      "theme": "Daylight",
+      "viewport": "390x844",
+      "route": "tasks",
+      "file": "daylight-mobile-tasks.png",
+      "pageTitle": "Tasks Small steps. Clear priorities. New Task All Tasks 64 Due Today 5 Upcoming 33 Overdue 6 Compl"
+    },
+    {
+      "theme": "Daylight",
+      "viewport": "390x844",
+      "route": "calendar",
+      "file": "daylight-mobile-calendar.png",
+      "pageTitle": "January February March April May June July August September October November December 2022 2023 2024"
+    },
+    {
+      "theme": "Daylight",
+      "viewport": "390x844",
+      "route": "academics",
+      "file": "daylight-mobile-academics.png",
+      "pageTitle": "Academic Track Organize semesters, courses, and submission deliverables. Software Engineering · Cu"
+    },
+    {
+      "theme": "Daylight",
+      "viewport": "390x844",
+      "route": "goals",
+      "file": "daylight-mobile-goals.png",
+      "pageTitle": "Long-term Goals Track major objectives, measure progress through verified milestones, and connect e"
+    },
+    {
+      "theme": "Daylight",
+      "viewport": "390x844",
+      "route": "insights",
+      "file": "daylight-mobile-insights.png",
+      "pageTitle": "Workspace Insights 18 All-time projects 6 Active right now 86 Tasks completed 4 Active goals Reporti"
+    },
+    {
+      "theme": "Daylight",
+      "viewport": "390x844",
+      "route": "settings",
+      "file": "daylight-mobile-settings.png",
+      "pageTitle": "Settings Make this space yours. Sign In to Cloud Appearance Profile Account & Sync Preferences Dat"
+    },
+    {
+      "theme": "Daylight",
+      "viewport": "1440x900",
+      "route": "overview",
+      "file": "daylight-desktop-overview.png",
+      "pageTitle": "Make room for progress. Track your daily priorities, projects, and commitments. 6 Active projects "
+    },
+    {
+      "theme": "Daylight",
+      "viewport": "1440x900",
+      "route": "projects",
+      "file": "daylight-desktop-projects.png",
+      "pageTitle": "Projects A home for the work you want to finish. New Project All Active 18 In Progress 6 Not Start"
+    },
+    {
+      "theme": "Daylight",
+      "viewport": "1440x900",
+      "route": "tasks",
+      "file": "daylight-desktop-tasks.png",
+      "pageTitle": "Tasks Small steps. Clear priorities. New Task All Tasks 64 Due Today 5 Upcoming 33 Overdue 6 Compl"
+    },
+    {
+      "theme": "Daylight",
+      "viewport": "1440x900",
+      "route": "calendar",
+      "file": "daylight-desktop-calendar.png",
+      "pageTitle": "January February March April May June July August September October November December 2022 2023 2024"
+    },
+    {
+      "theme": "Daylight",
+      "viewport": "1440x900",
+      "route": "academics",
+      "file": "daylight-desktop-academics.png",
+      "pageTitle": "Academic Track Organize semesters, courses, and submission deliverables. Software Engineering · Cu"
+    },
+    {
+      "theme": "Daylight",
+      "viewport": "1440x900",
+      "route": "goals",
+      "file": "daylight-desktop-goals.png",
+      "pageTitle": "Long-term Goals Track major objectives, measure progress through verified milestones, and connect e"
+    },
+    {
+      "theme": "Daylight",
+      "viewport": "1440x900",
+      "route": "insights",
+      "file": "daylight-desktop-insights.png",
+      "pageTitle": "Workspace Insights 18 All-time projects 6 Active right now 86 Tasks completed 4 Active goals Reporti"
+    },
+    {
+      "theme": "Daylight",
+      "viewport": "1440x900",
+      "route": "settings",
+      "file": "daylight-desktop-settings.png",
+      "pageTitle": "Settings Make this space yours. Sign In to Cloud Appearance Profile Account & Sync Preferences Dat"
+    },
+    {
+      "theme": "Aurora",
+      "viewport": "390x844",
+      "route": "overview",
+      "file": "aurora-mobile-overview.png",
+      "pageTitle": "Make room for progress. Track your daily priorities, projects, and commitments. 6 Active projects "
+    },
+    {
+      "theme": "Aurora",
+      "viewport": "390x844",
+      "route": "projects",
+      "file": "aurora-mobile-projects.png",
+      "pageTitle": "Projects A home for the work you want to finish. New Project All Active 18 In Progress 6 Not Start"
+    },
+    {
+      "theme": "Aurora",
+      "viewport": "390x844",
+      "route": "tasks",
+      "file": "aurora-mobile-tasks.png",
+      "pageTitle": "Tasks Small steps. Clear priorities. New Task All Tasks 64 Due Today 5 Upcoming 33 Overdue 6 Compl"
+    },
+    {
+      "theme": "Aurora",
+      "viewport": "390x844",
+      "route": "calendar",
+      "file": "aurora-mobile-calendar.png",
+      "pageTitle": "January February March April May June July August September October November December 2022 2023 2024"
+    },
+    {
+      "theme": "Aurora",
+      "viewport": "390x844",
+      "route": "academics",
+      "file": "aurora-mobile-academics.png",
+      "pageTitle": "Academic Track Organize semesters, courses, and submission deliverables. Software Engineering · Cu"
+    },
+    {
+      "theme": "Aurora",
+      "viewport": "390x844",
+      "route": "goals",
+      "file": "aurora-mobile-goals.png",
+      "pageTitle": "Long-term Goals Track major objectives, measure progress through verified milestones, and connect e"
+    },
+    {
+      "theme": "Aurora",
+      "viewport": "390x844",
+      "route": "insights",
+      "file": "aurora-mobile-insights.png",
+      "pageTitle": "Workspace Insights 18 All-time projects 6 Active right now 86 Tasks completed 4 Active goals Reporti"
+    },
+    {
+      "theme": "Aurora",
+      "viewport": "390x844",
+      "route": "settings",
+      "file": "aurora-mobile-settings.png",
+      "pageTitle": "Settings Make this space yours. Sign In to Cloud Appearance Profile Account & Sync Preferences Dat"
+    },
+    {
+      "theme": "Aurora",
+      "viewport": "1440x900",
+      "route": "overview",
+      "file": "aurora-desktop-overview.png",
+      "pageTitle": "Make room for progress. Track your daily priorities, projects, and commitments. 6 Active projects "
+    },
+    {
+      "theme": "Aurora",
+      "viewport": "1440x900",
+      "route": "projects",
+      "file": "aurora-desktop-projects.png",
+      "pageTitle": "Projects A home for the work you want to finish. New Project All Active 18 In Progress 6 Not Start"
+    },
+    {
+      "theme": "Aurora",
+      "viewport": "1440x900",
+      "route": "tasks",
+      "file": "aurora-desktop-tasks.png",
+      "pageTitle": "Tasks Small steps. Clear priorities. New Task All Tasks 64 Due Today 5 Upcoming 33 Overdue 6 Compl"
+    },
+    {
+      "theme": "Aurora",
+      "viewport": "1440x900",
+      "route": "calendar",
+      "file": "aurora-desktop-calendar.png",
+      "pageTitle": "January February March April May June July August September October November December 2022 2023 2024"
+    },
+    {
+      "theme": "Aurora",
+      "viewport": "1440x900",
+      "route": "academics",
+      "file": "aurora-desktop-academics.png",
+      "pageTitle": "Academic Track Organize semesters, courses, and submission deliverables. Software Engineering · Cu"
+    },
+    {
+      "theme": "Aurora",
+      "viewport": "1440x900",
+      "route": "goals",
+      "file": "aurora-desktop-goals.png",
+      "pageTitle": "Long-term Goals Track major objectives, measure progress through verified milestones, and connect e"
+    },
+    {
+      "theme": "Aurora",
+      "viewport": "1440x900",
+      "route": "insights",
+      "file": "aurora-desktop-insights.png",
+      "pageTitle": "Workspace Insights 18 All-time projects 6 Active right now 86 Tasks completed 4 Active goals Reporti"
+    },
+    {
+      "theme": "Aurora",
+      "viewport": "1440x900",
+      "route": "settings",
+      "file": "aurora-desktop-settings.png",
+      "pageTitle": "Settings Make this space yours. Sign In to Cloud Appearance Profile Account & Sync Preferences Dat"
+    }
+  ]
+}

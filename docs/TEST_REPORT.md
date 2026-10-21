@@ -1,5 +1,17 @@
 # Nemo Test & Verification Report
 
+## Latest Sprint 5.4 Results — 2026-10-21
+
+- **Vitest:** 115/115 passed (23 files), including the Ask Nemo language extension.
+- **Playwright:** 50/50 passed across Desktop Chrome and Pixel 7 emulation (25 tests per project).
+- **TypeScript:** `npm run typecheck` passed.
+- **Production build:** `npm run build` passed; generated Service Worker with 25 precache entries (~1308.70 KiB). Main JS is ~1.05 MB minified and Vite warns above 500 KB.
+- **Visual evidence:** 48 current screenshots (8 routes × 3 themes × 2 viewports), 0 page errors. See `docs/qa/artifacts/sprint54/`.
+- **Supabase:** mocked/local only. Antigravity reports production-only project, no staging/test accounts. No user rows read or production writes made.
+- **Release:** local-only changes; no push, merge, production migration or deploy. Credential rotation/session revocation remains owner action.
+
+Exact command history and test maintenance notes: `docs/qa/sprint54/PLAYWRIGHT_REGRESSION_REPORT.md`. The baseline below is historical and must not be mistaken for the Sprint 5.4 result.
+
 ## Baseline Status
 - **Test Frameworks:** Vitest (Unit / Domain / Persistence / Schema / Chart / Demo / Reliability / Cloud Sync / Security / Durability) & Playwright (End-to-End Browser Automation)
 - **Environment:** Windows, Node v24.13.0, npm 11.6.2, Playwright v1.50+

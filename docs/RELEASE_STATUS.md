@@ -1,4 +1,13 @@
 # Nemo — Release Status
+
+## Current gate — Sprint 5.4 (2026-10-21)
+
+**NO-GO for production promotion.** Remediation source and local acceptance evidence are in `docs/qa/sprint54/`. Typecheck, build, 115 unit tests and all 50 Playwright tests passed. No production deployment, GitHub push/merge, Supabase write, or migration was performed.
+
+Required before owner approves promotion: rotate the credential exposed in historical Git source and revoke sessions; apply/test the correction migration in staging; run real two-account/two-device sync and RLS tests against an isolated Supabase project. Antigravity reports there is currently no staging project or disposable user. `workspace_assets` also lacks a reported tombstone column. Full risks: `docs/qa/sprint54/REMAINING_RISKS.md`.
+
+Production build has a Vite warning for the ~1.05 MB main JS chunk; code splitting is follow-up, not evidence of a failed build. Do not interpret historical Sprint 3/5.1 metrics below as current Sprint 5.4 measurements.
+
 ## Sprint 1: Functional Audit & System Repair
 ## Sprint 2: Data Reliability, Offline & Recovery
 ## Sprint 3: Performance, Accessibility & Cross-Browser Hardening

@@ -1,5 +1,17 @@
 # Nemo Engineering Progress Log
 
+## Sprint 5.4 — Critical Remediation & Premium Quality Recovery (2026-10-21)
+
+| ID | Module / Task | Owner | Status | Acceptance Evidence |
+|---|---|---|---|---|
+| S5.4-SEC | Remove browser password persistence/reveal and member RPC default | Lead / Auth | Code fixed; owner rotation pending | `docs/qa/sprint54/SECURITY_REMEDIATION_REPORT.md`; unit security tests; migration prepared, not applied |
+| S5.4-SYNC | Owner-scoped transactional outbox, tombstones and surfaced sync errors | Lead / Data | Local verification complete; staging needed | `docs/SYNC_OUTBOX_RECOVERY.md`; sync integrity tests; production untouched |
+| S5.4-FUNC | Calendar event CRUD, selected-record search, time preference, privacy copy, Ask Nemo phrasing | Lead / Product | Fixed; browser/unit evidence | `docs/qa/sprint54/FUNCTIONAL_REPAIR_REPORT.md` |
+| S5.4-MOTION | Exit sequencing, rapid-navigation interruption and reduced-motion cleanup; overview panel rhythm | Lead / Interface | Fixed; browser/screenshot evidence | `docs/qa/sprint54/CSS_GSAP_REFINEMENT_REPORT.md`; 48 route/theme screenshots |
+| S5.4-QA | Update stale E2E assertions and run full unit/E2E/build/typecheck gates | Lead / QA | verified locally | `docs/qa/sprint54/PLAYWRIGHT_REGRESSION_REPORT.md`; 115/115 unit, 50/50 E2E, build and typecheck pass |
+
+Latest release gate: **NO-GO for production** until owner rotates the historically exposed credential/revokes sessions and auth/sync migrations pass in isolated staging. See `docs/qa/sprint54/REMAINING_RISKS.md`. No push/deploy/production Supabase write was made.
+
 ## Work Items & Milestones
 
 | ID | Module / Task | Owner | Dependency | Status | Acceptance Evidence | Last Update |
