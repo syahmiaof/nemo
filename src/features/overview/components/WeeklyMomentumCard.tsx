@@ -235,7 +235,7 @@ export const WeeklyMomentumCard: React.FC<WeeklyMomentumCardProps> = ({
           <span className="status-live-dot" />
           <span>
             {overdueCount > 0
-              ? `${overdueCount} item${overdueCount > 1 ? 's' : ''} require attention`
+              ? `${overdueCount} item${overdueCount > 1 ? 's' : ''} require prompt attention`
               : 'All commitments on schedule'}
           </span>
         </div>
