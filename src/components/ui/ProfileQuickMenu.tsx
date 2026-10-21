@@ -45,6 +45,19 @@ export const ProfileQuickMenu: React.FC<ProfileQuickMenuProps> = ({ className })
 
   const currentTheme = settings?.theme || 'midnight';
 
+  const [isOnline, setIsOnline] = useState(typeof navigator !== 'undefined' ? navigator.onLine : true);
+
+  useEffect(() => {
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
+
   useEffect(() => {
     if (settings?.displayName) {
       setNameInput(settings.displayName);
@@ -133,44 +146,51 @@ export const ProfileQuickMenu: React.FC<ProfileQuickMenuProps> = ({ className })
         aria-hidden="true"
       />
 
-      {/* Profile Avatar Trigger Button */}
-      <button
-        type="button"
-        onClick={() => setIsOpen((prev) => !prev)}
-        aria-label="Profile and quick settings"
-        aria-haspopup="dialog"
-        aria-expanded={isOpen}
-        className="profile-button relative overflow-hidden ring-2 ring-white/10 hover:ring-accent-mint/50 focus-visible:ring-accent-mint transition-all cursor-pointer shadow-md group select-none"
-        style={{
-          width: '42px',
-          height: '42px',
-        }}
-      >
-        {avatarBlob?.data ? (
-          <img
-            src={avatarBlob.data}
-            alt={settings?.displayName || 'Profile'}
-            className="w-full h-full object-cover transition-transform group-hover:scale-105"
-          />
-        ) : (
-          <span className="text-sm font-bold tracking-tight">
-            {getInitials(settings?.displayName)}
-          </span>
-        )}
-
-        {/* Online / Synced Subtle Status Pip */}
-        <span
-          className={cn(
-            'absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-surface-solid',
-            syncStatus === 'up_to_date' || syncStatus === 'signed_in'
-              ? 'bg-accent-mint'
-              : syncStatus === 'syncing'
-              ? 'bg-amber-400 animate-pulse'
-              : 'bg-content-tertiary'
+      {/* Profile Avatar Trigger Button with Online Status Indicator */}
+      <div className="relative inline-flex items-center justify-center">
+        <button
+          type="button"
+          onClick={() => setIsOpen((prev) => !prev)}
+          aria-label="Profile and quick settings"
+          aria-haspopup="dialog"
+          aria-expanded={isOpen}
+          className="profile-button relative overflow-hidden ring-2 ring-white/10 hover:ring-accent-mint/50 focus-visible:ring-accent-mint transition-all cursor-pointer shadow-md group select-none"
+          style={{
+            width: '42px',
+            height: '42px',
+          }}
+        >
+          {avatarBlob?.data ? (
+            <img
+              src={avatarBlob.data}
+              alt={settings?.displayName || 'Profile'}
+              className="w-full h-full object-cover transition-transform group-hover:scale-105"
+            />
+          ) : (
+            <span className="text-sm font-bold tracking-tight">
+              {getInitials(settings?.displayName)}
+            </span>
           )}
-          title={`Sync status: ${syncStatus || 'idle'}`}
-        />
-      </button>
+        </button>
+
+        {/* Online Status Beacon — positioned outside overflow-hidden circle */}
+        <span
+          className="absolute bottom-0 right-0 translate-x-1 translate-y-1 flex items-center justify-center pointer-events-none z-10"
+          title={isOnline ? 'Status: Online' : 'Status: Offline'}
+          aria-label={isOnline ? 'Online' : 'Offline'}
+        >
+          {isOnline ? (
+            <span className="relative flex h-3.5 w-3.5 items-center justify-center">
+              {/* Outer pulsing ring beacon */}
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+              {/* Vibrant solid core with dark ring bezel for sharp contrast */}
+              <span className="relative inline-flex h-3 w-3 rounded-full bg-emerald-400 border-2 border-slate-950 shadow-[0_0_8px_#34d399]" />
+            </span>
+          ) : (
+            <span className="relative inline-flex h-3 w-3 rounded-full bg-amber-400 border-2 border-slate-950 shadow-sm" />
+          )}
+        </span>
+      </div>
 
       {/* Quick Settings Glass Popover Dropdown */}
       {isOpen && (
