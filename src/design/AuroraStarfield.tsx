@@ -50,7 +50,8 @@ export const AuroraStarfield: React.FC = () => {
     let nextShootingTime = Date.now() + 4000;
 
     const resize = () => {
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const isMobile = window.innerWidth < 768;
+      const dpr = Math.min(window.devicePixelRatio || 1, isMobile ? 1.5 : 2);
       width = window.innerWidth;
       height = window.innerHeight;
       canvas.width = width * dpr;
@@ -62,7 +63,8 @@ export const AuroraStarfield: React.FC = () => {
     };
 
     const initStars = () => {
-      const count = Math.min(Math.floor((width * height) / 12000), 95);
+      const isMobile = width < 768;
+      const count = Math.min(Math.floor((width * height) / (isMobile ? 16000 : 12000)), isMobile ? 48 : 95);
       stars = [];
       for (let i = 0; i < count; i++) {
         const colorPrefix = STAR_COLORS[Math.floor(Math.random() * STAR_COLORS.length)];
@@ -194,7 +196,12 @@ export const AuroraStarfield: React.FC = () => {
       ref={canvasRef}
       aria-hidden="true"
       className="fixed inset-0 pointer-events-none z-0 overflow-hidden"
-      style={{ opacity: 0.85 }}
+      style={{
+        opacity: 0.85,
+        transform: 'translate3d(0, 0, 0)',
+        willChange: 'transform',
+        contain: 'strict',
+      }}
     />
   );
 };

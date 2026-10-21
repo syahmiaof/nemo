@@ -184,7 +184,7 @@ export function useScrollMotion<T extends HTMLElement = HTMLDivElement>(
       const observer = new IntersectionObserver(
         (entries) => {
           const entering: HTMLElement[] = [];
-          const exiting: HTMLElement[] = [];
+          const exiting: { el: HTMLElement; rect: DOMRectReadOnly }[] = [];
 
           entries.forEach((entry) => {
             const target = entry.target as HTMLElement;
@@ -202,7 +202,7 @@ export function useScrollMotion<T extends HTMLElement = HTMLDivElement>(
               // Only trigger exit if it previously entered and triggerOnce is false
               if (!triggerOnce && state?.hasEntered && state.isVisible) {
                 stateMap.set(target, { isVisible: false, hasEntered: true });
-                exiting.push(target);
+                exiting.push({ el: target, rect: entry.boundingClientRect });
               }
             }
           });
@@ -224,16 +224,14 @@ export function useScrollMotion<T extends HTMLElement = HTMLDivElement>(
             });
           }
 
-          // Direction-aware exit animation (smooth tucking)
+          // Direction-aware exit animation (smooth tucking with ZERO layout thrashing)
           if (exiting.length > 0) {
-            exiting.forEach((el, index) => {
+            exiting.forEach(({ el, rect }, index) => {
               gsap.killTweensOf(el);
               gsap.to(el, {
                 opacity: 0.15,
                 y: () => {
-                  const rect = el.getBoundingClientRect();
-                  // If exited through top: tuck gently upward (-12px)
-                  // If exited through bottom: tuck downward (+distance)
+                  // Use boundingClientRect provided directly by IntersectionObserver without forced reflow
                   const isExitingTop =
                     rect.top < 0 || (rect.bottom <= 0 && scrollDirection === 'down');
                   return isExitingTop ? -Math.min(distance * 0.5, 14) : distance;

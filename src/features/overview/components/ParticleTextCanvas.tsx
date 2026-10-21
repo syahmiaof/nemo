@@ -85,7 +85,7 @@ export const ParticleTextCanvas: React.FC<ParticleTextCanvasProps> = ({
           completionRef.current();
           return;
         }
-        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        const dpr = Math.min(window.devicePixelRatio || 1, window.innerWidth < 640 ? 1.5 : 2);
         canvas.width = Math.ceil(width * dpr);
         canvas.height = Math.ceil(height * dpr);
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -238,6 +238,10 @@ export const ParticleTextCanvas: React.FC<ParticleTextCanvasProps> = ({
       className={
         className || "absolute inset-0 w-full h-full pointer-events-none z-10"
       }
+      style={{
+        transform: "translateZ(0)",
+        willChange: isTransitioning ? "transform" : "auto",
+      }}
     />
   );
 };
