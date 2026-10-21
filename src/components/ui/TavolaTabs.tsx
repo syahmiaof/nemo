@@ -44,7 +44,7 @@ export function TavolaTabs({ tabs }: { tabs: { to: string; label: string }[] }) 
       if (disposed) return;
       const target = read();
       animation?.kill();
-      if (!target) { gsap.set(pill, { opacity: 0 }); return; }
+      if (!target) { gsap.set(pill, { opacity: 0 }); if (ink) ink.style.clipPath = 'inset(0 100% 0 0 round 999px)'; return; }
       geometry = signature();
       if (instant || !initialized || prefersReducedMotion()) {
         Object.assign(edges, target);

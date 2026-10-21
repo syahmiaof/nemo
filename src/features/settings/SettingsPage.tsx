@@ -311,7 +311,8 @@ export const SettingsPage: React.FC = () => {
         )}
       </div>
       {/* Tavola-Style Nested Navigation Capsule */}
-      <div className="tabs" style={{ width: 'fit-content', margin: '0 auto 1.5rem auto' }}>
+      <div className="w-full overflow-x-auto pb-1 flex justify-start sm:justify-center">
+        <div className="tabs" style={{ width: 'fit-content', margin: '0 auto 1.5rem auto' }}>
         <div className="tabs__track" role="tablist" aria-label="Settings sections">
           {tabs.map((tab) => {
             const Icon = tab.icon;
@@ -346,6 +347,7 @@ export const SettingsPage: React.FC = () => {
             );
           })}
         </div>
+      </div>
       </div>
 
       <section id="settings-panel" role="tabpanel" aria-labelledby={`settings-tab-${activeTab}`} tabIndex={0}>

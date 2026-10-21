@@ -50,11 +50,11 @@ export function RouteTransition() {
         },
       });
       if (cards.length) exit.to(cards, {
-        clipPath: 'inset(0 4% 0 4% round 20px)', scale: .97, y: -6,
-        duration: .19, ease: 'power2.in', stagger: .012,
+        opacity: 0, y: -6, scale: .98,
+        duration: .16, ease: 'power2.in', stagger: .01,
       }, 0);
       exit.to(node, {
-        opacity: .2, y: -8, duration: .21, ease: 'power2.in',
+        opacity: 0, duration: .18, ease: 'power2.in',
       }, 0);
       return;
     }
@@ -72,8 +72,8 @@ export function RouteTransition() {
         .filter((element) => element !== heading && !element.contains(heading))
         .slice(0, 8);
       const timeline = gsap.timeline();
-      timeline.fromTo(node, { opacity: .4, y: 10 }, {
-        opacity: 1, y: 0, duration: .45, ease: 'power3.out', clearProps: 'transform,opacity',
+      timeline.fromTo(node, { opacity: 0, y: 6 }, {
+        opacity: 1, y: 0, duration: .35, ease: 'power2.out', clearProps: 'transform,opacity',
       }, 0);
       if (letters.length) timeline.fromTo(letters,
         { yPercent: 115, rotation: 6, opacity: 0 },
@@ -90,9 +90,9 @@ export function RouteTransition() {
         { y: 12, opacity: 0 },
         { y: 0, opacity: 1, duration: .55, stagger: .045, ease: 'power3.out', clearProps: 'transform,opacity' }, .12);
       if (cards.length) timeline.fromTo(cards,
-        { opacity: 0, y: 18, scale: .97, clipPath: 'inset(0 50% 0 50% round 20px)' },
-        { opacity: 1, y: 0, scale: 1, clipPath: 'inset(0 0% 0 0% round 20px)', duration: .9,
-          stagger: .055, ease: 'expo.out', clearProps: 'transform,opacity,clipPath' }, .12);
+        { opacity: 0, y: 14, scale: .98 },
+        { opacity: 1, y: 0, scale: 1, duration: .45,
+          stagger: .035, ease: 'power2.out', clearProps: 'transform,opacity' }, .08);
     };
 
     // If WelcomeOverlay is currently active on launch/refresh, synchronize entrance with overlay dismiss

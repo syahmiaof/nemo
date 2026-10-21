@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
-import { Link, ScrollRestoration } from 'react-router-dom';
+import { useEffect, useState, useRef } from 'react';
+import { Link, useLocation, ScrollRestoration } from 'react-router-dom';
+import gsap from 'gsap';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from '@/db/nemoDb';
 import { getWorkspaceMode, switchWorkspace } from '@/db/workspace';
@@ -30,10 +31,21 @@ const navTabs = [
 ];
 
 export function AppShell() {
+  const location = useLocation();
+  const quickAddBtnRef = useRef<HTMLButtonElement>(null);
   const [quickAdd, setQuickAdd] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [askNemoOpen, setAskNemoOpen] = useState(false);
   const [modeError, setModeError] = useState('');
+  useEffect(() => {
+    if (!quickAddBtnRef.current) return;
+    gsap.fromTo(
+      quickAddBtnRef.current,
+      { rotate: -60, scale: 0.85 },
+      { rotate: 0, scale: 1, duration: 0.42, ease: 'back.out(1.8)' }
+    );
+  }, [location.pathname]);
+
   const settings = useLiveQuery(() => db.settings.get('default'), []);
   const hourFormat = settings?.hourFormat ?? '24h';
   const [timeStr, setTimeStr] = useState(() => formatClockTime(new Date(), hourFormat));
@@ -120,7 +132,7 @@ export function AppShell() {
                   <button
                     type="button"
                     onClick={changeMode}
-                    className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-500/15 border border-amber-500/35 text-amber-300 hover:bg-amber-500/25 transition-all text-xs font-semibold cursor-pointer shadow-sm"
+                    className="demo-mode-pill inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-500/15 border border-amber-500/35 text-amber-300 hover:bg-amber-500/25 transition-all text-xs font-semibold cursor-pointer shadow-sm"
                     title="Currently in Demo Mode. Click to return to your real workspace."
                   >
                     <FlaskConical size={13} className="text-amber-400" />
@@ -140,6 +152,7 @@ export function AppShell() {
                   </span>
                 </div>
                 <button
+                  ref={quickAddBtnRef}
                   type="button"
                   className="icon-button"
                   onClick={() => setQuickAdd(true)}
@@ -166,14 +179,14 @@ export function AppShell() {
             </header>
 
             {demo && (
-              <div className="flex items-center justify-between px-3.5 py-1.5 rounded-xl bg-amber-500/[0.08] border border-amber-500/25 text-xs text-amber-200/90 mb-3.5 transition-all">
-                <div className="flex items-center gap-2">
+              <div className="demo-mode-banner flex flex-wrap items-center justify-between gap-2 px-3.5 py-1.5 rounded-xl bg-amber-500/[0.08] border border-amber-500/25 text-xs text-amber-200/90 mb-3.5 transition-all">
+                <div className="flex items-center gap-2 min-w-0">
                   <FlaskConical size={14} className="text-amber-400 flex-shrink-0" />
                   <span><strong>Demo Workspace:</strong> Exploring fictional sample data. Personal records remain isolated and safe.</span>
                 </div>
                 <button
                   onClick={changeMode}
-                  className="text-amber-300 hover:text-white font-semibold underline underline-offset-2 ml-3 flex-shrink-0 cursor-pointer"
+                  className="text-amber-300 hover:text-white font-semibold underline underline-offset-2 cursor-pointer shrink-0"
                 >
                   Return to my workspace &rarr;
                 </button>

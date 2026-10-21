@@ -349,14 +349,14 @@ export const CalendarPage: React.FC = () => {
           <div className="flex items-center gap-1">
             <button
               onClick={handlePrev}
-              className="p-1.5 rounded-lg text-content-secondary hover:text-content-primary hover:bg-white/[0.08] transition-colors cursor-pointer"
+              className="p-1.5 rounded-lg text-content-secondary hover:text-content-primary hover:bg-surface-hover transition-colors cursor-pointer"
               aria-label="Previous month"
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
             <button
               onClick={handleNext}
-              className="p-1.5 rounded-lg text-content-secondary hover:text-content-primary hover:bg-white/[0.08] transition-colors cursor-pointer"
+              className="p-1.5 rounded-lg text-content-secondary hover:text-content-primary hover:bg-surface-hover transition-colors cursor-pointer"
               aria-label="Next month"
             >
               <ChevronRight className="w-5 h-5" />
@@ -368,7 +368,7 @@ export const CalendarPage: React.FC = () => {
             <select
               value={currentMonthNum}
               onChange={handleMonthChange}
-              className="px-2.5 py-1.5 rounded-xl bg-surface border border-border-subtle text-xs font-bold text-content-primary cursor-pointer hover:border-white/20 transition-colors"
+              className="px-2.5 py-1.5 rounded-xl bg-surface border border-border-subtle text-xs font-bold text-content-primary cursor-pointer hover:border-border-emphasis transition-colors"
               aria-label="Select month"
             >
               {monthsList.map((m, idx) => (
@@ -379,7 +379,7 @@ export const CalendarPage: React.FC = () => {
             <select
               value={currentYearNum}
               onChange={handleYearChange}
-              className="px-2.5 py-1.5 rounded-xl bg-surface border border-border-subtle text-xs font-bold text-content-primary cursor-pointer hover:border-white/20 transition-colors font-mono"
+              className="px-2.5 py-1.5 rounded-xl bg-surface border border-border-subtle text-xs font-bold text-content-primary cursor-pointer hover:border-border-emphasis transition-colors font-mono"
               aria-label="Select year"
             >
               {yearsRange.map((y) => (
@@ -391,7 +391,7 @@ export const CalendarPage: React.FC = () => {
           <button
             type="button"
             onClick={handleToday}
-            className="text-xs font-medium text-content-secondary hover:text-content-primary transition-colors flex items-center gap-1.5 px-2 py-1 rounded-lg hover:bg-white/[0.06] cursor-pointer"
+            className="text-xs font-medium text-content-secondary hover:text-content-primary transition-colors flex items-center gap-1.5 px-2 py-1 rounded-lg hover:bg-surface-hover cursor-pointer"
             title="Jump to today"
           >
             <Calendar className="w-3.5 h-3.5 text-content-tertiary" />
@@ -401,7 +401,7 @@ export const CalendarPage: React.FC = () => {
 
         <div className="calendar-view-controls flex items-center gap-2 self-end sm:self-center">
           {/* View Mode Toggle */}
-          <div className="flex p-1 rounded-xl bg-white/[0.04] border border-white/10">
+          <div className="flex p-1 rounded-xl bg-surface-muted/60 border border-border-subtle">
             {(['month', 'week', 'agenda'] as const).map((m) => (
               <button
                 key={m}
@@ -409,8 +409,8 @@ export const CalendarPage: React.FC = () => {
                 onClick={() => setViewMode(m)}
                 className={`px-3 py-1 text-xs font-semibold rounded-lg capitalize transition-all ${
                   viewMode === m
-                    ? 'bg-white/[0.12] text-white shadow-sm border border-white/15'
-                    : 'text-content-tertiary hover:text-white'
+                    ? 'bg-accent-mint/15 text-accent-mint shadow-sm border border-accent-mint/35 font-bold'
+                    : 'text-content-tertiary hover:text-content-primary'
                 }`}
               >
                 {m}
@@ -429,14 +429,14 @@ export const CalendarPage: React.FC = () => {
       {viewMode === 'month' && (
         <div className="calendar-grid-scroll rounded-2xl glass-panel relative shadow-sm" tabIndex={0} role="region" aria-label="Month calendar, scroll horizontally on small screens">
           {/* Weekday headers */}
-          <div className="grid grid-cols-7 border-b border-white/[0.08] bg-white/[0.02] text-center py-2.5 text-xs font-semibold text-content-secondary">
+          <div className="grid grid-cols-7 border-b border-border-subtle bg-surface-muted/30 text-center py-2.5 text-xs font-semibold text-content-secondary">
             {weekdayNames.map((d) => (
               <div key={d}>{d}</div>
             ))}
           </div>
 
           {/* 42-day cells grid */}
-          <div className="grid grid-cols-7 divide-x divide-y divide-white/[0.06]">
+          <div className="grid grid-cols-7 divide-x divide-y divide-border-subtle">
             {monthDays.map((dayDate, idx) => {
               const year = dayDate.getFullYear();
               const month = String(dayDate.getMonth() + 1).padStart(2, '0');
@@ -451,7 +451,7 @@ export const CalendarPage: React.FC = () => {
                 <div
                   key={idx}
                   className={`min-h-[110px] p-2.5 flex flex-col justify-between transition-colors ${
-                    !isCurrentMonth ? 'bg-white/[0.01] opacity-35' : 'bg-transparent hover:bg-white/[0.02]'
+                    !isCurrentMonth ? 'bg-surface-muted/20 opacity-40' : 'bg-transparent hover:bg-surface-muted/20'
                   }`}
                 >
                   <div className="flex items-center justify-between mb-1">
@@ -472,11 +472,11 @@ export const CalendarPage: React.FC = () => {
                       <button
                         key={item.id}
                         onClick={() => handleItemClick(item)}
-                        className="w-full text-left px-2 py-0.5 rounded-md text-[10px] font-medium truncate flex items-center gap-1 transition-all hover:scale-[1.02]"
+                        className="calendar-event-chip w-full text-left px-2 py-0.5 rounded-md text-[10px] font-semibold truncate flex items-center gap-1 transition-all hover:scale-[1.02]"
                         style={{
                           backgroundColor: `${item.color}20`,
                           borderLeft: `3px solid ${item.color}`,
-                          color: '#FFFFFF',
+                          color: 'var(--text-primary)',
                         }}
                         title={`${item.title} (${item.sourceType})`}
                       >
