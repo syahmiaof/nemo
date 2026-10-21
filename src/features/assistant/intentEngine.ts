@@ -113,6 +113,7 @@ export function detectIntent(rawQuery: string): string {
     q.includes('current project') ||
     q.includes('open project') ||
     q.includes('projects in progress') ||
+    (q.includes('how many') && q.includes('project') && (q.includes('active') || q.includes('in progress'))) ||
     q.includes('all projects') ||
     q === 'projects'
   ) {

@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useLiveQuery } from 'dexie-react-hooks';
 import {
   GraduationCap,
@@ -34,8 +35,12 @@ import { isValidWebUrl } from '@/lib/utils';
 import type { Assignment, AssignmentStatus, Task } from '@/domain/types';
 import { useCollectionMotion } from '@/design/useCollectionMotion';
 import { MotionTitle } from '@/components/ui/MotionTitle';
+import { formatClockTime } from '@/lib/timeFormat';
 
 export const AcademicsPage: React.FC = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { id: routeAssignmentId } = useParams<{ id: string }>();
   const { success, error } = useToast();
   const todayStr = getTodayLocalDateString();
 
@@ -66,6 +71,9 @@ export const AcademicsPage: React.FC = () => {
   ) || [];
   const assignments = useLiveQuery(() => db.assignments.toArray(), []) || [];
   const tasks = useLiveQuery(() => db.tasks.where('parentType').equals('assignment').toArray(), []) || [];
+  const settings = useLiveQuery(() => db.settings.get('default'), []);
+  const hourFormat = settings?.hourFormat ?? '24h';
+  const openedSearchAssignment = useRef<string | null>(null);
 
   // Default selection if available
   React.useEffect(() => {
@@ -185,6 +193,22 @@ export const AcademicsPage: React.FC = () => {
     }
     setIsAssignmentModalOpen(true);
   };
+
+  React.useEffect(() => {
+    const focusRecord = (location.state as { focusRecord?: { type: string; id: string } } | null)?.focusRecord;
+    const assignmentId = routeAssignmentId || (focusRecord?.type === 'assignment' ? focusRecord.id : undefined);
+    if (!assignmentId) openedSearchAssignment.current = null;
+    if (!assignmentId || openedSearchAssignment.current === assignmentId) return;
+    const assignment = assignments.find((item) => item.id === assignmentId);
+    if (!assignment) return;
+    openedSearchAssignment.current = assignmentId;
+    setSelectedSubjectId(assignment.subjectId);
+    void db.subjects.get(assignment.subjectId).then((subject) => {
+      if (subject) setSelectedSemesterId(subject.semesterId);
+    });
+    handleOpenAssignmentModal(assignment);
+    if (focusRecord?.type === 'assignment') navigate(location.pathname, { replace: true, state: null });
+  }, [routeAssignmentId, location.pathname, location.state, assignments, navigate]);
 
   const handleSaveAssignment = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -544,7 +568,7 @@ export const AcademicsPage: React.FC = () => {
                         <div className="flex items-center gap-2 text-[11px] text-content-tertiary font-mono">
                           <Clock className="w-3 h-3 text-rose-400" />
                           <span>{formatDisplayDate(exam.dueDate!)}</span>
-                          {exam.dueTime && <span>{exam.dueTime}</span>}
+                          {exam.dueTime && <span>{formatClockTime(exam.dueTime, hourFormat)}</span>}
                         </div>
                       </div>
                     );
@@ -642,7 +666,7 @@ export const AcademicsPage: React.FC = () => {
                           <div className="flex items-center gap-1 font-mono">
                             <Calendar className={`w-3.5 h-3.5 ${isExam ? 'text-rose-400' : ''}`} />
                             <span>{isExam ? 'Exam Date' : 'Deadline'}: {formatDisplayDate(assign.dueDate)}</span>
-                            {assign.dueTime && <span>at {assign.dueTime}</span>}
+                            {assign.dueTime && <span>at {formatClockTime(assign.dueTime, hourFormat)}</span>}
                           </div>
                         )}
 

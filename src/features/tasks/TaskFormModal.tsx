@@ -95,23 +95,27 @@ export const TaskFormModal: React.FC<TaskFormModalProps> = ({
         let completedAt = taskToEdit.completedAt;
         if (isCompletingNow) {
           completedAt = now;
-          await db.focusSelections.where('taskId').equals(taskToEdit.id).delete();
         } else if (isReopeningNow) {
           completedAt = undefined;
         }
 
-        await db.tasks.update(taskToEdit.id, {
-          title: title.trim(),
-          notes: notes.trim() || undefined,
-          status,
-          priority,
-          dueDate: dueDate || undefined,
-          dueTime: dueTime || undefined,
-          parentType,
-          parentId,
-          tags,
-          completedAt,
-          updatedAt: now,
+        await db.transaction('rw', [db.focusSelections, db.tasks, db.syncMutations], async () => {
+          if (isCompletingNow) {
+            await db.focusSelections.where('taskId').equals(taskToEdit.id).delete();
+          }
+          await db.tasks.update(taskToEdit.id, {
+            title: title.trim(),
+            notes: notes.trim() || undefined,
+            status,
+            priority,
+            dueDate: dueDate || undefined,
+            dueTime: dueTime || undefined,
+            parentType,
+            parentId,
+            tags,
+            completedAt,
+            updatedAt: now,
+          });
         });
 
         success('Task updated', `"${title.trim()}" saved.`);

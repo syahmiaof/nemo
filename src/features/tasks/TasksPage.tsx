@@ -1,4 +1,5 @@
-import React, { useState, useMemo, useEffect, useDeferredValue } from 'react';
+import React, { useState, useMemo, useEffect, useDeferredValue, useRef } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useLiveQuery } from 'dexie-react-hooks';
 import {
   CheckSquare,
@@ -26,13 +27,18 @@ import { TaskFormModal } from './TaskFormModal';
 import type { Task } from '@/domain/types';
 import { useCollectionMotion } from '@/design/useCollectionMotion';
 import { MotionTitle } from '@/components/ui/MotionTitle';
+import { formatClockTime } from '@/lib/timeFormat';
 
 export const TasksPage: React.FC = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
   const [activeFilter, setActiveFilter] = useState<'all' | 'today' | 'upcoming' | 'overdue' | 'done'>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [taskToEdit, setTaskToEdit] = useState<Task | null>(null);
   const [taskToDelete, setTaskToDelete] = useState<Task | null>(null);
+  const [focusedTaskId, setFocusedTaskId] = useState<string | null>(null);
+  const routedFocusId = useRef<string | null>(null);
 
   const PAGE_SIZE = 50;
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
@@ -44,6 +50,27 @@ export const TasksPage: React.FC = () => {
   const projects = useLiveQuery(() => db.projects.toArray(), []) || [];
   const assignments = useLiveQuery(() => db.assignments.toArray(), []) || [];
   const goals = useLiveQuery(() => db.goals.toArray(), []) || [];
+  const settings = useLiveQuery(() => db.settings.get('default'), []);
+  const hourFormat = settings?.hourFormat ?? '24h';
+
+  useEffect(() => {
+    const focusRecord = (location.state as { focusRecord?: { type: string; id: string } } | null)?.focusRecord;
+    if (focusRecord?.type !== 'task') {
+      routedFocusId.current = null;
+      return;
+    }
+    if (routedFocusId.current === focusRecord.id) return;
+    const target = tasks.find((task) => task.id === focusRecord.id);
+    if (!target) return;
+    routedFocusId.current = target.id;
+    setActiveFilter('all');
+    setSearchQuery(target.title);
+    setFocusedTaskId(target.id);
+    const timer = window.setTimeout(() => document.getElementById(`task-${target.id}`)?.scrollIntoView({ block: 'center', behavior: 'smooth' }), 120);
+    const clearTimer = window.setTimeout(() => setFocusedTaskId(null), 3200);
+    navigate(location.pathname, { replace: true, state: null });
+    return () => { window.clearTimeout(timer); window.clearTimeout(clearTimer); };
+  }, [location.state, location.pathname, tasks, navigate]);
 
   // Reset pagination when active filter or search changes
   useEffect(() => {
@@ -249,7 +276,8 @@ export const TasksPage: React.FC = () => {
             return (
               <div
                 key={task.id}
-                className={`flex flex-col sm:flex-row sm:items-center justify-between p-3.5 rounded-2xl glass-panel relative group transition-all duration-200 gap-3 ${
+                id={`task-${task.id}`}
+                className={`flex flex-col sm:flex-row sm:items-center justify-between p-3.5 rounded-2xl glass-panel relative group transition-all duration-200 gap-3 ${focusedTaskId === task.id ? 'ring-2 ring-accent-mint border-accent-mint/50' : ''} ${
                   isDone
                     ? 'opacity-65 hover:opacity-85'
                     : 'hover:border-white/20 hover:scale-[1.005]'
@@ -300,7 +328,7 @@ export const TasksPage: React.FC = () => {
                         >
                           <Calendar className="w-3.5 h-3.5" />
                           <span>{formatDisplayDate(task.dueDate)}</span>
-                          {task.dueTime && <span>at {task.dueTime}</span>}
+                          {task.dueTime && <span>at {formatClockTime(task.dueTime, hourFormat)}</span>}
                         </span>
                       )}
 

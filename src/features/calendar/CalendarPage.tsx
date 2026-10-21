@@ -2,18 +2,20 @@ import React, { useState, useMemo, useRef } from 'react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import {
   ChevronLeft,
   ChevronRight,
   Plus,
   Calendar,
+  Trash2,
 } from 'lucide-react';
 import { db } from '@/db/nemoDb';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Textarea } from '@/components/ui/Textarea';
 import { Modal } from '@/components/ui/Modal';
+import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { PriorityBadge } from '@/components/ui/Badge';
 import { useToast } from '@/components/ui/Toast';
 import {
@@ -23,12 +25,27 @@ import {
   formatDisplayDate,
 } from '@/lib/dates';
 import { generateId } from '@/lib/ids';
-import type { ProjectedCalendarItem } from '@/domain/types';
+import type { CalendarEvent, ProjectedCalendarItem } from '@/domain/types';
 import { useReducedMotion } from '@/design/useReducedMotion';
+import { formatClockTime } from '@/lib/timeFormat';
 
 gsap.registerPlugin(useGSAP);
 
+function calendarEventDate(value: string): string {
+  if (/^\d{4}-\d{2}-\d{2}$/.test(value)) return value;
+  const date = new Date(value);
+  return Number.isNaN(date.getTime())
+    ? value.slice(0, 10)
+    : `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+}
+
+function calendarEventTime(value: string): string {
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? '' : `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+}
+
 export const CalendarPage: React.FC = () => {
+  const location = useLocation();
   const navigate = useNavigate();
   const { success, error } = useToast();
   const todayStr = getTodayLocalDateString();
@@ -56,8 +73,15 @@ export const CalendarPage: React.FC = () => {
   const [isEventModalOpen, setIsEventModalOpen] = useState(false);
   const [eventTitle, setEventTitle] = useState('');
   const [eventDate, setEventDate] = useState(todayStr);
+  const [eventEndDate, setEventEndDate] = useState(todayStr);
+  const [eventStartTime, setEventStartTime] = useState('09:00');
+  const [eventEndTime, setEventEndTime] = useState('10:00');
+  const [eventIsAllDay, setEventIsAllDay] = useState(true);
   const [eventLocation, setEventLocation] = useState('');
   const [eventDescription, setEventDescription] = useState('');
+  const [eventToEdit, setEventToEdit] = useState<CalendarEvent | null>(null);
+  const [eventToDelete, setEventToDelete] = useState<CalendarEvent | null>(null);
+  const openedRouteEvent = useRef<string | null>(null);
 
   // Live queries for projection
   const tasks = useLiveQuery(() => db.tasks.toArray(), []) || [];
@@ -65,6 +89,7 @@ export const CalendarPage: React.FC = () => {
   const milestones = useLiveQuery(() => db.milestones.toArray(), []) || [];
   const events = useLiveQuery(() => db.calendarEvents.toArray(), []) || [];
   const settings = useLiveQuery(() => db.settings.get('default'), []);
+  const hourFormat = settings?.hourFormat ?? '24h';
 
   const weekStartsOn = settings?.weekStartsOn ?? 1;
 
@@ -131,20 +156,26 @@ export const CalendarPage: React.FC = () => {
 
     // 4. Standalone Calendar Events
     for (const e of events) {
-      const date = e.startAt.slice(0, 10);
+      const start = e.isAllDay ? null : new Date(e.startAt);
+      const date = /^\d{4}-\d{2}-\d{2}$/.test(e.startAt)
+        ? e.startAt
+        : start && !Number.isNaN(start.getTime())
+          ? `${start.getFullYear()}-${String(start.getMonth() + 1).padStart(2, '0')}-${String(start.getDate()).padStart(2, '0')}`
+          : e.startAt.slice(0, 10);
       list.push({
         id: `event_${e.id}`,
         sourceType: 'event',
         sourceId: e.id,
         title: e.title,
         date,
+        time: start && !Number.isNaN(start.getTime()) ? formatClockTime(start, hourFormat) : undefined,
         isAllDay: e.isAllDay,
         color: '#EEB2A3',
       });
     }
 
     return list;
-  }, [tasks, assignments, milestones, events]);
+  }, [tasks, assignments, milestones, events, hourFormat]);
 
   // Index projected items by date in a single pass O(N) for instant O(1) cell lookups
   const itemsByDate = useMemo(() => {
@@ -185,32 +216,87 @@ export const CalendarPage: React.FC = () => {
       navigate('/academics');
     } else if (item.sourceType === 'milestone') {
       navigate('/projects');
+    } else if (item.sourceType === 'event') {
+      const event = events.find((candidate) => candidate.id === item.sourceId);
+      if (!event) return;
+      setEventToEdit(event);
+      setEventTitle(event.title);
+      setEventDate(calendarEventDate(event.startAt));
+      setEventEndDate(calendarEventDate(event.endAt));
+      setEventStartTime(calendarEventTime(event.startAt) || '09:00');
+      setEventEndTime(calendarEventTime(event.endAt) || '10:00');
+      setEventIsAllDay(event.isAllDay);
+      setEventLocation(event.location || '');
+      setEventDescription(event.description || '');
+      setIsEventModalOpen(true);
     }
   };
 
-  const handleCreateEvent = async (e: React.FormEvent) => {
+  React.useEffect(() => {
+    const focusRecord = (location.state as { focusRecord?: { type: string; id: string } } | null)?.focusRecord;
+    if (focusRecord?.type !== 'event') {
+      openedRouteEvent.current = null;
+      return;
+    }
+    if (openedRouteEvent.current === focusRecord.id) return;
+    const event = events.find((candidate) => candidate.id === focusRecord.id);
+    if (!event) return;
+    openedRouteEvent.current = event.id;
+    handleItemClick({ id: `event_${event.id}`, sourceType: 'event', sourceId: event.id, title: event.title, date: calendarEventDate(event.startAt), isAllDay: event.isAllDay });
+    navigate(location.pathname, { replace: true, state: null });
+  }, [location.pathname, location.state, events, navigate]);
+
+  const resetEventForm = () => {
+    setEventToEdit(null);
+    setEventTitle('');
+    setEventDate(todayStr);
+    setEventEndDate(todayStr);
+    setEventStartTime('09:00');
+    setEventEndTime('10:00');
+    setEventIsAllDay(true);
+    setEventLocation('');
+    setEventDescription('');
+    setIsEventModalOpen(false);
+  };
+
+  const handleSaveEvent = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!eventTitle.trim()) {
       error('Title required');
       return;
     }
+    const startAt = eventIsAllDay ? eventDate : new Date(`${eventDate}T${eventStartTime}:00`).toISOString();
+    const endAt = eventIsAllDay ? eventEndDate : new Date(`${eventEndDate}T${eventEndTime}:00`).toISOString();
+    if (new Date(endAt).getTime() < new Date(startAt).getTime()) {
+      error('End must be after start');
+      return;
+    }
     const now = new Date().toISOString();
-    await db.calendarEvents.add({
-      id: generateId('event'),
+    const changes = {
       title: eventTitle.trim(),
       description: eventDescription.trim() || undefined,
       location: eventLocation.trim() || undefined,
-      startAt: eventDate,
-      endAt: eventDate,
-      isAllDay: true,
-      createdAt: now,
+      startAt,
+      endAt,
+      isAllDay: eventIsAllDay,
       updatedAt: now,
-    });
-    setEventTitle('');
-    setEventLocation('');
-    setEventDescription('');
-    setIsEventModalOpen(false);
-    success('Event created');
+    };
+    if (eventToEdit) {
+      await db.calendarEvents.update(eventToEdit.id, changes);
+      success('Event updated');
+    } else {
+      await db.calendarEvents.add({ id: generateId('event'), ...changes, createdAt: now });
+      success('Event created');
+    }
+    resetEventForm();
+  };
+
+  const handleDeleteEvent = async () => {
+    if (!eventToDelete) return;
+    await db.calendarEvents.delete(eventToDelete.id);
+    setEventToDelete(null);
+    resetEventForm();
+    success('Event deleted');
   };
 
   const todayActual = new Date();
@@ -332,7 +418,7 @@ export const CalendarPage: React.FC = () => {
             ))}
           </div>
 
-          <Button size="sm" onClick={() => setIsEventModalOpen(true)} className="gap-1.5">
+          <Button size="sm" onClick={() => { resetEventForm(); setIsEventModalOpen(true); }} className="gap-1.5">
             <Plus className="w-4 h-4" />
             <span>Event</span>
           </Button>
@@ -456,7 +542,7 @@ export const CalendarPage: React.FC = () => {
                       >
                         <p className="font-semibold text-content-primary line-clamp-2">{item.title}</p>
                         <p className="text-[10px] text-content-tertiary font-mono capitalize">
-                          {item.sourceType} {item.time ? `• ${item.time}` : ''}
+                        {item.sourceType} {item.time ? `• ${item.time}` : ''}
                         </p>
                       </button>
                     ))}
@@ -483,10 +569,10 @@ export const CalendarPage: React.FC = () => {
                 <div
                   key={item.id}
                   onClick={() => handleItemClick(item)}
-                  role={item.sourceType === 'event' ? undefined : 'button'}
-                  tabIndex={item.sourceType === 'event' ? undefined : 0}
-                  onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleItemClick(item); } }}
-                  className="calendar-agenda-row flex items-center justify-between gap-3 p-4 rounded-xl bg-surface border border-border-subtle hover:border-border-emphasis transition-all cursor-pointer group"
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleItemClick(item); } }}
+                  className="calendar-agenda-row w-full text-left flex items-center justify-between gap-3 p-4 rounded-xl bg-surface border border-border-subtle hover:border-border-emphasis transition-all cursor-pointer group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-ring"
                 >
                   <div className="flex items-center gap-3">
                     <div
@@ -512,8 +598,8 @@ export const CalendarPage: React.FC = () => {
       )}
 
       {/* Standalone Event Creation Modal */}
-      <Modal isOpen={isEventModalOpen} onClose={() => setIsEventModalOpen(false)} title="New Calendar Event">
-        <form onSubmit={handleCreateEvent} className="space-y-4">
+      <Modal isOpen={isEventModalOpen} onClose={resetEventForm} title={eventToEdit ? 'Edit Calendar Event' : 'New Calendar Event'}>
+        <form onSubmit={handleSaveEvent} className="space-y-4">
           <Input
             label="Event Title"
             placeholder="e.g. Project Demo Review"
@@ -523,21 +609,25 @@ export const CalendarPage: React.FC = () => {
             autoFocus
           />
 
+          <label className="flex items-center gap-2 text-xs font-medium text-content-secondary">
+            <input type="checkbox" checked={eventIsAllDay} onChange={(e) => setEventIsAllDay(e.target.checked)} className="rounded border-border-subtle text-accent-mint focus:ring-accent-ring" />
+            All-day event
+          </label>
+
           <div className="grid grid-cols-2 gap-3">
             <Input
-              label="Date"
+              label="Starts"
               type="date"
               value={eventDate}
               onChange={(e) => setEventDate(e.target.value)}
               required
             />
-            <Input
-              label="Location (Optional)"
-              placeholder="e.g. Zoom / Meeting Room B"
-              value={eventLocation}
-              onChange={(e) => setEventLocation(e.target.value)}
-            />
+            {!eventIsAllDay && <Input label="Start time" type="time" value={eventStartTime} onChange={(e) => setEventStartTime(e.target.value)} required />}
+            <Input label="Ends" type="date" value={eventEndDate} onChange={(e) => setEventEndDate(e.target.value)} required />
+            {!eventIsAllDay && <Input label="End time" type="time" value={eventEndTime} onChange={(e) => setEventEndTime(e.target.value)} required />}
           </div>
+
+          <Input label="Location (Optional)" placeholder="e.g. Zoom / Meeting Room B" value={eventLocation} onChange={(e) => setEventLocation(e.target.value)} />
 
           <Textarea
             label="Description"
@@ -551,10 +641,19 @@ export const CalendarPage: React.FC = () => {
             <Button type="button" variant="ghost" onClick={() => setIsEventModalOpen(false)}>
               Cancel
             </Button>
-            <Button type="submit">Create Event</Button>
+            {eventToEdit && <Button type="button" variant="danger" onClick={() => setEventToDelete(eventToEdit)}><Trash2 className="w-4 h-4" /> Delete</Button>}
+            <Button type="submit">{eventToEdit ? 'Save Event' : 'Create Event'}</Button>
           </div>
         </form>
       </Modal>
+      <ConfirmDialog
+        isOpen={Boolean(eventToDelete)}
+        onClose={() => setEventToDelete(null)}
+        onConfirm={handleDeleteEvent}
+        title="Delete calendar event?"
+        description={`“${eventToDelete?.title || 'This event'}” will be removed from this workspace.`}
+        confirmLabel="Delete event"
+      />
     </div>
   );
 };

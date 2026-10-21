@@ -9,17 +9,19 @@ import {
   Target,
   Flag,
   ArrowRight,
+  CalendarDays,
 } from 'lucide-react';
 import { db } from '@/db/nemoDb';
 import { formatDisplayDate } from '@/lib/dates';
 
 interface SearchResultItem {
   id: string;
-  type: 'task' | 'project' | 'assignment' | 'goal' | 'milestone';
+  type: 'task' | 'project' | 'assignment' | 'goal' | 'milestone' | 'event';
   title: string;
   subtitle?: string;
   badge?: string;
   route: string;
+  focusRecord?: { type: string; id: string };
 }
 
 interface QuickSearchModalProps {
@@ -33,14 +35,27 @@ export const QuickSearchModal: React.FC<QuickSearchModalProps> = ({ isOpen, onCl
   const [results, setResults] = useState<SearchResultItem[]>([]);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
+  const previouslyFocused = useRef<HTMLElement | null>(null);
+  const focusFrame = useRef<number | null>(null);
+
+  function openResult(item: SearchResultItem) {
+    navigate(item.route, { state: item.focusRecord ? { focusRecord: item.focusRecord } : null });
+    onClose();
+  }
 
   useEffect(() => {
     if (isOpen) {
+      previouslyFocused.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
       setQuery('');
       setResults([]);
       setSelectedIndex(0);
-      setTimeout(() => inputRef.current?.focus(), 50);
+      focusFrame.current = window.requestAnimationFrame(() => inputRef.current?.focus());
+    } else {
+      previouslyFocused.current?.focus();
     }
+    return () => {
+      if (focusFrame.current !== null) window.cancelAnimationFrame(focusFrame.current);
+    };
   }, [isOpen]);
 
   useEffect(() => {
@@ -58,8 +73,7 @@ export const QuickSearchModal: React.FC<QuickSearchModalProps> = ({ isOpen, onCl
       } else if (e.key === 'Enter') {
         if (results[selectedIndex]) {
           e.preventDefault();
-          navigate(results[selectedIndex].route);
-          onClose();
+          openResult(results[selectedIndex]);
         }
       }
     };
@@ -78,12 +92,13 @@ export const QuickSearchModal: React.FC<QuickSearchModalProps> = ({ isOpen, onCl
     let active = true;
 
     async function searchAll() {
-      const [tasks, projects, assignments, goals, milestones] = await Promise.all([
+      const [tasks, projects, assignments, goals, milestones, events] = await Promise.all([
         db.tasks.toArray(),
         db.projects.toArray(),
         db.assignments.toArray(),
         db.goals.toArray(),
         db.milestones.toArray(),
+        db.calendarEvents.toArray(),
       ]);
 
       if (!active) return;
@@ -100,6 +115,7 @@ export const QuickSearchModal: React.FC<QuickSearchModalProps> = ({ isOpen, onCl
             subtitle: p.dueDate ? `Due ${formatDisplayDate(p.dueDate)}` : p.category,
             badge: p.status.replace('_', ' '),
             route: `/projects/${p.id}`,
+            focusRecord: { type: 'project', id: p.id },
           });
         }
       }
@@ -114,6 +130,7 @@ export const QuickSearchModal: React.FC<QuickSearchModalProps> = ({ isOpen, onCl
             subtitle: t.dueDate ? `Due ${formatDisplayDate(t.dueDate)}` : undefined,
             badge: t.priority.toUpperCase(),
             route: '/tasks',
+            focusRecord: { type: 'task', id: t.id },
           });
         }
       }
@@ -128,6 +145,7 @@ export const QuickSearchModal: React.FC<QuickSearchModalProps> = ({ isOpen, onCl
             subtitle: a.dueDate ? `Due ${formatDisplayDate(a.dueDate)}` : undefined,
             badge: a.status.replace('_', ' '),
             route: '/academics',
+            focusRecord: { type: 'assignment', id: a.id },
           });
         }
       }
@@ -142,6 +160,7 @@ export const QuickSearchModal: React.FC<QuickSearchModalProps> = ({ isOpen, onCl
             subtitle: g.category,
             badge: g.status.toUpperCase(),
             route: `/goals/${g.id}`,
+            focusRecord: { type: 'goal', id: g.id },
           });
         }
       }
@@ -155,7 +174,23 @@ export const QuickSearchModal: React.FC<QuickSearchModalProps> = ({ isOpen, onCl
             title: m.title,
             subtitle: m.targetDate ? `Target ${formatDisplayDate(m.targetDate)}` : undefined,
             badge: m.ownerType.toUpperCase(),
-            route: m.ownerType === 'goal' ? '/goals' : '/projects',
+            route: `/${m.ownerType === 'goal' ? 'goals' : 'projects'}/${m.ownerId}`,
+            focusRecord: { type: 'milestone', id: m.id },
+          });
+        }
+      }
+
+      // 6. Standalone calendar events
+      for (const event of events) {
+        if (event.title.toLowerCase().includes(q) || event.description?.toLowerCase().includes(q) || event.location?.toLowerCase().includes(q)) {
+          items.push({
+            id: event.id,
+            type: 'event',
+            title: event.title,
+            subtitle: event.location || event.startAt.slice(0, 10),
+            badge: 'EVENT',
+            route: '/calendar',
+            focusRecord: { type: 'event', id: event.id },
           });
         }
       }
@@ -185,6 +220,8 @@ export const QuickSearchModal: React.FC<QuickSearchModalProps> = ({ isOpen, onCl
         return <Target className="w-4 h-4 text-emerald-400" />;
       case 'milestone':
         return <Flag className="w-4 h-4 text-indigo-400" />;
+      case 'event':
+        return <CalendarDays className="w-4 h-4 text-accent-ember" />;
     }
   };
 
@@ -250,10 +287,7 @@ export const QuickSearchModal: React.FC<QuickSearchModalProps> = ({ isOpen, onCl
                 <button
                   key={`${item.type}-${item.id}`}
                   type="button"
-                  onClick={() => {
-                    navigate(item.route);
-                    onClose();
-                  }}
+                  onClick={() => openResult(item)}
                   onMouseEnter={() => setSelectedIndex(idx)}
                   className={`w-full flex items-center justify-between p-2.5 rounded-xl text-left transition-all ${
                     isSelected

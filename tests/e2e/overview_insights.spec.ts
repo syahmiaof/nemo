@@ -53,4 +53,26 @@ test.describe('Overview & Insights Functional Audit', () => {
     const yearSelect = page.locator('select');
     await expect(yearSelect).toBeVisible();
   });
+
+  test('Ask Nemo understands a natural-language active project count', async ({ page, isMobile }) => {
+    await gotoReady(page, '/overview');
+    const exploreDemo = page.getByRole('button', { name: /Explore demo/ }).first();
+    if (await exploreDemo.isVisible().catch(() => false)) await exploreDemo.click();
+    await expect(page.getByText(/Demo Workspace: Exploring fictional sample data/)).toBeVisible();
+
+    if (isMobile) {
+      await page.getByRole('button', { name: 'Open more navigation options' }).click();
+      await page.getByRole('dialog', { name: 'Workspace Utilities & Modules' }).getByRole('button', { name: /Ask Nemo/ }).click();
+    } else {
+      await page.getByRole('button', { name: 'Ask Nemo Assistant' }).click();
+    }
+    const drawer = page.getByRole('dialog', { name: /Ask Nemo/ });
+    await expect(drawer).toBeVisible();
+    await drawer.getByPlaceholder('Ask about tasks, projects, deadlines...').fill('How many projects are active?');
+    await drawer.getByRole('button', { name: 'Send query' }).click();
+
+    await expect(drawer.getByText('Active Projects', { exact: true })).toBeVisible();
+    await expect(drawer.getByText(/You have \d+ active projects? currently in flight\./)).toBeVisible();
+    await expect(drawer.getByRole('button', { name: /Orbit Analytics/ })).toBeVisible();
+  });
 });

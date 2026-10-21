@@ -23,6 +23,7 @@ describe('Ask Nemo Deterministic Intent Engine', () => {
       expect(detectIntent('coursework deadlines this week')).toBe('assignments_due_this_week');
       expect(detectIntent('Closest project deadline')).toBe('closest_project_deadline');
       expect(detectIntent('Active projects')).toBe('active_projects');
+      expect(detectIntent('How many projects are active?')).toBe('active_projects');
       expect(detectIntent("Today's focus tasks")).toBe('todays_focus_tasks');
       expect(detectIntent('Tasks finished this month')).toBe('tasks_finished_this_month');
       expect(detectIntent('Upcoming milestones')).toBe('upcoming_milestones');
@@ -163,6 +164,10 @@ describe('Ask Nemo Deterministic Intent Engine', () => {
       const activeRes = await processAssistantQuery('Active projects');
       expect(activeRes.intent).toBe('active_projects');
       expect(activeRes.items.length).toBe(2);
+
+      const naturalLanguageRes = await processAssistantQuery('How many projects are active?');
+      expect(naturalLanguageRes.intent).toBe('active_projects');
+      expect(naturalLanguageRes.items.length).toBe(2);
     });
 
     it('answers today focus tasks correctly', async () => {

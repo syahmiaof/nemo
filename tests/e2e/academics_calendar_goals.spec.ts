@@ -70,11 +70,30 @@ test.describe('Academics, Calendar & Goals Functional Audit', () => {
     // 3. Create a standalone calendar event
     await page.getByRole('button', { name: 'Event', exact: true }).click();
     await page.getByLabel('Event Title').fill('Team Standup Sync');
-    await page.getByLabel('Date').fill(dayStr);
+    await page.getByLabel('Starts').fill(dayStr);
     await page.getByRole('dialog').getByRole('button', { name: 'Create Event' }).click();
 
     // Verify standalone event appears
     await expect(page.getByText('Team Standup Sync')).toBeVisible();
+
+    // Event cards open an editable record with the saved location and details.
+    await page.getByRole('button', { name: /Team Standup Sync/ }).click();
+    await expect(page.getByRole('dialog', { name: 'Edit Calendar Event' })).toBeVisible();
+    await page.getByRole('dialog', { name: 'Edit Calendar Event' }).getByRole('button', { name: 'Cancel' }).click();
+    await page.keyboard.press('Control+k');
+    const eventSearch = page.getByRole('dialog', { name: 'Quick Search' });
+    await eventSearch.getByPlaceholder('Search tasks, projects, coursework, goals...').fill('Team Standup Sync');
+    await eventSearch.getByRole('button', { name: /Team Standup Sync/ }).click();
+    await expect(page.getByRole('dialog', { name: 'Edit Calendar Event' })).toBeVisible();
+    await page.getByLabel('Event Title').fill('Team Planning Session');
+    await page.getByLabel('Location (Optional)').fill('Studio 2');
+    await page.getByRole('dialog', { name: 'Edit Calendar Event' }).getByRole('button', { name: 'Save Event' }).click();
+    await expect(page.getByText('Team Planning Session', { exact: true })).toBeVisible();
+
+    await page.getByRole('button', { name: /Team Planning Session/ }).click();
+    await page.getByRole('dialog', { name: 'Edit Calendar Event' }).getByRole('button', { name: 'Delete' }).click();
+    await page.getByRole('dialog', { name: 'Delete calendar event?' }).getByRole('button', { name: 'Delete event' }).click();
+    await expect(page.getByText('Team Planning Session', { exact: true })).not.toBeVisible();
 
     // 4. Test Month navigation
     await page.getByLabel('Next').click();
@@ -86,6 +105,60 @@ test.describe('Academics, Calendar & Goals Functional Audit', () => {
     await page.getByRole('button', { name: 'Today' }).click();
     await page.waitForTimeout(200);
     await expect(page.getByText('Calendar Scheduled Deliverable')).toBeVisible();
+  });
+
+  test('Quick Search opens and focuses the selected task', async ({ page }) => {
+    await gotoReady(page, '/tasks');
+    await page.getByRole('button', { name: 'New Task' }).click();
+    await page.getByLabel('Task Title').fill('Sprint Search Focus Target');
+    await page.getByRole('button', { name: 'Create Task' }).click();
+    await expect(page.getByText('Sprint Search Focus Target', { exact: true })).toBeVisible();
+
+    await gotoReady(page, '/overview');
+    await page.keyboard.press('Control+k');
+    const search = page.getByPlaceholder('Search tasks, projects, coursework, goals...');
+    await search.fill('Sprint Search Focus Target');
+    await page.getByRole('dialog', { name: 'Quick Search' }).getByRole('button', { name: /Sprint Search Focus Target/ }).click();
+    await expect(page).toHaveURL(/\/tasks$/);
+    const focusedRow = page.locator('[id^="task-task_"]').filter({ hasText: 'Sprint Search Focus Target' });
+    await expect(focusedRow).toBeVisible();
+    await expect(focusedRow).toHaveClass(/ring-2/);
+  });
+
+  test('Quick Search opens the selected assignment for editing', async ({ page }) => {
+    await gotoReady(page, '/academics');
+    await page.getByRole('button', { name: 'New Semester' }).click();
+    await page.getByLabel('Semester Name').fill('Search Target Term');
+    await page.getByRole('dialog').getByRole('button', { name: 'Create Semester' }).click();
+    await page.getByRole('button', { name: 'Add', exact: true }).click();
+    await page.getByLabel('Subject Title').fill('Search Target Subject');
+    await page.getByLabel('Subject Code').fill('ST101');
+    await page.getByRole('dialog').getByRole('button', { name: 'Add Subject' }).click();
+    await page.getByRole('button', { name: 'New Assignment' }).click();
+    await page.getByLabel('Assignment Title').fill('Search Target Assignment');
+    await page.getByRole('dialog').getByRole('button', { name: 'Create Assignment' }).click();
+    await expect(page.getByText('Search Target Assignment', { exact: true })).toBeVisible();
+
+    await gotoReady(page, '/overview');
+    await page.keyboard.press('Control+k');
+    const searchDialog = page.getByRole('dialog', { name: 'Quick Search' });
+    await searchDialog.getByPlaceholder('Search tasks, projects, coursework, goals...').fill('Search Target Assignment');
+    await searchDialog.getByRole('button', { name: /Search Target Assignment/ }).click();
+    await expect(page).toHaveURL(/\/academics$/);
+    await expect(page.getByRole('dialog', { name: 'Edit Assignment' })).toBeVisible();
+    await expect(page.getByLabel('Assignment Title')).toHaveValue('Search Target Assignment');
+  });
+
+  test('Clock Format changes the live workspace clock and privacy copy reflects optional sync', async ({ page }) => {
+    await gotoReady(page, '/settings');
+    await page.getByRole('tab', { name: 'Preferences' }).click();
+    await page.getByLabel('Clock Format').selectOption('12h');
+    const clock = page.locator('.header-time-pill span').last();
+    await expect(clock).toHaveText(/\b(?:1[0-2]|[1-9]):[0-5]\d\s(?:AM|PM)\b/);
+
+    await page.getByRole('tab', { name: 'Data & Backups' }).click();
+    await expect(page.getByText(/If you sign in and enable cloud sync, your workspace records are also synced to your account\./)).toBeVisible();
+    await expect(page.getByText(/No accounts, no cloud sync/)).toHaveCount(0);
   });
 
   test('Goal milestones and linked tasks update correct progress', async ({ page }) => {

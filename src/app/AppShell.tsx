@@ -17,6 +17,7 @@ import { getInitials } from '@/lib/avatar';
 import { AuthProvider } from '@/features/auth/AuthContext';
 import { AuthModal } from '@/features/auth/AuthModal';
 import { SyncIndicator } from '@/components/ui/SyncIndicator';
+import { formatClockTime } from '@/lib/timeFormat';
 
 const navTabs = [
   { to: '/overview', label: 'Overview' },
@@ -33,18 +34,16 @@ export function AppShell() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [askNemoOpen, setAskNemoOpen] = useState(false);
   const [modeError, setModeError] = useState('');
-  const [timeStr, setTimeStr] = useState(() =>
-    new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
-  );
+  const settings = useLiveQuery(() => db.settings.get('default'), []);
+  const hourFormat = settings?.hourFormat ?? '24h';
+  const [timeStr, setTimeStr] = useState(() => formatClockTime(new Date(), hourFormat));
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeStr(new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }));
-    }, 15000);
+    const updateTime = () => setTimeStr(formatClockTime(new Date(), hourFormat));
+    updateTime();
+    const timer = setInterval(updateTime, 15000);
     return () => clearInterval(timer);
-  }, []);
-
-  const settings = useLiveQuery(() => db.settings.get('default'), []);
+  }, [hourFormat]);
   const avatarBlob = useLiveQuery(
     () => (settings?.avatarBlobId ? db.assetBlobs.get(settings.avatarBlobId) : undefined),
     [settings?.avatarBlobId]

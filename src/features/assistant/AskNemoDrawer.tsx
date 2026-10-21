@@ -1,5 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useLiveQuery } from 'dexie-react-hooks';
+import { db } from '@/db/nemoDb';
+import { formatClockTime } from '@/lib/timeFormat';
 import {
   Bot,
   X,
@@ -35,6 +38,8 @@ export const AskNemoDrawer: React.FC<AskNemoDrawerProps> = ({
   initialQuestion,
 }) => {
   const navigate = useNavigate();
+  const settings = useLiveQuery(() => db.settings.get('default'), []);
+  const hourFormat = settings?.hourFormat ?? '24h';
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -58,7 +63,7 @@ export const AskNemoDrawer: React.FC<AskNemoDrawerProps> = ({
               items: [],
               suggestedFollowUps: SUGGESTED_QUESTIONS,
             },
-            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            timestamp: formatClockTime(new Date(), hourFormat),
           },
         ]);
       }
@@ -97,7 +102,7 @@ export const AskNemoDrawer: React.FC<AskNemoDrawerProps> = ({
       id: `u-${Date.now()}`,
       sender: 'user',
       text,
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      timestamp: formatClockTime(new Date(), hourFormat),
     };
 
     setMessages((prev) => [...prev, userMsg]);
@@ -109,7 +114,7 @@ export const AskNemoDrawer: React.FC<AskNemoDrawerProps> = ({
         id: `n-${Date.now()}`,
         sender: 'nemo',
         response,
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        timestamp: formatClockTime(new Date(), hourFormat),
       };
       setMessages((prev) => [...prev, nemoMsg]);
     } catch {
@@ -123,7 +128,7 @@ export const AskNemoDrawer: React.FC<AskNemoDrawerProps> = ({
           items: [],
           suggestedFollowUps: SUGGESTED_QUESTIONS.slice(0, 3),
         },
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        timestamp: formatClockTime(new Date(), hourFormat),
       };
       setMessages((prev) => [...prev, errorMsg]);
     } finally {
@@ -143,7 +148,7 @@ export const AskNemoDrawer: React.FC<AskNemoDrawerProps> = ({
           items: [],
           suggestedFollowUps: SUGGESTED_QUESTIONS,
         },
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        timestamp: formatClockTime(new Date(), hourFormat),
       },
     ]);
   };
