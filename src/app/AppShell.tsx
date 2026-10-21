@@ -32,7 +32,6 @@ export function AppShell() {
   const [quickAdd, setQuickAdd] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [askNemoOpen, setAskNemoOpen] = useState(false);
-  const [welcomeDone, setWelcomeDone] = useState(false);
   const [modeError, setModeError] = useState('');
   const [timeStr, setTimeStr] = useState(() =>
     new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
@@ -82,7 +81,7 @@ export function AppShell() {
     <AuthProvider>
       <ToastProvider>
         <div className="nemo-app">
-          <WelcomeOverlay onComplete={() => setWelcomeDone(true)} />
+          <WelcomeOverlay />
           <ScrollRestoration />
           <a href="#main-content" className="skip-link">
             Skip to content
@@ -189,7 +188,7 @@ export function AppShell() {
             )}
 
             <main id="main-content" tabIndex={-1}>
-              <RouteTransition key={welcomeDone ? 'ready' : 'intro'} />
+              <RouteTransition />
             </main>
           </div>
 

@@ -9,6 +9,7 @@ import { monthlyCounts } from '@/domain/chart';
 import { TavolaSplineChart } from '@/components/ui/TavolaSplineChart';
 import { useReducedMotion } from '@/design/useReducedMotion';
 import { MotionTitle } from '@/components/ui/MotionTitle';
+import { AnimatedNumber } from '@/components/ui/PageHeading';
 
 gsap.registerPlugin(useGSAP);
 
@@ -155,22 +156,22 @@ export const InsightsPage: React.FC = () => {
 
   useGSAP(() => {
     if (reduced || !data) return;
-    gsap.fromTo('.insights-donut', { scale: .82, rotate: -35, opacity: .3 }, {
-      scale: 1, rotate: 0, opacity: 1, duration: 1, ease: 'expo.out', clearProps: 'transform,opacity',
+    gsap.fromTo('.insights-donut', { scale: .7, rotate: -45, opacity: 0 }, {
+      scale: 1, rotate: 0, opacity: 1, duration: 1.1, ease: 'back.out(1.4)', clearProps: 'transform,opacity',
     });
     gsap.fromTo('.insights-bar > span', { scaleX: 0, transformOrigin: 'left center' }, {
-      scaleX: 1, duration: .9, stagger: .09, ease: 'power3.out', clearProps: 'transform',
+      scaleX: 1, duration: .9, stagger: .08, ease: 'power3.out', clearProps: 'transform',
     });
-  }, { scope: motionRoot, dependencies: [data, reduced], revertOnUpdate: true });
+  }, { scope: motionRoot, dependencies: [data, selectedYear, series, reduced], revertOnUpdate: true });
 
   return (
     <div ref={motionRoot} className="insights-page">
       <header className="insights-header">
         <MotionTitle text="Workspace Insights" breakAfterFirstWord />
-        <div className="insights-head-stat"><span className="insights-stat-icon"><FolderKanban size={22} /></span><div><strong>{projects.length}</strong><span>All-time projects</span></div></div>
-        <div className="insights-head-stat"><span className="insights-stat-icon"><BarChart3 size={22} /></span><div><strong>{activeProjects}</strong><span>Active right now</span></div></div>
-        <div className="insights-head-stat"><span className="insights-stat-icon"><CheckCircle2 size={22} /></span><div><strong>{done}</strong><span>Tasks completed</span></div></div>
-        <div className="insights-head-stat"><span className="insights-stat-icon"><Target size={22} /></span><div><strong>{activeGoalsCount}</strong><span>Active goals</span></div></div>
+        <div className="insights-head-stat"><span className="insights-stat-icon"><FolderKanban size={20} /></span><div><strong><AnimatedNumber value={projects.length} /></strong><span>All-time projects</span></div></div>
+        <div className="insights-head-stat"><span className="insights-stat-icon"><BarChart3 size={20} /></span><div><strong><AnimatedNumber value={activeProjects} /></strong><span>Active right now</span></div></div>
+        <div className="insights-head-stat"><span className="insights-stat-icon"><CheckCircle2 size={20} /></span><div><strong><AnimatedNumber value={done} /></strong><span>Tasks completed</span></div></div>
+        <div className="insights-head-stat"><span className="insights-stat-icon"><Target size={20} /></span><div><strong><AnimatedNumber value={activeGoalsCount} /></strong><span>Active goals</span></div></div>
         <label className="insights-year"><span className="sr-only">Reporting year</span><select value={selectedYear} onChange={(event) => setSelectedYear(Number(event.target.value))}>{[...years].sort((a, b) => b - a).map((year) => <option key={year}>{year}</option>)}</select></label>
       </header>
 
@@ -184,19 +185,19 @@ export const InsightsPage: React.FC = () => {
             </div>
           </div>
           <div className="insights-analysis-summary">
-            <div className="insights-total"><strong>{total}</strong><span>{series} completed in {selectedYear}</span></div>
+            <div className="insights-total"><strong><AnimatedNumber value={total} /></strong><span>{series} completed in {selectedYear}</span></div>
             <span className={`insights-change ${difference < 0 ? 'is-negative' : ''}`}>{difference > 0 ? '+' : ''}{difference} vs {selectedYear - 1}</span>
             <div className="insights-mini-stat"><span>Best month</span><strong>{total ? MONTHS[bestMonth] : '—'}</strong><small>{total ? `${values[bestMonth]} completed` : 'No completions yet'}</small></div>
           </div>
           <div className="insights-legend"><span><i />{selectedYear}</span><span><i />{selectedYear - 1}</span></div>
-          <TavolaSplineChart labels={MONTHS} values={values} comparisonValues={comparison} seriesName={`${selectedYear}`} comparisonName={`${selectedYear - 1}`} unit={series} height={350} />
+          <TavolaSplineChart labels={MONTHS} values={values} comparisonValues={comparison} seriesName={`${selectedYear}`} comparisonName={`${selectedYear - 1}`} unit={series} height={210} />
           <p className="insights-footnote">{!data ? 'Loading your workspace…' : total === 0 && previousTotal === 0 ? `No ${series} completed in either year yet. Your real progress will appear here.` : 'Completions are grouped by their recorded completion date in your local time.'}</p>
         </section>
 
         <section className="glass-panel insights-distribution" aria-labelledby="task-mix-title">
           <div className="insights-panel-heading"><h2 id="task-mix-title">Task mix</h2><span>{tasks.length} total</span></div>
           <div className="insights-donut" role="img" aria-label={`${completionRate}% completed: ${done} done, ${inProgress} in progress, ${toDo} to do`} style={{ background: tasks.length ? `conic-gradient(from -90deg, var(--chart-peach, #efb2a2) 0deg ${doneAngle}deg, #a8dcca ${doneAngle}deg ${doneAngle + progressAngle}deg, #ecd59a ${doneAngle + progressAngle}deg 360deg)` : 'var(--border-subtle)' }}>
-            <div><strong>{tasks.length ? `${completionRate}%` : '—'}</strong><span>{tasks.length ? 'completed' : 'No tasks yet'}</span></div>
+            <div><strong>{tasks.length ? <><AnimatedNumber value={completionRate} />%</> : '—'}</strong><span>{tasks.length ? 'completed' : 'No tasks yet'}</span></div>
           </div>
           <div className="insights-distribution-rows">
             {[{ name: 'Completed', count: done, color: 'var(--chart-peach, #efb2a2)' }, { name: 'In progress', count: inProgress, color: '#a8dcca' }, { name: 'To do', count: toDo, color: '#ecd59a' }].map((item) => <div key={item.name}>

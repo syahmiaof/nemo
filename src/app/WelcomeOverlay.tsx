@@ -83,11 +83,18 @@ export const WelcomeOverlay: React.FC<WelcomeOverlayProps> = ({
       return;
     }
 
+    if (containerRef.current) {
+      containerRef.current.style.pointerEvents = 'none';
+    }
+
+    // Trigger homepage entrance during cross-fade
+    window.dispatchEvent(new CustomEvent('nemo:welcome-dismissing'));
+
     gsap.to(containerRef.current, {
       opacity: 0,
-      scale: 1.02,
-      duration: 0.35,
-      ease: 'power2.inOut',
+      scale: 1.025,
+      duration: 0.45,
+      ease: 'power2.out',
       onComplete: () => {
         setIsOpen(false);
         onComplete?.();
