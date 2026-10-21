@@ -34,7 +34,7 @@ export const SparkOfFocusCard: React.FC<SparkOfFocusCardProps> = ({ className })
     setTransitioning,
     prefersReducedMotion,
     isDocumentVisible,
-  } = useRotatingQuotes({ intervalMs: 5200, isActive: isAutoActive });
+  } = useRotatingQuotes({ intervalMs: 3200, isActive: isAutoActive });
 
   const [displayedQuote, setDisplayedQuote] = useState(currentQuote);
   const containerRef = useRef<HTMLDivElement>(null);

@@ -7,7 +7,7 @@ export const THEME_PALETTES = {
 } as const;
 export type MorphTheme = keyof typeof THEME_PALETTES;
 export type MotionPrototype = "vortex" | "ink";
-export const MORPH_DURATION = 2;
+export const MORPH_DURATION = 1.25;
 export const FINAL_PROTOTYPE: MotionPrototype = "ink";
 export interface MorphParticle {
   sx: number;
