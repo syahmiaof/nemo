@@ -55,7 +55,7 @@ export function useScrollMotion<T extends HTMLElement = HTMLDivElement>(
 
   const {
     selector,
-    threshold = 0.1,
+    threshold = options.threshold ?? 0.05,
     stagger = 0.05,
     distance = options.y ?? 24,
     duration = 0.6,
@@ -63,7 +63,7 @@ export function useScrollMotion<T extends HTMLElement = HTMLDivElement>(
     triggerOnce = options.bidirectional !== undefined ? !options.bidirectional : false,
     key,
     scale = 0.98,
-    rootMargin = options.rootMargin ?? '0px 0px -30px 0px',
+    rootMargin = options.rootMargin ?? '0px 0px 50px 0px',
   } = options;
 
   useGSAP(
@@ -135,30 +135,51 @@ export function useScrollMotion<T extends HTMLElement = HTMLDivElement>(
       // Track all registered elements for reliable teardown even if ref detaches before unmount
       const trackedElements = new Set<HTMLElement>();
 
-      // Initialize elements: elements currently in the viewport get subtle initial reveal,
-      // elements outside viewport start hidden.
+      // Initialize elements: elements currently in the viewport animate into view immediately,
+      // elements outside viewport start hidden until scrolled into view.
+      const initialEntering: HTMLElement[] = [];
       initialTargets.forEach((el) => {
-        stateMap.set(el, { isVisible: false, hasEntered: false });
         trackedElements.add(el);
         const rect = el.getBoundingClientRect();
         const inInitialView =
           rect.top < window.innerHeight && rect.bottom > 0 && rect.height > 0;
 
         if (!inInitialView) {
+          stateMap.set(el, { isVisible: false, hasEntered: false });
           gsap.set(el, {
             opacity: 0,
             y: distance,
             scale,
           });
         } else {
-          // Elements in initial view: initialize with gentle offset
-          gsap.set(el, {
-            opacity: 0,
-            y: Math.min(distance, 12),
-            scale: Math.max(scale, 0.99),
-          });
+          stateMap.set(el, { isVisible: true, hasEntered: true });
+          initialEntering.push(el);
         }
       });
+
+      if (initialEntering.length > 0) {
+        initialEntering.forEach((el, index) => {
+          gsap.killTweensOf(el);
+          gsap.fromTo(
+            el,
+            {
+              opacity: 0,
+              y: Math.min(distance, 14),
+              scale: Math.max(scale, 0.99),
+            },
+            {
+              opacity: 1,
+              y: 0,
+              scale: 1,
+              duration,
+              delay: index * stagger,
+              ease,
+              overwrite: 'auto',
+              clearProps: 'transform,opacity',
+            }
+          );
+        });
+      }
 
       const observer = new IntersectionObserver(
         (entries) => {
@@ -263,13 +284,27 @@ export function useScrollMotion<T extends HTMLElement = HTMLDivElement>(
               const inInitialView =
                 rect.top < window.innerHeight && rect.bottom > 0 && rect.height > 0;
               if (!inInitialView) {
+                stateMap.set(el, { isVisible: false, hasEntered: false });
                 gsap.set(el, { opacity: 0, y: distance, scale });
               } else {
-                gsap.set(el, {
-                  opacity: 0,
-                  y: Math.min(distance, 12),
-                  scale: Math.max(scale, 0.99),
-                });
+                stateMap.set(el, { isVisible: true, hasEntered: true });
+                gsap.fromTo(
+                  el,
+                  {
+                    opacity: 0,
+                    y: Math.min(distance, 14),
+                    scale: Math.max(scale, 0.99),
+                  },
+                  {
+                    opacity: 1,
+                    y: 0,
+                    scale: 1,
+                    duration: 0.45,
+                    ease,
+                    overwrite: 'auto',
+                    clearProps: 'transform,opacity',
+                  }
+                );
               }
               observer.observe(el);
             }

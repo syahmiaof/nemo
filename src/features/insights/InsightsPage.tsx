@@ -334,8 +334,8 @@ export const InsightsPage: React.FC = () => {
     duration: 0.65,
     ease: 'power3.out',
     bidirectional: true,
-    threshold: 0.1,
-    rootMargin: '0px 0px -30px 0px',
+    threshold: 0.05,
+    rootMargin: '0px 0px 50px 0px',
     key: `${selectedYear}:${series}:${tasks.length}:${projects.length}`,
   });
 
