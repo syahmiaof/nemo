@@ -82,7 +82,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
     return (
       <Link
         to={`/projects/${project.id}`}
-        className="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-2xl glass-panel relative group hover:border-white/20 transition-all gap-3"
+        className="project-card flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-2xl glass-panel relative group hover:border-white/20 transition-all gap-3"
       >
         <div className="flex items-center gap-3 min-w-0 relative z-10">
           <div className="w-12 h-12 rounded-xl overflow-hidden border border-white/10 flex-shrink-0 bg-surface-solid">

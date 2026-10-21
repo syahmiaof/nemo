@@ -13,6 +13,10 @@ import {
 } from 'lucide-react';
 import { db } from '@/db/nemoDb';
 import { formatDisplayDate } from '@/lib/dates';
+import gsap from 'gsap';
+import { useGSAP } from '@gsap/react';
+import { useReducedMotion } from '@/design/useReducedMotion';
+gsap.registerPlugin(useGSAP);
 
 interface SearchResultItem {
   id: string;
@@ -38,10 +42,87 @@ export const QuickSearchModal: React.FC<QuickSearchModalProps> = ({ isOpen, onCl
   const previouslyFocused = useRef<HTMLElement | null>(null);
   const focusFrame = useRef<number | null>(null);
 
+  const backdropRef = useRef<HTMLDivElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const resultsListRef = useRef<HTMLDivElement>(null);
+  const isClosingRef = useRef(false);
+  const reduced = useReducedMotion();
+
   function openResult(item: SearchResultItem) {
     navigate(item.route, { state: item.focusRecord ? { focusRecord: item.focusRecord } : null });
-    onClose();
+    handleClose();
   }
+
+  // Smooth entrance choreography
+  useGSAP(() => {
+    if (!isOpen) return;
+    if (reduced) {
+      if (backdropRef.current) gsap.set(backdropRef.current, { opacity: 1 });
+      if (panelRef.current) gsap.set(panelRef.current, { opacity: 1, scale: 1, y: 0 });
+      return;
+    }
+
+    if (backdropRef.current) {
+      gsap.fromTo(
+        backdropRef.current,
+        { opacity: 0, backdropFilter: 'blur(0px)' },
+        { opacity: 1, backdropFilter: 'blur(6px)', duration: 0.32, ease: 'power2.out' }
+      );
+    }
+
+    if (panelRef.current) {
+      gsap.fromTo(
+        panelRef.current,
+        { opacity: 0, scale: 0.93, y: -18 },
+        { opacity: 1, scale: 1, y: 0, duration: 0.36, ease: 'back.out(1.35)' }
+      );
+    }
+  }, { dependencies: [isOpen, reduced] });
+
+  // Instant search result items staggered fade-in
+  useEffect(() => {
+    if (results.length > 0 && resultsListRef.current) {
+      if (reduced) {
+        const items = resultsListRef.current.querySelectorAll('.search-result-item');
+        items.forEach((item) => gsap.set(item, { opacity: 1, y: 0, scale: 1, clearProps: 'all' }));
+        return;
+      }
+
+      const items = resultsListRef.current.querySelectorAll('.search-result-item');
+      if (items.length > 0) {
+        gsap.fromTo(
+          items,
+          { opacity: 0, y: 10, scale: 0.98 },
+          {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            duration: 0.25,
+            stagger: 0.025,
+            ease: 'power2.out',
+            clearProps: 'opacity,transform',
+          }
+        );
+      }
+    }
+  }, [results, reduced]);
+
+  const handleClose = () => {
+    if (isClosingRef.current) return;
+    if (reduced || !panelRef.current || !backdropRef.current) {
+      onClose();
+      return;
+    }
+    isClosingRef.current = true;
+    const tl = gsap.timeline({
+      onComplete: () => {
+        isClosingRef.current = false;
+        onClose();
+      },
+    });
+    tl.to(panelRef.current, { opacity: 0, scale: 0.94, y: -12, duration: 0.2, ease: 'power2.in' })
+      .to(backdropRef.current, { opacity: 0, duration: 0.16, ease: 'power2.in' }, '-=0.12');
+  };
 
   useEffect(() => {
     if (isOpen) {
@@ -63,7 +144,7 @@ export const QuickSearchModal: React.FC<QuickSearchModalProps> = ({ isOpen, onCl
       if (!isOpen) return;
 
       if (e.key === 'Escape') {
-        onClose();
+        handleClose();
       } else if (e.key === 'ArrowDown') {
         e.preventDefault();
         setSelectedIndex((prev) => (results.length > 0 ? (prev + 1) % results.length : 0));
@@ -232,15 +313,19 @@ export const QuickSearchModal: React.FC<QuickSearchModalProps> = ({ isOpen, onCl
       aria-modal="true"
       aria-label="Quick Search"
     >
-      {/* Backdrop */}
+      {/* Backdrop with smooth blur */}
       <div
+        ref={backdropRef}
         className="fixed inset-0 bg-black/60 backdrop-blur-sm"
-        onClick={onClose}
+        onClick={handleClose}
         aria-hidden="true"
       />
 
-      {/* Palette Panel */}
-      <div className="relative w-full max-w-lg bg-[#0E1729] border border-white/10 rounded-2xl shadow-2xl overflow-hidden z-10 flex flex-col">
+      {/* Palette Panel with entrance animation */}
+      <div
+        ref={panelRef}
+        className="relative w-full max-w-lg bg-[#0E1729] border border-white/10 rounded-2xl shadow-2xl overflow-hidden z-10 flex flex-col"
+      >
         {/* Search Input Bar */}
         <div className="flex items-center px-4 border-b border-white/10 bg-[#132038]">
           <Search className="w-5 h-5 text-content-tertiary flex-shrink-0" />
@@ -268,7 +353,7 @@ export const QuickSearchModal: React.FC<QuickSearchModalProps> = ({ isOpen, onCl
         </div>
 
         {/* Results List */}
-        <div className="max-h-80 overflow-y-auto p-2 space-y-1">
+        <div ref={resultsListRef} className="max-h-80 overflow-y-auto p-2 space-y-1">
           {query.trim() === '' ? (
             <div className="p-8 text-center text-content-tertiary text-xs">
               <p>Type to search across your local records.</p>
@@ -289,9 +374,9 @@ export const QuickSearchModal: React.FC<QuickSearchModalProps> = ({ isOpen, onCl
                   type="button"
                   onClick={() => openResult(item)}
                   onMouseEnter={() => setSelectedIndex(idx)}
-                  className={`w-full flex items-center justify-between p-2.5 rounded-xl text-left transition-all ${
+                  className={`search-result-item group w-full flex items-center justify-between p-2.5 rounded-xl text-left transition-all duration-150 cursor-pointer active:scale-[0.99] ${
                     isSelected
-                      ? 'bg-accent-mint/15 text-white border border-accent-mint/30'
+                      ? 'bg-accent-mint/15 text-white border border-accent-mint/30 shadow-sm'
                       : 'hover:bg-white/[0.04] text-content-secondary border border-transparent'
                   }`}
                 >
@@ -313,7 +398,7 @@ export const QuickSearchModal: React.FC<QuickSearchModalProps> = ({ isOpen, onCl
                         {item.badge}
                       </span>
                     )}
-                    <ArrowRight className="w-3.5 h-3.5 text-content-tertiary opacity-0 group-hover:opacity-100" />
+                    <ArrowRight className="w-3.5 h-3.5 text-content-tertiary opacity-0 group-hover:opacity-100 group-hover:text-accent-mint transition-all duration-200 group-hover:translate-x-0.5" />
                   </div>
                 </button>
               );

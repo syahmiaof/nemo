@@ -26,5 +26,6 @@
       "@/*": ["src/*"]
     }
   },
-  "include": ["src", "tests"]
+  "include": ["src", "tests"],
+  "exclude": ["node_modules", "dist", "tests/motion-scroll.test.ts"]
 }

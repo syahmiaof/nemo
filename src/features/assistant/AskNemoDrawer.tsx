@@ -17,6 +17,10 @@ import {
   SUGGESTED_QUESTIONS,
   type AssistantResponse,
 } from './intentEngine';
+import gsap from 'gsap';
+import { useGSAP } from '@gsap/react';
+import { useReducedMotion } from '@/design/useReducedMotion';
+gsap.registerPlugin(useGSAP);
 
 interface Message {
   id: string;
@@ -45,6 +49,103 @@ export const AskNemoDrawer: React.FC<AskNemoDrawerProps> = ({
   const [messages, setMessages] = useState<Message[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const backdropRef = useRef<HTMLDivElement>(null);
+  const drawerRef = useRef<HTMLDivElement>(null);
+  const loadingBubbleRef = useRef<HTMLDivElement>(null);
+  const animatedMessageIds = useRef(new Set<string>());
+  const isClosingRef = useRef(false);
+  const reduced = useReducedMotion();
+
+  // Smooth backdrop blur & slide-in drawer entrance with spring easing
+  useGSAP(() => {
+    if (!isOpen) return;
+    if (reduced) {
+      if (backdropRef.current) gsap.set(backdropRef.current, { opacity: 1 });
+      if (drawerRef.current) gsap.set(drawerRef.current, { x: '0%' });
+      return;
+    }
+
+    if (backdropRef.current) {
+      gsap.fromTo(
+        backdropRef.current,
+        { opacity: 0, backdropFilter: 'blur(0px)' },
+        { opacity: 1, backdropFilter: 'blur(8px)', duration: 0.45, ease: 'power2.out' }
+      );
+    }
+
+    if (drawerRef.current) {
+      gsap.fromTo(
+        drawerRef.current,
+        { x: '100%' },
+        { x: '0%', duration: 0.55, ease: 'back.out(1.18)' }
+      );
+    }
+  }, { dependencies: [isOpen, reduced] });
+
+  // Chat message bubbles animated on send and receive
+  useEffect(() => {
+    if (!isOpen || reduced) return;
+
+    messages.forEach((m) => {
+      if (!animatedMessageIds.current.has(m.id)) {
+        animatedMessageIds.current.add(m.id);
+        const bubble = document.querySelector<HTMLElement>(`[data-msg-id="${m.id}"]`);
+        if (bubble) {
+          if (m.sender === 'user') {
+            gsap.fromTo(
+              bubble,
+              { opacity: 0, y: 16, scale: 0.92, transformOrigin: 'bottom right' },
+              { opacity: 1, y: 0, scale: 1, duration: 0.38, ease: 'back.out(1.8)' }
+            );
+          } else {
+            gsap.fromTo(
+              bubble,
+              { opacity: 0, y: 22, scale: 0.94, transformOrigin: 'bottom left' },
+              { opacity: 1, y: 0, scale: 1, duration: 0.46, ease: 'power3.out' }
+            );
+
+            const subItems = bubble.querySelectorAll<HTMLElement>('.nemo-item-card, .nemo-chip');
+            if (subItems.length > 0) {
+              gsap.fromTo(
+                subItems,
+                { opacity: 0, y: 8, scale: 0.96 },
+                { opacity: 1, y: 0, scale: 1, duration: 0.3, stagger: 0.035, ease: 'power2.out', delay: 0.1 }
+              );
+            }
+          }
+        }
+      }
+    });
+  }, [messages, isOpen, reduced]);
+
+  // Loading bubble entrance animation
+  useEffect(() => {
+    if (loading && loadingBubbleRef.current && !reduced) {
+      gsap.fromTo(
+        loadingBubbleRef.current,
+        { opacity: 0, y: 12, scale: 0.95 },
+        { opacity: 1, y: 0, scale: 1, duration: 0.28, ease: 'power2.out' }
+      );
+    }
+  }, [loading, reduced]);
+
+  const handleClose = () => {
+    if (isClosingRef.current) return;
+    if (reduced || !drawerRef.current || !backdropRef.current) {
+      onClose();
+      return;
+    }
+    isClosingRef.current = true;
+    const tl = gsap.timeline({
+      onComplete: () => {
+        isClosingRef.current = false;
+        onClose();
+      },
+    });
+    tl.to(drawerRef.current, { x: '100%', duration: 0.3, ease: 'power3.in' })
+      .to(backdropRef.current, { opacity: 0, duration: 0.22, ease: 'power2.in' }, '-=0.15');
+  };
 
   // Initialize or handle initialQuestion
   useEffect(() => {
@@ -86,12 +187,12 @@ export const AskNemoDrawer: React.FC<AskNemoDrawerProps> = ({
     const handleKeyDown = (e: KeyboardEvent) => {
       if (!isOpen) return;
       if (e.key === 'Escape') {
-        onClose();
+        handleClose();
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, onClose]);
+  }, [isOpen, handleClose]);
 
   const handleSend = async (questionText: string) => {
     const text = questionText.trim();
@@ -137,6 +238,7 @@ export const AskNemoDrawer: React.FC<AskNemoDrawerProps> = ({
   };
 
   const handleClearHistory = () => {
+    animatedMessageIds.current.clear();
     setMessages([
       {
         id: `welcome-${Date.now()}`,
@@ -162,15 +264,19 @@ export const AskNemoDrawer: React.FC<AskNemoDrawerProps> = ({
       aria-modal="true"
       aria-labelledby="ask-nemo-heading"
     >
-      {/* Backdrop */}
+      {/* Backdrop with smooth blur */}
       <div
+        ref={backdropRef}
         className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
-        onClick={onClose}
+        onClick={handleClose}
         aria-hidden="true"
       />
 
-      {/* Drawer Panel */}
-      <div className="relative w-full sm:max-w-md h-full bg-[#0B1322] border-l border-white/10 shadow-2xl flex flex-col z-10 animate-in slide-in-from-right duration-250">
+      {/* Drawer Panel with spring easing */}
+      <div
+        ref={drawerRef}
+        className="relative w-full sm:max-w-md h-full bg-[#0B1322] border-l border-white/10 shadow-2xl flex flex-col z-10"
+      >
         {/* Header */}
         <header className="p-4 border-b border-white/10 flex items-center justify-between bg-[#0F1A2D]/80 backdrop-blur-md">
           <div className="flex items-center gap-2.5">
@@ -203,7 +309,7 @@ export const AskNemoDrawer: React.FC<AskNemoDrawerProps> = ({
             </button>
             <button
               type="button"
-              onClick={onClose}
+              onClick={handleClose}
               className="p-1.5 text-content-secondary hover:text-content-primary rounded-lg hover:bg-white/[0.06] transition-colors"
               aria-label="Close Ask Nemo drawer"
             >
@@ -217,8 +323,8 @@ export const AskNemoDrawer: React.FC<AskNemoDrawerProps> = ({
           {messages.map((m) => {
             if (m.sender === 'user') {
               return (
-                <div key={m.id} className="flex justify-end">
-                  <div className="max-w-[85%] bg-accent-ember/15 border border-accent-ember/30 text-content-primary p-3 rounded-2xl rounded-tr-sm text-xs leading-relaxed">
+                <div key={m.id} data-msg-id={m.id} className="flex justify-end">
+                  <div className="max-w-[85%] bg-accent-ember/15 border border-accent-ember/30 text-content-primary p-3 rounded-2xl rounded-tr-sm text-xs leading-relaxed shadow-sm">
                     <p className="font-medium text-white">{m.text}</p>
                     <span className="block text-[10px] text-content-tertiary text-right mt-1">
                       {m.timestamp}
@@ -232,7 +338,7 @@ export const AskNemoDrawer: React.FC<AskNemoDrawerProps> = ({
             if (!res) return null;
 
             return (
-              <div key={m.id} className="flex justify-start">
+              <div key={m.id} data-msg-id={m.id} className="flex justify-start">
                 <div className="max-w-[95%] w-full bg-[#132038] border border-white/10 rounded-2xl rounded-tl-sm p-4 space-y-3 text-xs shadow-lg">
                   <div className="flex items-center justify-between border-b border-white/[0.08] pb-2">
                     <span className="font-bold text-accent-mint flex items-center gap-1.5">
@@ -253,9 +359,9 @@ export const AskNemoDrawer: React.FC<AskNemoDrawerProps> = ({
                           type="button"
                           onClick={() => {
                             navigate(item.route);
-                            onClose();
+                            handleClose();
                           }}
-                          className="w-full text-left p-2.5 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.06] hover:border-accent-mint/30 transition-all flex items-center justify-between group"
+                          className="nemo-item-card w-full text-left p-2.5 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.06] hover:border-accent-mint/30 transition-all flex items-center justify-between group"
                         >
                           <div className="min-w-0 pr-2">
                             <p className="font-semibold text-white truncate text-xs group-hover:text-accent-mint transition-colors">
@@ -302,7 +408,7 @@ export const AskNemoDrawer: React.FC<AskNemoDrawerProps> = ({
                             key={chip}
                             type="button"
                             onClick={() => handleSend(chip)}
-                            className="text-[11px] px-2.5 py-1 rounded-full bg-white/[0.04] hover:bg-accent-mint/15 text-content-secondary hover:text-accent-mint border border-white/10 hover:border-accent-mint/30 transition-all"
+                            className="nemo-chip text-[11px] px-2.5 py-1 rounded-full bg-white/[0.04] hover:bg-accent-mint/15 text-content-secondary hover:text-accent-mint border border-white/10 hover:border-accent-mint/30 hover:scale-[1.03] active:scale-[0.98] transition-all"
                           >
                             {chip}
                           </button>
@@ -316,7 +422,7 @@ export const AskNemoDrawer: React.FC<AskNemoDrawerProps> = ({
           })}
 
           {loading && (
-            <div className="flex justify-start">
+            <div ref={loadingBubbleRef} className="flex justify-start">
               <div className="bg-[#132038] border border-white/10 rounded-2xl p-3 flex items-center gap-2 text-xs text-content-secondary">
                 <div className="w-2 h-2 rounded-full bg-accent-mint animate-pulse" />
                 <span>Computing from local workspace...</span>

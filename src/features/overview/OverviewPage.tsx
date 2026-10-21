@@ -1,29 +1,36 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useRef } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { Link } from 'react-router-dom';
 import {
-  Check,
   Plus,
   ArrowUpRight,
   FolderGit2,
   Clock,
   CheckCircle2,
-  X,
-  Target,
-  CalendarDays,
-  GraduationCap,
-  Activity,
 } from 'lucide-react';
+import { useGSAP } from '@gsap/react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { db, atomicSetTaskStatus } from '@/db/nemoDb';
 import { getWorkspaceMode, switchWorkspace } from '@/db/workspace';
 import { useToast } from '@/components/ui/Toast';
 import { TavolaSplineChart } from '@/components/ui/TavolaSplineChart';
 import { PageHeading, AnimatedNumber } from '@/components/ui/PageHeading';
-import { ProjectCard } from '@/features/projects/ProjectCard';
 import { QuickAddModal } from '@/app/QuickAddModal';
 import { SparkOfFocusCard } from './components/SparkOfFocusCard';
-import { getTodayLocalDateString, formatShortDate, parseLocalDateString } from '@/lib/dates';
+import { FocusSlotsSection } from './components/FocusSlotsSection';
+import { WeeklyMomentumCard } from './components/WeeklyMomentumCard';
+import { ActiveProjectsSection } from './components/ActiveProjectsSection';
+import { GoalsInMotionSection } from './components/GoalsInMotionSection';
+import { OperationalSection } from './components/OperationalSection';
+import { animateMetricSwitch } from './motion/overviewMotion';
+import { useReducedMotion } from '@/design/useReducedMotion';
+import { getTodayLocalDateString, parseLocalDateString } from '@/lib/dates';
 import type { Task } from '@/domain/types';
+
+if (typeof window !== 'undefined' && typeof window.matchMedia === 'function') {
+  gsap.registerPlugin(ScrollTrigger, useGSAP);
+}
 
 const localDay = (date: Date) =>
   `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
@@ -33,6 +40,9 @@ export function OverviewPage() {
   const [metric, setMetric] = useState<'tasks' | 'projects'>('tasks');
   const { success, error } = useToast();
   const today = getTodayLocalDateString();
+  const pageContainerRef = useRef<HTMLDivElement>(null);
+  const chartSummaryRef = useRef<HTMLDivElement>(null);
+  const reduced = useReducedMotion();
 
   const tasks = useLiveQuery(() => db.tasks.toArray(), []) || [];
   const projects = useLiveQuery(() => db.projects.toArray(), []) || [];
@@ -176,12 +186,35 @@ export function OverviewPage() {
     };
   }, [goals, milestones]);
 
+  // Recalculate ScrollTriggers when live query data changes
+  useGSAP(
+    () => {
+      if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return;
+      ScrollTrigger.refresh();
+    },
+    {
+      scope: pageContainerRef,
+      dependencies: [tasks.length, projects.length, assignments.length, goals.length, metric],
+    }
+  );
+
   const complete = async (task: Task) => {
     try {
       await atomicSetTaskStatus(db, task.id, 'done');
       success('Task completed', task.title);
     } catch (e) {
       error('Could not complete task', e instanceof Error ? e.message : 'Please retry.');
+    }
+  };
+
+  const removeFocus = async (id: string) => {
+    try {
+      const s = selections.find((sel) => sel.taskId === id);
+      if (s) {
+        await db.focusSelections.delete(s.id);
+      }
+    } catch {
+      error('Could not remove focus');
     }
   };
 
@@ -207,10 +240,19 @@ export function OverviewPage() {
     }
   };
 
+  const handleMetricChange = (newMetric: 'tasks' | 'projects') => {
+    if (newMetric === metric) return;
+    setMetric(newMetric);
+    if (chartSummaryRef.current && !reduced) {
+      animateMetricSwitch(chartSummaryRef.current);
+    }
+  };
+
   const hasData = tasks.length + projects.length + assignments.length > 0;
+  const activeProjects = (active.length > 0 ? active : projects.filter((p) => !p.archivedAt)).slice(0, 2);
 
   return (
-    <div className="overview-page">
+    <div ref={pageContainerRef} className="overview-page">
       {/* Editorial Page Heading */}
       <PageHeading
         title="Make room for progress."
@@ -278,7 +320,7 @@ export function OverviewPage() {
                   type="button"
                   aria-pressed={metric === m}
                   className={metric === m ? 'is-selected' : ''}
-                  onClick={() => setMetric(m)}
+                  onClick={() => handleMetricChange(m)}
                 >
                   {m === 'tasks' ? 'Tasks' : 'Projects'}
                 </button>
@@ -289,7 +331,7 @@ export function OverviewPage() {
             </Link>
           </div>
 
-          <div className="chart-summary">
+          <div ref={chartSummaryRef} className="chart-summary">
             <strong>
               <AnimatedNumber value={trend.total} />
             </strong>
@@ -328,445 +370,51 @@ export function OverviewPage() {
 
         {/* Right Tactical Stack: Today's Focus & Spark of Focus */}
         <div className="overview-right-stack">
-        <section className="glass-panel focus-panel" data-enter aria-labelledby="focus-title">
-          <div className="panel-heading">
-            <h2 id="focus-title">Today's focus</h2>
-            <span className="panel-meta">{focused.length} of 3 active slots</span>
-            <Link to="/tasks" className="icon-button" aria-label="Manage tasks">
-              <ArrowUpRight size={20} />
-            </Link>
-          </div>
-
-          <div className="focus-stack">
-            {focused.map((task, index) => {
-              const project = projects.find((p) => p.id === task.parentId);
-              return (
-                <article className={`focus-ticket tone-${index % 3}`} key={task.id}>
-                  <div className="ticket-meta">
-                    <span className="ticket-badge">
-                      <Target size={13} />
-                      #{String(index + 1).padStart(2, '0')} · ⏱ {task.estimatedMinutes || 25} min
-                    </span>
-                    <button
-                      type="button"
-                      aria-label={`Remove ${task.title} from focus`}
-                      onClick={() => {
-                        const s = selections.find((sel) => sel.taskId === task.id);
-                        if (s) {
-                          void db.focusSelections.delete(s.id).catch(() => error('Could not remove focus'));
-                        }
-                      }}
-                      className="ticket-remove"
-                    >
-                      <X size={15} />
-                    </button>
-                  </div>
-
-                  <h3 className="ticket-title">{task.title}</h3>
-
-                  <div className="ticket-context">
-                    <span>{project ? project.title : 'Standalone focus'}</span>
-                    <span className="ticket-priority-tag">{task.priority}</span>
-                  </div>
-
-                  <div className="ticket-bottom">
-                    <span className="ticket-status-label">
-                      {task.status === 'in_progress' ? 'In progress' : 'Focus slot'}
-                    </span>
-                    <button
-                      type="button"
-                      className="ticket-complete"
-                      onClick={() => void complete(task)}
-                      aria-label={`Complete ${task.title}`}
-                    >
-                      <Check size={18} strokeWidth={2.8} />
-                    </button>
-                  </div>
-                </article>
-              );
-            })}
-
-            {focused.length === 0 && (
-              <div className="focus-empty">
-                <Target size={24} />
-                <h3>One thing at a time.</h3>
-                <p>Choose up to three tasks and give them your complete focus.</p>
-              </div>
-            )}
-
-            {focused.length < 3 && (
-              <div className="focus-slot-picker">
-                <label htmlFor="focus-choice" className="sr-only">Add task to focus</label>
-                <div className="focus-picker-inner">
-                  <Plus size={16} className="text-content-secondary" />
-                  <select
-                    id="focus-choice"
-                    value=""
-                    onChange={(e) => {
-                      if (e.target.value) void focus(e.target.value);
-                    }}
-                    className="focus-picker-select"
-                  >
-                    <option value="">+ Assign next focus task…</option>
-                    {open
-                      .filter((t) => !focused.some((f) => f.id === t.id))
-                      .map((t) => (
-                        <option key={t.id} value={t.id}>
-                          {t.title}
-                        </option>
-                      ))}
-                  </select>
-                </div>
-              </div>
-            )}
-          </div>
-        </section>
+          <FocusSlotsSection
+            focused={focused}
+            projects={projects}
+            selections={selections}
+            openTasks={open}
+            onComplete={complete}
+            onRemoveFocus={removeFocus}
+            onAddFocus={focus}
+          />
 
           <SparkOfFocusCard />
         </div>
       </div>
 
-      {/* Middle Grid: Weekly Momentum Donut Gauge + Active Projects (Tavola "The room" & "Still to come" analogue) */}
-      <div className="overview-middle-grid" data-enter>
-        {/* Left: Weekly Targets Donut Gauge */}
-        <section className="glass-panel room-gauge-panel" aria-labelledby="targets-title">
-          <div className="panel-heading">
-            <h2 id="targets-title">Weekly momentum</h2>
-            <Link to="/insights" className="icon-button" aria-label="Open insights">
-              <ArrowUpRight size={18} />
-            </Link>
-          </div>
+      {/* Middle Grid: Weekly Momentum Donut Gauge + Active Projects (In the making) */}
+      <div className="overview-middle-grid">
+        <WeeklyMomentumCard
+          weeklyRatio={weeklyRatio}
+          finishedCount={trend.total}
+          openCount={open.length}
+          activeProjectCount={active.length}
+          academicCount={academic.length}
+          overdueCount={overdue.length}
+        />
 
-          <div className="room-gauge-body">
-            <div className="gauge-donut-container">
-              <svg viewBox="0 0 160 160" className="gauge-donut-svg">
-                <circle
-                  cx="80"
-                  cy="80"
-                  r="62"
-                  fill="none"
-                  stroke="rgba(255, 255, 255, 0.08)"
-                  strokeWidth="14"
-                />
-                <circle
-                  cx="80"
-                  cy="80"
-                  r="62"
-                  fill="none"
-                  stroke="url(#donut-grad)"
-                  strokeWidth="14"
-                  strokeDasharray={`${(weeklyRatio / 100) * 389.5} 389.5`}
-                  strokeDashoffset="97.4"
-                  strokeLinecap="round"
-                />
-                <defs>
-                  <linearGradient id="donut-grad" x1="0" y1="0" x2="1" y2="1">
-                    <stop offset="0%" stopColor="#C3E9DA" />
-                    <stop offset="50%" stopColor="#F5C8BC" />
-                    <stop offset="100%" stopColor="#FAE392" />
-                  </linearGradient>
-                </defs>
-              </svg>
-              <div className="gauge-donut-label">
-                <strong>{weeklyRatio}%</strong>
-                <span>completed</span>
-              </div>
-            </div>
-
-            <div className="gauge-legend-list">
-              <div className="gauge-legend-item">
-                <span className="dot dot-mint" />
-                <span>Finished: {trend.total}</span>
-              </div>
-              <div className="gauge-legend-item">
-                <span className="dot dot-peach" />
-                <span>Open: {open.length}</span>
-              </div>
-              <div className="gauge-legend-item">
-                <span className="dot dot-amber" />
-                <span>Projects: {active.length}</span>
-              </div>
-              <div className="gauge-legend-item">
-                <span className="dot dot-slate" />
-                <span>Study: {academic.length}</span>
-              </div>
-            </div>
-
-            <div className="gauge-status-pill">
-              <span className="status-live-dot" />
-              <span>
-                {overdue.length > 0
-                  ? `${overdue.length} items require prompt attention`
-                  : 'All priority deliverables on schedule'}
-              </span>
-            </div>
-          </div>
-        </section>
-
-        {/* Right: In the Making (Active Projects Grid) */}
-        <section className="in-the-making-section" aria-labelledby="projects-title">
-          <div className="section-heading">
-            <div>
-              <h2 id="projects-title">In the making</h2>
-              <p>Your active projects, one step closer.</p>
-            </div>
-            <Link to="/projects" className="section-link">
-              All projects <ArrowUpRight size={18} />
-            </Link>
-          </div>
-
-          <div className="overview-project-grid">
-            {(active.length > 0 ? active : projects.filter((p) => !p.archivedAt)).slice(0, 2).map((p) => (
-              <ProjectCard key={p.id} project={p} milestones={milestones} tasks={tasks} />
-            ))}
-            {projects.filter((p) => !p.archivedAt).length === 0 && (
-              <div className="glass-panel empty-inline">
-                No projects yet. <Link to="/projects">Start your first project →</Link>
-              </div>
-            )}
-          </div>
-        </section>
+        <ActiveProjectsSection
+          projects={activeProjects}
+          milestones={milestones}
+          tasks={tasks}
+        />
       </div>
 
       {/* Motivational Goals in Motion Visual Section */}
-      <section className="glass-panel goals-motion-panel mt-6 p-6 rounded-2xl relative overflow-hidden" data-enter aria-labelledby="goals-motion-title">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-accent-mint/15 border border-accent-mint/30 flex items-center justify-center text-accent-mint">
-              <Target size={20} />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h2 id="goals-motion-title" className="text-base font-bold text-content-primary">
-                  Goals in motion
-                </h2>
-                <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-accent-mint/15 text-accent-mint border border-accent-mint/30">
-                  {goalStats.activeGoals.length} Active
-                </span>
-              </div>
-              <p className="text-xs text-content-secondary mt-0.5">
-                Every milestone achieved brings your vision one step closer to reality.
-              </p>
-            </div>
-          </div>
+      <GoalsInMotionSection
+        goalStats={goalStats}
+        milestones={milestones}
+      />
 
-          <Link
-            to="/goals"
-            className="self-start sm:self-auto inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface-subtle hover:bg-surface border border-border-subtle text-xs font-semibold text-content-primary hover:text-accent-mint transition-colors"
-          >
-            <span>Explore all goals</span>
-            <ArrowUpRight size={14} />
-          </Link>
-        </div>
-
-        {/* Ambition Progress Bar & Stats */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-5">
-          <div className="p-3.5 rounded-xl bg-surface-subtle border border-border-subtle flex flex-col justify-between">
-            <span className="text-[11px] text-content-tertiary font-medium">Active Ambitions</span>
-            <div className="flex items-baseline gap-2 mt-1">
-              <strong className="text-xl font-bold text-content-primary">{goalStats.activeGoals.length}</strong>
-              <span className="text-xs text-content-secondary font-mono">goals ongoing</span>
-            </div>
-          </div>
-
-          <div className="p-3.5 rounded-xl bg-surface-subtle border border-border-subtle flex flex-col justify-between">
-            <span className="text-[11px] text-content-tertiary font-medium">Milestones Reached</span>
-            <div className="flex items-baseline gap-2 mt-1">
-              <strong className="text-xl font-bold text-accent-mint">{goalStats.doneMilestones.length}</strong>
-              <span className="text-xs text-content-secondary font-mono">of {goalStats.goalMilestones.length} total</span>
-            </div>
-          </div>
-
-          <div className="p-3.5 rounded-xl bg-surface-subtle border border-border-subtle flex flex-col justify-between">
-            <div className="flex items-center justify-between text-[11px] text-content-tertiary">
-              <span className="font-medium">Overall Ambition Rate</span>
-              <span className="font-mono text-content-primary font-semibold">{goalStats.milestoneRate}%</span>
-            </div>
-            <div className="w-full h-2 rounded-full bg-white/[0.08] overflow-hidden mt-2">
-              <div
-                className="h-full rounded-full transition-all duration-700 shadow-sm"
-                style={{
-                  width: `${goalStats.milestoneRate}%`,
-                  background: 'linear-gradient(90deg, #A8DCC8 0%, #EFB2A2 100%)',
-                }}
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Active Goal Spotlight Cards */}
-        {goalStats.activeGoals.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-            {goalStats.activeGoals.slice(0, 3).map((goal) => {
-              const gMilestones = milestones.filter(
-                (m) => m.ownerType === 'goal' && m.ownerId === goal.id
-              );
-              const gDone = gMilestones.filter((m) => m.completedAt).length;
-              const gRate = gMilestones.length > 0 ? Math.round((gDone / gMilestones.length) * 100) : 0;
-              const nextPending = gMilestones.find((m) => !m.completedAt);
-
-              return (
-                <div
-                  key={goal.id}
-                  className="p-4 rounded-xl bg-surface-solid/80 border border-white/[0.08] hover:border-accent-mint/40 transition-colors flex flex-col justify-between space-y-3 group"
-                >
-                  <div>
-                    <div className="flex items-center justify-between gap-2 mb-1.5">
-                      {goal.category ? (
-                        <span className="text-[10px] font-mono tracking-wider uppercase text-accent-mint font-semibold">
-                          {goal.category}
-                        </span>
-                      ) : (
-                        <span className="text-[10px] text-content-tertiary font-mono">General</span>
-                      )}
-                      {goal.targetDate && (
-                        <span className="text-[10px] text-content-tertiary font-mono">
-                          Target: {formatShortDate(goal.targetDate)}
-                        </span>
-                      )}
-                    </div>
-
-                    <h3 className="text-sm font-bold text-content-primary group-hover:text-accent-mint transition-colors line-clamp-1">
-                      {goal.title}
-                    </h3>
-                    {goal.why && (
-                      <p className="text-xs text-content-secondary line-clamp-2 mt-1 italic opacity-80">
-                        "{goal.why}"
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="space-y-1.5 pt-2 border-t border-white/[0.06]">
-                    <div className="flex items-center justify-between text-[11px] text-content-tertiary">
-                      <span className="truncate max-w-[160px]">
-                        {nextPending ? `Next: ${nextPending.title}` : gMilestones.length > 0 ? 'All milestones achieved!' : 'No milestones set'}
-                      </span>
-                      <span className="font-mono text-content-primary font-semibold shrink-0">
-                        {gDone}/{gMilestones.length} ({gRate}%)
-                      </span>
-                    </div>
-                    <div className="w-full h-1.5 rounded-full bg-white/[0.08] overflow-hidden">
-                      <div
-                        className="h-full rounded-full transition-all duration-500 bg-accent-mint"
-                        style={{ width: `${gRate}%` }}
-                      />
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        ) : (
-          <div className="p-4 rounded-xl bg-surface-subtle border border-border-subtle flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-            <p className="text-content-secondary">
-              Set your first high-level ambition and break it into achievable milestones.
-            </p>
-            <Link
-              to="/goals"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-accent-mint hover:bg-accent-mint/90 text-navy-950 font-semibold text-xs transition-colors shrink-0"
-            >
-              <Plus size={14} />
-              <span>Set a Goal</span>
-            </Link>
-          </div>
-        )}
-      </section>
-
-      {/* Operational Footer (Tavola 3-Column Footer analogue) */}
-      <div className="overview-bottom-grid" data-enter>
-        {/* Column 1: Upcoming Tasks */}
-        <section className="glass-panel operational-panel" aria-labelledby="commitments-title">
-          <div className="panel-heading">
-            <h2 id="commitments-title">Coming into view</h2>
-            <Link to="/calendar" className="icon-button" aria-label="Open calendar">
-              <CalendarDays size={18} />
-            </Link>
-          </div>
-          <div className="operational-list">
-            {nextTasks.map((t) => (
-              <div className="commitment-row" key={t.id}>
-                <button
-                  type="button"
-                  className="completion-ring"
-                  aria-label={`Complete ${t.title}`}
-                  onClick={() => void complete(t)}
-                >
-                  <Check size={14} />
-                </button>
-                <Link to="/tasks" className="commitment-text">
-                  <span className="commitment-title">{t.title}</span>
-                  <span className="commitment-meta">
-                    {t.dueDate ? formatShortDate(t.dueDate) : 'No deadline'} · {t.priority} priority
-                  </span>
-                </Link>
-                <ArrowUpRight size={16} className="commitment-arrow" />
-              </div>
-            ))}
-            {nextTasks.length === 0 && (
-              <p className="empty-copy">You're all clear. Capture your next task when you're ready.</p>
-            )}
-          </div>
-        </section>
-
-        {/* Column 2: Academic Deadlines */}
-        <section className="glass-panel operational-panel" aria-labelledby="study-title">
-          <div className="panel-heading">
-            <h2 id="study-title">On the study desk</h2>
-            <Link to="/academics" className="icon-button" aria-label="Open academics">
-              <GraduationCap size={18} />
-            </Link>
-          </div>
-          <div className="operational-list">
-            {academic.map((a) => (
-              <Link className="academic-deadline" key={a.id} to={`/academics/assignments/${a.id}`}>
-                <span className="deadline-date">{formatShortDate(a.dueDate)}</span>
-                <div className="academic-copy">
-                  <h3>{a.title}</h3>
-                  <p>{String(a.status).replace(/_/g, ' ')}</p>
-                </div>
-                <ArrowUpRight size={16} className="commitment-arrow" />
-              </Link>
-            ))}
-            {academic.length === 0 && (
-              <p className="empty-copy">No outstanding coursework. Your next deadline will appear here.</p>
-            )}
-          </div>
-        </section>
-
-        {/* Column 3: Workspace Activity Stream */}
-        <section className="glass-panel operational-panel" aria-labelledby="activity-title">
-          <div className="panel-heading">
-            <h2 id="activity-title">Recent activity</h2>
-            <div className="icon-button" aria-hidden="true">
-              <Activity size={18} />
-            </div>
-          </div>
-          <div className="operational-list">
-            {recentCompleted.map((t) => (
-              <div className="activity-row" key={t.id}>
-                <div className="activity-icon-wrap">
-                  <CheckCircle2 size={16} className="text-[#a8dcc8]" />
-                </div>
-                <div className="activity-copy">
-                  <p className="activity-title">Completed: {t.title}</p>
-                  <span className="activity-timestamp">
-                    {t.completedAt
-                      ? new Date(t.completedAt).toLocaleDateString('en-US', {
-                          weekday: 'short',
-                          hour: 'numeric',
-                          minute: '2-digit',
-                        })
-                      : 'Recently'}
-                  </span>
-                </div>
-              </div>
-            ))}
-            {recentCompleted.length === 0 && (
-              <p className="empty-copy">Activity records will appear here as you complete work.</p>
-            )}
-          </div>
-        </section>
-      </div>
+      {/* Operational Footer (3-Column Layout: Commitments, Study, Recent Activity) */}
+      <OperationalSection
+        nextTasks={nextTasks}
+        academic={academic}
+        recentCompleted={recentCompleted}
+        onComplete={complete}
+      />
 
       <QuickAddModal isOpen={quickAdd} onClose={() => setQuickAdd(false)} />
     </div>

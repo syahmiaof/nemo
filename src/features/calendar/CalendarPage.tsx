@@ -27,6 +27,8 @@ import {
 import { generateId } from '@/lib/ids';
 import type { CalendarEvent, ProjectedCalendarItem } from '@/domain/types';
 import { useReducedMotion } from '@/design/useReducedMotion';
+import { useScrollMotion } from '@/design/useScrollMotion';
+
 import { formatClockTime } from '@/lib/timeFormat';
 
 gsap.registerPlugin(useGSAP);
@@ -54,8 +56,124 @@ export const CalendarPage: React.FC = () => {
   const [viewMode, setViewMode] = useState<'month' | 'week' | 'agenda'>(() => window.matchMedia('(max-width: 767px)').matches ? 'agenda' : 'month');
   const [currentDate, setCurrentDate] = useState<Date>(() => new Date());
   const motionRoot = useRef<HTMLDivElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const viewToggleRef = useRef<HTMLDivElement>(null);
+  const togglePillRef = useRef<HTMLDivElement>(null);
+  const monthGridRef = useRef<HTMLDivElement>(null);
+  const weekGridRef = useRef<HTMLDivElement>(null);
   const lastPeriod = useRef<number | null>(null);
   const reduced = useReducedMotion();
+
+  // Header controls entrance choreography
+  useGSAP(() => {
+    if (reduced || !headerRef.current) return;
+    const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+    tl.fromTo(
+      headerRef.current.querySelectorAll('.calendar-nav-btn'),
+      { opacity: 0, scale: 0.8 },
+      { opacity: 1, scale: 1, duration: 0.35, stagger: 0.05, ease: 'back.out(2)', clearProps: 'transform,opacity' }
+    );
+
+    tl.fromTo(
+      headerRef.current.querySelectorAll('.calendar-select-control'),
+      { opacity: 0, y: -6 },
+      { opacity: 1, y: 0, duration: 0.3, stagger: 0.05, clearProps: 'transform,opacity' },
+      '-=0.2'
+    );
+
+    tl.fromTo(
+      headerRef.current.querySelector('.calendar-today-btn'),
+      { opacity: 0, x: -8 },
+      { opacity: 1, x: 0, duration: 0.32, clearProps: 'transform,opacity' },
+      '-=0.2'
+    );
+
+    tl.fromTo(
+      headerRef.current.querySelector('.calendar-view-toggle'),
+      { opacity: 0, scale: 0.95 },
+      { opacity: 1, scale: 1, duration: 0.32, clearProps: 'transform,opacity' },
+      '-=0.2'
+    );
+
+    tl.fromTo(
+      headerRef.current.querySelector('.calendar-new-event-btn'),
+      { opacity: 0, scale: 0.9, y: 4 },
+      { opacity: 1, scale: 1, y: 0, duration: 0.35, ease: 'back.out(1.5)', clearProps: 'transform,opacity' },
+      '-=0.2'
+    );
+  }, { scope: headerRef, dependencies: [reduced] });
+
+  // Month/Week/Agenda toggle sliding pill animation
+  useGSAP(() => {
+    if (!viewToggleRef.current || !togglePillRef.current) return;
+    const container = viewToggleRef.current;
+    const pill = togglePillRef.current;
+    const activeBtn = container.querySelector<HTMLButtonElement>(`button[data-mode="${viewMode}"]`);
+    if (!activeBtn) return;
+
+    const targetLeft = activeBtn.offsetLeft;
+    const targetWidth = activeBtn.offsetWidth;
+
+    if (reduced) {
+      gsap.set(pill, { left: targetLeft, width: targetWidth, opacity: 1 });
+      return;
+    }
+
+    gsap.to(pill, {
+      left: targetLeft,
+      width: targetWidth,
+      duration: 0.28,
+      ease: 'power3.out',
+      overwrite: 'auto',
+    });
+  }, { scope: viewToggleRef, dependencies: [viewMode, reduced] });
+
+  // Month grid cells staggered entrance
+  useGSAP(() => {
+    if (reduced || viewMode !== 'month' || !monthGridRef.current) return;
+    const cells = monthGridRef.current.querySelectorAll('.calendar-cell');
+    if (!cells.length) return;
+
+    gsap.fromTo(
+      cells,
+      { opacity: 0, scale: 0.94, y: 8 },
+      {
+        opacity: 1,
+        scale: 1,
+        y: 0,
+        duration: 0.35,
+        stagger: {
+          grid: [6, 7],
+          from: 'start',
+          amount: 0.22,
+        },
+        ease: 'power2.out',
+        clearProps: 'transform,opacity',
+      }
+    );
+  }, { scope: monthGridRef, dependencies: [currentDate.getFullYear(), currentDate.getMonth(), viewMode, reduced], revertOnUpdate: true });
+
+  // Week grid columns staggered entrance
+  useGSAP(() => {
+    if (reduced || viewMode !== 'week' || !weekGridRef.current) return;
+    const cols = weekGridRef.current.querySelectorAll('.calendar-week-col');
+    if (!cols.length) return;
+
+    gsap.fromTo(
+      cols,
+      { opacity: 0, y: 14, scale: 0.98 },
+      {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        duration: 0.38,
+        stagger: 0.035,
+        ease: 'power3.out',
+        clearProps: 'transform,opacity',
+      }
+    );
+  }, { scope: weekGridRef, dependencies: [currentDate.getTime(), viewMode, reduced], revertOnUpdate: true });
   useGSAP(() => {
     const period = currentDate.getTime();
     const previous = lastPeriod.current;
@@ -176,6 +294,19 @@ export const CalendarPage: React.FC = () => {
 
     return list;
   }, [tasks, assignments, milestones, events, hourFormat]);
+
+  const agendaContainerRef = useScrollMotion<HTMLDivElement>({
+    selector: '.calendar-agenda-row',
+    stagger: 0.045,
+    y: 18,
+    scale: 0.985,
+    duration: 0.5,
+    ease: 'power3.out',
+    bidirectional: true,
+    threshold: 0.08,
+    rootMargin: '0px 0px -25px 0px',
+    key: `${currentDate.getFullYear()}-${currentDate.getMonth()}:${projectedItems.length}`,
+  });
 
   // Index projected items by date in a single pass O(N) for instant O(1) cell lookups
   const itemsByDate = useMemo(() => {
@@ -344,19 +475,19 @@ export const CalendarPage: React.FC = () => {
   return (
     <div ref={motionRoot} className="calendar-page space-y-6">
       {/* Calendar Controls Bar */}
-      <div className="page-toolbar flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-2xl glass-panel relative z-10">
+      <div ref={headerRef} className="page-toolbar flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-2xl glass-panel relative z-10">
         <div className="calendar-date-controls flex flex-wrap items-center gap-2.5">
           <div className="flex items-center gap-1">
             <button
               onClick={handlePrev}
-              className="p-1.5 rounded-lg text-content-secondary hover:text-content-primary hover:bg-surface-hover transition-colors cursor-pointer"
+              className="calendar-nav-btn p-1.5 rounded-lg text-content-secondary hover:text-content-primary hover:bg-surface-hover transition-colors cursor-pointer"
               aria-label="Previous month"
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
             <button
               onClick={handleNext}
-              className="p-1.5 rounded-lg text-content-secondary hover:text-content-primary hover:bg-surface-hover transition-colors cursor-pointer"
+              className="calendar-nav-btn p-1.5 rounded-lg text-content-secondary hover:text-content-primary hover:bg-surface-hover transition-colors cursor-pointer"
               aria-label="Next month"
             >
               <ChevronRight className="w-5 h-5" />
@@ -368,7 +499,7 @@ export const CalendarPage: React.FC = () => {
             <select
               value={currentMonthNum}
               onChange={handleMonthChange}
-              className="px-2.5 py-1.5 rounded-xl bg-surface border border-border-subtle text-xs font-bold text-content-primary cursor-pointer hover:border-border-emphasis transition-colors"
+              className="calendar-select-control px-2.5 py-1.5 rounded-xl bg-surface border border-border-subtle text-xs font-bold text-content-primary cursor-pointer hover:border-border-emphasis transition-colors"
               aria-label="Select month"
             >
               {monthsList.map((m, idx) => (
@@ -379,7 +510,7 @@ export const CalendarPage: React.FC = () => {
             <select
               value={currentYearNum}
               onChange={handleYearChange}
-              className="px-2.5 py-1.5 rounded-xl bg-surface border border-border-subtle text-xs font-bold text-content-primary cursor-pointer hover:border-border-emphasis transition-colors font-mono"
+              className="calendar-select-control px-2.5 py-1.5 rounded-xl bg-surface border border-border-subtle text-xs font-bold text-content-primary cursor-pointer hover:border-border-emphasis transition-colors font-mono"
               aria-label="Select year"
             >
               {yearsRange.map((y) => (
@@ -391,7 +522,7 @@ export const CalendarPage: React.FC = () => {
           <button
             type="button"
             onClick={handleToday}
-            className="text-xs font-medium text-content-secondary hover:text-content-primary transition-colors flex items-center gap-1.5 px-2 py-1 rounded-lg hover:bg-surface-hover cursor-pointer"
+            className="calendar-today-btn text-xs font-medium text-content-secondary hover:text-content-primary transition-colors flex items-center gap-1.5 px-2 py-1 rounded-lg hover:bg-surface-hover cursor-pointer"
             title="Jump to today"
           >
             <Calendar className="w-3.5 h-3.5 text-content-tertiary" />
@@ -401,15 +532,21 @@ export const CalendarPage: React.FC = () => {
 
         <div className="calendar-view-controls flex items-center gap-2 self-end sm:self-center">
           {/* View Mode Toggle */}
-          <div className="flex p-1 rounded-xl bg-surface-muted/60 border border-border-subtle">
+          <div ref={viewToggleRef} className="calendar-view-toggle relative flex p-1 rounded-xl bg-surface-muted/60 border border-border-subtle">
+            <div
+              ref={togglePillRef}
+              className="absolute top-1 bottom-1 rounded-lg bg-accent-mint/20 border border-accent-mint/40 pointer-events-none transition-opacity"
+              style={{ left: 4, width: 60 }}
+            />
             {(['month', 'week', 'agenda'] as const).map((m) => (
               <button
                 key={m}
+                data-mode={m}
                 aria-pressed={viewMode === m}
                 onClick={() => setViewMode(m)}
-                className={`px-3 py-1 text-xs font-semibold rounded-lg capitalize transition-all ${
+                className={`relative z-10 px-3 py-1 text-xs font-semibold rounded-lg capitalize transition-colors ${
                   viewMode === m
-                    ? 'bg-accent-mint/15 text-accent-mint shadow-sm border border-accent-mint/35 font-bold'
+                    ? 'text-accent-mint font-bold'
                     : 'text-content-tertiary hover:text-content-primary'
                 }`}
               >
@@ -418,7 +555,7 @@ export const CalendarPage: React.FC = () => {
             ))}
           </div>
 
-          <Button size="sm" onClick={() => { resetEventForm(); setIsEventModalOpen(true); }} className="gap-1.5">
+          <Button size="sm" onClick={() => { resetEventForm(); setIsEventModalOpen(true); }} className="calendar-new-event-btn gap-1.5">
             <Plus className="w-4 h-4" />
             <span>Event</span>
           </Button>
@@ -436,7 +573,7 @@ export const CalendarPage: React.FC = () => {
           </div>
 
           {/* 42-day cells grid */}
-          <div className="grid grid-cols-7 divide-x divide-y divide-border-subtle">
+          <div ref={monthGridRef} className="grid grid-cols-7 divide-x divide-y divide-border-subtle">
             {monthDays.map((dayDate, idx) => {
               const year = dayDate.getFullYear();
               const month = String(dayDate.getMonth() + 1).padStart(2, '0');
@@ -450,7 +587,7 @@ export const CalendarPage: React.FC = () => {
               return (
                 <div
                   key={idx}
-                  className={`min-h-[110px] p-2.5 flex flex-col justify-between transition-colors ${
+                  className={`calendar-cell min-h-[110px] p-2.5 flex flex-col justify-between transition-colors ${
                     !isCurrentMonth ? 'bg-surface-muted/20 opacity-40' : 'bg-transparent hover:bg-surface-muted/20'
                   }`}
                 >
@@ -508,7 +645,7 @@ export const CalendarPage: React.FC = () => {
             ))}
           </div>
 
-          <div className="grid grid-cols-7 divide-x divide-border-subtle min-h-[360px]">
+          <div ref={weekGridRef} className="grid grid-cols-7 divide-x divide-border-subtle min-h-[360px]">
             {weekDays.map((dayDate, idx) => {
               const year = dayDate.getFullYear();
               const month = String(dayDate.getMonth() + 1).padStart(2, '0');
@@ -518,7 +655,7 @@ export const CalendarPage: React.FC = () => {
               const itemsForDay = itemsByDate.get(dateKey) || [];
 
               return (
-                <div key={idx} className="p-2 space-y-2">
+                <div key={idx} className="calendar-week-col p-2 space-y-2">
                   <div className="text-center pb-2 border-b border-border-subtle">
                     <span
                       className={`text-xs font-mono font-semibold px-2 py-0.5 rounded-full ${
@@ -556,7 +693,7 @@ export const CalendarPage: React.FC = () => {
 
       {/* Agenda View */}
       {viewMode === 'agenda' && (
-        <div className="calendar-agenda space-y-4 max-w-3xl mx-auto">
+        <div ref={agendaContainerRef} className="calendar-agenda space-y-4 max-w-3xl mx-auto">
           {projectedItems.filter(item => item.date.startsWith(`${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}`)).length === 0 ? (
             <div className="p-8 text-center rounded-2xl bg-surface border border-border-subtle text-content-secondary">
               No projected deadlines or events scheduled.

@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useLiveQuery } from 'dexie-react-hooks';
+import gsap from 'gsap';
+import { useGSAP } from '@gsap/react';
 import {
   ArrowLeft,
   Calendar,
@@ -27,6 +29,10 @@ import { generateId } from '@/lib/ids';
 import { generateTypographicCover, isValidWebUrl, getProjectWebPreviewUrl, getFallbackWebPreviewUrl } from '@/lib/utils';
 import { ProjectFormModal } from './ProjectFormModal';
 import type { Milestone, Task } from '@/domain/types';
+import { useReducedMotion } from '@/design/useReducedMotion';
+import { animateTaskCompletion } from '@/design/motion';
+
+gsap.registerPlugin(useGSAP);
 
 export const ProjectDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -45,6 +51,9 @@ export const ProjectDetailPage: React.FC = () => {
   // Task inline creation
   const [newTaskTitle, setNewTaskTitle] = useState('');
   const [newTaskDate, setNewTaskDate] = useState('');
+
+  const detailRootRef = useRef<HTMLDivElement>(null);
+  const reducedMotion = useReducedMotion();
 
   const project = useLiveQuery(() => (id ? db.projects.get(id) : undefined), [id]);
   const milestones = useLiveQuery(
@@ -195,10 +204,42 @@ export const ProjectDetailPage: React.FC = () => {
     navigate('/projects');
   };
 
+  useGSAP(() => {
+    if (reducedMotion || !project) {
+      gsap.set('.project-detail-header, .project-hero-card, .project-detail-grid > div', {
+        clearProps: 'all',
+      });
+      return;
+    }
+
+    const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+    tl.fromTo(
+      '.project-detail-header',
+      { opacity: 0, y: -8 },
+      { opacity: 1, y: 0, duration: 0.4, clearProps: 'transform,opacity' },
+      0
+    );
+
+    tl.fromTo(
+      '.project-hero-card',
+      { opacity: 0, y: 18, scale: 0.98 },
+      { opacity: 1, y: 0, scale: 1, duration: 0.55, clearProps: 'transform,opacity' },
+      0.05
+    );
+
+    tl.fromTo(
+      '.project-detail-grid > div',
+      { opacity: 0, y: 14 },
+      { opacity: 1, y: 0, duration: 0.48, stagger: 0.08, clearProps: 'transform,opacity' },
+      0.15
+    );
+  }, { scope: detailRootRef, dependencies: [project?.id, reducedMotion] });
+
   return (
-    <div className="space-y-6 max-w-5xl mx-auto animate-in fade-in duration-200">
+    <div ref={detailRootRef} className="space-y-6 max-w-5xl mx-auto">
       {/* Back button & Actions bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="project-detail-header flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <Link
           to="/projects"
           className="inline-flex items-center gap-1.5 text-xs text-content-secondary hover:text-content-primary transition-colors"
@@ -238,7 +279,7 @@ export const ProjectDetailPage: React.FC = () => {
       </div>
 
       {/* Main Hero Card */}
-      <div className="rounded-2xl glass-panel relative overflow-hidden shadow-2xl">
+      <div className="project-hero-card rounded-2xl glass-panel relative overflow-hidden shadow-2xl">
         {/* Cover Header */}
         <div className="h-48 md:h-64 w-full overflow-hidden bg-surface-solid/60 border-b border-white/10 relative">
           {coverUrl && (
@@ -376,7 +417,7 @@ export const ProjectDetailPage: React.FC = () => {
       </div>
 
       {/* Grid: Milestones & Tasks */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="project-detail-grid grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Milestones Card */}
         <div className="p-6 rounded-2xl bg-surface border border-border-subtle space-y-4">
           <div className="flex items-center justify-between pb-3 border-b border-border-subtle">
@@ -415,7 +456,10 @@ export const ProjectDetailPage: React.FC = () => {
                 >
                   <div className="flex items-center gap-3 min-w-0">
                     <button
-                      onClick={() => handleToggleMilestone(m)}
+                      onClick={(e) => {
+                        animateTaskCompletion(e.currentTarget);
+                        handleToggleMilestone(m);
+                      }}
                       className="text-content-tertiary hover:text-accent-mint p-0.5"
                     >
                       {m.completedAt ? (
@@ -481,7 +525,10 @@ export const ProjectDetailPage: React.FC = () => {
                 >
                   <div className="flex items-center gap-3 min-w-0">
                     <button
-                      onClick={() => handleToggleTask(task)}
+                      onClick={(e) => {
+                        animateTaskCompletion(e.currentTarget);
+                        handleToggleTask(task);
+                      }}
                       className="text-content-tertiary hover:text-accent-mint p-0.5"
                     >
                       {task.status === 'done' ? (

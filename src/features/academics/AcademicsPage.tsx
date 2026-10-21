@@ -33,9 +33,14 @@ import { generateId } from '@/lib/ids';
 import { formatDisplayDate, isOverdue, getTodayLocalDateString } from '@/lib/dates';
 import { isValidWebUrl } from '@/lib/utils';
 import type { Assignment, AssignmentStatus, Task } from '@/domain/types';
-import { useCollectionMotion } from '@/design/useCollectionMotion';
+import gsap from 'gsap';
+import { useGSAP } from '@gsap/react';
+import { useScrollMotion } from '@/design/useScrollMotion';
+import { useReducedMotion } from '@/design/useReducedMotion';
 import { MotionTitle } from '@/components/ui/MotionTitle';
 import { formatClockTime } from '@/lib/timeFormat';
+
+gsap.registerPlugin(useGSAP);
 
 export const AcademicsPage: React.FC = () => {
   const location = useLocation();
@@ -352,17 +357,125 @@ export const AcademicsPage: React.FC = () => {
 
   const assignmentCount = subjectDeliverables.filter((a) => !isExamEntity(a)).length;
   const examCount = subjectDeliverables.filter((a) => isExamEntity(a)).length;
-  const assignmentsRef = useCollectionMotion<HTMLDivElement>(`${selectedSemesterId}:${selectedSubjectId}:${filterType}:${filteredAssignments.map((assignment) => assignment.id).join(',')}`);
+  const pageRef = useRef<HTMLDivElement>(null);
+  const subjectsListRef = useRef<HTMLDivElement>(null);
+  const examBannerRef = useRef<HTMLDivElement>(null);
+  const reduced = useReducedMotion();
+
+  const deliverablesContainerRef = useScrollMotion<HTMLDivElement>({
+    selector: '.academic-deliverable-card',
+    stagger: 0.045,
+    y: 20,
+    scale: 0.98,
+    duration: 0.55,
+    ease: 'power3.out',
+    bidirectional: true,
+    threshold: 0.08,
+    rootMargin: '0px 0px -30px 0px',
+    key: `${selectedSemesterId}:${selectedSubjectId}:${filterType}:${filteredAssignments.map((assignment) => assignment.id).join(',')}`,
+  });
+
+  // 1. Header, semester selector, and action buttons animated on enter
+  useGSAP(() => {
+    if (reduced || !pageRef.current) return;
+    const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+    tl.fromTo(
+      pageRef.current.querySelector('.academics-header-icon'),
+      { scale: 0.72, opacity: 0, rotate: -10 },
+      { scale: 1, opacity: 1, rotate: 0, duration: 0.45, ease: 'back.out(2)' }
+    );
+
+    tl.fromTo(
+      pageRef.current.querySelector('.academics-header-text'),
+      { opacity: 0, x: -14 },
+      { opacity: 1, x: 0, duration: 0.38 },
+      '-=0.3'
+    );
+
+    tl.fromTo(
+      pageRef.current.querySelectorAll('.academics-toolbar-actions > *'),
+      { opacity: 0, y: -10, scale: 0.95 },
+      { opacity: 1, y: 0, scale: 1, duration: 0.35, stagger: 0.08, clearProps: 'transform,opacity' },
+      '-=0.2'
+    );
+
+    tl.fromTo(
+      pageRef.current.querySelectorAll('.academics-controls-strip > *'),
+      { opacity: 0, y: 12 },
+      { opacity: 1, y: 0, duration: 0.38, stagger: 0.07, clearProps: 'transform,opacity' },
+      '-=0.15'
+    );
+  }, { scope: pageRef, dependencies: [reduced] });
+
+  // 2. Subjects sidebar items animated with staggered slide-in
+  useGSAP(() => {
+    if (reduced || !subjectsListRef.current) return;
+    const items = subjectsListRef.current.querySelectorAll('.subject-sidebar-item');
+    if (!items.length) return;
+
+    gsap.fromTo(
+      items,
+      { opacity: 0, x: -18, scale: 0.98 },
+      {
+        opacity: 1,
+        x: 0,
+        scale: 1,
+        duration: 0.4,
+        stagger: 0.045,
+        ease: 'power3.out',
+        clearProps: 'transform,opacity',
+      }
+    );
+  }, { scope: subjectsListRef, dependencies: [selectedSemesterId, subjects.length, reduced], revertOnUpdate: true });
+
+  // 3. Upcoming Exam Schedule banner with subtle glowing accent line
+  useGSAP(() => {
+    if (reduced || !examBannerRef.current) return;
+    const banner = examBannerRef.current;
+    const beam = banner.querySelector('.exam-glow-beam');
+
+    const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+    tl.fromTo(
+      banner,
+      { opacity: 0, y: 12, scale: 0.99 },
+      { opacity: 1, y: 0, scale: 1, duration: 0.42, clearProps: 'transform,opacity' }
+    );
+
+    const examCards = banner.querySelectorAll('.upcoming-exam-card');
+    if (examCards.length > 0) {
+      tl.fromTo(
+        examCards,
+        { opacity: 0, y: 10, scale: 0.97 },
+        { opacity: 1, y: 0, scale: 1, duration: 0.35, stagger: 0.05, ease: 'back.out(1.4)', clearProps: 'transform,opacity' },
+        '-=0.2'
+      );
+    }
+
+    if (beam) {
+      gsap.fromTo(
+        beam,
+        { xPercent: -150 },
+        {
+          xPercent: 450,
+          duration: 3.2,
+          repeat: -1,
+          ease: 'power1.inOut',
+          repeatDelay: 1.8,
+        }
+      );
+    }
+  }, { scope: examBannerRef, dependencies: [upcomingExams.length, filterType, reduced], revertOnUpdate: true });
 
   return (
-    <div className="academics-page space-y-6">
+    <div ref={pageRef} className="academics-page space-y-6">
       {/* Top Header & Semester Selector */}
       <div className="page-toolbar flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl glass-panel relative z-10">
         <div className="flex items-center gap-3 relative z-10">
-          <div className="p-3 rounded-xl bg-white/[0.06] border border-white/10 text-accent-mint">
+          <div className="academics-header-icon p-3 rounded-xl bg-white/[0.06] border border-white/10 text-accent-mint">
             <GraduationCap className="w-6 h-6" />
           </div>
-          <div>
+          <div className="academics-header-text">
             <MotionTitle as="h2" text="Academic Track" className="text-lg font-bold text-content-primary" />
             <p className="text-xs text-content-secondary">
               Organize semesters, courses, and submission deliverables.
@@ -370,7 +483,7 @@ export const AcademicsPage: React.FC = () => {
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="academics-toolbar-actions flex items-center gap-3">
           {semesters.length > 0 && (
             <select
               value={selectedSemesterId}
@@ -412,10 +525,10 @@ export const AcademicsPage: React.FC = () => {
               </Button>
             </div>
 
-            <div className="space-y-1.5">
+            <div ref={subjectsListRef} className="space-y-1.5">
               <button
                 onClick={() => setSelectedSubjectId('')}
-                className={`w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-medium transition-all ${
+                className={`subject-sidebar-item w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-medium transition-all ${
                   selectedSubjectId === ''
                     ? 'bg-surface-hover text-content-primary font-semibold border border-border-subtle'
                     : 'text-content-secondary hover:bg-surface/50 hover:text-content-primary'
@@ -431,7 +544,7 @@ export const AcademicsPage: React.FC = () => {
                 return (
                   <div
                     key={sub.id}
-                    className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl border transition-all ${
+                    className={`subject-sidebar-item flex items-center justify-between px-3.5 py-2.5 rounded-xl border transition-all ${
                       isSelected
                         ? 'bg-white/[0.1] border-white/20 text-white font-semibold'
                         : 'bg-white/[0.03] border-white/10 text-content-secondary hover:text-white hover:bg-white/[0.06]'
@@ -468,7 +581,7 @@ export const AcademicsPage: React.FC = () => {
 
           {/* Right 3 Cols: Deliverables & Exams */}
           <div className="lg:col-span-3 space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="academics-controls-strip flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               {/* Category Filter Pills */}
               <div className="flex items-center gap-1.5 p-1 rounded-xl bg-surface border border-border-subtle w-fit">
                 <button
@@ -525,7 +638,14 @@ export const AcademicsPage: React.FC = () => {
 
             {/* Upcoming Exams Highlights Strip (if any exams upcoming) */}
             {upcomingExams.length > 0 && filterType !== 'assignments' && (
-              <div className="p-4 rounded-2xl bg-rose-500/[0.08] border border-rose-500/20 space-y-3">
+              <div
+                ref={examBannerRef}
+                className="upcoming-exam-banner p-4 rounded-2xl bg-rose-500/[0.08] border border-rose-500/20 space-y-3 relative overflow-hidden group shadow-sm"
+              >
+                {/* Subtle glowing accent line with animated shimmer beam */}
+                <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-rose-500/80 to-transparent overflow-hidden pointer-events-none">
+                  <div className="exam-glow-beam absolute top-0 bottom-0 w-36 bg-gradient-to-r from-transparent via-rose-300 to-transparent -translate-x-full filter drop-shadow-[0_0_8px_rgba(244,63,94,0.9)] opacity-90" />
+                </div>
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-bold uppercase tracking-wider text-rose-300 flex items-center gap-1.5">
                     <Calendar className="w-4 h-4" />
@@ -544,7 +664,7 @@ export const AcademicsPage: React.FC = () => {
                       <div
                         key={exam.id}
                         onClick={() => handleOpenAssignmentModal(exam)}
-                        className="p-3 rounded-xl bg-surface/80 hover:bg-surface border border-rose-500/25 hover:border-rose-500/40 transition-all cursor-pointer space-y-1.5 group"
+                        className="upcoming-exam-card p-3 rounded-xl bg-surface/80 hover:bg-surface border border-rose-500/25 hover:border-rose-500/40 transition-all cursor-pointer space-y-1.5 group"
                       >
                         <div className="flex items-center justify-between gap-1">
                           {sub && (
@@ -586,7 +706,7 @@ export const AcademicsPage: React.FC = () => {
                 onAction={() => handleOpenAssignmentModal()}
               />
             ) : (
-              <div ref={assignmentsRef} className="space-y-4">
+              <div ref={deliverablesContainerRef} className="space-y-4">
                 {filteredAssignments.map((assign) => {
                   const subject = subjects.find((s) => s.id === assign.subjectId);
                   const isExam = isExamEntity(assign);
@@ -599,7 +719,7 @@ export const AcademicsPage: React.FC = () => {
                   return (
                     <div
                       key={assign.id}
-                      className={`p-5 rounded-2xl glass-panel relative group space-y-4 transition-all shadow-sm ${
+                      className={`academic-deliverable-card p-5 rounded-2xl glass-panel relative group space-y-4 transition-all shadow-sm ${
                         isExam ? 'hover:border-rose-500/40 border-rose-500/20' : 'hover:border-white/20'
                       }`}
                     >
@@ -792,7 +912,7 @@ export const AcademicsPage: React.FC = () => {
               onChange={(e) => setSubjectLecturer(e.target.value)}
             />
           </div>
-          <div>
+          <div className="academics-header-text">
             <label className="block text-xs font-medium text-content-secondary mb-1">Color Tag</label>
             <div className="flex gap-2">
               {['#A8DCC8', '#ECD29A', '#EEB2A3', '#9AC5EC', '#C59AEC', '#ECA0C5'].map((c) => (

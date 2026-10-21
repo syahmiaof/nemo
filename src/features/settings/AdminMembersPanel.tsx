@@ -114,7 +114,7 @@ export const AdminMembersPanel: React.FC = () => {
   };
 
   return (
-    <div className="rounded-2xl bg-surface border border-accent-mint/30 p-5 space-y-4">
+    <div data-scroll-panel="true" className="rounded-2xl bg-surface border border-accent-mint/30 p-5 space-y-4">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-center gap-2.5">

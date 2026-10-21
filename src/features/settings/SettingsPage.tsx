@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import {
   ShieldCheck,
@@ -69,13 +69,195 @@ export const SettingsPage: React.FC = () => {
   const root = useRef<HTMLDivElement>(null);
   const animatedTab = useRef(false);
   const reduced = useReducedMotion();
+
+  // Header, profile card, and tabs animated on entry
   useGSAP(() => {
-    if (!animatedTab.current) { animatedTab.current = true; return; }
     if (reduced) return;
-    gsap.fromTo('[data-enter]', { opacity: 0, y: 14 }, {
-      opacity: 1, y: 0, duration: .55, stagger: .045, ease: 'power3.out', clearProps: 'opacity,transform',
+    const tl = gsap.timeline();
+    tl.fromTo(
+      '.settings-header-banner',
+      { opacity: 0, y: -16 },
+      { opacity: 1, y: 0, duration: 0.48, ease: 'power3.out' }
+    )
+      .fromTo(
+        '.settings-profile-card',
+        { opacity: 0, scale: 0.94, y: -8 },
+        { opacity: 1, scale: 1, y: 0, duration: 0.42, ease: 'back.out(1.6)' },
+        '-=0.28'
+      )
+      .fromTo(
+        '.settings-tabs-wrapper',
+        { opacity: 0, y: 12 },
+        { opacity: 1, y: 0, duration: 0.45, ease: 'power3.out' },
+        '-=0.25'
+      )
+      .fromTo(
+        '.settings-tab-btn',
+        { opacity: 0, scale: 0.92, y: 8 },
+        {
+          opacity: 1,
+          scale: 1,
+          y: 0,
+          duration: 0.38,
+          stagger: 0.035,
+          ease: 'back.out(1.5)',
+          clearProps: 'transform,opacity',
+        },
+        '-=0.3'
+      );
+  }, { scope: root, dependencies: [reduced] });
+
+  // Tab switch panel choreography
+  useGSAP(() => {
+    if (!animatedTab.current) {
+      animatedTab.current = true;
+      return;
+    }
+    if (reduced) return;
+    gsap.fromTo(
+      '[data-enter]',
+      { opacity: 0, y: 16, scale: 0.99 },
+      {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        duration: 0.48,
+        stagger: 0.045,
+        ease: 'power3.out',
+        clearProps: 'opacity,transform',
+      }
+    );
+  }, { scope: root, dependencies: [activeTab, reduced], revertOnUpdate: true });
+
+  // Settings panels animated on scroll into view with bi-directional in/out motion
+  useEffect(() => {
+    if (reduced) {
+      const panels = root.current?.querySelectorAll<HTMLElement>('[data-scroll-panel]');
+      panels?.forEach((panel) => {
+        gsap.set(panel, { opacity: 1, y: 0, scale: 1, clearProps: 'all' });
+      });
+      return;
+    }
+
+    let lastScrollY = window.scrollY;
+    let scrollDirection: 'down' | 'up' = 'down';
+
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      scrollDirection = currentScrollY >= lastScrollY ? 'down' : 'up';
+      lastScrollY = currentScrollY;
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const el = entry.target as HTMLElement;
+          if (entry.isIntersecting) {
+            // Animate in from direction of scroll
+            const initialY = scrollDirection === 'down' ? 24 : -24;
+            gsap.fromTo(
+              el,
+              { opacity: 0.25, y: initialY, scale: 0.985 },
+              {
+                opacity: 1,
+                y: 0,
+                scale: 1,
+                duration: 0.55,
+                ease: 'power3.out',
+                overwrite: 'auto',
+              }
+            );
+          } else {
+            // Bi-directional out motion based on whether element exited top or bottom
+            const rect = entry.boundingClientRect;
+            const isAbove = rect.bottom < (entry.rootBounds?.top ?? 0) + 40;
+            const outY = isAbove ? -22 : 22;
+            gsap.to(el, {
+              opacity: 0.2,
+              y: outY,
+              scale: 0.985,
+              duration: 0.38,
+              ease: 'power2.inOut',
+              overwrite: 'auto',
+            });
+          }
+        });
+      },
+      {
+        threshold: [0.08, 0.92],
+        rootMargin: '20px 0px -20px 0px',
+      }
+    );
+
+    const panels = root.current?.querySelectorAll<HTMLElement>('[data-scroll-panel]');
+    panels?.forEach((p) => observer.observe(p));
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      observer.disconnect();
+    };
+  }, [activeTab, reduced]);
+
+  // Theme preview card hover & selection micro-interactions
+  const handleThemeHoverEnter = (target: HTMLElement) => {
+    if (reduced) return;
+    gsap.to(target, {
+      y: -5,
+      scale: 1.018,
+      duration: 0.28,
+      ease: 'power2.out',
+      boxShadow: '0 14px 30px -8px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.18)',
     });
-  }, {scope: root, dependencies: [activeTab, reduced], revertOnUpdate: true});
+    const icon = target.querySelector('.theme-card-icon');
+    if (icon) {
+      gsap.to(icon, { scale: 1.25, rotate: 8, duration: 0.32, ease: 'back.out(2)' });
+    }
+    const preview = target.querySelector('.theme-preview-box');
+    if (preview) {
+      gsap.to(preview, { scale: 1.025, duration: 0.28, ease: 'power2.out' });
+    }
+  };
+
+  const handleThemeHoverLeave = (target: HTMLElement) => {
+    if (reduced) return;
+    gsap.to(target, {
+      y: 0,
+      scale: 1,
+      duration: 0.28,
+      ease: 'power2.out',
+      boxShadow: 'none',
+      clearProps: 'boxShadow,transform',
+    });
+    const icon = target.querySelector('.theme-card-icon');
+    if (icon) {
+      gsap.to(icon, { scale: 1, rotate: 0, duration: 0.28, ease: 'power2.out', clearProps: 'transform' });
+    }
+    const preview = target.querySelector('.theme-preview-box');
+    if (preview) {
+      gsap.to(preview, { scale: 1, duration: 0.28, ease: 'power2.out', clearProps: 'transform' });
+    }
+  };
+
+  const handleThemeSelect = (themeKey: WorkspaceSettings['theme'], cardEl: HTMLElement) => {
+    setTheme(themeKey);
+    handleUpdatePreferences({ theme: themeKey });
+    if (!reduced && cardEl) {
+      gsap.fromTo(
+        cardEl,
+        { scale: 0.95 },
+        { scale: 1, duration: 0.45, ease: 'back.out(2.4)' }
+      );
+      const badge = cardEl.querySelector('.theme-active-badge');
+      if (badge) {
+        gsap.fromTo(
+          badge,
+          { scale: 0.4, opacity: 0 },
+          { scale: 1, opacity: 1, duration: 0.4, ease: 'back.out(3)' }
+        );
+      }
+    }
+  };
 
   // Form states
   const [displayName, setDisplayName] = useState('');
@@ -274,13 +456,13 @@ export const SettingsPage: React.FC = () => {
 
   return (
     <div ref={root} className="settings-page space-y-6">
-      <div className="module-heading flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className="module-heading settings-header-banner flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <MotionTitle text="Settings" />
           <p>Make this space yours.</p>
         </div>
         {user ? (
-          <div className="flex items-center gap-3 bg-white/[0.04] border border-white/10 px-3.5 py-2 rounded-xl">
+          <div className="settings-profile-card flex items-center gap-3 bg-white/[0.04] border border-white/10 px-3.5 py-2 rounded-xl">
             <div className="text-right hidden sm:block">
               <div className="text-xs font-semibold text-white">{user.email}</div>
               <div className="text-[10px] text-accent-mint flex items-center justify-end gap-1">
@@ -299,19 +481,21 @@ export const SettingsPage: React.FC = () => {
             </Button>
           </div>
         ) : (
-          <Button
-            variant="secondary"
-            size="sm"
-            onClick={openAuthModal}
-            className="gap-1.5 text-xs"
-          >
-            <Cloud className="w-3.5 h-3.5 text-accent-mint" />
-            <span>Sign In to Cloud</span>
-          </Button>
+          <div className="settings-profile-card">
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={openAuthModal}
+              className="gap-1.5 text-xs"
+            >
+              <Cloud className="w-3.5 h-3.5 text-accent-mint" />
+              <span>Sign In to Cloud</span>
+            </Button>
+          </div>
         )}
       </div>
       {/* Tavola-Style Nested Navigation Capsule */}
-      <div className="w-full overflow-x-auto pb-1 flex justify-start sm:justify-center">
+      <div className="settings-tabs-wrapper w-full overflow-x-auto pb-1 flex justify-start sm:justify-center">
         <div className="tabs" style={{ width: 'fit-content', margin: '0 auto 1.5rem auto' }}>
         <div className="tabs__track" role="tablist" aria-label="Settings sections">
           {tabs.map((tab) => {
@@ -331,7 +515,7 @@ export const SettingsPage: React.FC = () => {
                 }}
                 aria-selected={isActive}
                 onClick={() => setActiveTab(tab.key)}
-                className={`tab flex items-center gap-2 ${isActive ? 'is-active' : ''}`}
+                className={`tab settings-tab-btn flex items-center gap-2 ${isActive ? 'is-active' : ''}`}
                 style={{
                   position: 'relative',
                   zIndex: 2,
@@ -353,7 +537,7 @@ export const SettingsPage: React.FC = () => {
       <section id="settings-panel" role="tabpanel" aria-labelledby={`settings-tab-${activeTab}`} tabIndex={0}>
       {/* Profile Panel */}
       {activeTab === 'profile' && (
-        <div data-enter className="p-6 rounded-2xl glass-panel relative z-10 space-y-6">
+        <div data-enter data-scroll-panel="true" className="p-6 rounded-2xl glass-panel relative z-10 space-y-6">
           <div className="flex items-center gap-2.5 border-b border-white/[0.08] pb-3 relative z-10">
             <User className="w-5 h-5 text-accent-mint" />
             <div>
@@ -365,7 +549,7 @@ export const SettingsPage: React.FC = () => {
           </div>
 
           {/* Avatar Upload & Preview Section */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5 p-4 rounded-xl bg-white/[0.03] border border-white/[0.08] relative z-10">
+          <div data-scroll-panel="true" className="flex flex-col sm:flex-row items-start sm:items-center gap-5 p-4 rounded-xl bg-white/[0.03] border border-white/[0.08] relative z-10">
             <div className="relative w-20 h-20 rounded-full border-2 border-accent-mint/30 shadow-lg overflow-hidden flex-shrink-0 bg-[#0F1A2D] grid place-items-center">
               {avatarBlob?.data ? (
                 <img
@@ -440,7 +624,7 @@ export const SettingsPage: React.FC = () => {
           </form>
 
           {/* Dedicated Account & Session Management */}
-          <div className="p-4 rounded-xl bg-white/[0.03] border border-white/[0.08] relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div data-scroll-panel="true" className="p-4 rounded-xl bg-white/[0.03] border border-white/[0.08] relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
               <h4 className="text-sm font-semibold text-white">Active Session & Cloud Account</h4>
               <p className="text-xs text-content-secondary mt-0.5">
@@ -477,7 +661,7 @@ export const SettingsPage: React.FC = () => {
       {/* Appearance Panel with Tavola Luxury Cards */}
       {activeTab === 'appearance' && (
         <div data-enter className="space-y-6">
-          <div className="p-6 rounded-2xl glass-panel relative z-10 space-y-5">
+          <div data-scroll-panel="true" className="p-6 rounded-2xl glass-panel relative z-10 space-y-5">
             <div className="flex items-center gap-2.5 border-b border-white/[0.08] pb-3 relative z-10">
               <Palette className="w-5 h-5 text-accent-mint" />
               <div>
@@ -492,11 +676,10 @@ export const SettingsPage: React.FC = () => {
               {/* Midnight Theme Card */}
               <button
                 type="button"
-                onClick={() => {
-                  setTheme('midnight');
-                  handleUpdatePreferences({ theme: 'midnight' });
-                }}
-                className={`p-5 rounded-2xl border text-left transition-all ${
+                onClick={(e) => handleThemeSelect('midnight', e.currentTarget)}
+                onMouseEnter={(e) => handleThemeHoverEnter(e.currentTarget)}
+                onMouseLeave={(e) => handleThemeHoverLeave(e.currentTarget)}
+                className={`p-5 rounded-2xl border text-left transition-colors cursor-pointer ${
                   theme === 'dark' || theme === 'midnight'
                     ? 'border-accent-ember ring-2 ring-accent-ember/30 bg-[#0F1A2D]'
                     : 'border-white/10 hover:border-white/20 bg-[#0F1A2D]/70'
@@ -504,17 +687,17 @@ export const SettingsPage: React.FC = () => {
               >
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
-                    <Moon className="w-4 h-4 text-accent-mint" />
+                    <Moon className="theme-card-icon w-4 h-4 text-accent-mint" />
                     <span className="text-sm font-bold text-white">Midnight</span>
                   </div>
                   {(theme === 'dark' || theme === 'midnight') && (
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-accent-ember/20 text-accent-ember border border-accent-ember/40">
+                    <span className="theme-active-badge text-[10px] font-mono px-2 py-0.5 rounded-full bg-accent-ember/20 text-accent-ember border border-accent-ember/40">
                       Active
                     </span>
                   )}
                 </div>
                 {/* Mini preview illustration */}
-                <div className="w-full h-20 rounded-xl bg-[#0A1222] border border-white/10 p-2.5 flex gap-2 overflow-hidden">
+                <div className="theme-preview-box w-full h-20 rounded-xl bg-[#0A1222] border border-white/10 p-2.5 flex gap-2 overflow-hidden">
                   <div className="w-4 h-full rounded-md bg-[#1B2C44]" />
                   <div className="flex-1 space-y-1.5">
                     <div className="w-16 h-2 rounded bg-accent-ember/70" />
@@ -530,11 +713,10 @@ export const SettingsPage: React.FC = () => {
               {/* Daylight Theme Card */}
               <button
                 type="button"
-                onClick={() => {
-                  setTheme('daylight');
-                  handleUpdatePreferences({ theme: 'daylight' });
-                }}
-                className={`p-5 rounded-2xl border text-left transition-all ${
+                onClick={(e) => handleThemeSelect('daylight', e.currentTarget)}
+                onMouseEnter={(e) => handleThemeHoverEnter(e.currentTarget)}
+                onMouseLeave={(e) => handleThemeHoverLeave(e.currentTarget)}
+                className={`p-5 rounded-2xl border text-left transition-colors cursor-pointer ${
                   theme === 'light' || theme === 'daylight'
                     ? 'border-accent-ember ring-2 ring-accent-ember/30 bg-[#FFFFFF]'
                     : 'border-white/10 hover:border-white/20 bg-[#F4F7FB]'
@@ -542,17 +724,17 @@ export const SettingsPage: React.FC = () => {
               >
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
-                    <Sun className="w-4 h-4 text-amber-500" />
+                    <Sun className="theme-card-icon w-4 h-4 text-amber-500" />
                     <span className="text-sm font-bold text-gray-900">Daylight</span>
                   </div>
                   {(theme === 'light' || theme === 'daylight') && (
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-accent-ember/20 text-accent-ember border border-accent-ember/40">
+                    <span className="theme-active-badge text-[10px] font-mono px-2 py-0.5 rounded-full bg-accent-ember/20 text-accent-ember border border-accent-ember/40">
                       Active
                     </span>
                   )}
                 </div>
                 {/* Mini preview illustration */}
-                <div className="w-full h-20 rounded-xl bg-[#FFFFFF] border border-gray-300 p-2.5 flex gap-2 overflow-hidden">
+                <div className="theme-preview-box w-full h-20 rounded-xl bg-[#FFFFFF] border border-gray-300 p-2.5 flex gap-2 overflow-hidden">
                   <div className="w-4 h-full rounded-md bg-[#EDF2F9]" />
                   <div className="flex-1 space-y-1.5">
                     <div className="w-16 h-2 rounded bg-[#0F766E]" />
@@ -568,11 +750,10 @@ export const SettingsPage: React.FC = () => {
               {/* Aurora Theme Card */}
               <button
                 type="button"
-                onClick={() => {
-                  setTheme('aurora');
-                  handleUpdatePreferences({ theme: 'aurora' });
-                }}
-                className={`p-5 rounded-2xl border text-left transition-all ${
+                onClick={(e) => handleThemeSelect('aurora', e.currentTarget)}
+                onMouseEnter={(e) => handleThemeHoverEnter(e.currentTarget)}
+                onMouseLeave={(e) => handleThemeHoverLeave(e.currentTarget)}
+                className={`p-5 rounded-2xl border text-left transition-colors cursor-pointer ${
                   theme === 'aurora'
                     ? 'border-emerald-400 ring-2 ring-emerald-400/30 bg-[#070B14]'
                     : 'border-white/10 hover:border-white/20 bg-[#070B14]/80'
@@ -580,17 +761,17 @@ export const SettingsPage: React.FC = () => {
               >
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
-                    <Sparkles className="w-4 h-4 text-emerald-400" />
+                    <Sparkles className="theme-card-icon w-4 h-4 text-emerald-400" />
                     <span className="text-sm font-bold text-white">Aurora</span>
                   </div>
                   {theme === 'aurora' && (
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-400/40">
+                    <span className="theme-active-badge text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-400/40">
                       Active
                     </span>
                   )}
                 </div>
                 {/* Mini preview illustration */}
-                <div className="w-full h-20 rounded-xl bg-[#070B14] border border-emerald-500/30 p-2.5 flex gap-2 overflow-hidden relative">
+                <div className="theme-preview-box w-full h-20 rounded-xl bg-[#070B14] border border-emerald-500/30 p-2.5 flex gap-2 overflow-hidden relative">
                   <div className="w-4 h-full rounded-md bg-[#102A45]" />
                   <div className="flex-1 space-y-1.5">
                     <div className="w-16 h-2 rounded bg-gradient-to-r from-emerald-400 to-[#F5C8BC]" />
@@ -606,7 +787,7 @@ export const SettingsPage: React.FC = () => {
           </div>
 
           {/* Signature Brand & Launch Experience */}
-          <div className="p-6 rounded-2xl glass-panel relative z-10 space-y-4">
+          <div data-scroll-panel="true" className="p-6 rounded-2xl glass-panel relative z-10 space-y-4">
             <div className="flex items-center gap-2.5 border-b border-white/[0.08] pb-3 relative z-10">
               <Sparkles className="w-5 h-5 text-accent-mint" />
               <div>
@@ -642,7 +823,7 @@ export const SettingsPage: React.FC = () => {
 
       {/* Preferences Panel */}
       {activeTab === 'preferences' && (
-        <div data-enter className="p-6 rounded-2xl glass-panel relative z-10 space-y-5">
+        <div data-enter data-scroll-panel="true" className="p-6 rounded-2xl glass-panel relative z-10 space-y-5">
           <div className="flex items-center gap-2.5 border-b border-white/[0.08] pb-3 relative z-10">
             <Sliders className="w-5 h-5 text-accent-mint" />
             <h3 className="text-base font-bold text-content-primary">Workspace Behavior</h3>
@@ -709,7 +890,7 @@ export const SettingsPage: React.FC = () => {
       {activeTab === 'data' && (
         <div data-enter className="space-y-6">
           {/* Privacy Guarantee Card */}
-          <div className="p-6 rounded-2xl glass-panel relative z-10 space-y-3">
+          <div data-scroll-panel="true" className="p-6 rounded-2xl glass-panel relative z-10 space-y-3">
             <div className="flex items-center gap-2.5 text-accent-mint relative z-10">
               <ShieldCheck className="w-5 h-5 flex-shrink-0" />
               <h3 className="text-base font-bold text-content-primary">Privacy & Storage</h3>
@@ -720,7 +901,7 @@ export const SettingsPage: React.FC = () => {
           </div>
 
           {/* Backup, Export & Restore */}
-          <div className="p-6 rounded-2xl glass-panel relative z-10 space-y-5">
+          <div data-scroll-panel="true" className="p-6 rounded-2xl glass-panel relative z-10 space-y-5">
             <div className="flex items-center gap-2.5 border-b border-white/[0.08] pb-3 relative z-10">
               <HardDrive className="w-5 h-5 text-accent-mint" />
               <h3 className="text-base font-bold text-content-primary">Data Backup & Migration</h3>
@@ -756,7 +937,7 @@ export const SettingsPage: React.FC = () => {
           </div>
 
           {/* Danger Zone: Workspace Reset */}
-          <div className="p-6 rounded-2xl glass-panel border border-red-500/30 bg-red-950/15 relative z-10 space-y-4">
+          <div data-scroll-panel="true" className="p-6 rounded-2xl glass-panel border border-red-500/30 bg-red-950/15 relative z-10 space-y-4">
             <div className="flex items-center gap-2.5 text-accent-ember relative z-10">
               <AlertTriangle className="w-5 h-5 flex-shrink-0" />
               <h3 className="text-base font-bold">Danger Zone: Reset Workspace</h3>
@@ -798,7 +979,7 @@ export const SettingsPage: React.FC = () => {
       {/* About & Welcome Notice Panel */}
       {activeTab === 'about' && (
         <div data-enter className="space-y-6">
-          <div className="p-6 rounded-2xl glass-panel relative z-10 space-y-5">
+          <div data-scroll-panel="true" className="p-6 rounded-2xl glass-panel relative z-10 space-y-5">
             <div className="flex items-center gap-2.5 border-b border-white/[0.08] pb-3 relative z-10">
               <Sparkles className="w-5 h-5 text-accent-mint" />
               <div>
@@ -852,7 +1033,7 @@ export const SettingsPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="p-5 rounded-2xl border border-white/[0.08] bg-white/[0.02] flex items-center justify-between text-xs text-content-tertiary">
+          <div data-scroll-panel="true" className="p-5 rounded-2xl border border-white/[0.08] bg-white/[0.02] flex items-center justify-between text-xs text-content-tertiary">
             <div>
               <span className="font-semibold text-white">Nemo Workspace</span> &bull; Version 0.1.0
             </div>
