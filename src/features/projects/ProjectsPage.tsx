@@ -24,10 +24,6 @@ export const ProjectsPage: React.FC = () => {
 
   const pageRef = useRef<HTMLDivElement>(null);
   const cardsContainerRef = useRef<HTMLDivElement>(null);
-  const tabsTrackRef = useRef<HTMLDivElement>(null);
-  const tabsPillRef = useRef<HTMLSpanElement>(null);
-  const tabRefs = useRef<Record<string, HTMLButtonElement | null>>({});
-  const pillMounted = useRef(false);
 
   const reducedMotion = useReducedMotion();
 
@@ -115,7 +111,7 @@ export const ProjectsPage: React.FC = () => {
   // 1. Header and toolbar controls GSAP entrance
   useGSAP(() => {
     if (reducedMotion) {
-      gsap.set('.module-heading p, .page-toolbar, .projects-search, .projects-view-switcher, .projects-add-btn', {
+      gsap.set('.module-heading p, .page-toolbar, .projects-search, .projects-view-switcher, .projects-add-btn, .page-filters button', {
         clearProps: 'all',
       });
       return;
@@ -145,69 +141,6 @@ export const ProjectsPage: React.FC = () => {
     );
   }, { scope: pageRef, dependencies: [reducedMotion] });
 
-  // 2. Status segmented tab switcher with fluid active indicator/pill animation
-  useGSAP(() => {
-    const track = tabsTrackRef.current;
-    const pill = tabsPillRef.current;
-    const activeBtn = tabRefs.current[activeTab];
-
-    if (!track || !pill || !activeBtn) return;
-
-    const left = activeBtn.offsetLeft;
-    const top = activeBtn.offsetTop;
-    const width = activeBtn.offsetWidth;
-    const height = activeBtn.offsetHeight;
-
-    if (reducedMotion) {
-      gsap.set(pill, { x: left, y: top, width, height, opacity: 1 });
-      return;
-    }
-
-    if (!pillMounted.current) {
-      pillMounted.current = true;
-      gsap.set(pill, { x: left, y: top, width, height, opacity: 1 });
-      return;
-    }
-
-    gsap.to(pill, {
-      x: left,
-      y: top,
-      width,
-      height,
-      opacity: 1,
-      duration: 0.35,
-      ease: 'power3.out',
-      overwrite: 'auto',
-    });
-  }, { scope: pageRef, dependencies: [activeTab, projects.length, reducedMotion] });
-
-  // ResizeObserver to keep fluid indicator pill pixel-accurate on window resize or font change
-  useEffect(() => {
-    const track = tabsTrackRef.current;
-    const pill = tabsPillRef.current;
-    if (!track || !pill) return;
-
-    const reposition = () => {
-      const activeBtn = tabRefs.current[activeTab];
-      if (!activeBtn) return;
-      gsap.set(pill, {
-        x: activeBtn.offsetLeft,
-        y: activeBtn.offsetTop,
-        width: activeBtn.offsetWidth,
-        height: activeBtn.offsetHeight,
-      });
-    };
-
-    const ro = new ResizeObserver(reposition);
-    ro.observe(track);
-    Object.values(tabRefs.current).forEach((btn) => {
-      if (btn) ro.observe(btn);
-    });
-
-    void document.fonts?.ready.then(reposition);
-
-    return () => ro.disconnect();
-  }, [activeTab]);
 
   // 3. Staggered crystal reveal on Dexie async load & Bi-directional scroll motion
   useGSAP(() => {
@@ -400,19 +333,8 @@ export const ProjectsPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Status Segmented Tabs with fluid active indicator pill */}
-      <div
-        ref={tabsTrackRef}
-        role="tablist"
-        aria-label="Filter projects by status"
-        className="projects-status-tabs flex items-center overflow-x-auto no-scrollbar pb-1 gap-1.5 relative isolate p-1.5 rounded-2xl bg-white/[0.03] border border-white/5"
-      >
-        <span
-          ref={tabsPillRef}
-          aria-hidden="true"
-          style={{ background: 'var(--ember-grad)' }}
-          className="absolute rounded-xl border border-white/20 shadow-[0_4px_16px_rgba(255,112,81,0.35)] pointer-events-none opacity-0 z-0"
-        />
+      {/* Status Filter Tabs — exact match to TasksPage design & motion */}
+      <div className="page-filters flex flex-wrap pb-1 gap-1.5">
         {tabOptions.map((tab) => {
           const count = projects.filter((p) => {
             if (tab.key === 'archived') return !!p.archivedAt;
@@ -425,22 +347,21 @@ export const ProjectsPage: React.FC = () => {
           return (
             <button
               key={tab.key}
-              ref={(el) => {
-                tabRefs.current[tab.key] = el;
-              }}
               type="button"
               aria-pressed={isActive}
               onClick={() => setActiveTab(tab.key as any)}
-              className={`relative z-10 flex items-center gap-2 px-3.5 py-2 text-xs font-medium rounded-xl transition-colors whitespace-nowrap !bg-transparent border-0 outline-none select-none cursor-pointer ${
+              className={`flex items-center gap-2 px-3.5 py-2 text-xs font-medium rounded-xl transition-all whitespace-nowrap cursor-pointer ${
                 isActive
-                  ? 'text-white font-semibold'
-                  : 'text-content-secondary hover:text-content-primary'
+                  ? 'bg-white/[0.1] text-white font-semibold border border-white/15 shadow-sm'
+                  : 'text-content-secondary hover:text-content-primary hover:bg-white/[0.03] border border-transparent'
               }`}
             >
               <span>{tab.label}</span>
               <span
-                className={`text-[10px] px-1.5 py-0.5 rounded-md font-mono transition-colors font-semibold ${
-                  isActive ? 'bg-black/25 text-white shadow-sm' : 'bg-white/[0.06] text-content-tertiary'
+                className={`text-[10px] px-1.5 py-0.5 rounded-md font-mono transition-transform duration-200 ${
+                  isActive
+                    ? 'bg-white/[0.15] text-white scale-105'
+                    : 'bg-white/[0.05] text-content-tertiary'
                 }`}
               >
                 {count}
