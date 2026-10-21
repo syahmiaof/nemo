@@ -82,6 +82,39 @@ export const ProjectDetailPage: React.FC = () => {
     };
   }, [project]);
 
+  // Hook must be called unconditionally before any early return (React Rule of Hooks #310)
+  useGSAP(() => {
+    if (reducedMotion || !project) {
+      gsap.set('.project-detail-header, .project-hero-card, .project-detail-grid > div', {
+        clearProps: 'all',
+      });
+      return;
+    }
+
+    const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+    tl.fromTo(
+      '.project-detail-header',
+      { opacity: 0, y: -8 },
+      { opacity: 1, y: 0, duration: 0.4, clearProps: 'transform,opacity' },
+      0
+    );
+
+    tl.fromTo(
+      '.project-hero-card',
+      { opacity: 0, y: 18, scale: 0.98 },
+      { opacity: 1, y: 0, scale: 1, duration: 0.55, clearProps: 'transform,opacity' },
+      0.05
+    );
+
+    tl.fromTo(
+      '.project-detail-grid > div',
+      { opacity: 0, y: 14 },
+      { opacity: 1, y: 0, duration: 0.48, stagger: 0.08, clearProps: 'transform,opacity' },
+      0.15
+    );
+  }, { scope: detailRootRef, dependencies: [project?.id, reducedMotion] });
+
   if (!project) {
     return (
       <div className="text-center py-16 space-y-4">
@@ -204,37 +237,6 @@ export const ProjectDetailPage: React.FC = () => {
     navigate('/projects');
   };
 
-  useGSAP(() => {
-    if (reducedMotion || !project) {
-      gsap.set('.project-detail-header, .project-hero-card, .project-detail-grid > div', {
-        clearProps: 'all',
-      });
-      return;
-    }
-
-    const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
-
-    tl.fromTo(
-      '.project-detail-header',
-      { opacity: 0, y: -8 },
-      { opacity: 1, y: 0, duration: 0.4, clearProps: 'transform,opacity' },
-      0
-    );
-
-    tl.fromTo(
-      '.project-hero-card',
-      { opacity: 0, y: 18, scale: 0.98 },
-      { opacity: 1, y: 0, scale: 1, duration: 0.55, clearProps: 'transform,opacity' },
-      0.05
-    );
-
-    tl.fromTo(
-      '.project-detail-grid > div',
-      { opacity: 0, y: 14 },
-      { opacity: 1, y: 0, duration: 0.48, stagger: 0.08, clearProps: 'transform,opacity' },
-      0.15
-    );
-  }, { scope: detailRootRef, dependencies: [project?.id, reducedMotion] });
 
   return (
     <div ref={detailRootRef} className="space-y-6 max-w-5xl mx-auto">

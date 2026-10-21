@@ -405,12 +405,13 @@ export const ProjectsPage: React.FC = () => {
         ref={tabsTrackRef}
         role="tablist"
         aria-label="Filter projects by status"
-        className="page-filters flex items-center overflow-x-auto no-scrollbar pb-1 gap-1.5 relative isolate p-1 rounded-2xl bg-white/[0.02] border border-white/5"
+        className="projects-status-tabs flex items-center overflow-x-auto no-scrollbar pb-1 gap-1.5 relative isolate p-1.5 rounded-2xl bg-white/[0.03] border border-white/5"
       >
         <span
           ref={tabsPillRef}
           aria-hidden="true"
-          className="absolute rounded-xl bg-white/[0.12] border border-white/15 shadow-sm pointer-events-none opacity-0 z-0"
+          style={{ background: 'var(--ember-grad)' }}
+          className="absolute rounded-xl border border-white/20 shadow-[0_4px_16px_rgba(255,112,81,0.35)] pointer-events-none opacity-0 z-0"
         />
         {tabOptions.map((tab) => {
           const count = projects.filter((p) => {
@@ -430,7 +431,7 @@ export const ProjectsPage: React.FC = () => {
               type="button"
               aria-pressed={isActive}
               onClick={() => setActiveTab(tab.key as any)}
-              className={`relative z-10 flex items-center gap-2 px-3.5 py-2 text-xs font-medium rounded-xl transition-colors whitespace-nowrap ${
+              className={`relative z-10 flex items-center gap-2 px-3.5 py-2 text-xs font-medium rounded-xl transition-colors whitespace-nowrap !bg-transparent border-0 outline-none select-none cursor-pointer ${
                 isActive
                   ? 'text-white font-semibold'
                   : 'text-content-secondary hover:text-content-primary'
@@ -438,8 +439,8 @@ export const ProjectsPage: React.FC = () => {
             >
               <span>{tab.label}</span>
               <span
-                className={`text-[10px] px-1.5 py-0.5 rounded-md font-mono transition-colors ${
-                  isActive ? 'bg-white/[0.15] text-white' : 'bg-white/[0.05] text-content-tertiary'
+                className={`text-[10px] px-1.5 py-0.5 rounded-md font-mono transition-colors font-semibold ${
+                  isActive ? 'bg-black/25 text-white shadow-sm' : 'bg-white/[0.06] text-content-tertiary'
                 }`}
               >
                 {count}
