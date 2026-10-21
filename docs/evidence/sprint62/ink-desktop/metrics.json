@@ -1,0 +1,31 @@
+{
+  "label": "ink",
+  "browserName": "desktop",
+  "cycles": 3,
+  "record": true,
+  "bounds": {
+    "x": 877.328125,
+    "y": 740.234375,
+    "width": 536.671875,
+    "height": 160.5
+  },
+  "quotes": [
+    "“Make space for meaningful work.”",
+    "“Ask better questions, find better paths.”",
+    "“Let excellence grow from patience.”",
+    "“Move before doubt gets comfortable.”"
+  ],
+  "idleDraws": 0,
+  "draws": 93,
+  "samples": 4,
+  "frameCount": 87,
+  "frameMedian": 83.29999999999927,
+  "frameP95": 100,
+  "longTasks": [
+    52
+  ],
+  "taskSeconds": 1.506957,
+  "heapBefore": 14517976,
+  "heapAfter": 15041352,
+  "errors": []
+}

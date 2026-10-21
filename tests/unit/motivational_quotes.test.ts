@@ -165,6 +165,18 @@ describe('useRotatingQuotes Hook', () => {
     expect(result.current.currentQuote.id).not.toBe(initialQuote.id);
   });
 
+  it('does not replace the destination when an automatic tick meets an active manual morph', () => {
+    const { result } = renderHook(() => useRotatingQuotes({ intervalMs: 5000, shuffle: false }));
+    act(() => vi.advanceTimersByTime(4500));
+    act(() => result.current.advanceNext());
+    const destination = result.current.currentQuote.id;
+    act(() => vi.advanceTimersByTime(500));
+    expect(result.current.currentQuote.id).toBe(destination);
+    act(() => result.current.setTransitioning(false));
+    act(() => vi.advanceTimersByTime(5000));
+    expect(result.current.currentQuote.id).not.toBe(destination);
+  });
+
   it('pauses rotation and resumes with togglePause, pause, and resume', () => {
     const { result } = renderHook(() => useRotatingQuotes({ intervalMs: 5000 }));
 

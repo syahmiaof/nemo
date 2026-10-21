@@ -22,6 +22,7 @@ export const SparkOfFocusCard: React.FC<SparkOfFocusCardProps> = ({ className })
   const [isInViewport, setIsInViewport] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
+  const [manualTransition, setManualTransition] = useState(false);
   const isAutoActive = isInViewport && !isHovered && !isFocused;
 
   const {
@@ -41,7 +42,7 @@ export const SparkOfFocusCard: React.FC<SparkOfFocusCardProps> = ({ className })
   const currentQuoteRef = useRef(currentQuote);
   const pointerFocusedRef = useRef(false);
   currentQuoteRef.current = currentQuote;
-  const isActive = isInViewport && !isHovered && !isFocused && isDocumentVisible;
+  const isActive = isInViewport && !isHovered && !isFocused && isDocumentVisible && (!isPaused || manualTransition);
   const [particleHasStarted, setParticleHasStarted] = useState(false);
 
   useEffect(() => {
@@ -76,6 +77,7 @@ export const SparkOfFocusCard: React.FC<SparkOfFocusCardProps> = ({ className })
     setDisplayedQuote(currentQuoteRef.current);
     setParticleHasStarted(false);
     setTransitioning(false);
+    setManualTransition(false);
   }, [setTransitioning]);
 
   const handleTransitionStart = useCallback(() => {
@@ -86,7 +88,7 @@ export const SparkOfFocusCard: React.FC<SparkOfFocusCardProps> = ({ className })
     <section
       ref={containerRef}
       data-enter
-      onPointerEnter={() => setIsHovered(true)}
+      onPointerEnter={(event) => { if (event.pointerType === 'mouse') setIsHovered(true); }}
       onPointerDown={() => { pointerFocusedRef.current = true; }}
       onPointerLeave={() => {
         setIsHovered(false);
@@ -95,7 +97,7 @@ export const SparkOfFocusCard: React.FC<SparkOfFocusCardProps> = ({ className })
           setIsFocused(false);
         }
       }}
-      onFocusCapture={() => setIsFocused(true)}
+      onFocusCapture={() => setIsFocused(!pointerFocusedRef.current)}
       onBlurCapture={(event) => {
         if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
           pointerFocusedRef.current = false;
@@ -137,8 +139,9 @@ export const SparkOfFocusCard: React.FC<SparkOfFocusCardProps> = ({ className })
         {/* Real Accessible DOM Typography */}
         <p
           ref={quoteTextRef}
+          style={{ opacity: isTransitioning && particleHasStarted ? 0 : 1 }}
           className={cn(
-            'text-base sm:text-lg font-semibold text-center leading-snug tracking-tight text-content-primary transition-opacity duration-300 font-heading max-w-md',
+            'text-base sm:text-lg font-semibold text-center leading-snug tracking-tight text-content-primary font-heading max-w-md',
             isTransitioning && particleHasStarted ? 'opacity-0' : 'opacity-100'
           )}
         >
@@ -177,7 +180,7 @@ export const SparkOfFocusCard: React.FC<SparkOfFocusCardProps> = ({ className })
         <div className="flex items-center gap-1">
           <button
             type="button"
-            onClick={togglePause}
+            onClick={() => { setManualTransition(false); togglePause(); }}
             className="p-1.5 rounded-lg text-content-secondary hover:text-content-primary hover:bg-surface-hover transition-colors cursor-pointer"
             aria-label={isPaused ? 'Resume quote rotation' : 'Pause quote rotation'}
             title={isPaused ? 'Resume' : 'Pause'}
@@ -187,7 +190,11 @@ export const SparkOfFocusCard: React.FC<SparkOfFocusCardProps> = ({ className })
 
           <button
             type="button"
-            onClick={advanceNext}
+            onClick={() => {
+              if (isTransitioning) return;
+              setManualTransition(true);
+              advanceNext();
+            }}
             className="p-1.5 rounded-lg text-content-secondary hover:text-content-primary hover:bg-surface-hover transition-colors cursor-pointer"
             aria-label="Next motivational quote"
             title="Next Quote"

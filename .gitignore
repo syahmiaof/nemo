@@ -41,3 +41,7 @@ Thumbs.db
 
 .vercel
 .vercel
+
+# Agent teamwork scratch
+.agents/teamwork/
+

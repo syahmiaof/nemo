@@ -1,0 +1,37 @@
+
+Running 22 tests using 1 worker
+
+(node:21624) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  1 [desktop-chrome] › tests\e2e\overview_insights.spec.ts:9:3 › Overview & Insights Functional Audit › Dashboard metrics and Today Focus match real data (8.4s)
+  ok  2 [desktop-chrome] › tests\e2e\overview_insights.spec.ts:34:3 › Overview & Insights Functional Audit › Insights page displays accurate analytics and year selection (7.3s)
+  ok  3 [desktop-chrome] › tests\e2e\overview_insights.spec.ts:57:3 › Overview & Insights Functional Audit › Ask Nemo understands a natural-language active project count (9.9s)
+  ok  4 [desktop-chrome] › tests\e2e\spark_v2.spec.ts:27:1 › real glyph morph hides the source on mobile and reconstructs readable text with no idle canvas draws (8.3s)
+  ok  5 [desktop-chrome] › tests\e2e\spark_v2.spec.ts:51:1 › manual pause, focus and hidden tab suspend a running morph and resume it (10.2s)
+  ok  6 [desktop-chrome] › tests\e2e\spark_v2.spec.ts:90:1 › the pause button freezes an in-flight morph until resume (9.3s)
+  ok  7 [desktop-chrome] › tests\e2e\spark_v2.spec.ts:104:1 › offscreen card suspends its canvas and resizing completes safely with fresh wrapping (6.7s)
+  ok  8 [desktop-chrome] › tests\e2e\spark_v2.spec.ts:136:1 › rapid navigation disposes the old canvas and remount creates one renderer (7.7s)
+  ok  9 [desktop-chrome] › tests\e2e\spark_v2.spec.ts:153:1 › reduced motion stays as accessible DOM typography without creating a particle field (4.8s)
+(node:3484) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[Sprint 6.1] Active morph canvas calls: {"clearRect":29,"fill":942,"arc":362,"getImageData":2}
+  ok 10 [desktop-chrome] › tests\e2e\sprint61_motion_acceptance.spec.ts:29:1 › Spark quote morph stays readable at rest and completes its staged canvas motion (11.4s)
+  ok 11 [desktop-chrome] › tests\e2e\sprint61_motion_acceptance.spec.ts:71:1 › reduced motion changes the quote without drawing particle frames (2.9s)
+(node:11116) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 12 [mobile-chrome] › tests\e2e\overview_insights.spec.ts:9:3 › Overview & Insights Functional Audit › Dashboard metrics and Today Focus match real data (5.6s)
+  ok 13 [mobile-chrome] › tests\e2e\overview_insights.spec.ts:34:3 › Overview & Insights Functional Audit › Insights page displays accurate analytics and year selection (6.4s)
+  ok 14 [mobile-chrome] › tests\e2e\overview_insights.spec.ts:57:3 › Overview & Insights Functional Audit › Ask Nemo understands a natural-language active project count (8.8s)
+  ok 15 [mobile-chrome] › tests\e2e\spark_v2.spec.ts:27:1 › real glyph morph hides the source on mobile and reconstructs readable text with no idle canvas draws (8.6s)
+  ok 16 [mobile-chrome] › tests\e2e\spark_v2.spec.ts:51:1 › manual pause, focus and hidden tab suspend a running morph and resume it (9.2s)
+  ok 17 [mobile-chrome] › tests\e2e\spark_v2.spec.ts:90:1 › the pause button freezes an in-flight morph until resume (8.5s)
+  ok 18 [mobile-chrome] › tests\e2e\spark_v2.spec.ts:104:1 › offscreen card suspends its canvas and resizing completes safely with fresh wrapping (8.8s)
+  ok 19 [mobile-chrome] › tests\e2e\spark_v2.spec.ts:136:1 › rapid navigation disposes the old canvas and remount creates one renderer (9.0s)
+  ok 20 [mobile-chrome] › tests\e2e\spark_v2.spec.ts:153:1 › reduced motion stays as accessible DOM typography without creating a particle field (6.4s)
+(node:27900) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  -  21 [mobile-chrome] › tests\e2e\sprint61_motion_acceptance.spec.ts:29:1 › Spark quote morph stays readable at rest and completes its staged canvas motion
+  ok 22 [mobile-chrome] › tests\e2e\sprint61_motion_acceptance.spec.ts:71:1 › reduced motion changes the quote without drawing particle frames (4.1s)
+
+  1 skipped
+  21 passed (2.9m)

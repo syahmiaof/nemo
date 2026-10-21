@@ -1,0 +1,74 @@
+[
+  {
+    "frames": 0,
+    "ticks": 0,
+    "tickerTime": 9.336,
+    "rootTime": 9.336,
+    "rootScale": 1,
+    "progress": 0,
+    "paused": false,
+    "active": false,
+    "phase": "living",
+    "hidden": false
+  },
+  {
+    "frames": 1,
+    "ticks": 1,
+    "tickerTime": 9.369,
+    "rootTime": 9.369,
+    "rootScale": 1,
+    "progress": 0.0165,
+    "paused": false,
+    "active": true,
+    "phase": "living",
+    "hidden": false
+  },
+  {
+    "frames": 1,
+    "ticks": 1,
+    "tickerTime": 9.369,
+    "rootTime": 9.369,
+    "rootScale": 1,
+    "progress": 0.0165,
+    "paused": false,
+    "active": true,
+    "phase": "living",
+    "hidden": false
+  },
+  {
+    "frames": 2,
+    "ticks": 2,
+    "tickerTime": 9.402,
+    "rootTime": 9.402,
+    "rootScale": 1,
+    "progress": 0.033,
+    "paused": false,
+    "active": true,
+    "phase": "living",
+    "hidden": false
+  },
+  {
+    "frames": 2,
+    "ticks": 2,
+    "tickerTime": 9.402,
+    "rootTime": 9.402,
+    "rootScale": 1,
+    "progress": 0.033,
+    "paused": false,
+    "active": true,
+    "phase": "living",
+    "hidden": false
+  },
+  {
+    "frames": 3,
+    "ticks": 3,
+    "tickerTime": 9.435,
+    "rootTime": 9.435,
+    "rootScale": 1,
+    "progress": 0.0495,
+    "paused": false,
+    "active": true,
+    "phase": "living",
+    "hidden": false
+  }
+]

@@ -81,38 +81,45 @@ export function useScrollMotion<T extends HTMLElement = HTMLDivElement>(
       };
 
       const initialTargets = getTargets();
-      if (!initialTargets.length) return;
 
       // In reduced motion mode, instantly make all elements visible and clear inline props
       if (reduced) {
-        gsap.killTweensOf(initialTargets);
-        gsap.set(initialTargets, {
-          opacity: 1,
-          y: 0,
-          scale: 1,
-          clearProps: 'transform,opacity',
-        });
+        if (initialTargets.length > 0) {
+          gsap.killTweensOf(initialTargets);
+          gsap.set(initialTargets, {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            clearProps: 'transform,opacity',
+          });
+        }
         return;
       }
 
       // If IntersectionObserver is not available, reveal immediately for safety
       if (typeof IntersectionObserver === 'undefined') {
-        gsap.killTweensOf(initialTargets);
-        gsap.set(initialTargets, {
-          opacity: 1,
-          y: 0,
-          scale: 1,
-          clearProps: 'transform,opacity',
-        });
+        if (initialTargets.length > 0) {
+          gsap.killTweensOf(initialTargets);
+          gsap.set(initialTargets, {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            clearProps: 'transform,opacity',
+          });
+        }
         return;
       }
 
       // Track scroll position to assist direction-aware calculations
-      let lastScrollY = window.scrollY || window.pageYOffset || 0;
+      let lastScrollY =
+        typeof window !== 'undefined' ? window.scrollY || window.pageYOffset || 0 : 0;
+      let scrollDirection: 'down' | 'up' = 'down';
 
       const handleScroll = () => {
         const currentY = window.scrollY || window.pageYOffset || 0;
-        if (Math.abs(currentY - lastScrollY) > 2) {
+        const delta = currentY - lastScrollY;
+        if (Math.abs(delta) >= 2) {
+          scrollDirection = delta > 0 ? 'down' : 'up';
           lastScrollY = currentY;
         }
       };
@@ -125,10 +132,14 @@ export function useScrollMotion<T extends HTMLElement = HTMLDivElement>(
         { isVisible: boolean; hasEntered: boolean }
       >();
 
+      // Track all registered elements for reliable teardown even if ref detaches before unmount
+      const trackedElements = new Set<HTMLElement>();
+
       // Initialize elements: elements currently in the viewport get subtle initial reveal,
       // elements outside viewport start hidden.
       initialTargets.forEach((el) => {
         stateMap.set(el, { isVisible: false, hasEntered: false });
+        trackedElements.add(el);
         const rect = el.getBoundingClientRect();
         const inInitialView =
           rect.top < window.innerHeight && rect.bottom > 0 && rect.height > 0;
@@ -177,34 +188,41 @@ export function useScrollMotion<T extends HTMLElement = HTMLDivElement>(
 
           // Direction-aware entrance animation
           if (entering.length > 0) {
-            gsap.killTweensOf(entering);
-            gsap.to(entering, {
-              opacity: 1,
-              y: 0,
-              scale: 1,
-              duration,
-              stagger,
-              ease,
-              overwrite: 'auto',
-              clearProps: 'transform,opacity',
+            entering.forEach((el, index) => {
+              gsap.killTweensOf(el);
+              gsap.to(el, {
+                opacity: 1,
+                y: 0,
+                scale: 1,
+                duration,
+                delay: index * stagger,
+                ease,
+                overwrite: 'auto',
+                clearProps: 'transform,opacity',
+              });
             });
           }
 
           // Direction-aware exit animation (smooth tucking)
           if (exiting.length > 0) {
-            gsap.killTweensOf(exiting);
-            gsap.to(exiting, {
-              opacity: 0.15,
-              y: (_index, target) => {
-                const rect = target.getBoundingClientRect();
-                // If exited through top: tuck gently upward (-12px)
-                // If exited through bottom: tuck downward (+distance)
-                return rect.top < 0 ? -Math.min(distance * 0.5, 14) : distance;
-              },
-              scale: Math.max(scale, 0.98),
-              duration: Math.max(duration * 0.7, 0.4),
-              ease: 'power2.in',
-              overwrite: 'auto',
+            exiting.forEach((el, index) => {
+              gsap.killTweensOf(el);
+              gsap.to(el, {
+                opacity: 0.15,
+                y: () => {
+                  const rect = el.getBoundingClientRect();
+                  // If exited through top: tuck gently upward (-12px)
+                  // If exited through bottom: tuck downward (+distance)
+                  const isExitingTop =
+                    rect.top < 0 || (rect.bottom <= 0 && scrollDirection === 'down');
+                  return isExitingTop ? -Math.min(distance * 0.5, 14) : distance;
+                },
+                scale: Math.max(scale, 0.98),
+                duration: duration * 0.75,
+                delay: index * (stagger * 0.5),
+                ease: 'power2.in',
+                overwrite: 'auto',
+              });
             });
           }
         },
@@ -219,19 +237,39 @@ export function useScrollMotion<T extends HTMLElement = HTMLDivElement>(
       // Observe dynamically added elements (e.g. async Dexie live queries)
       let mutationObserver: MutationObserver | null = null;
       if (selector && typeof MutationObserver !== 'undefined') {
-        mutationObserver = new MutationObserver(() => {
+        mutationObserver = new MutationObserver((mutations) => {
           if (!containerRef.current) return;
+
+          // Clean up removed nodes
+          mutations.forEach((mutation) => {
+            mutation.removedNodes.forEach((node) => {
+              if (node instanceof HTMLElement && trackedElements.has(node)) {
+                gsap.killTweensOf(node);
+                gsap.getTweensOf(node).forEach((t) => t.kill());
+                observer.unobserve(node);
+                trackedElements.delete(node);
+              }
+            });
+          });
+
           const currentTargets = Array.from(
             containerRef.current.querySelectorAll<HTMLElement>(selector)
           );
           currentTargets.forEach((el) => {
             if (!stateMap.has(el)) {
               stateMap.set(el, { isVisible: false, hasEntered: false });
+              trackedElements.add(el);
               const rect = el.getBoundingClientRect();
               const inInitialView =
                 rect.top < window.innerHeight && rect.bottom > 0 && rect.height > 0;
               if (!inInitialView) {
                 gsap.set(el, { opacity: 0, y: distance, scale });
+              } else {
+                gsap.set(el, {
+                  opacity: 0,
+                  y: Math.min(distance, 12),
+                  scale: Math.max(scale, 0.99),
+                });
               }
               observer.observe(el);
             }
@@ -249,11 +287,12 @@ export function useScrollMotion<T extends HTMLElement = HTMLDivElement>(
         window.removeEventListener('scroll', handleScroll);
         observer.disconnect();
         mutationObserver?.disconnect();
-        const targets = getTargets();
-        targets.forEach((el) => {
+        trackedElements.forEach((el) => {
           gsap.killTweensOf(el);
+          gsap.getTweensOf(el).forEach((t) => t.kill());
           gsap.set(el, { clearProps: 'transform,opacity' });
         });
+        trackedElements.clear();
       };
     },
     {

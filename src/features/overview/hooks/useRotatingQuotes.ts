@@ -72,6 +72,8 @@ export function useRotatingQuotes(options: UseRotatingQuotesOptions = {}): UseRo
   const reducedMotion = useReducedMotion();
   const [isPaused, setIsPaused] = useState<boolean>(initialPaused);
   const [isTransitioning, setIsTransitioning] = useState<boolean>(false);
+  const transitioningRef = useRef(isTransitioning);
+  transitioningRef.current = isTransitioning;
 
   // Track document visibility
   const [isDocumentVisible, setIsDocumentVisible] = useState<boolean>(() => {
@@ -174,7 +176,9 @@ export function useRotatingQuotes(options: UseRotatingQuotesOptions = {}): UseRo
     }
 
     const timer = setInterval(() => {
-      advanceNext();
+      // A manual transition may start just before this interval fires. Keep
+      // its destination stable until the renderer completes its handoff.
+      if (!transitioningRef.current) advanceNext();
     }, intervalMs);
 
     return () => {

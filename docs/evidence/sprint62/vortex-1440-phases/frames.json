@@ -1,0 +1,39 @@
+{
+  "name": "vortex",
+  "width": 1440,
+  "phases": [
+    {
+      "seconds": 0,
+      "phase": "source-mask"
+    },
+    {
+      "seconds": 0.16,
+      "phase": "living"
+    },
+    {
+      "seconds": 0.46,
+      "phase": "fracture"
+    },
+    {
+      "seconds": 0.7,
+      "phase": "disintegration"
+    },
+    {
+      "seconds": 0.98,
+      "phase": "orbital"
+    },
+    {
+      "seconds": 1.36,
+      "phase": "summoning"
+    },
+    {
+      "seconds": 1.66,
+      "phase": "reconstruction"
+    },
+    {
+      "seconds": 1.98,
+      "phase": "destination-mask"
+    }
+  ],
+  "method": "Actual running app GSAP timeline paused at exact timestamps for inspection; see separate uninterrupted recordings."
+}
