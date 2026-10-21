@@ -9,7 +9,6 @@ interface AuthContextValue {
   session: Session | null;
   isLoading: boolean;
   isApprovedOwner: boolean;
-  currentPassword: string;
   signInWithPassword: (password: string, email?: string) => Promise<{ success: boolean; error?: string }>;
   updatePassword: (newPassword: string) => Promise<{ success: boolean; error?: string }>;
   signInWithEmailOtp: (email: string) => Promise<{ success: boolean; error?: string }>;
@@ -23,7 +22,7 @@ interface AuthContextValue {
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 const APPROVED_OWNER_EMAIL = 'syahmiaof123@gmail.com';
-const DEFAULT_OWNER_PASSWORD = 'Nemo2026@owner';
+const LEGACY_PASSWORD_STORAGE_KEY = 'nemo_owner_active_password';
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
@@ -31,12 +30,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isApprovedOwner, setIsApprovedOwner] = useState<boolean>(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
-  const [currentPassword, setCurrentPassword] = useState<string>(() => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('nemo_owner_active_password') || DEFAULT_OWNER_PASSWORD;
-    }
-    return DEFAULT_OWNER_PASSWORD;
-  });
 
   const checkOwnerApproval = async (userEmail?: string): Promise<boolean> => {
     if (!userEmail) return false;
@@ -57,6 +50,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   useEffect(() => {
+    // Older builds persisted the account password in localStorage. Remove that
+    // legacy value as soon as this provider mounts; passwords are never cached.
+    try {
+      window.localStorage.removeItem(LEGACY_PASSWORD_STORAGE_KEY);
+    } catch {
+      // Storage can be unavailable in restricted browser contexts.
+    }
+
     if (!isSupabaseConfigured) {
       setIsLoading(false);
       return;
@@ -142,10 +143,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           };
         }
         setIsApprovedOwner(true);
-        setCurrentPassword(password.trim());
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('nemo_owner_active_password', password.trim());
-        }
         syncEngine.setAuthenticatedUser(data.user.id, data.user.email);
         setIsAuthModalOpen(false);
       }
@@ -171,10 +168,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       if (error) {
         return { success: false, error: error.message };
-      }
-      setCurrentPassword(newPassword.trim());
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('nemo_owner_active_password', newPassword.trim());
       }
       return { success: true };
     } catch (err: unknown) {
@@ -272,7 +265,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       session,
       isLoading,
       isApprovedOwner,
-      currentPassword,
       signInWithPassword,
       updatePassword,
       signInWithEmailOtp,
@@ -282,7 +274,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       openAuthModal: () => setIsAuthModalOpen(true),
       closeAuthModal: () => setIsAuthModalOpen(false),
     }),
-    [user, session, isLoading, isApprovedOwner, isAuthModalOpen, currentPassword]
+    [user, session, isLoading, isApprovedOwner, isAuthModalOpen]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

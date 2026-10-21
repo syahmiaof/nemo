@@ -27,7 +27,7 @@ export const AdminMembersPanel: React.FC = () => {
 
   // Form states
   const [newEmail, setNewEmail] = useState('');
-  const [newPassword, setNewPassword] = useState('Nemo2026@owner');
+  const [newPassword, setNewPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [showAddForm, setShowAddForm] = useState(false);
 
@@ -75,9 +75,9 @@ export const AdminMembersPanel: React.FC = () => {
 
       if (error) throw error;
 
-      success('Member Added', `${cleanEmail} can now sign in on their phone or laptop with password: ${newPassword}`);
+      success('Member Added', `${cleanEmail} can now sign in with the password you set.`);
       setNewEmail('');
-      setNewPassword('Nemo2026@owner');
+      setNewPassword('');
       setShowAddForm(false);
       await loadMembers();
     } catch (err: unknown) {
@@ -201,7 +201,7 @@ export const AdminMembersPanel: React.FC = () => {
               <div className="relative">
                 <input
                   id="member-password"
-                  type="text"
+                  type="password"
                   required
                   minLength={6}
                   value={newPassword}

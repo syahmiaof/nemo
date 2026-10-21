@@ -12,7 +12,6 @@ import {
   KeyRound,
   Eye,
   EyeOff,
-  Copy,
 } from 'lucide-react';
 import { useAuth } from '@/features/auth/AuthContext';
 import { useSync } from '@/sync/useSync';
@@ -21,15 +20,11 @@ import { useToast } from '@/components/ui/Toast';
 import { AdminMembersPanel } from './AdminMembersPanel';
 
 export const AccountSyncPanel: React.FC = () => {
-  const { user, openAuthModal, signOut, updatePassword, currentPassword } = useAuth();
+  const { user, openAuthModal, signOut, updatePassword } = useAuth();
   const { status, lastSyncAt, pendingCount, errorMessage, isSyncing, triggerSync } = useSync();
   const { success, error: toastError } = useToast();
 
   const [isUploading, setIsUploading] = useState(false);
-
-  // Current Password Reveal & Copy State
-  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
-  const [isCopied, setIsCopied] = useState(false);
 
   // Change Password State
   const [showChangePassword, setShowChangePassword] = useState(false);
@@ -66,26 +61,6 @@ export const AccountSyncPanel: React.FC = () => {
       success('Upload Complete', `${res.count} records successfully uploaded to cloud.`);
     } else {
       toastError('Error', res.error || 'Failed to upload workspace data.');
-    }
-  };
-
-  const handleCopyPassword = async () => {
-    try {
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        await navigator.clipboard.writeText(currentPassword);
-      } else {
-        const textArea = document.createElement('textarea');
-        textArea.value = currentPassword;
-        document.body.appendChild(textArea);
-        textArea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textArea);
-      }
-      setIsCopied(true);
-      success('Copied', 'Current owner password copied to clipboard.');
-      setTimeout(() => setIsCopied(false), 2000);
-    } catch {
-      toastError('Copy Failed', 'Unable to copy to clipboard.');
     }
   };
 
@@ -228,70 +203,24 @@ export const AccountSyncPanel: React.FC = () => {
           </div>
         )}
 
-        {/* Current Active Password Card (Protected: Only visible after sign in) */}
         {user && (
-          <div className="p-3.5 rounded-xl bg-surface-subtle border border-border-subtle flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div className="space-y-1">
-              <div className="flex items-center gap-1.5 text-[11px] text-content-tertiary font-medium">
-                <KeyRound className="w-3.5 h-3.5 text-accent-mint" />
-                <span>Current Account Password</span>
-                <span className="px-1.5 py-0.2 rounded text-[9px] bg-mint-500/15 text-mint-400 font-semibold border border-mint-500/30">
-                  Active
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="font-mono text-xs sm:text-sm font-semibold tracking-wide text-content-primary">
-                  {showCurrentPassword ? currentPassword : '••••••••••••••••'}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-                  className="p-1 rounded-md text-content-tertiary hover:text-content-primary hover:bg-surface transition-colors"
-                  title={showCurrentPassword ? 'Hide password' : 'Show password'}
-                  aria-label={showCurrentPassword ? 'Hide password' : 'Show password'}
-                >
-                  {showCurrentPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
-                </button>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2 self-start sm:self-auto">
-              <button
-                type="button"
-                onClick={handleCopyPassword}
-                className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-surface hover:bg-surface-subtle border border-border-subtle text-xs text-content-secondary hover:text-content-primary transition-colors font-medium cursor-pointer"
-                title="Copy password to clipboard"
-              >
-                {isCopied ? (
-                  <>
-                    <Check className="w-3.5 h-3.5 text-accent-mint" />
-                    <span className="text-accent-mint font-semibold">Copied!</span>
-                  </>
-                ) : (
-                  <>
-                    <Copy className="w-3.5 h-3.5" />
-                    <span>Copy</span>
-                  </>
-                )}
-              </button>
-
-              <button
-                type="button"
-                onClick={() => {
-                  setShowChangePassword(!showChangePassword);
-                  setPasswordFeedback(null);
-                }}
-                className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border text-xs font-medium transition-colors cursor-pointer ${
-                  showChangePassword
-                    ? 'bg-navy-800 border-accent-mint/50 text-accent-mint'
-                    : 'bg-surface hover:bg-surface-subtle border-border-subtle text-content-secondary hover:text-content-primary'
-                }`}
-                title="Change your login password"
-              >
-                <KeyRound className="w-3.5 h-3.5" />
-                <span>{showChangePassword ? 'Close' : 'Change Password'}</span>
-              </button>
-            </div>
+          <div className="flex justify-end pt-1">
+            <button
+              type="button"
+              onClick={() => {
+                setShowChangePassword(!showChangePassword);
+                setPasswordFeedback(null);
+              }}
+              className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border text-xs font-medium transition-colors cursor-pointer ${
+                showChangePassword
+                  ? 'bg-navy-800 border-accent-mint/50 text-accent-mint'
+                  : 'bg-surface hover:bg-surface-subtle border-border-subtle text-content-secondary hover:text-content-primary'
+              }`}
+              title="Change your login password"
+            >
+              <KeyRound className="w-3.5 h-3.5" />
+              <span>{showChangePassword ? 'Close' : 'Change Password'}</span>
+            </button>
           </div>
         )}
 
