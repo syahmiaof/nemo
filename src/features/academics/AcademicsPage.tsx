@@ -58,7 +58,7 @@ export const AcademicsPage: React.FC = () => {
   // Active selections & filters
   const [selectedSemesterId, setSelectedSemesterId] = useState<string>('');
   const [selectedSubjectId, setSelectedSubjectId] = useState<string>('');
-  const [filterType, setFilterType] = useState<'all' | 'assignments' | 'exams'>('all');
+  const [filterType, setFilterType] = useState<'all' | 'assignments' | 'exams' | 'completed'>('all');
   const [deliverableType, setDeliverableType] = useState<'assignment' | 'exam'>('assignment');
 
   // Delete dialog state
@@ -345,18 +345,40 @@ export const AcademicsPage: React.FC = () => {
       .sort((a, b) => (a.dueDate || '').localeCompare(b.dueDate || ''));
   }, [subjectDeliverables]);
 
-  const filteredAssignments = React.useMemo(() => {
-    if (filterType === 'assignments') {
-      return subjectDeliverables.filter((a) => !isExamEntity(a));
-    }
-    if (filterType === 'exams') {
-      return subjectDeliverables.filter((a) => isExamEntity(a));
-    }
-    return subjectDeliverables;
-  }, [subjectDeliverables, filterType]);
+  const activeDeliverables = React.useMemo(() => {
+    return subjectDeliverables.filter((a) => a.status !== 'submitted' && a.status !== 'graded');
+  }, [subjectDeliverables]);
 
-  const assignmentCount = subjectDeliverables.filter((a) => !isExamEntity(a)).length;
-  const examCount = subjectDeliverables.filter((a) => isExamEntity(a)).length;
+  const completedDeliverables = React.useMemo(() => {
+    return subjectDeliverables.filter((a) => a.status === 'submitted' || a.status === 'graded');
+  }, [subjectDeliverables]);
+
+  const activeAssignmentCount = activeDeliverables.filter((a) => !isExamEntity(a)).length;
+  const activeExamCount = activeDeliverables.filter((a) => isExamEntity(a)).length;
+  const completedCount = completedDeliverables.length;
+
+  const filteredAssignments = React.useMemo(() => {
+    if (filterType === 'completed') {
+      return completedDeliverables.sort((a, b) => {
+        const dateA = a.submittedAt || a.dueDate || a.createdAt;
+        const dateB = b.submittedAt || b.dueDate || b.createdAt;
+        return dateB.localeCompare(dateA);
+      });
+    }
+
+    let list = activeDeliverables;
+    if (filterType === 'assignments') {
+      list = activeDeliverables.filter((a) => !isExamEntity(a));
+    } else if (filterType === 'exams') {
+      list = activeDeliverables.filter((a) => isExamEntity(a));
+    }
+
+    return list.sort((a, b) => {
+      if (!a.dueDate) return 1;
+      if (!b.dueDate) return -1;
+      return a.dueDate.localeCompare(b.dueDate);
+    });
+  }, [activeDeliverables, completedDeliverables, filterType]);
   const pageRef = useRef<HTMLDivElement>(null);
   const subjectsListRef = useRef<HTMLDivElement>(null);
   const examBannerRef = useRef<HTMLDivElement>(null);
@@ -583,7 +605,7 @@ export const AcademicsPage: React.FC = () => {
           <div className="lg:col-span-3 space-y-4">
             <div className="academics-controls-strip flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               {/* Category Filter Pills */}
-              <div className="flex items-center gap-1.5 p-1 rounded-xl bg-surface border border-border-subtle w-fit">
+              <div className="flex items-center gap-1.5 p-1 rounded-xl bg-surface border border-border-subtle w-fit flex-wrap">
                 <button
                   type="button"
                   onClick={() => setFilterType('all')}
@@ -593,7 +615,7 @@ export const AcademicsPage: React.FC = () => {
                       : 'text-content-secondary hover:text-content-primary'
                   }`}
                 >
-                  All ({subjectDeliverables.length})
+                  Active ({activeDeliverables.length})
                 </button>
                 <button
                   type="button"
@@ -604,7 +626,7 @@ export const AcademicsPage: React.FC = () => {
                       : 'text-content-secondary hover:text-content-primary'
                   }`}
                 >
-                  Assignments ({assignmentCount})
+                  Assignments ({activeAssignmentCount})
                 </button>
                 <button
                   type="button"
@@ -615,7 +637,18 @@ export const AcademicsPage: React.FC = () => {
                       : 'text-content-secondary hover:text-content-primary'
                   }`}
                 >
-                  Exams & Tests ({examCount})
+                  Exams & Tests ({activeExamCount})
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setFilterType('completed')}
+                  className={`px-3 py-1 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
+                    filterType === 'completed'
+                      ? 'bg-accent-amber text-navy-950 shadow-sm'
+                      : 'text-content-secondary hover:text-content-primary'
+                  }`}
+                >
+                  Completed ({completedCount})
                 </button>
               </div>
 
@@ -700,10 +733,18 @@ export const AcademicsPage: React.FC = () => {
             {filteredAssignments.length === 0 ? (
               <EmptyState
                 icon={BookOpen}
-                title="No assignments recorded"
-                description="Add assignments with deadlines, weight, scores, and track completion status."
-                actionLabel="Add Assignment"
-                onAction={() => handleOpenAssignmentModal()}
+                title={
+                  filterType === 'completed'
+                    ? 'No completed assignments archived'
+                    : 'No assignments recorded'
+                }
+                description={
+                  filterType === 'completed'
+                    ? 'When you submit assignments or finish exams, they will be archived here to keep your active study plan clean.'
+                    : 'Add assignments with deadlines, weight, scores, and track completion status.'
+                }
+                actionLabel={filterType === 'completed' ? undefined : 'Add Assignment'}
+                onAction={filterType === 'completed' ? undefined : () => handleOpenAssignmentModal()}
               />
             ) : (
               <div ref={deliverablesContainerRef} className="space-y-4">

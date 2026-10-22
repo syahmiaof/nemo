@@ -104,7 +104,7 @@ export function AppShell() {
     <AuthProvider>
       <ToastProvider>
         <div className="nemo-app">
-          <WelcomeOverlay />
+          <WelcomeOverlay skipIfSessionWelcomed />
           <ScrollRestoration />
           <a href="#main-content" className="skip-link">
             Skip to content
@@ -113,7 +113,7 @@ export function AppShell() {
             <i className="mesh__a" />
             <i className="mesh__b" />
           </div>
-          {settings?.theme === 'aurora' && (
+          {(settings?.theme === 'aurora' || (typeof document !== 'undefined' && document.documentElement.getAttribute('data-theme') === 'aurora')) && (
             <>
               <div className="aurora-backdrop" aria-hidden="true" />
               <AuroraStarfield />

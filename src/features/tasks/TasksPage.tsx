@@ -171,11 +171,12 @@ export const TasksPage: React.FC = () => {
     const q = deferredSearch.trim().toLowerCase();
 
     return tasks.filter((task) => {
-      // Status/Date tabs
+      // Status/Date tabs: completed tasks are cleanly archived to the 'Completed' tab
       if (activeFilter === 'done') {
         if (task.status !== 'done') return false;
       } else {
-        if (task.status === 'done' && activeFilter !== 'all') return false;
+        // Active tabs (all, today, upcoming, overdue): exclude completed/archived tasks
+        if (task.status === 'done') return false;
 
         if (activeFilter === 'today') {
           if (task.dueDate !== todayStr) return false;
@@ -195,6 +196,23 @@ export const TasksPage: React.FC = () => {
       }
 
       return true;
+    }).sort((a, b) => {
+      if (activeFilter === 'done') {
+        return (b.completedAt || '').localeCompare(a.completedAt || '');
+      }
+      // Prioritize overdue and earliest due date
+      if (a.dueDate && b.dueDate) {
+        const dateDiff = a.dueDate.localeCompare(b.dueDate);
+        if (dateDiff !== 0) return dateDiff;
+      } else if (a.dueDate) return -1;
+      else if (b.dueDate) return 1;
+
+      // Priority sort (urgent > high > medium > low)
+      const prioRank: Record<string, number> = { urgent: 1, high: 2, medium: 3, low: 4 };
+      const diff = (prioRank[a.priority] || 3) - (prioRank[b.priority] || 3);
+      if (diff !== 0) return diff;
+
+      return (b.createdAt || '').localeCompare(a.createdAt || '');
     });
   }, [tasks, activeFilter, deferredSearch, todayStr]);
 
@@ -325,15 +343,23 @@ export const TasksPage: React.FC = () => {
       {filteredTasks.length === 0 ? (
         <EmptyState
           icon={CheckSquare}
-          title={searchQuery ? 'No matching tasks' : 'No tasks in this view'}
+          title={
+            searchQuery
+              ? 'No matching tasks'
+              : activeFilter === 'done'
+              ? 'No completed tasks archived'
+              : 'No tasks in this view'
+          }
           description={
             searchQuery
               ? 'Try modifying your search query or switching tabs.'
+              : activeFilter === 'done'
+              ? 'When you finish tasks, they will be archived here to keep your active list clean.'
               : 'Add tasks to organize daily actions, link them to projects, or track academic assignments.'
           }
-          actionLabel={searchQuery ? undefined : 'Add Task'}
+          actionLabel={searchQuery || activeFilter === 'done' ? undefined : 'Add Task'}
           onAction={
-            searchQuery
+            searchQuery || activeFilter === 'done'
               ? undefined
               : () => {
                   setTaskToEdit(null);

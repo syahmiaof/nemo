@@ -73,7 +73,7 @@ export const ProjectsPage: React.FC = () => {
   const filteredProjects = useMemo(() => {
     const q = deferredSearch.trim().toLowerCase();
 
-    return projects.filter((project) => {
+    const result = projects.filter((project) => {
       // Tab filter
       if (activeTab === 'archived') {
         if (!project.archivedAt) return false;
@@ -92,6 +92,42 @@ export const ProjectsPage: React.FC = () => {
       }
 
       return true;
+    });
+
+    // Auto-sort projects:
+    // 1. in_progress (highest priority - top of list)
+    // 2. on_hold (active project currently paused)
+    // 3. not_started (backlog / planned)
+    // 4. completed (finished projects automatically sorted to bottom)
+    const statusPriority: Record<ProjectStatus, number> = {
+      in_progress: 1,
+      on_hold: 2,
+      not_started: 3,
+      completed: 4,
+    };
+
+    return result.sort((a, b) => {
+      // If filtering archived tab, sort by archived date
+      if (activeTab === 'archived') {
+        return (b.archivedAt || '').localeCompare(a.archivedAt || '');
+      }
+
+      // Prioritize active statuses over completed
+      const priorityDiff = statusPriority[a.status] - statusPriority[b.status];
+      if (priorityDiff !== 0) return priorityDiff;
+
+      // Within same status, sort by priority (urgent > high > medium > low)
+      const prioRank: Record<string, number> = { urgent: 1, high: 2, medium: 3, low: 4 };
+      const aPrio = prioRank[a.priority] || 3;
+      const bPrio = prioRank[b.priority] || 3;
+      if (aPrio !== bPrio) return aPrio - bPrio;
+
+      // Then by due date (earliest deadline first) or creation date
+      if (a.dueDate && b.dueDate) return a.dueDate.localeCompare(b.dueDate);
+      if (a.dueDate) return -1;
+      if (b.dueDate) return 1;
+
+      return (b.createdAt || '').localeCompare(a.createdAt || '');
     });
   }, [projects, activeTab, deferredSearch]);
 
