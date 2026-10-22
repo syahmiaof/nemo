@@ -18,7 +18,6 @@ import { TavolaSplineChart } from '@/components/ui/TavolaSplineChart';
 import { useReducedMotion } from '@/design/useReducedMotion';
 import { MotionTitle } from '@/components/ui/MotionTitle';
 import { AnimatedNumber } from '@/components/ui/PageHeading';
-import { LiquidGlassCard } from '@/components/ui/LiquidGlassCard';
 
 gsap.registerPlugin(useGSAP);
 
@@ -394,9 +393,8 @@ export const InsightsPage: React.FC = () => {
       {/* Main Insights Content Grid with Bi-directional Scroll Motion */}
       <div className="space-y-5">
         {/* 7-Day Velocity Spline Chart Section */}
-        <LiquidGlassCard
-          as="section"
-          className="insights-velocity-section border border-white/10 shadow-md"
+        <section
+          className="glass-panel insights-velocity-section border border-white/10 shadow-md"
           aria-labelledby="velocity-title"
         >
           <div className="insights-velocity-header">
@@ -449,14 +447,13 @@ export const InsightsPage: React.FC = () => {
             unit="items"
             height={185}
           />
-        </LiquidGlassCard>
+        </section>
 
         {/* Completion Rhythm & Task Mix Layout */}
         <div className="insights-layout">
           {/* Completion Rhythm Section with Vertical Bar Rise Chart */}
-          <LiquidGlassCard
-            as="section"
-            className="insights-analysis"
+          <section
+            className="glass-panel insights-analysis"
             aria-labelledby="completion-title"
             aria-busy={!data}
           >
@@ -565,12 +562,11 @@ export const InsightsPage: React.FC = () => {
                   ? `No ${series} completed in either year yet. Your real progress will appear here.`
                   : 'Completions are grouped by their recorded completion date in your local time.'}
             </p>
-          </LiquidGlassCard>
+          </section>
 
           {/* Task Mix Donut Chart Section */}
-          <LiquidGlassCard
-            as="section"
-            className="insights-distribution"
+          <section
+            className="glass-panel insights-distribution"
             aria-labelledby="task-mix-title"
           >
             <div className="insights-panel-heading">
@@ -635,12 +631,12 @@ export const InsightsPage: React.FC = () => {
                 : 'No overdue tasks.'}{' '}
               Based on all tasks in this workspace.
             </p>
-          </LiquidGlassCard>
+          </section>
         </div>
 
         {/* Bottom Grid Metric Panels */}
         <div className="insights-bottom-grid grid grid-cols-1 md:grid-cols-3 gap-4">
-          <LiquidGlassCard as="section" className="insights-bottom-panel">
+          <section className="glass-panel insights-bottom-panel">
             <div className="insights-panel-heading">
               <h2>Project momentum</h2>
               <ArrowUpRight size={22} aria-hidden="true" />
@@ -664,9 +660,9 @@ export const InsightsPage: React.FC = () => {
                 <span>In progress now</span>
               </div>
             </div>
-          </LiquidGlassCard>
+          </section>
 
-          <LiquidGlassCard as="section" className="insights-bottom-panel">
+          <section className="glass-panel insights-bottom-panel">
             <div className="insights-panel-heading">
               <h2>Academic progress</h2>
               <BookOpen size={22} aria-hidden="true" />
@@ -685,9 +681,9 @@ export const InsightsPage: React.FC = () => {
                 <span>Graded</span>
               </div>
             </div>
-          </LiquidGlassCard>
+          </section>
 
-          <LiquidGlassCard as="section" className="insights-bottom-panel">
+          <section className="glass-panel insights-bottom-panel">
             <div className="insights-panel-heading">
               <h2>Goal ambition</h2>
               <Target size={22} aria-hidden="true" />
@@ -708,7 +704,7 @@ export const InsightsPage: React.FC = () => {
                 <span>Milestones ({goalRate}%)</span>
               </div>
             </div>
-          </LiquidGlassCard>
+          </section>
         </div>
       </div>
 
