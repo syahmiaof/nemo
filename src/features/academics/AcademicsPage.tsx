@@ -42,6 +42,79 @@ import { formatClockTime } from '@/lib/timeFormat';
 
 gsap.registerPlugin(useGSAP);
 
+interface AcademicSubtaskRowProps {
+  task: Task;
+  onToggle: (task: Task) => Promise<void>;
+  reduced: boolean;
+}
+
+const AcademicSubtaskRow: React.FC<AcademicSubtaskRowProps> = ({ task, onToggle, reduced }) => {
+  const btnRef = useRef<HTMLButtonElement>(null);
+  const strikethroughRef = useRef<HTMLSpanElement>(null);
+  const isDone = task.status === 'done';
+
+  const handleClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    const willBeDone = !isDone;
+
+    if (!reduced) {
+      if (btnRef.current) {
+        // Micro spring pop on checkbox button
+        gsap.fromTo(
+          btnRef.current,
+          { scale: 0.72, rotate: -15 },
+          { scale: 1, rotate: 0, duration: 0.42, ease: 'back.out(2.8)', overwrite: 'auto' }
+        );
+      }
+
+      if (willBeDone && strikethroughRef.current) {
+        // Draw strikethrough line from left to right
+        gsap.fromTo(
+          strikethroughRef.current,
+          { scaleX: 0 },
+          { scaleX: 1, duration: 0.28, ease: 'power2.out' }
+        );
+      }
+    }
+
+    await onToggle(task);
+  };
+
+  return (
+    <div className="flex items-center gap-2.5 text-xs py-1 group/subtask">
+      <button
+        ref={btnRef}
+        type="button"
+        onClick={handleClick}
+        className="text-content-tertiary hover:text-accent-mint transition-colors relative focus:outline-none cursor-pointer p-0.5"
+        aria-label={isDone ? `Mark "${task.title}" as incomplete` : `Mark "${task.title}" as complete`}
+      >
+        {isDone ? (
+          <CheckCircle2 className="w-4 h-4 text-accent-mint drop-shadow-[0_0_6px_rgba(52,211,153,0.5)]" />
+        ) : (
+          <Circle className="w-4 h-4 group-hover/subtask:text-accent-mint/70 transition-colors" />
+        )}
+      </button>
+
+      <div className="relative inline-flex items-center flex-1 overflow-hidden">
+        <span
+          className={`transition-colors duration-200 select-none ${
+            isDone ? 'text-content-tertiary/70 line-through' : 'text-content-primary'
+          }`}
+        >
+          {task.title}
+        </span>
+        {isDone && (
+          <span
+            ref={strikethroughRef}
+            className="absolute left-0 right-0 h-[1.5px] bg-content-tertiary/60 rounded-full pointer-events-none origin-left"
+          />
+        )}
+      </div>
+    </div>
+  );
+};
+
 export const AcademicsPage: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -314,6 +387,48 @@ export const AcademicsPage: React.FC = () => {
     await atomicSetTaskStatus(db, task.id, nextStatus);
   };
 
+  const handleFilterChange = (newFilter: 'all' | 'assignments' | 'exams' | 'completed') => {
+    if (newFilter === filterType) return;
+    if (!reduced && deliverablesContainerRef.current) {
+      const cards = deliverablesContainerRef.current.querySelectorAll('.academic-deliverable-card');
+      if (cards.length > 0) {
+        gsap.to(cards, {
+          opacity: 0,
+          y: -10,
+          scale: 0.98,
+          duration: 0.15,
+          ease: 'power2.in',
+          onComplete: () => {
+            setFilterType(newFilter);
+          },
+        });
+        return;
+      }
+    }
+    setFilterType(newFilter);
+  };
+
+  const handleSelectSubject = (subjId: string) => {
+    if (subjId === selectedSubjectId) return;
+    if (!reduced && deliverablesContainerRef.current) {
+      const cards = deliverablesContainerRef.current.querySelectorAll('.academic-deliverable-card');
+      if (cards.length > 0) {
+        gsap.to(cards, {
+          opacity: 0,
+          y: -10,
+          scale: 0.98,
+          duration: 0.15,
+          ease: 'power2.in',
+          onComplete: () => {
+            setSelectedSubjectId(subjId);
+          },
+        });
+        return;
+      }
+    }
+    setSelectedSubjectId(subjId);
+  };
+
   const handleDeleteItem = async () => {
     if (!itemToDelete) return;
     if (itemToDelete.type === 'semester') {
@@ -489,6 +604,73 @@ export const AcademicsPage: React.FC = () => {
     }
   }, { scope: examBannerRef, dependencies: [upcomingExams.length, filterType, reduced], revertOnUpdate: true });
 
+  // 4. Staggered Cosmic Cascade: Deliverables entrance animation on filter/subject change
+  useGSAP(() => {
+    if (reduced || !deliverablesContainerRef.current) return;
+    const cards = deliverablesContainerRef.current.querySelectorAll('.academic-deliverable-card');
+    if (!cards.length) return;
+
+    gsap.fromTo(
+      cards,
+      {
+        opacity: 0,
+        y: 22,
+        scale: 0.98,
+      },
+      {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        duration: 0.42,
+        stagger: 0.05,
+        ease: 'power3.out',
+        clearProps: 'opacity,transform',
+      }
+    );
+  }, {
+    scope: deliverablesContainerRef,
+    dependencies: [selectedSubjectId, selectedSemesterId, filterType, filteredAssignments.length, reduced],
+    revertOnUpdate: true,
+  });
+
+  // 5. Exam Radar Pulse & Shimmer for upcoming exams and exam deliverable cards
+  useGSAP(() => {
+    if (reduced || !pageRef.current) return;
+
+    // Glowing radar shimmer beam across exam deliverable cards
+    const examShimmers = pageRef.current.querySelectorAll('.exam-card-shimmer');
+    if (examShimmers.length > 0) {
+      gsap.fromTo(
+        examShimmers,
+        { xPercent: -150 },
+        {
+          xPercent: 350,
+          duration: 3.6,
+          repeat: -1,
+          ease: 'power1.inOut',
+          stagger: 0.8,
+          repeatDelay: 2.0,
+        }
+      );
+    }
+
+    // Breathing pulse on urgent exam countdown badges
+    const urgentBadges = pageRef.current.querySelectorAll('.exam-countdown-badge-urgent');
+    if (urgentBadges.length > 0) {
+      gsap.to(urgentBadges, {
+        scale: 1.05,
+        duration: 1.1,
+        repeat: -1,
+        yoyo: true,
+        ease: 'sine.inOut',
+      });
+    }
+  }, {
+    scope: pageRef,
+    dependencies: [filteredAssignments.length, upcomingExams.length, filterType, reduced],
+    revertOnUpdate: true,
+  });
+
   return (
     <div ref={pageRef} className="academics-page space-y-6">
       {/* Top Header & Semester Selector */}
@@ -549,8 +731,8 @@ export const AcademicsPage: React.FC = () => {
 
             <div ref={subjectsListRef} className="space-y-1.5">
               <button
-                onClick={() => setSelectedSubjectId('')}
-                className={`subject-sidebar-item w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-medium transition-all ${
+                onClick={() => handleSelectSubject('')}
+                className={`subject-sidebar-item w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-medium transition-all cursor-pointer ${
                   selectedSubjectId === ''
                     ? 'bg-surface-hover text-content-primary font-semibold border border-border-subtle'
                     : 'text-content-secondary hover:bg-surface/50 hover:text-content-primary'
@@ -573,8 +755,8 @@ export const AcademicsPage: React.FC = () => {
                     }`}
                   >
                     <button
-                      onClick={() => setSelectedSubjectId(sub.id)}
-                      className="flex items-center gap-2.5 min-w-0 flex-1 text-left"
+                      onClick={() => handleSelectSubject(sub.id)}
+                      className="flex items-center gap-2.5 min-w-0 flex-1 text-left cursor-pointer"
                     >
                       <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: sub.color }} />
                       <div className="min-w-0">
@@ -608,7 +790,7 @@ export const AcademicsPage: React.FC = () => {
               <div className="flex items-center gap-1.5 p-1 rounded-xl bg-surface border border-border-subtle w-fit flex-wrap">
                 <button
                   type="button"
-                  onClick={() => setFilterType('all')}
+                  onClick={() => handleFilterChange('all')}
                   className={`px-3 py-1 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
                     filterType === 'all'
                       ? 'bg-accent-mint text-navy-950 shadow-sm'
@@ -619,7 +801,7 @@ export const AcademicsPage: React.FC = () => {
                 </button>
                 <button
                   type="button"
-                  onClick={() => setFilterType('assignments')}
+                  onClick={() => handleFilterChange('assignments')}
                   className={`px-3 py-1 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
                     filterType === 'assignments'
                       ? 'bg-accent-mint text-navy-950 shadow-sm'
@@ -630,7 +812,7 @@ export const AcademicsPage: React.FC = () => {
                 </button>
                 <button
                   type="button"
-                  onClick={() => setFilterType('exams')}
+                  onClick={() => handleFilterChange('exams')}
                   className={`px-3 py-1 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
                     filterType === 'exams'
                       ? 'bg-rose-400 text-navy-950 shadow-sm'
@@ -641,7 +823,7 @@ export const AcademicsPage: React.FC = () => {
                 </button>
                 <button
                   type="button"
-                  onClick={() => setFilterType('completed')}
+                  onClick={() => handleFilterChange('completed')}
                   className={`px-3 py-1 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
                     filterType === 'completed'
                       ? 'bg-accent-amber text-navy-950 shadow-sm'
@@ -760,10 +942,19 @@ export const AcademicsPage: React.FC = () => {
                   return (
                     <div
                       key={assign.id}
-                      className={`academic-deliverable-card p-5 rounded-2xl glass-panel relative group space-y-4 transition-all shadow-sm ${
-                        isExam ? 'hover:border-rose-500/40 border-rose-500/20' : 'hover:border-white/20'
+                      className={`academic-deliverable-card p-5 rounded-2xl glass-panel relative group space-y-4 transition-all duration-300 shadow-sm hover:-translate-y-1 ${
+                        isExam
+                          ? 'border-rose-500/30 hover:border-rose-500/60 hover:shadow-[0_12px_36px_-10px_rgba(244,63,94,0.35)]'
+                          : 'hover:border-white/20 hover:shadow-lg'
                       }`}
                     >
+                      {/* Exam radar beam sweep */}
+                      {isExam && (
+                        <div className="absolute inset-0 rounded-2xl pointer-events-none overflow-hidden" aria-hidden="true">
+                          <div className="exam-card-shimmer absolute top-0 bottom-0 w-36 bg-gradient-to-r from-transparent via-rose-400/20 to-transparent -translate-x-full filter drop-shadow-[0_0_8px_rgba(244,63,94,0.6)]" />
+                        </div>
+                      )}
+
                       <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 relative z-10">
                         <div className="space-y-1">
                           <div className="flex items-center gap-2 flex-wrap">
@@ -773,12 +964,16 @@ export const AcademicsPage: React.FC = () => {
                               </span>
                             )}
                             {isExam && countdown && (
-                              <span className={`text-[10px] px-2 py-0.5 rounded-full font-semibold ${
+                              <span className={`exam-countdown-badge inline-flex items-center gap-1.5 text-[10px] px-2.5 py-0.5 rounded-full font-semibold relative overflow-hidden transition-all duration-300 ${
                                 countdown.urgency === 'urgent'
-                                  ? 'bg-rose-500 text-white font-bold'
+                                  ? 'exam-countdown-badge-urgent bg-rose-500 text-white font-bold shadow-[0_0_12px_rgba(244,63,94,0.6)]'
                                   : 'bg-rose-500/15 text-rose-300 border border-rose-500/30'
                               }`}>
-                                {countdown.label}
+                                <span className="relative flex h-1.5 w-1.5">
+                                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-300 opacity-75" />
+                                  <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-rose-200" />
+                                </span>
+                                <span>{countdown.label}</span>
                               </span>
                             )}
                             {subject && (
@@ -882,21 +1077,12 @@ export const AcademicsPage: React.FC = () => {
                         )}
 
                         {assignSubtasks.map((task) => (
-                          <div key={task.id} className="flex items-center gap-2.5 text-xs">
-                            <button
-                              onClick={() => handleToggleSubtask(task)}
-                              className="text-content-tertiary hover:text-accent-mint"
-                            >
-                              {task.status === 'done' ? (
-                                <CheckCircle2 className="w-4 h-4 text-accent-mint" />
-                              ) : (
-                                <Circle className="w-4 h-4" />
-                              )}
-                            </button>
-                            <span className={task.status === 'done' ? 'line-through text-content-tertiary' : 'text-content-primary'}>
-                              {task.title}
-                            </span>
-                          </div>
+                          <AcademicSubtaskRow
+                            key={task.id}
+                            task={task}
+                            onToggle={handleToggleSubtask}
+                            reduced={reduced}
+                          />
                         ))}
                       </div>
                     </div>
