@@ -240,6 +240,10 @@ describe('Sprint 2 — Backup, Export & Disaster Recovery', () => {
         goalTaskLinks: [],
         focusSelections: [],
         assetBlobs: [],
+        hydrationLogs: [],
+        dietLogs: [],
+        workoutLogs: [],
+        bodyMetrics: [],
       },
     };
 

@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { useLiveQuery } from 'dexie-react-hooks';
@@ -10,6 +11,14 @@ import {
   ArrowUpRight,
   Target,
   Zap,
+  HeartPulse,
+  Droplet,
+  Flame,
+  Activity,
+  Scale,
+  TrendingDown,
+  TrendingUp,
+  Minus,
 } from 'lucide-react';
 import { db } from '@/db/nemoDb';
 import { isOverdue } from '@/lib/dates';
@@ -33,14 +42,38 @@ export const InsightsPage: React.FC = () => {
   const reduced = useReducedMotion();
 
   const data = useLiveQuery(async () => {
-    const [projects, tasks, assignments, goals, milestones] = await Promise.all([
+    const [
+      projects,
+      tasks,
+      assignments,
+      goals,
+      milestones,
+      hydrationLogs,
+      dietLogs,
+      workoutLogs,
+      bodyMetrics,
+    ] = await Promise.all([
       db.projects.toArray(),
       db.tasks.toArray(),
       db.assignments.toArray(),
       db.goals.toArray(),
       db.milestones.toArray(),
+      db.hydrationLogs.toArray(),
+      db.dietLogs.toArray(),
+      db.workoutLogs.toArray(),
+      db.bodyMetrics.toArray(),
     ]);
-    return { projects, tasks, assignments, goals, milestones };
+    return {
+      projects,
+      tasks,
+      assignments,
+      goals,
+      milestones,
+      hydrationLogs,
+      dietLogs,
+      workoutLogs,
+      bodyMetrics,
+    };
   }, []);
 
   const projects = data?.projects ?? [];
@@ -48,6 +81,10 @@ export const InsightsPage: React.FC = () => {
   const assignments = data?.assignments ?? [];
   const goals = data?.goals ?? [];
   const milestones = data?.milestones ?? [];
+  const hydrationLogs = data?.hydrationLogs ?? [];
+  const dietLogs = data?.dietLogs ?? [];
+  const workoutLogs = data?.workoutLogs ?? [];
+  const bodyMetrics = data?.bodyMetrics ?? [];
 
   // 7-Day Rolling Velocity calculation
   const velocityData = useMemo(() => {
@@ -94,6 +131,106 @@ export const InsightsPage: React.FC = () => {
       dailyAverage,
     };
   }, [tasks, projects]);
+
+  // Genuine Local Health & Lifestyle Metrics calculation
+  const healthMetrics = useMemo(() => {
+    const today = new Date();
+    const formatLocalDate = (d: Date) =>
+      `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    const todayStr = formatLocalDate(today);
+
+    // 7-day rolling window: today down to 6 days ago (7 days total)
+    const d7 = new Date(today);
+    d7.setDate(today.getDate() - 6);
+    const sevenDaysAgoStr = formatLocalDate(d7);
+
+    // 30-day window
+    const d30 = new Date(today);
+    d30.setDate(today.getDate() - 30);
+    const thirtyDaysAgoStr = formatLocalDate(d30);
+
+    // 1. 7-Day Average Hydration & Adherence Rate vs 2500ml goal
+    const past7HydrationLogs = hydrationLogs.filter(
+      (l) => l.date >= sevenDaysAgoStr && l.date <= todayStr
+    );
+    const past7HydrationTotal = past7HydrationLogs.reduce((sum, l) => sum + (l.amountMl || 0), 0);
+    const avgHydrationMl = Math.round(past7HydrationTotal / 7);
+    const hydrationDailyGoal = 2500;
+    const hydrationAdherenceRate = Math.round((avgHydrationMl / hydrationDailyGoal) * 100);
+    const hasHydrationData = past7HydrationLogs.length > 0;
+
+    // 2. Workouts count in past 7 days & total active minutes
+    const past7WorkoutLogs = workoutLogs.filter(
+      (w) => w.date >= sevenDaysAgoStr && w.date <= todayStr
+    );
+    const workoutsCountPast7 = past7WorkoutLogs.length;
+    const totalActiveMinutesPast7 = past7WorkoutLogs.reduce(
+      (sum, w) => sum + (w.durationMinutes || 0),
+      0
+    );
+    const hasWorkoutData = past7WorkoutLogs.length > 0;
+
+    // 3. 7-Day Average Caloric intake vs Average Workout burn
+    const past7DietLogs = dietLogs.filter(
+      (m) => m.date >= sevenDaysAgoStr && m.date <= todayStr
+    );
+    const totalCaloricIntakePast7 = past7DietLogs.reduce(
+      (sum, m) => sum + (m.calories || 0),
+      0
+    );
+    const avgCaloricIntake = Math.round(totalCaloricIntakePast7 / 7);
+
+    const totalCaloriesBurnedPast7 = past7WorkoutLogs.reduce(
+      (sum, w) => sum + (w.caloriesBurned || 0),
+      0
+    );
+    const avgWorkoutBurn = Math.round(totalCaloriesBurnedPast7 / 7);
+    const hasNutritionData = past7DietLogs.length > 0;
+    const hasEnergyData = hasNutritionData || hasWorkoutData;
+
+    // 4. Latest weight (kg) and 30-day net delta
+    const sortedMetrics = [...bodyMetrics].sort((a, b) => a.date.localeCompare(b.date));
+    const hasWeightData = sortedMetrics.length > 0;
+    const latestMetric = hasWeightData ? sortedMetrics[sortedMetrics.length - 1] : null;
+    const latestWeight = latestMetric ? latestMetric.weightKg : null;
+
+    let weightDelta30Days: number | null = null;
+    if (latestMetric && sortedMetrics.length > 1) {
+      const priorTo30 = sortedMetrics.filter((m) => m.date <= thirtyDaysAgoStr);
+      const baseline = priorTo30.length > 0 ? priorTo30[priorTo30.length - 1] : sortedMetrics[0];
+      if (baseline && baseline.id !== latestMetric.id) {
+        weightDelta30Days = Number((latestMetric.weightKg - baseline.weightKg).toFixed(1));
+      } else {
+        weightDelta30Days = 0;
+      }
+    } else if (latestMetric) {
+      weightDelta30Days = 0;
+    }
+
+    const hasAnyHealthData =
+      hydrationLogs.length > 0 ||
+      dietLogs.length > 0 ||
+      workoutLogs.length > 0 ||
+      bodyMetrics.length > 0;
+
+    return {
+      avgHydrationMl,
+      hydrationDailyGoal,
+      hydrationAdherenceRate,
+      hasHydrationData,
+      workoutsCountPast7,
+      totalActiveMinutesPast7,
+      hasWorkoutData,
+      avgCaloricIntake,
+      avgWorkoutBurn,
+      hasNutritionData,
+      hasEnergyData,
+      latestWeight,
+      weightDelta30Days,
+      hasWeightData,
+      hasAnyHealthData,
+    };
+  }, [hydrationLogs, dietLogs, workoutLogs, bodyMetrics]);
 
   const {
     years,
@@ -375,6 +512,24 @@ export const InsightsPage: React.FC = () => {
             <span>Active goals</span>
           </div>
         </div>
+        <div className="insights-head-stat">
+          <span className="insights-stat-icon text-rose-400">
+            <HeartPulse size={20} />
+          </span>
+          <div>
+            <strong>
+              {healthMetrics.hasAnyHealthData ? (
+                <>
+                  <AnimatedNumber value={healthMetrics.workoutsCountPast7} />
+                  <span className="text-xs font-medium text-content-secondary ml-1">wkts / 7d</span>
+                </>
+              ) : (
+                '—'
+              )}
+            </strong>
+            <span>Active movement</span>
+          </div>
+        </div>
         <label className="insights-year">
           <span className="sr-only">Reporting year</span>
           <select
@@ -634,8 +789,247 @@ export const InsightsPage: React.FC = () => {
           </section>
         </div>
 
+        {/* Health & Lifestyle Vitality Section */}
+        <section
+          className="glass-panel p-5 sm:p-6 rounded-3xl border border-white/10 shadow-lg relative overflow-hidden transition-all duration-300"
+          aria-labelledby="health-vitality-title"
+        >
+          {/* Subtle Aurora Ambient Glow */}
+          <div className="absolute -top-24 -right-24 w-72 h-72 bg-gradient-to-br from-rose-500/10 via-cyan-500/10 to-transparent rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute -bottom-24 -left-24 w-72 h-72 bg-gradient-to-tr from-emerald-500/10 via-amber-500/10 to-transparent rounded-full blur-3xl pointer-events-none" />
+
+          {/* Section Header */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 relative z-10">
+            <div>
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-rose-500/10 border border-rose-500/20 text-rose-400 text-[11px] font-semibold tracking-wide uppercase mb-1.5">
+                <HeartPulse className="w-3.5 h-3.5" />
+                <span>Wellness & Vitality</span>
+              </div>
+              <h2 id="health-vitality-title" className="text-lg font-bold text-content-primary">
+                Health & Lifestyle Vitality
+              </h2>
+              <p className="text-xs text-content-secondary mt-0.5">
+                7-day rolling wellness metrics, hydration velocity, and metabolic momentum
+              </p>
+            </div>
+
+            <Link
+              to="/health"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-medium text-content-primary transition-all duration-200 self-start sm:self-auto group"
+            >
+              <span>Open Health Hub</span>
+              <ArrowUpRight size={14} className="text-content-secondary group-hover:text-content-primary group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+            </Link>
+          </div>
+
+          {/* 4 Health Pillars Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 relative z-10">
+            {/* 1. 7-Day Average Hydration */}
+            <div className="rounded-2xl bg-white/[0.03] border border-white/[0.08] p-4.5 flex flex-col justify-between hover:border-cyan-500/30 transition-colors duration-200 group">
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-xs font-medium text-content-secondary">7-Day Hydration</span>
+                  <div className="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 group-hover:scale-105 transition-transform">
+                    <Droplet size={16} />
+                  </div>
+                </div>
+                <div className="flex items-baseline gap-1.5">
+                  {healthMetrics.hasHydrationData ? (
+                    <>
+                      <strong className="text-2xl font-bold text-content-primary tracking-tight">
+                        <AnimatedNumber value={healthMetrics.avgHydrationMl} />
+                      </strong>
+                      <span className="text-xs font-medium text-content-secondary">ml / day</span>
+                    </>
+                  ) : (
+                    <strong className="text-2xl font-bold text-content-secondary tracking-tight">—</strong>
+                  )}
+                </div>
+              </div>
+
+              <div className="mt-4 pt-3 border-t border-white/[0.06]">
+                {healthMetrics.hasHydrationData ? (
+                  <>
+                    <div className="flex items-center justify-between text-[11px] mb-1.5">
+                      <span className="text-content-secondary">Goal adherence</span>
+                      <span className="font-semibold text-cyan-400">
+                        <AnimatedNumber value={healthMetrics.hydrationAdherenceRate} />%
+                      </span>
+                    </div>
+                    <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-gradient-to-r from-cyan-500 to-sky-400 rounded-full transition-all duration-500"
+                        style={{ width: `${Math.min(100, Math.max(4, healthMetrics.hydrationAdherenceRate))}%` }}
+                      />
+                    </div>
+                    <span className="text-[10px] text-content-secondary/70 mt-1 block">
+                      vs {healthMetrics.hydrationDailyGoal.toLocaleString()} ml daily target
+                    </span>
+                  </>
+                ) : (
+                  <p className="text-xs text-content-secondary/70 italic">
+                    No hydration logged in past 7 days.
+                  </p>
+                )}
+              </div>
+            </div>
+
+            {/* 2. Active Movement (Workouts & Active Minutes) */}
+            <div className="rounded-2xl bg-white/[0.03] border border-white/[0.08] p-4.5 flex flex-col justify-between hover:border-emerald-500/30 transition-colors duration-200 group">
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-xs font-medium text-content-secondary">Active Movement</span>
+                  <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 group-hover:scale-105 transition-transform">
+                    <Activity size={16} />
+                  </div>
+                </div>
+                <div className="flex items-baseline gap-1.5">
+                  {healthMetrics.hasWorkoutData ? (
+                    <>
+                      <strong className="text-2xl font-bold text-content-primary tracking-tight">
+                        <AnimatedNumber value={healthMetrics.workoutsCountPast7} />
+                      </strong>
+                      <span className="text-xs font-medium text-content-secondary">
+                        {healthMetrics.workoutsCountPast7 === 1 ? 'workout' : 'workouts'} (7d)
+                      </span>
+                    </>
+                  ) : (
+                    <strong className="text-2xl font-bold text-content-secondary tracking-tight">0</strong>
+                  )}
+                </div>
+              </div>
+
+              <div className="mt-4 pt-3 border-t border-white/[0.06]">
+                {healthMetrics.hasWorkoutData ? (
+                  <div>
+                    <div className="flex items-center justify-between text-[11px] mb-1">
+                      <span className="text-content-secondary">Total active time</span>
+                      <strong className="font-semibold text-emerald-400">
+                        <AnimatedNumber value={healthMetrics.totalActiveMinutesPast7} /> min
+                      </strong>
+                    </div>
+                    <span className="text-[10px] text-content-secondary/70 block">
+                      Avg {Math.round(healthMetrics.totalActiveMinutesPast7 / Math.max(1, healthMetrics.workoutsCountPast7))} min / session
+                    </span>
+                  </div>
+                ) : (
+                  <p className="text-xs text-content-secondary/70 italic">
+                    No workouts recorded in past 7 days.
+                  </p>
+                )}
+              </div>
+            </div>
+
+            {/* 3. Energy Balance (Intake vs Workout Burn) */}
+            <div className="rounded-2xl bg-white/[0.03] border border-white/[0.08] p-4.5 flex flex-col justify-between hover:border-amber-500/30 transition-colors duration-200 group">
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-xs font-medium text-content-secondary">Energy Balance</span>
+                  <div className="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 group-hover:scale-105 transition-transform">
+                    <Flame size={16} />
+                  </div>
+                </div>
+                <div className="flex items-baseline gap-1.5">
+                  {healthMetrics.hasEnergyData ? (
+                    <>
+                      <strong className="text-2xl font-bold text-content-primary tracking-tight">
+                        <AnimatedNumber value={healthMetrics.avgCaloricIntake} />
+                      </strong>
+                      <span className="text-xs font-medium text-content-secondary">kcal in / day</span>
+                    </>
+                  ) : (
+                    <strong className="text-2xl font-bold text-content-secondary tracking-tight">—</strong>
+                  )}
+                </div>
+              </div>
+
+              <div className="mt-4 pt-3 border-t border-white/[0.06]">
+                {healthMetrics.hasEnergyData ? (
+                  <div>
+                    <div className="flex items-center justify-between text-[11px] mb-1">
+                      <span className="text-content-secondary">Avg workout burn</span>
+                      <strong className="font-semibold text-amber-400">
+                        <AnimatedNumber value={healthMetrics.avgWorkoutBurn} /> kcal / day
+                      </strong>
+                    </div>
+                    <span className="text-[10px] text-content-secondary/70 block">
+                      {healthMetrics.avgCaloricIntake > 0 && healthMetrics.avgWorkoutBurn > 0
+                        ? `Net: ${healthMetrics.avgCaloricIntake - healthMetrics.avgWorkoutBurn > 0 ? '+' : ''}${healthMetrics.avgCaloricIntake - healthMetrics.avgWorkoutBurn} kcal daily margin`
+                        : 'Calculated over 7 rolling days'}
+                    </span>
+                  </div>
+                ) : (
+                  <p className="text-xs text-content-secondary/70 italic">
+                    No diet or workout calories logged.
+                  </p>
+                )}
+              </div>
+            </div>
+
+            {/* 4. Body Composition (Weight & 30-Day Delta) */}
+            <div className="rounded-2xl bg-white/[0.03] border border-white/[0.08] p-4.5 flex flex-col justify-between hover:border-rose-500/30 transition-colors duration-200 group">
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-xs font-medium text-content-secondary">Body Composition</span>
+                  <div className="w-8 h-8 rounded-lg bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-rose-400 group-hover:scale-105 transition-transform">
+                    <Scale size={16} />
+                  </div>
+                </div>
+                <div className="flex items-baseline gap-1.5">
+                  {healthMetrics.latestWeight !== null ? (
+                    <>
+                      <strong className="text-2xl font-bold text-content-primary tracking-tight">
+                        {healthMetrics.latestWeight}
+                      </strong>
+                      <span className="text-xs font-medium text-content-secondary">kg</span>
+                    </>
+                  ) : (
+                    <strong className="text-2xl font-bold text-content-secondary tracking-tight">—</strong>
+                  )}
+                </div>
+              </div>
+
+              <div className="mt-4 pt-3 border-t border-white/[0.06]">
+                {healthMetrics.latestWeight !== null && healthMetrics.weightDelta30Days !== null ? (
+                  <div>
+                    <div className="flex items-center justify-between text-[11px] mb-1">
+                      <span className="text-content-secondary">30-day net delta</span>
+                      <span
+                        className={`font-semibold inline-flex items-center gap-0.5 ${
+                          healthMetrics.weightDelta30Days < 0
+                            ? 'text-emerald-400'
+                            : healthMetrics.weightDelta30Days > 0
+                              ? 'text-amber-400'
+                              : 'text-content-secondary'
+                        }`}
+                      >
+                        {healthMetrics.weightDelta30Days < 0 ? (
+                          <TrendingDown size={13} />
+                        ) : healthMetrics.weightDelta30Days > 0 ? (
+                          <TrendingUp size={13} />
+                        ) : (
+                          <Minus size={13} />
+                        )}
+                        {healthMetrics.weightDelta30Days > 0 ? '+' : ''}
+                        {healthMetrics.weightDelta30Days} kg
+                      </span>
+                    </div>
+                    <span className="text-[10px] text-content-secondary/70 block">
+                      vs 30-day baseline record
+                    </span>
+                  </div>
+                ) : (
+                  <p className="text-xs text-content-secondary/70 italic">
+                    No weight measurements recorded yet.
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* Bottom Grid Metric Panels */}
-        <div className="insights-bottom-grid grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="insights-bottom-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <section className="glass-panel insights-bottom-panel">
             <div className="insights-panel-heading">
               <h2>Project momentum</h2>
@@ -702,6 +1096,40 @@ export const InsightsPage: React.FC = () => {
                   {completedMilestonesCount}/{totalMilestonesCount}
                 </strong>
                 <span>Milestones ({goalRate}%)</span>
+              </div>
+            </div>
+          </section>
+
+          <section className="glass-panel insights-bottom-panel">
+            <div className="insights-panel-heading">
+              <h2>Lifestyle & Vitality</h2>
+              <HeartPulse size={22} aria-hidden="true" className="text-rose-400" />
+            </div>
+            <div className="insights-bottom-metrics">
+              <div>
+                <strong>
+                  {healthMetrics.hasHydrationData ? (
+                    <>
+                      <AnimatedNumber value={healthMetrics.avgHydrationMl} />
+                      <span className="text-xs font-normal text-content-secondary ml-1">ml</span>
+                    </>
+                  ) : (
+                    '—'
+                  )}
+                </strong>
+                <span>7d avg water</span>
+              </div>
+              <div>
+                <strong>
+                  <AnimatedNumber value={healthMetrics.workoutsCountPast7} />
+                </strong>
+                <span>Workouts (7d)</span>
+              </div>
+              <div>
+                <strong>
+                  {healthMetrics.latestWeight !== null ? `${healthMetrics.latestWeight} kg` : '—'}
+                </strong>
+                <span>Latest weight</span>
               </div>
             </div>
           </section>

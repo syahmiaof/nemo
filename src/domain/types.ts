@@ -197,7 +197,72 @@ export type SyncEntityType =
   | 'goalTaskLink'
   | 'focusSelection'
   | 'settings'
-  | 'assetBlob';
+  | 'assetBlob'
+  | 'hydrationLog'
+  | 'dietLog'
+  | 'workoutLog'
+  | 'bodyMetric';
+
+// ============================================================================
+// HEALTH & WELLNESS DOMAIN TYPES
+// ============================================================================
+
+export interface HydrationLog {
+  id: string; // 'hyd_...'
+  date: string; // YYYY-MM-DD
+  amountMl: number; // e.g. 250, 500, 1000
+  loggedAt: string; // ISO string
+}
+
+export type MealType = 'breakfast' | 'lunch' | 'dinner' | 'snack';
+
+export interface DietLog {
+  id: string; // 'diet_...'
+  date: string; // YYYY-MM-DD
+  mealType: MealType;
+  foodName: string;
+  calories: number;
+  proteinG?: number;
+  carbsG?: number;
+  fatG?: number;
+  loggedAt: string; // ISO string
+}
+
+export type ActivityType = 'running' | 'jogging' | 'cycling' | 'strength' | 'hiit' | 'custom';
+
+export interface WorkoutSet {
+  setNumber: number;
+  reps: number;
+  weightKg?: number;
+  completed: boolean;
+}
+
+export interface WorkoutExercise {
+  id: string;
+  name: string;
+  sets: WorkoutSet[];
+}
+
+export interface WorkoutLog {
+  id: string; // 'wkt_...'
+  date: string; // YYYY-MM-DD
+  type: ActivityType;
+  title: string;
+  durationMinutes: number;
+  distanceKm?: number;
+  caloriesBurned?: number;
+  exercises?: WorkoutExercise[];
+  notes?: string;
+  completedAt: string; // ISO string
+}
+
+export interface BodyMetric {
+  id: string; // 'bm_...'
+  date: string; // YYYY-MM-DD
+  weightKg: number;
+  bodyFatPercent?: number;
+  loggedAt: string; // ISO string
+}
 
 export interface SyncMutation {
   id: string;

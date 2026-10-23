@@ -313,6 +313,10 @@ class SyncEngine {
       focusSelection: db.focusSelections,
       settings: db.settings,
       assetBlob: db.assetBlobs,
+      hydrationLog: db.hydrationLogs,
+      dietLog: db.dietLogs,
+      workoutLog: db.workoutLogs,
+      bodyMetric: db.bodyMetrics,
     };
     const current = await tables[mut.entityType].get(mut.entityId);
     if (mut.operation === 'DELETE') return current === undefined;
@@ -338,6 +342,10 @@ class SyncEngine {
       focusSelection: 'focus_selections',
       settings: 'profiles',
       assetBlob: 'workspace_assets',
+      hydrationLog: 'hydration_logs',
+      dietLog: 'diet_logs',
+      workoutLog: 'workout_logs',
+      bodyMetric: 'body_metrics',
     };
 
     const tableName = tableMap[mut.entityType];
@@ -502,6 +510,31 @@ class SyncEngine {
       await db.assetBlobs.put(mappers.assetBlob.toLocal(row));
     }
 
+    // Pull health logs (hydration, diet, workout, body metrics)
+    const remoteHydration = await this.fetchRemoteRows('hydration_logs', userId);
+    for (const row of remoteHydration) {
+      if (row.is_deleted === true) await this.applyRemoteTombstone('hydrationLog', row);
+      else await db.hydrationLogs.put(mappers.hydrationLog.toLocal(row));
+    }
+
+    const remoteDiet = await this.fetchRemoteRows('diet_logs', userId);
+    for (const row of remoteDiet) {
+      if (row.is_deleted === true) await this.applyRemoteTombstone('dietLog', row);
+      else await db.dietLogs.put(mappers.dietLog.toLocal(row));
+    }
+
+    const remoteWorkouts = await this.fetchRemoteRows('workout_logs', userId);
+    for (const row of remoteWorkouts) {
+      if (row.is_deleted === true) await this.applyRemoteTombstone('workoutLog', row);
+      else await db.workoutLogs.put(mappers.workoutLog.toLocal(row));
+    }
+
+    const remoteBodyMetrics = await this.fetchRemoteRows('body_metrics', userId);
+    for (const row of remoteBodyMetrics) {
+      if (row.is_deleted === true) await this.applyRemoteTombstone('bodyMetric', row);
+      else await db.bodyMetrics.put(mappers.bodyMetric.toLocal(row));
+    }
+
     // Pull profile settings & avatar
     const { data: remoteProfile, error: profileError } = await supabase
       .from('profiles')
@@ -600,6 +633,10 @@ class SyncEngine {
       focusSelection: db.focusSelections,
       settings: db.settings,
       assetBlob: db.assetBlobs,
+      hydrationLog: db.hydrationLogs,
+      dietLog: db.dietLogs,
+      workoutLog: db.workoutLogs,
+      bodyMetric: db.bodyMetrics,
     };
     const table = tables[entityType];
     const local = await table.get(row.id);
@@ -634,6 +671,10 @@ class SyncEngine {
         goalTaskLinks,
         focusSelections,
         assetBlobs,
+        hydrationLogs,
+        dietLogs,
+        workoutLogs,
+        bodyMetrics,
       ] = await Promise.all([
         db.settings.get('default'),
         db.projects.toArray(),
@@ -647,6 +688,10 @@ class SyncEngine {
         db.goalTaskLinks.toArray(),
         db.focusSelections.toArray(),
         db.assetBlobs.toArray(),
+        db.hydrationLogs.toArray(),
+        db.dietLogs.toArray(),
+        db.workoutLogs.toArray(),
+        db.bodyMetrics.toArray(),
       ]);
 
       const upsert = async (table: string, rows: Record<string, unknown>[], label: string) => {
@@ -720,6 +765,26 @@ class SyncEngine {
       if (nonProfileAssets.length) {
         const rows = nonProfileAssets.map((b) => mappers.assetBlob.toRemote(b, userId));
         await upsert('workspace_assets', rows, 'workspace assets');
+      }
+
+      if (hydrationLogs.length) {
+        const rows = hydrationLogs.map((h) => mappers.hydrationLog.toRemote(h, userId));
+        await upsert('hydration_logs', rows, 'hydration logs');
+      }
+
+      if (dietLogs.length) {
+        const rows = dietLogs.map((d) => mappers.dietLog.toRemote(d, userId));
+        await upsert('diet_logs', rows, 'diet logs');
+      }
+
+      if (workoutLogs.length) {
+        const rows = workoutLogs.map((w) => mappers.workoutLog.toRemote(w, userId));
+        await upsert('workout_logs', rows, 'workout logs');
+      }
+
+      if (bodyMetrics.length) {
+        const rows = bodyMetrics.map((b) => mappers.bodyMetric.toRemote(b, userId));
+        await upsert('body_metrics', rows, 'body metrics');
       }
 
       // Ownerless/legacy mutations deliberately stay quarantined. They cannot

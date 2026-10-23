@@ -65,7 +65,7 @@
 .insights-distribution-rows strong { margin-left: auto; }
 .insights-bar { height: 6px; border-radius: 8px; background: #a8b3ce19; margin: 5px 0 0 17px; overflow: hidden; }
 .insights-bar span { display: block; height: 100%; border-radius: inherit; }
-.insights-bottom-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+.insights-bottom-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
 .insights-bottom-panel { padding: 26px; border-radius: 30px; color: var(--text-secondary); }
 .insights-bottom-panel .insights-panel-heading { margin-bottom: 22px; }
 .insights-bottom-metrics { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 20px; }

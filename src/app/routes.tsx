@@ -9,6 +9,7 @@ import { CalendarPage } from '@/features/calendar/CalendarPage';
 import { AcademicsPage } from '@/features/academics/AcademicsPage';
 import { GoalsPage } from '@/features/goals/GoalsPage';
 import { GoalDetailPage } from '@/features/goals/GoalDetailPage';
+import { HealthPage } from '@/features/health/HealthPage';
 import { InsightsPage } from '@/features/insights/InsightsPage';
 import { SettingsPage } from '@/features/settings/SettingsPage';
 import { Button } from '@/components/ui/Button';
@@ -46,6 +47,7 @@ export const router = createBrowserRouter([
       { path: 'academics/assignments/:id', element: <AcademicsPage /> },
       { path: 'goals', element: <GoalsPage /> },
       { path: 'goals/:id', element: <GoalDetailPage /> },
+      { path: 'health', element: <HealthPage /> },
       { path: 'insights', element: <InsightsPage /> },
       { path: 'settings', element: <SettingsPage /> },
       { path: '*', element: <NotFoundPage /> },

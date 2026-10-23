@@ -11,6 +11,10 @@ import type {
   FocusSelection,
   WorkspaceSettings,
   AssetBlob,
+  HydrationLog,
+  DietLog,
+  WorkoutLog,
+  BodyMetric,
 } from '@/domain/types';
 
 export const mappers = {
@@ -379,6 +383,118 @@ export const mappers = {
         size: remote.size,
         data: remote.data,
         createdAt: remote.created_at,
+      };
+    },
+  },
+
+  hydrationLog: {
+    toRemote(local: HydrationLog, userId: string) {
+      return {
+        id: local.id,
+        user_id: userId,
+        date: local.date,
+        amount_ml: local.amountMl,
+        logged_at: local.loggedAt,
+        version: 1,
+        is_deleted: false,
+      };
+    },
+    toLocal(remote: any): HydrationLog {
+      return {
+        id: remote.id,
+        date: remote.date,
+        amountMl: Number(remote.amount_ml),
+        loggedAt: remote.logged_at,
+      };
+    },
+  },
+
+  dietLog: {
+    toRemote(local: DietLog, userId: string) {
+      return {
+        id: local.id,
+        user_id: userId,
+        date: local.date,
+        meal_type: local.mealType,
+        food_name: local.foodName,
+        calories: local.calories,
+        protein_g: local.proteinG ?? null,
+        carbs_g: local.carbsG ?? null,
+        fat_g: local.fatG ?? null,
+        logged_at: local.loggedAt,
+        version: 1,
+        is_deleted: false,
+      };
+    },
+    toLocal(remote: any): DietLog {
+      return {
+        id: remote.id,
+        date: remote.date,
+        mealType: remote.meal_type,
+        foodName: remote.food_name,
+        calories: Number(remote.calories),
+        proteinG: remote.protein_g != null ? Number(remote.protein_g) : undefined,
+        carbsG: remote.carbs_g != null ? Number(remote.carbs_g) : undefined,
+        fatG: remote.fat_g != null ? Number(remote.fat_g) : undefined,
+        loggedAt: remote.logged_at,
+      };
+    },
+  },
+
+  workoutLog: {
+    toRemote(local: WorkoutLog, userId: string) {
+      return {
+        id: local.id,
+        user_id: userId,
+        date: local.date,
+        type: local.type,
+        title: local.title,
+        duration_minutes: local.durationMinutes,
+        distance_km: local.distanceKm ?? null,
+        calories_burned: local.caloriesBurned ?? null,
+        exercises: local.exercises ?? [],
+        notes: local.notes || null,
+        completed_at: local.completedAt,
+        version: 1,
+        is_deleted: false,
+      };
+    },
+    toLocal(remote: any): WorkoutLog {
+      return {
+        id: remote.id,
+        date: remote.date,
+        type: remote.type,
+        title: remote.title,
+        durationMinutes: Number(remote.duration_minutes),
+        distanceKm: remote.distance_km != null ? Number(remote.distance_km) : undefined,
+        caloriesBurned: remote.calories_burned != null ? Number(remote.calories_burned) : undefined,
+        exercises: Array.isArray(remote.exercises) ? remote.exercises : undefined,
+        notes: remote.notes || undefined,
+        completedAt: remote.completed_at,
+      };
+    },
+  },
+
+  bodyMetric: {
+    toRemote(local: BodyMetric, userId: string) {
+      return {
+        id: local.id,
+        user_id: userId,
+        date: local.date,
+        weight_kg: local.weightKg,
+        body_fat_percent: local.bodyFatPercent ?? null,
+        logged_at: local.loggedAt,
+        version: 1,
+        is_deleted: false,
+      };
+    },
+    toLocal(remote: any): BodyMetric {
+      return {
+        id: remote.id,
+        date: remote.date,
+        weightKg: Number(remote.weight_kg),
+        bodyFatPercent: remote.body_fat_percent != null ? Number(remote.body_fat_percent) : undefined,
+        loggedAt: remote.logged_at,
       };
     },
   },

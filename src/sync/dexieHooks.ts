@@ -24,6 +24,10 @@ export function registerDexieSyncHooks(database: NemoDatabase) {
     { table: database.focusSelections, entityType: 'focusSelection' },
     { table: database.settings, entityType: 'settings' },
     { table: database.assetBlobs, entityType: 'assetBlob' },
+    { table: database.hydrationLogs, entityType: 'hydrationLog' },
+    { table: database.dietLogs, entityType: 'dietLog' },
+    { table: database.workoutLogs, entityType: 'workoutLog' },
+    { table: database.bodyMetrics, entityType: 'bodyMetric' },
   ];
 
   const createMutation = (

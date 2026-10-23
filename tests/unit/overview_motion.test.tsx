@@ -78,7 +78,7 @@ describe('Overview Signature GSAP Motion System', () => {
       )
     );
 
-    expect(screen.getByText('3 items require attention')).toBeDefined();
+    expect(screen.getByText('3 items require prompt attention')).toBeDefined();
   });
 
   it('FocusSlotsSection renders active focus tickets with tone classes and allows completion and removal', async () => {

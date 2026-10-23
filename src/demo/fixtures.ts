@@ -215,6 +215,146 @@ export function createDemoFixtures(anchor = new Date()): FixtureData {
     title, order, targetDate: date(index === 4 ? -110 + order * 5 : 5 + order * 7 + index * 3),
     completedAt: index === 4 ? iso(-110 + order * 5) : index < 4 && order < index % 3 + 1 ? iso(-12 + order * 3) : undefined,
   })));
+
+  const hydrationLogs: FixtureData['hydrationLogs'] = [
+    { id: 'demo-hyd-1', date: date(0), amountMl: 500, loggedAt: iso(0) },
+    { id: 'demo-hyd-2', date: date(0), amountMl: 500, loggedAt: iso(0) },
+    { id: 'demo-hyd-3', date: date(0), amountMl: 750, loggedAt: iso(0) },
+    { id: 'demo-hyd-4', date: date(-1), amountMl: 1000, loggedAt: iso(-1) },
+    { id: 'demo-hyd-5', date: date(-1), amountMl: 1250, loggedAt: iso(-1) },
+    { id: 'demo-hyd-6', date: date(-2), amountMl: 2200, loggedAt: iso(-2) },
+    { id: 'demo-hyd-7', date: date(-3), amountMl: 2500, loggedAt: iso(-3) },
+    { id: 'demo-hyd-8', date: date(-4), amountMl: 2100, loggedAt: iso(-4) },
+    { id: 'demo-hyd-9', date: date(-5), amountMl: 2400, loggedAt: iso(-5) },
+    { id: 'demo-hyd-10', date: date(-6), amountMl: 2600, loggedAt: iso(-6) },
+  ];
+
+  const dietLogs: FixtureData['dietLogs'] = [
+    {
+      id: 'demo-diet-1',
+      date: date(0),
+      mealType: 'breakfast',
+      foodName: 'Rolled Oats with Berries & Whey Protein',
+      calories: 420,
+      proteinG: 32,
+      carbsG: 55,
+      fatG: 8,
+      loggedAt: iso(0),
+    },
+    {
+      id: 'demo-diet-2',
+      date: date(0),
+      mealType: 'lunch',
+      foodName: 'Grilled Chicken Breast with Quinoa & Greens',
+      calories: 680,
+      proteinG: 48,
+      carbsG: 62,
+      fatG: 14,
+      loggedAt: iso(0),
+    },
+    {
+      id: 'demo-diet-3',
+      date: date(0),
+      mealType: 'snack',
+      foodName: 'Greek Yogurt with Honey & Walnuts',
+      calories: 230,
+      proteinG: 18,
+      carbsG: 16,
+      fatG: 9,
+      loggedAt: iso(0),
+    },
+    {
+      id: 'demo-diet-4',
+      date: date(-1),
+      mealType: 'breakfast',
+      foodName: 'Avocado Toast with Poached Eggs',
+      calories: 480,
+      proteinG: 22,
+      carbsG: 40,
+      fatG: 24,
+      loggedAt: iso(-1),
+    },
+    {
+      id: 'demo-diet-5',
+      date: date(-1),
+      mealType: 'lunch',
+      foodName: 'Salmon Bowl with Brown Rice & Edamame',
+      calories: 720,
+      proteinG: 42,
+      carbsG: 68,
+      fatG: 22,
+      loggedAt: iso(-1),
+    },
+  ];
+
+  const workoutLogs: FixtureData['workoutLogs'] = [
+    {
+      id: 'demo-wkt-1',
+      date: date(0),
+      type: 'jogging',
+      title: 'Morning Lake Trail Run',
+      durationMinutes: 32,
+      distanceKm: 5.4,
+      caloriesBurned: 350,
+      completedAt: iso(0),
+    },
+    {
+      id: 'demo-wkt-2',
+      date: date(-1),
+      type: 'strength',
+      title: 'Upper Body Hypertrophy',
+      durationMinutes: 50,
+      caloriesBurned: 310,
+      exercises: [
+        {
+          id: 'ex-demo-1',
+          name: 'Barbell Bench Press',
+          sets: [
+            { setNumber: 1, reps: 10, weightKg: 65, completed: true },
+            { setNumber: 2, reps: 10, weightKg: 70, completed: true },
+            { setNumber: 3, reps: 8, weightKg: 72.5, completed: true },
+          ],
+        },
+        {
+          id: 'ex-demo-2',
+          name: 'Dumbbell Incline Press',
+          sets: [
+            { setNumber: 1, reps: 12, weightKg: 24, completed: true },
+            { setNumber: 2, reps: 10, weightKg: 26, completed: true },
+          ],
+        },
+      ],
+      completedAt: iso(-1),
+    },
+    {
+      id: 'demo-wkt-3',
+      date: date(-3),
+      type: 'running',
+      title: 'Interval Sprint Session',
+      durationMinutes: 28,
+      distanceKm: 4.8,
+      caloriesBurned: 320,
+      completedAt: iso(-3),
+    },
+    {
+      id: 'demo-wkt-4',
+      date: date(-5),
+      type: 'strength',
+      title: 'Legs & Core Power',
+      durationMinutes: 55,
+      caloriesBurned: 380,
+      completedAt: iso(-5),
+    },
+  ];
+
+  const bodyMetrics: FixtureData['bodyMetrics'] = [
+    { id: 'demo-bm-1', date: date(-28), weightKg: 74.5, bodyFatPercent: 17.5, loggedAt: iso(-28) },
+    { id: 'demo-bm-2', date: date(-21), weightKg: 73.9, bodyFatPercent: 17.1, loggedAt: iso(-21) },
+    { id: 'demo-bm-3', date: date(-14), weightKg: 73.2, bodyFatPercent: 16.7, loggedAt: iso(-14) },
+    { id: 'demo-bm-4', date: date(-7), weightKg: 72.8, bodyFatPercent: 16.4, loggedAt: iso(-7) },
+    { id: 'demo-bm-5', date: date(0), weightKg: 72.3, bodyFatPercent: 16.1, loggedAt: iso(0) },
+  ];
+
   const data: FixtureData = {
     settings: { id: 'default', displayName: 'Alex Morgan', theme: 'aurora', accent: 'ember', weekStartsOn: 1, hourFormat: '24h', reduceMotion: false, onboardingCompleted: true, databaseVersion: 1 },
     projects, tasks, milestones, semesters, subjects, assignments, calendarEvents, goals,
@@ -223,6 +363,10 @@ export function createDemoFixtures(anchor = new Date()): FixtureData {
     }))),
     focusSelections: tasks.slice(144, 147).map((task, index) => ({ id: `demo-focus-${index + 1}`, taskId: task.id, effectiveLocalDate: date(0), chosenAt: iso(0) })),
     assetBlobs: projects.map((project, index) => projectCover(index, project.title, project.createdAt)),
+    hydrationLogs,
+    dietLogs,
+    workoutLogs,
+    bodyMetrics,
   };
   return BackupSchema.parse({ app: 'nemo', version: 1, exportedAt: iso(0), data }).data;
 }

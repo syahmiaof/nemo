@@ -1,5 +1,5 @@
 import type { NemoDatabase } from './nemoDb';
-import type { TaskStatus } from '@/domain/types';
+import type { TaskStatus, HydrationLog, DietLog, WorkoutLog, BodyMetric } from '@/domain/types';
 import type { BackupData } from '@/domain/schemas';
 
 export interface IntegrityAuditResult {
@@ -37,6 +37,10 @@ export function validateReferentialIntegrity(data: BackupData['data']): { valid:
   checkUniqueIds(data.goalTaskLinks, 'goalTaskLinks');
   checkUniqueIds(data.focusSelections, 'focusSelections');
   checkUniqueIds(data.assetBlobs, 'assetBlobs');
+  if (data.hydrationLogs) checkUniqueIds(data.hydrationLogs, 'hydrationLogs');
+  if (data.dietLogs) checkUniqueIds(data.dietLogs, 'dietLogs');
+  if (data.workoutLogs) checkUniqueIds(data.workoutLogs, 'workoutLogs');
+  if (data.bodyMetrics) checkUniqueIds(data.bodyMetrics, 'bodyMetrics');
 
   // 2. Validate foreign key references
   for (const task of data.tasks) {
@@ -115,6 +119,10 @@ export async function auditDatabaseIntegrity(database: NemoDatabase): Promise<In
     goalTaskLinks,
     focusSelections,
     assetBlobs,
+    hydrationLogs,
+    dietLogs,
+    workoutLogs,
+    bodyMetrics,
   ] = await Promise.all([
     database.settings.get('default'),
     database.projects.toArray(),
@@ -128,6 +136,10 @@ export async function auditDatabaseIntegrity(database: NemoDatabase): Promise<In
     database.goalTaskLinks.toArray(),
     database.focusSelections.toArray(),
     database.assetBlobs.toArray(),
+    database.hydrationLogs.toArray(),
+    database.dietLogs.toArray(),
+    database.workoutLogs.toArray(),
+    database.bodyMetrics.toArray(),
   ]);
 
   const stats: Record<string, number> = {
@@ -143,6 +155,10 @@ export async function auditDatabaseIntegrity(database: NemoDatabase): Promise<In
     goalTaskLinks: goalTaskLinks.length,
     focusSelections: focusSelections.length,
     assetBlobs: assetBlobs.length,
+    hydrationLogs: hydrationLogs.length,
+    dietLogs: dietLogs.length,
+    workoutLogs: workoutLogs.length,
+    bodyMetrics: bodyMetrics.length,
   };
 
   const issues: string[] = [];
@@ -175,6 +191,10 @@ export async function auditDatabaseIntegrity(database: NemoDatabase): Promise<In
     goalTaskLinks,
     focusSelections,
     assetBlobs,
+    hydrationLogs,
+    dietLogs,
+    workoutLogs,
+    bodyMetrics,
   });
 
   issues.push(...refCheck.errors);
@@ -410,4 +430,100 @@ export async function cleanupOrphanAssetBlobs(database: NemoDatabase): Promise<n
     }
     return deletedCount;
   });
+}
+
+/**
+ * Atomically records a hydration intake log.
+ */
+export async function atomicAddHydration(
+  database: NemoDatabase,
+  entry: Omit<HydrationLog, 'id' | 'loggedAt'> & { id?: string; loggedAt?: string }
+): Promise<HydrationLog> {
+  const log: HydrationLog = {
+    id: entry.id || `hyd_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+    date: entry.date,
+    amountMl: entry.amountMl,
+    loggedAt: entry.loggedAt || new Date().toISOString(),
+  };
+  await database.hydrationLogs.put(log);
+  return log;
+}
+
+export async function atomicDeleteHydration(database: NemoDatabase, id: string): Promise<void> {
+  await database.hydrationLogs.delete(id);
+}
+
+/**
+ * Atomically records a diet meal log.
+ */
+export async function atomicLogDiet(
+  database: NemoDatabase,
+  entry: Omit<DietLog, 'id' | 'loggedAt'> & { id?: string; loggedAt?: string }
+): Promise<DietLog> {
+  const log: DietLog = {
+    id: entry.id || `diet_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+    date: entry.date,
+    mealType: entry.mealType,
+    foodName: entry.foodName,
+    calories: entry.calories,
+    proteinG: entry.proteinG,
+    carbsG: entry.carbsG,
+    fatG: entry.fatG,
+    loggedAt: entry.loggedAt || new Date().toISOString(),
+  };
+  await database.dietLogs.put(log);
+  return log;
+}
+
+export async function atomicDeleteDiet(database: NemoDatabase, id: string): Promise<void> {
+  await database.dietLogs.delete(id);
+}
+
+/**
+ * Atomically records a workout log (cardio, jogging, gym/strength, etc.).
+ */
+export async function atomicLogWorkout(
+  database: NemoDatabase,
+  entry: Omit<WorkoutLog, 'id' | 'completedAt'> & { id?: string; completedAt?: string }
+): Promise<WorkoutLog> {
+  const log: WorkoutLog = {
+    id: entry.id || `wkt_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+    date: entry.date,
+    type: entry.type,
+    title: entry.title,
+    durationMinutes: entry.durationMinutes,
+    distanceKm: entry.distanceKm,
+    caloriesBurned: entry.caloriesBurned,
+    exercises: entry.exercises,
+    notes: entry.notes,
+    completedAt: entry.completedAt || new Date().toISOString(),
+  };
+  await database.workoutLogs.put(log);
+  return log;
+}
+
+export async function atomicDeleteWorkout(database: NemoDatabase, id: string): Promise<void> {
+  await database.workoutLogs.delete(id);
+}
+
+/**
+ * Atomically records a body metric log (weight, body fat).
+ */
+export async function atomicLogBodyMetric(
+  database: NemoDatabase,
+  entry: Omit<BodyMetric, 'id' | 'loggedAt'> & { id?: string; loggedAt?: string }
+): Promise<BodyMetric> {
+  const log: BodyMetric = {
+    id: entry.id || `bm_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+    date: entry.date,
+    weightKg: entry.weightKg,
+    bodyFatPercent: entry.bodyFatPercent,
+    loggedAt: entry.loggedAt || new Date().toISOString(),
+  };
+  await database.bodyMetrics.put(log);
+  return log;
+}
+
+export async function atomicDeleteBodyMetric(database: NemoDatabase, id: string): Promise<void> {
+  await database.bodyMetrics.delete(id);
 }

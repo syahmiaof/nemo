@@ -32,6 +32,7 @@ const navTabs = [
   { to: '/academics', label: 'Academics' },
   { to: '/calendar', label: 'Calendar' },
   { to: '/goals', label: 'Goals' },
+  { to: '/health', label: 'Health' },
   { to: '/insights', label: 'Insights' },
 ];
 

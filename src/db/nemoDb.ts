@@ -13,6 +13,10 @@ import type {
   FocusSelection,
   AssetBlob,
   SyncMutation,
+  HydrationLog,
+  DietLog,
+  WorkoutLog,
+  BodyMetric,
 } from '@/domain/types';
 import { BackupSchema, type BackupData } from '@/domain/schemas';
 import { databaseNameForMode, getWorkspaceMode, REAL_DATABASE_NAME } from './workspaceMode';
@@ -35,6 +39,10 @@ export class NemoDatabase extends Dexie {
   focusSelections!: EntityTable<FocusSelection, 'id'>;
   assetBlobs!: EntityTable<AssetBlob, 'id'>;
   syncMutations!: EntityTable<SyncMutation, 'id'>;
+  hydrationLogs!: EntityTable<HydrationLog, 'id'>;
+  dietLogs!: EntityTable<DietLog, 'id'>;
+  workoutLogs!: EntityTable<WorkoutLog, 'id'>;
+  bodyMetrics!: EntityTable<BodyMetric, 'id'>;
 
   constructor(name = REAL_DATABASE_NAME) {
     super(name);
@@ -66,6 +74,25 @@ export class NemoDatabase extends Dexie {
       focusSelections: 'id, taskId, effectiveLocalDate, [effectiveLocalDate+taskId]',
       assetBlobs: 'id, ownerType, ownerId, mimeType, createdAt',
       syncMutations: 'id, entityType, entityId, status, createdAt, ownerUserId, [ownerUserId+status]',
+    });
+    this.version(3).stores({
+      settings: 'id',
+      projects: 'id, status, priority, dueDate, createdAt, completedAt',
+      tasks: 'id, status, priority, dueDate, parentType, parentId, createdAt, completedAt',
+      milestones: 'id, ownerType, ownerId, targetDate, completedAt, order',
+      semesters: 'id, status, createdAt',
+      subjects: 'id, semesterId, createdAt',
+      assignments: 'id, subjectId, status, dueDate, submittedAt, createdAt',
+      calendarEvents: 'id, startAt, endAt, isAllDay, subjectId, createdAt',
+      goals: 'id, status, targetDate, createdAt, achievedAt',
+      goalTaskLinks: 'id, goalId, taskId, [goalId+taskId]',
+      focusSelections: 'id, taskId, effectiveLocalDate, [effectiveLocalDate+taskId]',
+      assetBlobs: 'id, ownerType, ownerId, mimeType, createdAt',
+      syncMutations: 'id, entityType, entityId, status, createdAt, ownerUserId, [ownerUserId+status]',
+      hydrationLogs: 'id, date, amountMl, loggedAt',
+      dietLogs: 'id, date, mealType, calories, loggedAt',
+      workoutLogs: 'id, date, type, durationMinutes, distanceKm, completedAt',
+      bodyMetrics: 'id, date, weightKg, loggedAt',
     });
 
   }
@@ -126,6 +153,10 @@ export async function exportWorkspaceBackup(): Promise<string> {
     goalTaskLinks,
     focusSelections,
     assetBlobs,
+    hydrationLogs,
+    dietLogs,
+    workoutLogs,
+    bodyMetrics,
   ] = await Promise.all([
     ensureSettings(),
     db.projects.toArray(),
@@ -139,6 +170,10 @@ export async function exportWorkspaceBackup(): Promise<string> {
     db.goalTaskLinks.toArray(),
     db.focusSelections.toArray(),
     db.assetBlobs.toArray(),
+    db.hydrationLogs.toArray(),
+    db.dietLogs.toArray(),
+    db.workoutLogs.toArray(),
+    db.bodyMetrics.toArray(),
   ]);
 
   const backup: BackupData = {
@@ -158,6 +193,10 @@ export async function exportWorkspaceBackup(): Promise<string> {
       goalTaskLinks,
       focusSelections,
       assetBlobs,
+      hydrationLogs,
+      dietLogs,
+      workoutLogs,
+      bodyMetrics,
     },
   };
 
@@ -210,6 +249,10 @@ export async function importWorkspaceBackup(jsonContent: string): Promise<{ succ
       db.focusSelections,
       db.assetBlobs,
       db.syncMutations,
+      db.hydrationLogs,
+      db.dietLogs,
+      db.workoutLogs,
+      db.bodyMetrics,
     ], async () => {
       // Clear existing records
       await Promise.all([
@@ -225,6 +268,10 @@ export async function importWorkspaceBackup(jsonContent: string): Promise<{ succ
         db.goalTaskLinks.clear(),
         db.focusSelections.clear(),
         db.assetBlobs.clear(),
+        db.hydrationLogs.clear(),
+        db.dietLogs.clear(),
+        db.workoutLogs.clear(),
+        db.bodyMetrics.clear(),
       ]);
 
       // Insert backup records
@@ -240,6 +287,10 @@ export async function importWorkspaceBackup(jsonContent: string): Promise<{ succ
       if (data.goalTaskLinks.length) await db.goalTaskLinks.bulkAdd(data.goalTaskLinks);
       if (data.focusSelections.length) await db.focusSelections.bulkAdd(data.focusSelections);
       if (data.assetBlobs.length) await db.assetBlobs.bulkAdd(data.assetBlobs);
+      if (data.hydrationLogs?.length) await db.hydrationLogs.bulkAdd(data.hydrationLogs);
+      if (data.dietLogs?.length) await db.dietLogs.bulkAdd(data.dietLogs);
+      if (data.workoutLogs?.length) await db.workoutLogs.bulkAdd(data.workoutLogs);
+      if (data.bodyMetrics?.length) await db.bodyMetrics.bulkAdd(data.bodyMetrics);
     });
 
     return { success: true };
@@ -267,6 +318,10 @@ export async function resetWorkspaceData(): Promise<void> {
     db.focusSelections,
     db.assetBlobs,
     db.syncMutations,
+    db.hydrationLogs,
+    db.dietLogs,
+    db.workoutLogs,
+    db.bodyMetrics,
   ], async () => {
     await Promise.all([
       db.settings.clear(),
@@ -281,6 +336,10 @@ export async function resetWorkspaceData(): Promise<void> {
       db.goalTaskLinks.clear(),
       db.focusSelections.clear(),
       db.assetBlobs.clear(),
+      db.hydrationLogs.clear(),
+      db.dietLogs.clear(),
+      db.workoutLogs.clear(),
+      db.bodyMetrics.clear(),
     ]);
   });
   await ensureSettings();

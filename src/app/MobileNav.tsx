@@ -8,6 +8,7 @@ import {
   MoreHorizontal,
   GraduationCap,
   Target,
+  HeartPulse,
   BarChart3,
   Settings,
   Cloud,
@@ -31,7 +32,7 @@ export const MobileNav: React.FC<MobileNavProps> = ({
 }) => {
   const [isMoreOpen, setIsMoreOpen] = useState(false);
   const { pathname } = useLocation();
-  const moreActive = ['/academics', '/goals', '/insights', '/settings'].some(path => pathname.startsWith(path));
+  const moreActive = ['/academics', '/goals', '/health', '/insights', '/settings'].some(path => pathname.startsWith(path));
 
   const mainTabs = [
     { to: '/overview', label: 'Today', icon: LayoutDashboard },
@@ -43,6 +44,7 @@ export const MobileNav: React.FC<MobileNavProps> = ({
   const moreTabs = [
     { to: '/academics', label: 'Academics', icon: GraduationCap, desc: 'Semesters, subjects & assignments' },
     { to: '/goals', label: 'Goals', icon: Target, desc: 'Target milestones & progress' },
+    { to: '/health', label: 'Health', icon: HeartPulse, desc: 'Hydration, diet, workouts & metrics' },
     { to: '/insights', label: 'Insights', icon: BarChart3, desc: 'Local metrics & charts' },
     { to: '/settings', label: 'Settings', icon: Settings, desc: 'Profile, appearance & backups' },
   ];

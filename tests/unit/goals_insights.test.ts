@@ -119,4 +119,113 @@ describe('Goals and Insights Invariants', () => {
     const completionMonth = new Date(completedIn2026[0].completedAt!).getMonth();
     expect(completionMonth).toBe(2); // 0-indexed: 2 = March
   });
+
+  it('calculates genuine health and lifestyle vitality metrics accurately for rolling periods', async () => {
+    const today = new Date();
+    const formatLocalDate = (d: Date) =>
+      `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    const todayStr = formatLocalDate(today);
+
+    const d1 = new Date(today);
+    d1.setDate(today.getDate() - 1);
+    const day1Str = formatLocalDate(d1);
+
+    const d2 = new Date(today);
+    d2.setDate(today.getDate() - 2);
+    const day2Str = formatLocalDate(d2);
+
+    const d25 = new Date(today);
+    d25.setDate(today.getDate() - 25);
+    const day25Str = formatLocalDate(d25);
+
+    // Seed hydration logs
+    await db.hydrationLogs.bulkAdd([
+      { id: 'hyd_1', date: todayStr, amountMl: 1500, loggedAt: new Date().toISOString() },
+      { id: 'hyd_2', date: todayStr, amountMl: 1000, loggedAt: new Date().toISOString() },
+      { id: 'hyd_3', date: day1Str, amountMl: 2500, loggedAt: new Date().toISOString() },
+      { id: 'hyd_4', date: day2Str, amountMl: 2000, loggedAt: new Date().toISOString() },
+    ]);
+
+    // Seed workout logs
+    await db.workoutLogs.bulkAdd([
+      {
+        id: 'wkt_1',
+        date: todayStr,
+        type: 'running',
+        title: 'Morning 5k',
+        durationMinutes: 30,
+        caloriesBurned: 300,
+        completedAt: new Date().toISOString(),
+      },
+      {
+        id: 'wkt_2',
+        date: day1Str,
+        type: 'strength',
+        title: 'Full Body Push',
+        durationMinutes: 45,
+        caloriesBurned: 350,
+        completedAt: new Date().toISOString(),
+      },
+    ]);
+
+    // Seed diet logs
+    await db.dietLogs.bulkAdd([
+      { id: 'diet_1', date: todayStr, mealType: 'lunch', foodName: 'Chicken Rice', calories: 750, loggedAt: new Date().toISOString() },
+      { id: 'diet_2', date: todayStr, mealType: 'dinner', foodName: 'Salad & Salmon', calories: 650, loggedAt: new Date().toISOString() },
+      { id: 'diet_3', date: day1Str, mealType: 'lunch', foodName: 'Pasta', calories: 800, loggedAt: new Date().toISOString() },
+    ]);
+
+    // Seed body metrics (30 days window)
+    await db.bodyMetrics.bulkAdd([
+      { id: 'bm_1', date: day25Str, weightKg: 75.0, loggedAt: new Date().toISOString() },
+      { id: 'bm_2', date: todayStr, weightKg: 73.8, loggedAt: new Date().toISOString() },
+    ]);
+
+    // 7-day range
+    const d7 = new Date(today);
+    d7.setDate(today.getDate() - 6);
+    const sevenDaysAgoStr = formatLocalDate(d7);
+
+    // Verify Hydration 7-day average & adherence vs 2500ml goal
+    const past7Hydration = await db.hydrationLogs
+      .filter((l) => l.date >= sevenDaysAgoStr && l.date <= todayStr)
+      .toArray();
+    const totalMl = past7Hydration.reduce((sum, l) => sum + l.amountMl, 0);
+    expect(totalMl).toBe(7000); // 1500 + 1000 + 2500 + 2000
+    const avgHydrationMl = Math.round(totalMl / 7);
+    expect(avgHydrationMl).toBe(1000);
+    const adherenceRate = Math.round((avgHydrationMl / 2500) * 100);
+    expect(adherenceRate).toBe(40); // 1000 / 2500 = 40%
+
+    // Verify Workouts 7-day count & active minutes
+    const past7Workouts = await db.workoutLogs
+      .filter((w) => w.date >= sevenDaysAgoStr && w.date <= todayStr)
+      .toArray();
+    expect(past7Workouts).toHaveLength(2);
+    const totalActiveMinutes = past7Workouts.reduce((sum, w) => sum + (w.durationMinutes || 0), 0);
+    expect(totalActiveMinutes).toBe(75); // 30 + 45
+    const totalBurned = past7Workouts.reduce((sum, w) => sum + (w.caloriesBurned || 0), 0);
+    expect(totalBurned).toBe(650);
+
+    // Verify Caloric intake vs burn
+    const past7Diet = await db.dietLogs
+      .filter((m) => m.date >= sevenDaysAgoStr && m.date <= todayStr)
+      .toArray();
+    const totalIntake = past7Diet.reduce((sum, m) => sum + (m.calories || 0), 0);
+    expect(totalIntake).toBe(2200); // 750 + 650 + 800
+    const avgIntake = Math.round(totalIntake / 7);
+    expect(avgIntake).toBe(314);
+    const avgBurn = Math.round(totalBurned / 7);
+    expect(avgBurn).toBe(93);
+
+    // Verify Weight & 30-day net delta
+    const metrics = await db.bodyMetrics.toArray();
+    const sorted = [...metrics].sort((a, b) => a.date.localeCompare(b.date));
+    expect(sorted).toHaveLength(2);
+    const latest = sorted[sorted.length - 1];
+    expect(latest.weightKg).toBe(73.8);
+    const baseline = sorted[0];
+    const weightDelta = Number((latest.weightKg - baseline.weightKg).toFixed(1));
+    expect(weightDelta).toBe(-1.2); // 73.8 - 75.0 = -1.2kg
+  });
 });

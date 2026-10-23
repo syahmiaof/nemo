@@ -156,6 +156,59 @@ export const AssetBlobSchema = z.object({
   createdAt: z.string(),
 });
 
+export const HydrationLogSchema = z.object({
+  id: z.string().min(1),
+  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Must be YYYY-MM-DD'),
+  amountMl: z.number().positive(),
+  loggedAt: z.string(),
+});
+
+export const DietLogSchema = z.object({
+  id: z.string().min(1),
+  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Must be YYYY-MM-DD'),
+  mealType: z.enum(['breakfast', 'lunch', 'dinner', 'snack']),
+  foodName: z.string().min(1),
+  calories: z.number().nonnegative(),
+  proteinG: z.number().nonnegative().optional(),
+  carbsG: z.number().nonnegative().optional(),
+  fatG: z.number().nonnegative().optional(),
+  loggedAt: z.string(),
+});
+
+export const WorkoutSetSchema = z.object({
+  setNumber: z.number().int().positive(),
+  reps: z.number().int().nonnegative(),
+  weightKg: z.number().nonnegative().optional(),
+  completed: z.boolean(),
+});
+
+export const WorkoutExerciseSchema = z.object({
+  id: z.string().min(1),
+  name: z.string().min(1),
+  sets: z.array(WorkoutSetSchema),
+});
+
+export const WorkoutLogSchema = z.object({
+  id: z.string().min(1),
+  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Must be YYYY-MM-DD'),
+  type: z.enum(['running', 'jogging', 'cycling', 'strength', 'hiit', 'custom']),
+  title: z.string().min(1),
+  durationMinutes: z.number().positive(),
+  distanceKm: z.number().nonnegative().optional(),
+  caloriesBurned: z.number().nonnegative().optional(),
+  exercises: z.array(WorkoutExerciseSchema).optional(),
+  notes: z.string().optional(),
+  completedAt: z.string(),
+});
+
+export const BodyMetricSchema = z.object({
+  id: z.string().min(1),
+  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Must be YYYY-MM-DD'),
+  weightKg: z.number().positive(),
+  bodyFatPercent: z.number().nonnegative().optional(),
+  loggedAt: z.string(),
+});
+
 /**
  * Complete Backup Envelope Schema for atomic import and export
  */
@@ -176,6 +229,10 @@ export const BackupSchema = z.object({
     goalTaskLinks: z.array(GoalTaskLinkSchema),
     focusSelections: z.array(FocusSelectionSchema),
     assetBlobs: z.array(AssetBlobSchema),
+    hydrationLogs: z.array(HydrationLogSchema).optional().default([]),
+    dietLogs: z.array(DietLogSchema).optional().default([]),
+    workoutLogs: z.array(WorkoutLogSchema).optional().default([]),
+    bodyMetrics: z.array(BodyMetricSchema).optional().default([]),
   }),
 });
 
