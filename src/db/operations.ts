@@ -156,7 +156,7 @@ export async function auditDatabaseIntegrity(database: NemoDatabase): Promise<In
     settings: settings || {
       id: 'default',
       displayName: 'My Workspace',
-      theme: 'dark',
+      theme: 'aurora',
       accent: 'mint',
       weekStartsOn: 1,
       hourFormat: '24h',

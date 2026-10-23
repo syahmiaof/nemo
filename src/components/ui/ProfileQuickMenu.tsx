@@ -43,7 +43,7 @@ export const ProfileQuickMenu: React.FC<ProfileQuickMenuProps> = ({ className })
     [settings?.avatarBlobId]
   );
 
-  const currentTheme = settings?.theme || 'midnight';
+  const currentTheme = settings?.theme || 'aurora';
 
   const [isOnline, setIsOnline] = useState(typeof navigator !== 'undefined' ? navigator.onLine : true);
 
@@ -100,6 +100,9 @@ export const ProfileQuickMenu: React.FC<ProfileQuickMenuProps> = ({ className })
 
   const handleThemeChange = async (newTheme: WorkspaceSettings['theme']) => {
     try {
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('nemo:theme-explicitly-chosen', 'true');
+      }
       document.documentElement.dataset.theme = newTheme;
       document.documentElement.setAttribute('data-theme', newTheme);
       await db.settings.update('default', { theme: newTheme });

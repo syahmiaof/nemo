@@ -216,7 +216,7 @@ export function createDemoFixtures(anchor = new Date()): FixtureData {
     completedAt: index === 4 ? iso(-110 + order * 5) : index < 4 && order < index % 3 + 1 ? iso(-12 + order * 3) : undefined,
   })));
   const data: FixtureData = {
-    settings: { id: 'default', displayName: 'Alex Morgan', theme: 'dark', accent: 'ember', weekStartsOn: 1, hourFormat: '24h', reduceMotion: false, onboardingCompleted: true, databaseVersion: 1 },
+    settings: { id: 'default', displayName: 'Alex Morgan', theme: 'aurora', accent: 'ember', weekStartsOn: 1, hourFormat: '24h', reduceMotion: false, onboardingCompleted: true, databaseVersion: 1 },
     projects, tasks, milestones, semesters, subjects, assignments, calendarEvents, goals,
     goalTaskLinks: goals.filter(goal => goal.status !== 'achieved').flatMap((goal, index) => [0, 1, 2].map(offset => ({
       id: `demo-link-${index * 3 + offset + 1}`, goalId: goal.id, taskId: tasks[index * 8 + offset + 3].id, createdAt: iso(-5),

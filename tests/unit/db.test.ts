@@ -10,7 +10,7 @@ describe('Dexie Database & Backup Operations', () => {
     const settings = await ensureSettings();
     expect(settings.id).toBe('default');
     expect(settings.displayName).toBe('My Workspace');
-    expect(settings.theme).toBe('dark');
+    expect(settings.theme).toBe('aurora');
   });
 
   it('persists and retrieves projects and canonical tasks', async () => {

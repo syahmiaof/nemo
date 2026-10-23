@@ -240,6 +240,9 @@ export const SettingsPage: React.FC = () => {
   };
 
   const handleThemeSelect = (themeKey: WorkspaceSettings['theme'], cardEl: HTMLElement) => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('nemo:theme-explicitly-chosen', 'true');
+    }
     setTheme(themeKey);
     handleUpdatePreferences({ theme: themeKey });
     if (!reduced && cardEl) {
@@ -261,7 +264,7 @@ export const SettingsPage: React.FC = () => {
 
   // Form states
   const [displayName, setDisplayName] = useState('');
-  const [theme, setTheme] = useState<WorkspaceSettings['theme']>('dark');
+  const [theme, setTheme] = useState<WorkspaceSettings['theme']>('aurora');
   const [weekStartsOn, setWeekStartsOn] = useState<0 | 1>(1);
   const [hourFormat, setHourFormat] = useState<'12h' | '24h'>('24h');
   const [reduceMotion, setReduceMotion] = useState(false);

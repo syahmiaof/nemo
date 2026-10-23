@@ -76,7 +76,9 @@ export function AppShell() {
   const demo = getWorkspaceMode() === 'demo';
 
   useEffect(() => {
-    document.documentElement.dataset.theme = settings?.theme || 'dark';
+    const activeTheme = settings?.theme || 'aurora';
+    document.documentElement.dataset.theme = activeTheme;
+    document.documentElement.setAttribute('data-theme', activeTheme);
     document.documentElement.dataset.reduceMotion = String(settings?.reduceMotion || false);
   }, [settings?.theme, settings?.reduceMotion]);
 
@@ -113,7 +115,7 @@ export function AppShell() {
             <i className="mesh__a" />
             <i className="mesh__b" />
           </div>
-          {(settings?.theme === 'aurora' || (typeof document !== 'undefined' && document.documentElement.getAttribute('data-theme') === 'aurora')) && (
+          {(settings?.theme === 'aurora' || (!settings?.theme && (typeof document !== 'undefined' ? (document.documentElement.getAttribute('data-theme') === 'aurora' || document.documentElement.dataset.theme === 'aurora') : true))) && (
             <>
               <div className="aurora-backdrop" aria-hidden="true" />
               <AuroraStarfield />

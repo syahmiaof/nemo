@@ -84,12 +84,20 @@ if (getWorkspaceMode() === 'real') {
 export async function ensureSettings(): Promise<WorkspaceSettings> {
   const existing = await db.settings.get('default');
   if (existing) {
+    // Graceful migration: upgrade legacy default 'dark' to 'aurora' if not explicitly changed
+    if (typeof window !== 'undefined') {
+      const explicitlyChosen = localStorage.getItem('nemo:theme-explicitly-chosen');
+      if (existing.theme === 'dark' && !explicitlyChosen) {
+        existing.theme = 'aurora';
+        await db.settings.put(existing);
+      }
+    }
     return existing;
   }
   const defaultSettings: WorkspaceSettings = {
     id: 'default',
     displayName: 'My Workspace',
-    theme: 'dark',
+    theme: 'aurora',
     accent: 'mint',
     weekStartsOn: 1, // Monday default
     hourFormat: '24h',
