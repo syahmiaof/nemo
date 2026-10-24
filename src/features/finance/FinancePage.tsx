@@ -26,7 +26,6 @@ import { DebtsManagerCard } from './DebtsManagerCard';
 import { WishlistCard } from './WishlistCard';
 import { SavingsGoalsCard } from './SavingsGoalsCard';
 import { PageHeading } from '@/components/ui/PageHeading';
-import { Button } from '@/components/ui/Button';
 import { useReducedMotion } from '@/design/useReducedMotion';
 import {
   Wallet,
@@ -72,6 +71,14 @@ export const FinancePage: React.FC = () => {
     status: cashFlowStatus,
   } = calculateSafeToSpend(monthlyIncome, commitments, debts);
 
+  const commitmentsRatio = monthlyIncome > 0
+    ? Math.min(100, Math.round((totalCommitments / monthlyIncome) * 100))
+    : 0;
+
+  const debtRatio = monthlyIncome > 0
+    ? Math.min(100, Math.round((totalDebtInstallments / monthlyIncome) * 100))
+    : 0;
+
   // Staggered GSAP entrance animation
   useGSAP(
     () => {
@@ -96,150 +103,271 @@ export const FinancePage: React.FC = () => {
     <div ref={containerRef} className="space-y-6 max-w-7xl mx-auto pb-16">
       {/* Page Heading & High-Level Stats */}
       <PageHeading
-        title="Pengurusan Kewangan"
-        description="Kawal komitmen bulanan, pantau bayaran hutang, rancang simpanan dan kawal nafsu belanja secara bijak."
+        title="Finance Hub"
+        description="Command cash flow, eliminate debt liabilities, conquer impulse spending, and build high-conviction sinking funds."
         stats={[
-          { label: 'Gaji Bersih (RM)', value: Math.round(monthlyIncome), icon: Wallet },
-          { label: 'Komitmen Bil (RM)', value: Math.round(totalCommitments), icon: CalendarDays },
-          { label: 'Ansuran Hutang (RM)', value: Math.round(totalDebtInstallments), icon: CreditCard },
+          { label: 'Net Monthly Income', value: Math.round(monthlyIncome), icon: Wallet },
+          { label: 'Fixed Commitments', value: Math.round(totalCommitments), icon: CalendarDays },
+          { label: 'Debt Installments', value: Math.round(totalDebtInstallments), icon: CreditCard },
           {
-            label: 'Safe-to-Spend (RM)',
+            label: 'Safe-to-Spend',
             value: Math.round(safeToSpend),
             icon: ShieldCheck,
-            note: `${safeToSpendRatio}% baki`,
+            note: `${safeToSpendRatio}% buffer`,
           },
         ]}
       />
 
-      {/* Safe-to-Spend Cash Flow Banner */}
-      <div className="bg-surface-elevated/70 backdrop-blur-md border border-border-subtle rounded-2xl p-5 shadow-sm space-y-4">
-        <div className="flex items-center justify-between flex-wrap gap-3">
-          <div className="flex items-center gap-2.5">
-            <div
-              className={`w-9 h-9 rounded-xl flex items-center justify-center ${
-                cashFlowStatus === 'healthy'
-                  ? 'bg-accent-mint/10 border border-accent-mint/20 text-accent-mint'
-                  : cashFlowStatus === 'caution'
-                  ? 'bg-accent-amber/10 border border-accent-amber/20 text-accent-amber'
-                  : 'bg-accent-ember/10 border border-accent-ember/20 text-accent-ember'
-              }`}
+      {/* Visual Safe-to-Spend Centerpiece Banner */}
+      <div className="rounded-2xl border border-white/[0.08] bg-[#0c1527]/80 backdrop-blur-xl p-5 md:p-6 shadow-2xl relative overflow-hidden transition-all duration-300">
+        {/* Background ambient glowing orbs */}
+        <div
+          className={`absolute -top-20 -right-20 w-72 h-72 rounded-full blur-3xl pointer-events-none transition-colors duration-500 ${
+            cashFlowStatus === 'healthy'
+              ? 'bg-emerald-500/10'
+              : cashFlowStatus === 'caution'
+              ? 'bg-amber-500/10'
+              : 'bg-rose-500/10'
+          }`}
+        />
+        <div className="absolute -bottom-20 -left-20 w-72 h-72 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="relative z-10 space-y-6">
+          {/* Header Row */}
+          <div className="flex items-center justify-between flex-wrap gap-4">
+            <div className="flex items-center gap-3">
+              <div
+                className={`w-11 h-11 rounded-xl flex items-center justify-center border transition-all ${
+                  cashFlowStatus === 'healthy'
+                    ? 'bg-emerald-500/15 border-emerald-400/30 text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.25)]'
+                    : cashFlowStatus === 'caution'
+                    ? 'bg-amber-500/15 border-amber-400/30 text-amber-400 shadow-[0_0_15px_rgba(245,158,11,0.25)]'
+                    : 'bg-rose-500/15 border-rose-400/30 text-rose-400 shadow-[0_0_15px_rgba(244,63,94,0.25)]'
+                }`}
+              >
+                {cashFlowStatus === 'healthy' ? (
+                  <ShieldCheck className="w-6 h-6" />
+                ) : cashFlowStatus === 'caution' ? (
+                  <AlertTriangle className="w-6 h-6" />
+                ) : (
+                  <Flame className="w-6 h-6" />
+                )}
+              </div>
+
+              <div>
+                <div className="flex items-center gap-2.5 flex-wrap">
+                  <h3 className="text-lg font-bold text-content-primary">
+                    Safe-to-Spend Cash Flow Radar
+                  </h3>
+                  <span
+                    className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full border tracking-wide uppercase ${
+                      cashFlowStatus === 'healthy'
+                        ? 'bg-emerald-500/15 border-emerald-400/30 text-emerald-300 shadow-[0_0_10px_rgba(16,185,129,0.2)]'
+                        : cashFlowStatus === 'caution'
+                        ? 'bg-amber-500/15 border-amber-400/30 text-amber-300 shadow-[0_0_10px_rgba(245,158,11,0.2)]'
+                        : 'bg-rose-500/15 border-rose-400/30 text-rose-300 shadow-[0_0_10px_rgba(244,63,94,0.2)]'
+                    }`}
+                  >
+                    {cashFlowStatus === 'healthy'
+                      ? 'HEALTHY CASH FLOW'
+                      : cashFlowStatus === 'caution'
+                      ? 'CAUTION / TIGHT BUFFER'
+                      : 'DEFICIT / CRITICAL RISK'}
+                  </span>
+                </div>
+                <p className="text-xs text-content-secondary mt-0.5">
+                  Real-time disposable liquidity calculated directly from your living commitments and debt obligations
+                </p>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setIsProfileModalOpen(true)}
+              className="px-3.5 py-2 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.1] text-content-primary text-xs font-semibold flex items-center gap-1.5 transition-all active:scale-95 shadow-sm"
             >
-              {cashFlowStatus === 'healthy' ? (
-                <ShieldCheck className="w-5 h-5" />
-              ) : cashFlowStatus === 'caution' ? (
-                <AlertTriangle className="w-5 h-5" />
+              <Settings2 className="w-4 h-4 text-cyan-400" />
+              <span>Configure Income & Payday</span>
+            </button>
+          </div>
+
+          {/* Visual Gauge & Breakdown Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+            {/* Left: SVG Radial Semi-Circle Meter */}
+            <div className="lg:col-span-5 flex flex-col items-center justify-center p-4 rounded-xl border border-white/[0.06] bg-white/[0.02]">
+              <div className="relative w-48 h-28 flex items-end justify-center overflow-hidden">
+                <svg className="w-48 h-48 -mb-24" viewBox="0 0 100 100">
+                  {/* Background Track */}
+                  <path
+                    d="M 10,50 A 40,40 0 0,1 90,50"
+                    fill="none"
+                    stroke="rgba(255, 255, 255, 0.08)"
+                    strokeWidth="8"
+                    strokeLinecap="round"
+                  />
+                  {/* Animated Progress Arc */}
+                  <path
+                    d="M 10,50 A 40,40 0 0,1 90,50"
+                    fill="none"
+                    stroke={
+                      cashFlowStatus === 'healthy'
+                        ? '#34d399'
+                        : cashFlowStatus === 'caution'
+                        ? '#fbbf24'
+                        : '#f43f5e'
+                    }
+                    strokeWidth="8"
+                    strokeDasharray="126"
+                    strokeDashoffset={126 - (126 * Math.min(100, safeToSpendRatio)) / 100}
+                    strokeLinecap="round"
+                    className="transition-all duration-1000 ease-out"
+                    style={{
+                      filter: `drop-shadow(0 0 6px ${
+                        cashFlowStatus === 'healthy'
+                          ? 'rgba(52,211,153,0.5)'
+                          : cashFlowStatus === 'caution'
+                          ? 'rgba(251,191,36,0.5)'
+                          : 'rgba(244,63,94,0.5)'
+                      })`,
+                    }}
+                  />
+                </svg>
+
+                {/* Meter Center Numbers */}
+                <div className="absolute inset-0 flex flex-col items-center justify-end pb-1 text-center pointer-events-none">
+                  <span className="text-3xl font-extrabold font-mono tracking-tight text-white drop-shadow">
+                    {safeToSpendRatio}%
+                  </span>
+                  <span className="text-[10px] font-semibold text-content-secondary uppercase tracking-wider">
+                    Discretionary Buffer
+                  </span>
+                </div>
+              </div>
+
+              {/* Big Readout */}
+              <div className="mt-3 text-center">
+                <div className="text-2xl font-black font-mono tracking-tight text-emerald-400">
+                  {formatRM(safeToSpend)}
+                </div>
+                <div className="text-xs text-content-secondary mt-0.5">
+                  Safe unrestricted spending available this monthly cycle
+                </div>
+              </div>
+            </div>
+
+            {/* Right: Multi-Segment Allocation Bar & Detailed Stats */}
+            <div className="lg:col-span-7 space-y-4">
+              {monthlyIncome > 0 ? (
+                <>
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between text-xs font-semibold">
+                      <span className="text-content-secondary">Capital Allocation Spectrum</span>
+                      <span className="text-content-primary font-mono">{formatRM(monthlyIncome)} Net</span>
+                    </div>
+
+                    {/* Gradient Segmented Allocation Bar */}
+                    <div className="w-full h-4 rounded-full bg-black/40 overflow-hidden flex border border-white/[0.08] shadow-[inset_0_2px_8px_rgba(0,0,0,0.5)]">
+                      {/* Fixed Commitments */}
+                      <div
+                        className="bg-gradient-to-r from-amber-500 to-amber-400 transition-all duration-700 shadow-[0_0_10px_rgba(251,191,36,0.5)]"
+                        style={{ width: `${commitmentsRatio}%` }}
+                        title={`Fixed Commitments: ${formatRM(totalCommitments)} (${commitmentsRatio}%)`}
+                      />
+                      {/* Debt Service */}
+                      <div
+                        className="bg-gradient-to-r from-rose-500 to-rose-400 transition-all duration-700 shadow-[0_0_10px_rgba(244,63,94,0.5)]"
+                        style={{ width: `${debtRatio}%` }}
+                        title={`Debt Installments: ${formatRM(totalDebtInstallments)} (${debtRatio}%)`}
+                      />
+                      {/* Safe to Spend */}
+                      <div
+                        className="bg-gradient-to-r from-teal-400 to-emerald-400 transition-all duration-700 shadow-[0_0_10px_rgba(52,211,153,0.5)]"
+                        style={{ width: `${Math.min(100, safeToSpendRatio)}%` }}
+                        title={`Safe-to-Spend: ${formatRM(safeToSpend)} (${safeToSpendRatio}%)`}
+                      />
+                    </div>
+                  </div>
+
+                  {/* 3 Metric Breakdown Cards */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+                    <div className="p-3 rounded-xl border border-white/[0.06] bg-white/[0.02]">
+                      <div className="flex items-center gap-1.5 text-[11px] font-semibold text-amber-400 mb-1">
+                        <span className="w-2 h-2 rounded-full bg-amber-400 shadow-[0_0_6px_rgba(251,191,36,0.6)]" />
+                        Fixed Bills
+                      </div>
+                      <div className="text-base font-bold font-mono text-content-primary">
+                        {formatRM(totalCommitments)}
+                      </div>
+                      <div className="text-[10px] text-content-secondary mt-0.5">
+                        {commitmentsRatio}% of Net Income
+                      </div>
+                    </div>
+
+                    <div className="p-3 rounded-xl border border-white/[0.06] bg-white/[0.02]">
+                      <div className="flex items-center gap-1.5 text-[11px] font-semibold text-rose-400 mb-1">
+                        <span className="w-2 h-2 rounded-full bg-rose-400 shadow-[0_0_6px_rgba(244,63,94,0.6)]" />
+                        Debt Service
+                      </div>
+                      <div className="text-base font-bold font-mono text-content-primary">
+                        {formatRM(totalDebtInstallments)}
+                      </div>
+                      <div className="text-[10px] text-content-secondary mt-0.5">
+                        {debtRatio}% of Net Income
+                      </div>
+                    </div>
+
+                    <div className="p-3 rounded-xl border border-white/[0.06] bg-white/[0.02]">
+                      <div className="flex items-center gap-1.5 text-[11px] font-semibold text-emerald-400 mb-1">
+                        <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.6)]" />
+                        Safe Discretionary
+                      </div>
+                      <div className="text-base font-bold font-mono text-emerald-400">
+                        {formatRM(safeToSpend)}
+                      </div>
+                      <div className="text-[10px] text-content-secondary mt-0.5">
+                        {safeToSpendRatio}% Remaining
+                      </div>
+                    </div>
+                  </div>
+                </>
               ) : (
-                <Flame className="w-5 h-5" />
+                <div className="p-6 rounded-xl border border-dashed border-white/[0.1] bg-white/[0.02] text-center space-y-2">
+                  <p className="text-sm font-semibold text-content-primary">
+                    Net monthly income not yet configured
+                  </p>
+                  <p className="text-xs text-content-secondary max-w-md mx-auto">
+                    Set your monthly take-home pay and salary date to unlock real-time safe-to-spend ratios and capital budgeting.
+                  </p>
+                </div>
               )}
             </div>
-
-            <div>
-              <div className="flex items-center gap-2">
-                <h3 className="text-base font-bold text-content-primary">
-                  Safe-to-Spend (Baki Selamat Dibelanja): {formatRM(safeToSpend)}
-                </h3>
-                <span
-                  className={`text-[10px] font-bold px-2 py-0.5 rounded-md border ${
-                    cashFlowStatus === 'healthy'
-                      ? 'bg-accent-mint/10 border-accent-mint/20 text-accent-mint'
-                      : cashFlowStatus === 'caution'
-                      ? 'bg-accent-amber/10 border-accent-amber/20 text-accent-amber'
-                      : 'bg-accent-ember/10 border-accent-ember/20 text-accent-ember'
-                  }`}
-                >
-                  {cashFlowStatus === 'healthy'
-                    ? 'ALIRAN TUNAI SIHAT'
-                    : cashFlowStatus === 'caution'
-                    ? 'SEDERHANA BERHATI-HATI'
-                    : 'KRITIKAL / KETAT'}
-                </span>
-              </div>
-              <p className="text-xs text-content-secondary mt-0.5">
-                {monthlyIncome <= 0
-                  ? 'Sila kemas kini gaji bersih anda untuk mengira peruntukan selamat berbelanja.'
-                  : `Selepas ditolak bil komitmen (${formatRM(totalCommitments)}) dan ansuran pinjaman (${formatRM(
-                      totalDebtInstallments
-                    )}), anda mempunyai baki selamat sebanyak ${formatRM(safeToSpend)} untuk perbelanjaan harian & simpanan.`}
-              </p>
-            </div>
           </div>
-
-          <Button
-            type="button"
-            variant="secondary"
-            size="sm"
-            onClick={() => setIsProfileModalOpen(true)}
-            className="flex items-center gap-1.5 text-xs"
-          >
-            <Settings2 className="w-3.5 h-3.5" />
-            <span>Kemas Kini Gaji & Hari Gaji</span>
-          </Button>
         </div>
-
-        {/* Visual Allocation Bar */}
-        {monthlyIncome > 0 && (
-          <div className="space-y-1.5 pt-1">
-            <div className="w-full h-3 rounded-full bg-surface-solid overflow-hidden flex border border-border-subtle">
-              {/* Commitments Bar */}
-              <div
-                className="bg-accent-amber transition-all duration-500"
-                style={{ width: `${Math.min(100, Math.round((totalCommitments / monthlyIncome) * 100))}%` }}
-                title={`Komitmen Bil: ${formatRM(totalCommitments)}`}
-              />
-              {/* Debt Installments Bar */}
-              <div
-                className="bg-accent-ember transition-all duration-500"
-                style={{ width: `${Math.min(100, Math.round((totalDebtInstallments / monthlyIncome) * 100))}%` }}
-                title={`Ansuran Hutang: ${formatRM(totalDebtInstallments)}`}
-              />
-              {/* Safe to spend Bar */}
-              <div
-                className="bg-accent-mint transition-all duration-500"
-                style={{ width: `${Math.min(100, safeToSpendRatio)}%` }}
-                title={`Safe to Spend: ${formatRM(safeToSpend)}`}
-              />
-            </div>
-
-            <div className="flex items-center justify-between text-[11px] text-content-tertiary pt-1 flex-wrap gap-2">
-              <span className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 rounded-full bg-accent-amber inline-block" />
-                Komitmen ({Math.round((totalCommitments / monthlyIncome) * 100)}%)
-              </span>
-              <span className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 rounded-full bg-accent-ember inline-block" />
-                Ansuran Hutang ({Math.round((totalDebtInstallments / monthlyIncome) * 100)}%)
-              </span>
-              <span className="flex items-center gap-1.5 font-bold text-accent-mint">
-                <span className="w-2.5 h-2.5 rounded-full bg-accent-mint inline-block" />
-                Safe-to-Spend ({safeToSpendRatio}%)
-              </span>
-            </div>
-          </div>
-        )}
       </div>
 
       {/* Sub-Navigation Tabs */}
       <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
         {[
-          { key: 'all', label: 'Semua & Ringkasan', icon: LayoutGrid },
-          { key: 'commitments', label: `Komitmen (${commitments.length})`, icon: CalendarDays },
-          { key: 'debts', label: `Hutang (${debts.length})`, icon: CreditCard },
-          { key: 'wishlist', label: `Hajat & Anti-Impuls (${wishlistItems.length})`, icon: ShoppingBag },
-          { key: 'savings', label: `Tabung (${savingsGoals.length})`, icon: PiggyBank },
+          { key: 'all', label: 'Overview & All', icon: LayoutGrid },
+          { key: 'commitments', label: `Commitments & Bills (${commitments.length})`, icon: CalendarDays },
+          { key: 'debts', label: `Debt Payoff (${debts.length})`, icon: CreditCard },
+          { key: 'wishlist', label: `Anti-Impulse Vault (${wishlistItems.length})`, icon: ShoppingBag },
+          { key: 'savings', label: `Sinking Funds (${savingsGoals.length})`, icon: PiggyBank },
         ].map((tab) => {
           const Icon = tab.icon;
+          const isActive = activeTab === tab.key;
           return (
             <button
               key={tab.key}
               type="button"
               onClick={() => setActiveTab(tab.key as FinanceTab)}
-              className={`px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all whitespace-nowrap ${
-                activeTab === tab.key
-                  ? 'bg-surface-solid border border-border-emphasis text-content-primary shadow-xs'
-                  : 'text-content-secondary hover:text-content-primary hover:bg-surface'
+              className={`px-4 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all whitespace-nowrap ${
+                isActive
+                  ? 'bg-white/[0.08] border border-white/[0.15] text-white shadow-[0_0_15px_rgba(255,255,255,0.06)]'
+                  : 'text-content-secondary hover:text-content-primary hover:bg-white/[0.03] border border-transparent'
               }`}
             >
-              <Icon className="w-4 h-4" />
+              <Icon className={`w-4 h-4 ${isActive ? 'text-cyan-400' : 'text-content-tertiary'}`} />
               <span>{tab.label}</span>
             </button>
           );

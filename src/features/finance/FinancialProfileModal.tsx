@@ -40,11 +40,11 @@ export const FinancialProfileModal: React.FC<FinancialProfileModalProps> = ({
     const paydayNum = parseInt(payday, 10);
 
     if (isNaN(incomeNum) || incomeNum < 0) {
-      setError('Sila masukkan jumlah pendapatan bulanan bersih yang sah.');
+      setError('Please enter a valid net monthly income.');
       return;
     }
     if (isNaN(paydayNum) || paydayNum < 1 || paydayNum > 31) {
-      setError('Hari gaji mestilah antara 1 hingga 31.');
+      setError('Payday must be between day 1 and 31 of the month.');
       return;
     }
 
@@ -56,7 +56,7 @@ export const FinancialProfileModal: React.FC<FinancialProfileModalProps> = ({
       });
       onClose();
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Gagal menyimpan profil kewangan.');
+      setError(err instanceof Error ? err.message : 'Failed to update financial profile.');
     } finally {
       setIsSaving(false);
     }
@@ -66,8 +66,8 @@ export const FinancialProfileModal: React.FC<FinancialProfileModalProps> = ({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="Profil Kewangan & Pendapatan"
-      description="Tetapkan pendapatan bersih bulanan dan tarikh gaji untuk pengiraan Safe-to-Spend yang tepat."
+      title="Financial Profile & Income"
+      description="Configure your monthly take-home income and payday schedule for accurate Safe-to-Spend cash flow forecasting."
       maxWidth="md"
     >
       <form onSubmit={handleSubmit} className="space-y-4 pt-2">
@@ -80,48 +80,48 @@ export const FinancialProfileModal: React.FC<FinancialProfileModalProps> = ({
         <div className="space-y-1.5">
           <label className="text-xs font-semibold text-content-secondary flex items-center gap-1.5">
             <Banknote className="w-3.5 h-3.5 text-accent-mint" />
-            Pendapatan Bersih Bulanan (RM)
+            Net Monthly Take-Home Income (RM)
           </label>
           <Input
             type="number"
             step="0.01"
             min="0"
-            placeholder="Contoh: 4500.00"
+            placeholder="e.g. 4500.00"
             value={income}
             onChange={(e) => setIncome(e.target.value)}
             required
             autoFocus
           />
           <p className="text-[11px] text-content-tertiary">
-            Gaji bersih selepas potongan KWSP, SOCSO, dan cukai PCB.
+            Net salary after EPF/KWSP, SOCSO/PERKESO, and income tax (PCB) deductions.
           </p>
         </div>
 
         <div className="space-y-1.5">
           <label className="text-xs font-semibold text-content-secondary flex items-center gap-1.5">
             <Calendar className="w-3.5 h-3.5 text-accent-sky" />
-            Tarikh Hari Gaji (1 - 31hb)
+            Monthly Payday (Day 1 - 31)
           </label>
           <Input
             type="number"
             min="1"
             max="31"
-            placeholder="Contoh: 25"
+            placeholder="e.g. 25"
             value={payday}
             onChange={(e) => setPayday(e.target.value)}
             required
           />
           <p className="text-[11px] text-content-tertiary">
-            Hari dalam bulan semasa gaji anda biasanya dikreditkan ke akaun bank.
+            The calendar day each month your salary is deposited into your bank account.
           </p>
         </div>
 
         <div className="flex items-center justify-end gap-2.5 pt-4 border-t border-border-subtle">
           <Button type="button" variant="ghost" onClick={onClose} disabled={isSaving}>
-            Batal
+            Cancel
           </Button>
           <Button type="submit" variant="primary" disabled={isSaving}>
-            {isSaving ? 'Menyimpan...' : 'Simpan Profil'}
+            {isSaving ? 'Saving...' : 'Save Profile'}
           </Button>
         </div>
       </form>

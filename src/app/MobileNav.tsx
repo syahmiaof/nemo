@@ -46,7 +46,7 @@ export const MobileNav: React.FC<MobileNavProps> = ({
     { to: '/academics', label: 'Academics', icon: GraduationCap, desc: 'Semesters, subjects & assignments' },
     { to: '/goals', label: 'Goals', icon: Target, desc: 'Target milestones & progress' },
     { to: '/health', label: 'Health', icon: HeartPulse, desc: 'Hydration, diet, workouts & metrics' },
-    { to: '/finance', label: 'Finance', icon: Wallet, desc: 'Komitmen, hutang, hajat & simpanan' },
+    { to: '/finance', label: 'Finance', icon: Wallet, desc: 'Commitments, debt payoff, wishlist & savings' },
     { to: '/insights', label: 'Insights', icon: BarChart3, desc: 'Local metrics & charts' },
     { to: '/settings', label: 'Settings', icon: Settings, desc: 'Profile, appearance & backups' },
   ];
