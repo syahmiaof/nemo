@@ -168,6 +168,7 @@ export const AcademicsPage: React.FC = () => {
   const [subjectColor, setSubjectColor] = useState('#A8DCC8');
 
   // Assignment form states
+  const [assignSubjectId, setAssignSubjectId] = useState('');
   const [assignTitle, setAssignTitle] = useState('');
   const [assignDescription, setAssignDescription] = useState('');
   const [assignStatus, setAssignStatus] = useState<AssignmentStatus>('not_started');
@@ -247,6 +248,7 @@ export const AcademicsPage: React.FC = () => {
       setAssignmentToEdit(assignment);
       const isExam = isExamEntity(assignment);
       setDeliverableType(isExam ? 'exam' : 'assignment');
+      setAssignSubjectId(assignment.subjectId);
       setAssignTitle(assignment.title.replace(/^\[exam\]\s*/i, '').replace(/^exam:\s*/i, ''));
       setAssignDescription(assignment.description?.replace(/\[EXAM\]\s*/g, '').trim() || '');
       setAssignStatus(assignment.status);
@@ -259,6 +261,7 @@ export const AcademicsPage: React.FC = () => {
     } else {
       setAssignmentToEdit(null);
       setDeliverableType(defaultType);
+      setAssignSubjectId(selectedSubjectId || subjects[0]?.id || '');
       setAssignTitle('');
       setAssignDescription('');
       setAssignStatus('not_started');
@@ -295,7 +298,7 @@ export const AcademicsPage: React.FC = () => {
       return;
     }
 
-    const targetSubjectId = selectedSubjectId || subjects[0]?.id;
+    const targetSubjectId = assignSubjectId || selectedSubjectId || subjects[0]?.id;
     if (!targetSubjectId) {
       error('Subject required', 'Please create a subject before adding assignments.');
       return;
@@ -325,6 +328,7 @@ export const AcademicsPage: React.FC = () => {
 
     if (assignmentToEdit) {
       await db.assignments.update(assignmentToEdit.id, {
+        subjectId: targetSubjectId,
         title: finalTitle,
         description: finalDesc || undefined,
         status: assignStatus,
@@ -1204,6 +1208,34 @@ export const AcademicsPage: React.FC = () => {
                 }`}
               >
                 Exam / Test
+              </button>
+            </div>
+          )}
+
+          {/* Subject Selector */}
+          {subjects.length > 0 ? (
+            <Select
+              label="Course / Subject"
+              value={assignSubjectId}
+              onChange={(e) => setAssignSubjectId(e.target.value)}
+              options={subjects.map((s) => ({
+                value: s.id,
+                label: s.code ? `${s.code} — ${s.title}` : s.title,
+              }))}
+              required
+            />
+          ) : (
+            <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-300 text-xs flex items-center justify-between">
+              <span>No subjects found in this semester.</span>
+              <button
+                type="button"
+                onClick={() => {
+                  setIsAssignmentModalOpen(false);
+                  setIsSubjectModalOpen(true);
+                }}
+                className="underline font-semibold hover:text-amber-200 cursor-pointer"
+              >
+                + Add Subject first
               </button>
             </div>
           )}
