@@ -355,6 +355,42 @@ export function createDemoFixtures(anchor = new Date()): FixtureData {
     { id: 'demo-bm-5', date: date(0), weightKg: 72.3, bodyFatPercent: 16.1, loggedAt: iso(0) },
   ];
 
+  const financialProfiles: FixtureData['financialProfiles'] = [
+    { id: 'profile-default', monthlyIncomeNet: 4500, paydayDayOfMonth: 25, currency: 'MYR', updatedAt: iso(0) },
+  ];
+
+  const financialCommitments: FixtureData['financialCommitments'] = [
+    { id: 'demo-com-1', title: 'Sewa Bilik Kondominium', amount: 750, category: 'needs', dueDayOfMonth: 1, isPaidThisMonth: true, lastPaidMonthYear: '2026-10', autoRenew: true, createdAt: iso(-60), updatedAt: iso(0) },
+    { id: 'demo-com-2', title: 'TNB Elektrik & Air', amount: 120, category: 'utilities', dueDayOfMonth: 15, isPaidThisMonth: true, lastPaidMonthYear: '2026-10', autoRenew: true, createdAt: iso(-60), updatedAt: iso(0) },
+    { id: 'demo-com-3', title: 'Time Fibre Internet 200Mbps', amount: 99, category: 'utilities', dueDayOfMonth: 20, isPaidThisMonth: false, autoRenew: true, createdAt: iso(-60), updatedAt: iso(0) },
+    { id: 'demo-com-4', title: 'Takaful Hayat & Medical Card', amount: 180, category: 'protection', dueDayOfMonth: 28, isPaidThisMonth: false, autoRenew: true, createdAt: iso(-60), updatedAt: iso(0) },
+    { id: 'demo-com-5', title: 'Spotify & Netflix Premium', amount: 55, category: 'lifestyle', dueDayOfMonth: 10, isPaidThisMonth: true, lastPaidMonthYear: '2026-10', autoRenew: true, createdAt: iso(-60), updatedAt: iso(0) },
+  ];
+
+  const debts: FixtureData['debts'] = [
+    { id: 'demo-dbt-1', title: 'Pinjaman PTPTN Ijazah', creditor: 'PTPTN', originalPrincipal: 28000, currentBalance: 14200, interestRatePercent: 1.0, monthlyInstallment: 250, priority: 'snowball', targetPayoffDate: '2031-06-30', createdAt: iso(-180), updatedAt: iso(0) },
+    { id: 'demo-dbt-2', title: 'Pinjaman Kereta Perodua Myvi', creditor: 'Maybank Islamic', originalPrincipal: 48000, currentBalance: 21600, interestRatePercent: 3.2, monthlyInstallment: 490, priority: 'normal', targetPayoffDate: '2029-12-31', createdAt: iso(-240), updatedAt: iso(0) },
+  ];
+
+  const debtPayments: FixtureData['debtPayments'] = [
+    { id: 'demo-dpay-1', debtId: 'demo-dbt-1', amount: 250, paidAt: iso(-10), note: 'Autodebit Potongan Gaji' },
+  ];
+
+  const wishlistItems: FixtureData['wishlistItems'] = [
+    { id: 'demo-wsh-1', title: 'Sony WH-1000XM5 Noise Cancelling', estimatedPrice: 1299, priority: 'medium', coolingOffDays: 14, storeUrl: 'https://shopee.com.my', addedAt: iso(-4), isBought: false },
+    { id: 'demo-wsh-2', title: 'Ergonomic Desk Chair', estimatedPrice: 850, priority: 'high', coolingOffDays: 7, addedAt: iso(-18), isBought: false },
+    { id: 'demo-wsh-3', title: 'Mechanical Keyboard Keychron Q1', estimatedPrice: 720, priority: 'low', coolingOffDays: 30, addedAt: iso(-2), isBought: false },
+  ];
+
+  const savingsGoals: FixtureData['savingsGoals'] = [
+    { id: 'demo-svg-1', title: 'Tabung Kecemasan 3 Bulan', targetAmount: 6000, currentAmount: 3500, category: 'emergency', color: '#34D399', createdAt: iso(-120), updatedAt: iso(0) },
+    { id: 'demo-svg-2', title: 'Percutian Musim Sejuk Jepun', targetAmount: 4500, currentAmount: 2200, category: 'travel', targetDate: '2027-02-15', color: '#38BDF8', createdAt: iso(-90), updatedAt: iso(0) },
+  ];
+
+  const savingsDeposits: FixtureData['savingsDeposits'] = [
+    { id: 'demo-sdep-1', savingsGoalId: 'demo-svg-1', amount: 500, type: 'deposit', loggedAt: iso(-15), note: 'Simpanan gaji lepas' },
+  ];
+
   const data: FixtureData = {
     settings: { id: 'default', displayName: 'Alex Morgan', theme: 'aurora', accent: 'ember', weekStartsOn: 1, hourFormat: '24h', reduceMotion: false, onboardingCompleted: true, databaseVersion: 1 },
     projects, tasks, milestones, semesters, subjects, assignments, calendarEvents, goals,
@@ -367,6 +403,13 @@ export function createDemoFixtures(anchor = new Date()): FixtureData {
     dietLogs,
     workoutLogs,
     bodyMetrics,
+    financialProfiles,
+    financialCommitments,
+    debts,
+    debtPayments,
+    wishlistItems,
+    savingsGoals,
+    savingsDeposits,
   };
   return BackupSchema.parse({ app: 'nemo', version: 1, exportedAt: iso(0), data }).data;
 }

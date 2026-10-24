@@ -33,6 +33,7 @@ const navTabs = [
   { to: '/calendar', label: 'Calendar' },
   { to: '/goals', label: 'Goals' },
   { to: '/health', label: 'Health' },
+  { to: '/finance', label: 'Finance' },
   { to: '/insights', label: 'Insights' },
 ];
 

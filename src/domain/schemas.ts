@@ -209,6 +209,92 @@ export const BodyMetricSchema = z.object({
   loggedAt: z.string(),
 });
 
+// ============================================================================
+// FINANCE & WEALTH SCHEMAS
+// ============================================================================
+
+export const FinancialProfileSchema = z.object({
+  id: z.string().min(1),
+  monthlyIncomeGross: z.number().nonnegative().optional(),
+  monthlyIncomeNet: z.number().nonnegative(),
+  paydayDayOfMonth: z.number().min(1).max(31).optional(),
+  currency: z.string().min(1).default('MYR'),
+  updatedAt: z.string(),
+});
+
+export const FinancialCommitmentSchema = z.object({
+  id: z.string().min(1),
+  title: z.string().min(1),
+  amount: z.number().positive(),
+  category: z.enum(['needs', 'utilities', 'lifestyle', 'protection', 'other']),
+  dueDayOfMonth: z.number().min(1).max(31),
+  isPaidThisMonth: z.boolean(),
+  lastPaidMonthYear: z.string().regex(/^\d{4}-\d{2}$/).optional(),
+  notes: z.string().optional(),
+  autoRenew: z.boolean().default(true),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+});
+
+export const DebtItemSchema = z.object({
+  id: z.string().min(1),
+  title: z.string().min(1),
+  creditor: z.string().min(1),
+  originalPrincipal: z.number().positive(),
+  currentBalance: z.number().nonnegative(),
+  monthlyInstallment: z.number().positive(),
+  interestRatePercent: z.number().nonnegative().optional(),
+  targetPayoffDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+  priority: z.enum(['snowball', 'avalanche', 'normal']),
+  notes: z.string().optional(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+});
+
+export const DebtPaymentSchema = z.object({
+  id: z.string().min(1),
+  debtId: z.string().min(1),
+  amount: z.number().positive(),
+  paidAt: z.string(),
+  note: z.string().optional(),
+});
+
+export const WishlistItemSchema = z.object({
+  id: z.string().min(1),
+  title: z.string().min(1),
+  estimatedPrice: z.number().positive(),
+  priority: z.enum(['high', 'medium', 'low']),
+  storeUrl: z.string().optional(),
+  isBought: z.boolean(),
+  boughtAt: z.string().optional(),
+  coolingOffDays: z.number().nonnegative().default(7),
+  addedAt: z.string(),
+  targetSavingsGoalId: z.string().optional(),
+  notes: z.string().optional(),
+});
+
+export const SavingsGoalSchema = z.object({
+  id: z.string().min(1),
+  title: z.string().min(1),
+  targetAmount: z.number().positive(),
+  currentAmount: z.number().nonnegative(),
+  category: z.enum(['travel', 'gadget', 'emergency', 'vehicle', 'other']),
+  targetDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+  color: z.string().min(1),
+  icon: z.string().optional(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+});
+
+export const SavingsDepositSchema = z.object({
+  id: z.string().min(1),
+  savingsGoalId: z.string().min(1),
+  amount: z.number().positive(),
+  type: z.enum(['deposit', 'withdrawal']),
+  loggedAt: z.string(),
+  note: z.string().optional(),
+});
+
 /**
  * Complete Backup Envelope Schema for atomic import and export
  */
@@ -233,6 +319,13 @@ export const BackupSchema = z.object({
     dietLogs: z.array(DietLogSchema).optional().default([]),
     workoutLogs: z.array(WorkoutLogSchema).optional().default([]),
     bodyMetrics: z.array(BodyMetricSchema).optional().default([]),
+    financialProfiles: z.array(FinancialProfileSchema).optional().default([]),
+    financialCommitments: z.array(FinancialCommitmentSchema).optional().default([]),
+    debts: z.array(DebtItemSchema).optional().default([]),
+    debtPayments: z.array(DebtPaymentSchema).optional().default([]),
+    wishlistItems: z.array(WishlistItemSchema).optional().default([]),
+    savingsGoals: z.array(SavingsGoalSchema).optional().default([]),
+    savingsDeposits: z.array(SavingsDepositSchema).optional().default([]),
   }),
 });
 

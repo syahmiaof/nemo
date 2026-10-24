@@ -28,6 +28,13 @@ export function registerDexieSyncHooks(database: NemoDatabase) {
     { table: database.dietLogs, entityType: 'dietLog' },
     { table: database.workoutLogs, entityType: 'workoutLog' },
     { table: database.bodyMetrics, entityType: 'bodyMetric' },
+    { table: database.financialProfiles, entityType: 'financialProfile' },
+    { table: database.financialCommitments, entityType: 'financialCommitment' },
+    { table: database.debts, entityType: 'debtItem' },
+    { table: database.debtPayments, entityType: 'debtPayment' },
+    { table: database.wishlistItems, entityType: 'wishlistItem' },
+    { table: database.savingsGoals, entityType: 'savingsGoal' },
+    { table: database.savingsDeposits, entityType: 'savingsDeposit' },
   ];
 
   const createMutation = (

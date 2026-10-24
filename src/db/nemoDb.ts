@@ -17,6 +17,13 @@ import type {
   DietLog,
   WorkoutLog,
   BodyMetric,
+  FinancialProfile,
+  FinancialCommitment,
+  DebtItem,
+  DebtPayment,
+  WishlistItem,
+  SavingsGoal,
+  SavingsDeposit,
 } from '@/domain/types';
 import { BackupSchema, type BackupData } from '@/domain/schemas';
 import { databaseNameForMode, getWorkspaceMode, REAL_DATABASE_NAME } from './workspaceMode';
@@ -43,6 +50,13 @@ export class NemoDatabase extends Dexie {
   dietLogs!: EntityTable<DietLog, 'id'>;
   workoutLogs!: EntityTable<WorkoutLog, 'id'>;
   bodyMetrics!: EntityTable<BodyMetric, 'id'>;
+  financialProfiles!: EntityTable<FinancialProfile, 'id'>;
+  financialCommitments!: EntityTable<FinancialCommitment, 'id'>;
+  debts!: EntityTable<DebtItem, 'id'>;
+  debtPayments!: EntityTable<DebtPayment, 'id'>;
+  wishlistItems!: EntityTable<WishlistItem, 'id'>;
+  savingsGoals!: EntityTable<SavingsGoal, 'id'>;
+  savingsDeposits!: EntityTable<SavingsDeposit, 'id'>;
 
   constructor(name = REAL_DATABASE_NAME) {
     super(name);
@@ -94,6 +108,32 @@ export class NemoDatabase extends Dexie {
       workoutLogs: 'id, date, type, durationMinutes, distanceKm, completedAt',
       bodyMetrics: 'id, date, weightKg, loggedAt',
     });
+    this.version(4).stores({
+      settings: 'id',
+      projects: 'id, status, priority, dueDate, createdAt, completedAt',
+      tasks: 'id, status, priority, dueDate, parentType, parentId, createdAt, completedAt',
+      milestones: 'id, ownerType, ownerId, targetDate, completedAt, order',
+      semesters: 'id, status, createdAt',
+      subjects: 'id, semesterId, createdAt',
+      assignments: 'id, subjectId, status, dueDate, submittedAt, createdAt',
+      calendarEvents: 'id, startAt, endAt, isAllDay, subjectId, createdAt',
+      goals: 'id, status, targetDate, createdAt, achievedAt',
+      goalTaskLinks: 'id, goalId, taskId, [goalId+taskId]',
+      focusSelections: 'id, taskId, effectiveLocalDate, [effectiveLocalDate+taskId]',
+      assetBlobs: 'id, ownerType, ownerId, mimeType, createdAt',
+      syncMutations: 'id, entityType, entityId, status, createdAt, ownerUserId, [ownerUserId+status]',
+      hydrationLogs: 'id, date, amountMl, loggedAt',
+      dietLogs: 'id, date, mealType, calories, loggedAt',
+      workoutLogs: 'id, date, type, durationMinutes, distanceKm, completedAt',
+      bodyMetrics: 'id, date, weightKg, loggedAt',
+      financialProfiles: 'id, updatedAt',
+      financialCommitments: 'id, category, dueDayOfMonth, isPaidThisMonth, lastPaidMonthYear, createdAt',
+      debts: 'id, priority, targetPayoffDate, createdAt',
+      debtPayments: 'id, debtId, paidAt',
+      wishlistItems: 'id, priority, isBought, targetSavingsGoalId, addedAt',
+      savingsGoals: 'id, category, targetDate, createdAt',
+      savingsDeposits: 'id, savingsGoalId, type, loggedAt',
+    });
 
   }
 }
@@ -108,15 +148,15 @@ if (getWorkspaceMode() === 'real') {
 /**
  * Initializes default settings if not already present.
  */
-export async function ensureSettings(): Promise<WorkspaceSettings> {
-  const existing = await db.settings.get('default');
+export async function ensureSettings(targetDb: NemoDatabase = db): Promise<WorkspaceSettings> {
+  const existing = await targetDb.settings.get('default');
   if (existing) {
     // Graceful migration: upgrade legacy default 'dark' to 'aurora' if not explicitly changed
     if (typeof window !== 'undefined') {
       const explicitlyChosen = localStorage.getItem('nemo:theme-explicitly-chosen');
       if (existing.theme === 'dark' && !explicitlyChosen) {
         existing.theme = 'aurora';
-        await db.settings.put(existing);
+        await targetDb.settings.put(existing);
       }
     }
     return existing;
@@ -132,14 +172,14 @@ export async function ensureSettings(): Promise<WorkspaceSettings> {
     onboardingCompleted: true,
     databaseVersion: 1,
   };
-  await db.settings.put(defaultSettings);
+  await targetDb.settings.put(defaultSettings);
   return defaultSettings;
 }
 
 /**
  * Exports all user data and binary assets into a validated, portable JSON backup structure.
  */
-export async function exportWorkspaceBackup(): Promise<string> {
+export async function exportWorkspaceBackup(targetDb: NemoDatabase = db): Promise<string> {
   const [
     settings,
     projects,
@@ -157,23 +197,37 @@ export async function exportWorkspaceBackup(): Promise<string> {
     dietLogs,
     workoutLogs,
     bodyMetrics,
+    financialProfiles,
+    financialCommitments,
+    debts,
+    debtPayments,
+    wishlistItems,
+    savingsGoals,
+    savingsDeposits,
   ] = await Promise.all([
-    ensureSettings(),
-    db.projects.toArray(),
-    db.tasks.toArray(),
-    db.milestones.toArray(),
-    db.semesters.toArray(),
-    db.subjects.toArray(),
-    db.assignments.toArray(),
-    db.calendarEvents.toArray(),
-    db.goals.toArray(),
-    db.goalTaskLinks.toArray(),
-    db.focusSelections.toArray(),
-    db.assetBlobs.toArray(),
-    db.hydrationLogs.toArray(),
-    db.dietLogs.toArray(),
-    db.workoutLogs.toArray(),
-    db.bodyMetrics.toArray(),
+    ensureSettings(targetDb),
+    targetDb.projects.toArray(),
+    targetDb.tasks.toArray(),
+    targetDb.milestones.toArray(),
+    targetDb.semesters.toArray(),
+    targetDb.subjects.toArray(),
+    targetDb.assignments.toArray(),
+    targetDb.calendarEvents.toArray(),
+    targetDb.goals.toArray(),
+    targetDb.goalTaskLinks.toArray(),
+    targetDb.focusSelections.toArray(),
+    targetDb.assetBlobs.toArray(),
+    targetDb.hydrationLogs.toArray(),
+    targetDb.dietLogs.toArray(),
+    targetDb.workoutLogs.toArray(),
+    targetDb.bodyMetrics.toArray(),
+    targetDb.financialProfiles.toArray(),
+    targetDb.financialCommitments.toArray(),
+    targetDb.debts.toArray(),
+    targetDb.debtPayments.toArray(),
+    targetDb.wishlistItems.toArray(),
+    targetDb.savingsGoals.toArray(),
+    targetDb.savingsDeposits.toArray(),
   ]);
 
   const backup: BackupData = {
@@ -197,6 +251,13 @@ export async function exportWorkspaceBackup(): Promise<string> {
       dietLogs,
       workoutLogs,
       bodyMetrics,
+      financialProfiles,
+      financialCommitments,
+      debts,
+      debtPayments,
+      wishlistItems,
+      savingsGoals,
+      savingsDeposits,
     },
   };
 
@@ -209,7 +270,7 @@ export async function exportWorkspaceBackup(): Promise<string> {
  * Atomically validates and restores a backup JSON string.
  * If validation fails or any error occurs, the existing database is left untouched.
  */
-export async function importWorkspaceBackup(jsonContent: string): Promise<{ success: boolean; error?: string }> {
+export async function importWorkspaceBackup(jsonContent: string, targetDb: NemoDatabase = db): Promise<{ success: boolean; error?: string }> {
   try {
     const rawParsed = JSON.parse(jsonContent, (key, value) => {
       // Defense-in-depth: strip prototype pollution vectors during JSON parsing
@@ -235,62 +296,83 @@ export async function importWorkspaceBackup(jsonContent: string): Promise<{ succ
     }
 
     // Perform atomic transaction replacement across all tables
-    await db.transaction('rw', [
-      db.settings,
-      db.projects,
-      db.tasks,
-      db.milestones,
-      db.semesters,
-      db.subjects,
-      db.assignments,
-      db.calendarEvents,
-      db.goals,
-      db.goalTaskLinks,
-      db.focusSelections,
-      db.assetBlobs,
-      db.syncMutations,
-      db.hydrationLogs,
-      db.dietLogs,
-      db.workoutLogs,
-      db.bodyMetrics,
+    await targetDb.transaction('rw', [
+      targetDb.settings,
+      targetDb.projects,
+      targetDb.tasks,
+      targetDb.milestones,
+      targetDb.semesters,
+      targetDb.subjects,
+      targetDb.assignments,
+      targetDb.calendarEvents,
+      targetDb.goals,
+      targetDb.goalTaskLinks,
+      targetDb.focusSelections,
+      targetDb.assetBlobs,
+      targetDb.syncMutations,
+      targetDb.hydrationLogs,
+      targetDb.dietLogs,
+      targetDb.workoutLogs,
+      targetDb.bodyMetrics,
+      targetDb.financialProfiles,
+      targetDb.financialCommitments,
+      targetDb.debts,
+      targetDb.debtPayments,
+      targetDb.wishlistItems,
+      targetDb.savingsGoals,
+      targetDb.savingsDeposits,
     ], async () => {
       // Clear existing records
       await Promise.all([
-        db.settings.clear(),
-        db.projects.clear(),
-        db.tasks.clear(),
-        db.milestones.clear(),
-        db.semesters.clear(),
-        db.subjects.clear(),
-        db.assignments.clear(),
-        db.calendarEvents.clear(),
-        db.goals.clear(),
-        db.goalTaskLinks.clear(),
-        db.focusSelections.clear(),
-        db.assetBlobs.clear(),
-        db.hydrationLogs.clear(),
-        db.dietLogs.clear(),
-        db.workoutLogs.clear(),
-        db.bodyMetrics.clear(),
+        targetDb.settings.clear(),
+        targetDb.projects.clear(),
+        targetDb.tasks.clear(),
+        targetDb.milestones.clear(),
+        targetDb.semesters.clear(),
+        targetDb.subjects.clear(),
+        targetDb.assignments.clear(),
+        targetDb.calendarEvents.clear(),
+        targetDb.goals.clear(),
+        targetDb.goalTaskLinks.clear(),
+        targetDb.focusSelections.clear(),
+        targetDb.assetBlobs.clear(),
+        targetDb.hydrationLogs.clear(),
+        targetDb.dietLogs.clear(),
+        targetDb.workoutLogs.clear(),
+        targetDb.bodyMetrics.clear(),
+        targetDb.financialProfiles.clear(),
+        targetDb.financialCommitments.clear(),
+        targetDb.debts.clear(),
+        targetDb.debtPayments.clear(),
+        targetDb.wishlistItems.clear(),
+        targetDb.savingsGoals.clear(),
+        targetDb.savingsDeposits.clear(),
       ]);
 
       // Insert backup records
-      await db.settings.put(data.settings);
-      if (data.projects.length) await db.projects.bulkAdd(data.projects);
-      if (data.tasks.length) await db.tasks.bulkAdd(data.tasks);
-      if (data.milestones.length) await db.milestones.bulkAdd(data.milestones);
-      if (data.semesters.length) await db.semesters.bulkAdd(data.semesters);
-      if (data.subjects.length) await db.subjects.bulkAdd(data.subjects);
-      if (data.assignments.length) await db.assignments.bulkAdd(data.assignments);
-      if (data.calendarEvents.length) await db.calendarEvents.bulkAdd(data.calendarEvents);
-      if (data.goals.length) await db.goals.bulkAdd(data.goals);
-      if (data.goalTaskLinks.length) await db.goalTaskLinks.bulkAdd(data.goalTaskLinks);
-      if (data.focusSelections.length) await db.focusSelections.bulkAdd(data.focusSelections);
-      if (data.assetBlobs.length) await db.assetBlobs.bulkAdd(data.assetBlobs);
-      if (data.hydrationLogs?.length) await db.hydrationLogs.bulkAdd(data.hydrationLogs);
-      if (data.dietLogs?.length) await db.dietLogs.bulkAdd(data.dietLogs);
-      if (data.workoutLogs?.length) await db.workoutLogs.bulkAdd(data.workoutLogs);
-      if (data.bodyMetrics?.length) await db.bodyMetrics.bulkAdd(data.bodyMetrics);
+      await targetDb.settings.put(data.settings);
+      if (data.projects.length) await targetDb.projects.bulkAdd(data.projects);
+      if (data.tasks.length) await targetDb.tasks.bulkAdd(data.tasks);
+      if (data.milestones.length) await targetDb.milestones.bulkAdd(data.milestones);
+      if (data.semesters.length) await targetDb.semesters.bulkAdd(data.semesters);
+      if (data.subjects.length) await targetDb.subjects.bulkAdd(data.subjects);
+      if (data.assignments.length) await targetDb.assignments.bulkAdd(data.assignments);
+      if (data.calendarEvents.length) await targetDb.calendarEvents.bulkAdd(data.calendarEvents);
+      if (data.goals.length) await targetDb.goals.bulkAdd(data.goals);
+      if (data.goalTaskLinks.length) await targetDb.goalTaskLinks.bulkAdd(data.goalTaskLinks);
+      if (data.focusSelections.length) await targetDb.focusSelections.bulkAdd(data.focusSelections);
+      if (data.assetBlobs.length) await targetDb.assetBlobs.bulkAdd(data.assetBlobs);
+      if (data.hydrationLogs?.length) await targetDb.hydrationLogs.bulkAdd(data.hydrationLogs);
+      if (data.dietLogs?.length) await targetDb.dietLogs.bulkAdd(data.dietLogs);
+      if (data.workoutLogs?.length) await targetDb.workoutLogs.bulkAdd(data.workoutLogs);
+      if (data.bodyMetrics?.length) await targetDb.bodyMetrics.bulkAdd(data.bodyMetrics);
+      if (data.financialProfiles?.length) await targetDb.financialProfiles.bulkAdd(data.financialProfiles);
+      if (data.financialCommitments?.length) await targetDb.financialCommitments.bulkAdd(data.financialCommitments);
+      if (data.debts?.length) await targetDb.debts.bulkAdd(data.debts);
+      if (data.debtPayments?.length) await targetDb.debtPayments.bulkAdd(data.debtPayments);
+      if (data.wishlistItems?.length) await targetDb.wishlistItems.bulkAdd(data.wishlistItems);
+      if (data.savingsGoals?.length) await targetDb.savingsGoals.bulkAdd(data.savingsGoals);
+      if (data.savingsDeposits?.length) await targetDb.savingsDeposits.bulkAdd(data.savingsDeposits);
     });
 
     return { success: true };
@@ -303,44 +385,58 @@ export async function importWorkspaceBackup(jsonContent: string): Promise<{ succ
 /**
  * Completely clears all workspace records and resets to default initial empty state.
  */
-export async function resetWorkspaceData(): Promise<void> {
-  await db.transaction('rw', [
-    db.settings,
-    db.projects,
-    db.tasks,
-    db.milestones,
-    db.semesters,
-    db.subjects,
-    db.assignments,
-    db.calendarEvents,
-    db.goals,
-    db.goalTaskLinks,
-    db.focusSelections,
-    db.assetBlobs,
-    db.syncMutations,
-    db.hydrationLogs,
-    db.dietLogs,
-    db.workoutLogs,
-    db.bodyMetrics,
+export async function resetWorkspaceData(targetDb: NemoDatabase = db): Promise<void> {
+  await targetDb.transaction('rw', [
+    targetDb.settings,
+    targetDb.projects,
+    targetDb.tasks,
+    targetDb.milestones,
+    targetDb.semesters,
+    targetDb.subjects,
+    targetDb.assignments,
+    targetDb.calendarEvents,
+    targetDb.goals,
+    targetDb.goalTaskLinks,
+    targetDb.focusSelections,
+    targetDb.assetBlobs,
+    targetDb.syncMutations,
+    targetDb.hydrationLogs,
+    targetDb.dietLogs,
+    targetDb.workoutLogs,
+    targetDb.bodyMetrics,
+    targetDb.financialProfiles,
+    targetDb.financialCommitments,
+    targetDb.debts,
+    targetDb.debtPayments,
+    targetDb.wishlistItems,
+    targetDb.savingsGoals,
+    targetDb.savingsDeposits,
   ], async () => {
     await Promise.all([
-      db.settings.clear(),
-      db.projects.clear(),
-      db.tasks.clear(),
-      db.milestones.clear(),
-      db.semesters.clear(),
-      db.subjects.clear(),
-      db.assignments.clear(),
-      db.calendarEvents.clear(),
-      db.goals.clear(),
-      db.goalTaskLinks.clear(),
-      db.focusSelections.clear(),
-      db.assetBlobs.clear(),
-      db.hydrationLogs.clear(),
-      db.dietLogs.clear(),
-      db.workoutLogs.clear(),
-      db.bodyMetrics.clear(),
+      targetDb.settings.clear(),
+      targetDb.projects.clear(),
+      targetDb.tasks.clear(),
+      targetDb.milestones.clear(),
+      targetDb.semesters.clear(),
+      targetDb.subjects.clear(),
+      targetDb.assignments.clear(),
+      targetDb.calendarEvents.clear(),
+      targetDb.goals.clear(),
+      targetDb.goalTaskLinks.clear(),
+      targetDb.focusSelections.clear(),
+      targetDb.assetBlobs.clear(),
+      targetDb.hydrationLogs.clear(),
+      targetDb.dietLogs.clear(),
+      targetDb.workoutLogs.clear(),
+      targetDb.bodyMetrics.clear(),
+      targetDb.financialProfiles.clear(),
+      targetDb.financialCommitments.clear(),
+      targetDb.debts.clear(),
+      targetDb.debtPayments.clear(),
+      targetDb.wishlistItems.clear(),
+      targetDb.savingsGoals.clear(),
+      targetDb.savingsDeposits.clear(),
     ]);
   });
-  await ensureSettings();
+  await ensureSettings(targetDb);
 }

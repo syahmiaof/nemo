@@ -1,5 +1,21 @@
 import type { NemoDatabase } from './nemoDb';
-import type { TaskStatus, HydrationLog, DietLog, WorkoutLog, BodyMetric } from '@/domain/types';
+import type {
+  TaskStatus,
+  HydrationLog,
+  DietLog,
+  WorkoutLog,
+  BodyMetric,
+  FinancialProfile,
+  FinancialCommitment,
+  DebtItem,
+  DebtPriority,
+  DebtPayment,
+  WishlistItem,
+  WishlistPriority,
+  SavingsGoal,
+  SavingsGoalCategory,
+  SavingsDeposit,
+} from '@/domain/types';
 import type { BackupData } from '@/domain/schemas';
 
 export interface IntegrityAuditResult {
@@ -41,6 +57,13 @@ export function validateReferentialIntegrity(data: BackupData['data']): { valid:
   if (data.dietLogs) checkUniqueIds(data.dietLogs, 'dietLogs');
   if (data.workoutLogs) checkUniqueIds(data.workoutLogs, 'workoutLogs');
   if (data.bodyMetrics) checkUniqueIds(data.bodyMetrics, 'bodyMetrics');
+  if (data.financialProfiles) checkUniqueIds(data.financialProfiles, 'financialProfiles');
+  if (data.financialCommitments) checkUniqueIds(data.financialCommitments, 'financialCommitments');
+  const debtIds = data.debts ? checkUniqueIds(data.debts, 'debts') : new Set<string>();
+  if (data.debtPayments) checkUniqueIds(data.debtPayments, 'debtPayments');
+  if (data.wishlistItems) checkUniqueIds(data.wishlistItems, 'wishlistItems');
+  const savingsGoalIds = data.savingsGoals ? checkUniqueIds(data.savingsGoals, 'savingsGoals') : new Set<string>();
+  if (data.savingsDeposits) checkUniqueIds(data.savingsDeposits, 'savingsDeposits');
 
   // 2. Validate foreign key references
   for (const task of data.tasks) {
@@ -96,6 +119,30 @@ export function validateReferentialIntegrity(data: BackupData['data']): { valid:
     }
   }
 
+  if (data.debtPayments) {
+    for (const dp of data.debtPayments) {
+      if (!debtIds.has(dp.debtId)) {
+        errors.push(`DebtPayment "${dp.id}" references non-existent debt "${dp.debtId}".`);
+      }
+    }
+  }
+
+  if (data.savingsDeposits) {
+    for (const sd of data.savingsDeposits) {
+      if (!savingsGoalIds.has(sd.savingsGoalId)) {
+        errors.push(`SavingsDeposit "${sd.id}" references non-existent savingsGoal "${sd.savingsGoalId}".`);
+      }
+    }
+  }
+
+  if (data.wishlistItems) {
+    for (const wi of data.wishlistItems) {
+      if (wi.targetSavingsGoalId && !savingsGoalIds.has(wi.targetSavingsGoalId)) {
+        errors.push(`WishlistItem "${wi.id}" references non-existent targetSavingsGoal "${wi.targetSavingsGoalId}".`);
+      }
+    }
+  }
+
   return {
     valid: errors.length === 0,
     errors,
@@ -123,6 +170,13 @@ export async function auditDatabaseIntegrity(database: NemoDatabase): Promise<In
     dietLogs,
     workoutLogs,
     bodyMetrics,
+    financialProfiles,
+    financialCommitments,
+    debts,
+    debtPayments,
+    wishlistItems,
+    savingsGoals,
+    savingsDeposits,
   ] = await Promise.all([
     database.settings.get('default'),
     database.projects.toArray(),
@@ -140,6 +194,13 @@ export async function auditDatabaseIntegrity(database: NemoDatabase): Promise<In
     database.dietLogs.toArray(),
     database.workoutLogs.toArray(),
     database.bodyMetrics.toArray(),
+    database.financialProfiles.toArray(),
+    database.financialCommitments.toArray(),
+    database.debts.toArray(),
+    database.debtPayments.toArray(),
+    database.wishlistItems.toArray(),
+    database.savingsGoals.toArray(),
+    database.savingsDeposits.toArray(),
   ]);
 
   const stats: Record<string, number> = {
@@ -159,6 +220,13 @@ export async function auditDatabaseIntegrity(database: NemoDatabase): Promise<In
     dietLogs: dietLogs.length,
     workoutLogs: workoutLogs.length,
     bodyMetrics: bodyMetrics.length,
+    financialProfiles: financialProfiles.length,
+    financialCommitments: financialCommitments.length,
+    debts: debts.length,
+    debtPayments: debtPayments.length,
+    wishlistItems: wishlistItems.length,
+    savingsGoals: savingsGoals.length,
+    savingsDeposits: savingsDeposits.length,
   };
 
   const issues: string[] = [];
@@ -195,6 +263,13 @@ export async function auditDatabaseIntegrity(database: NemoDatabase): Promise<In
     dietLogs,
     workoutLogs,
     bodyMetrics,
+    financialProfiles,
+    financialCommitments,
+    debts,
+    debtPayments,
+    wishlistItems,
+    savingsGoals,
+    savingsDeposits,
   });
 
   issues.push(...refCheck.errors);
@@ -526,4 +601,329 @@ export async function atomicLogBodyMetric(
 
 export async function atomicDeleteBodyMetric(database: NemoDatabase, id: string): Promise<void> {
   await database.bodyMetrics.delete(id);
+}
+
+// ============================================================================
+// FINANCE & WEALTH ATOMIC OPERATIONS
+// ============================================================================
+
+/**
+ * Updates or initializes the user's financial profile.
+ */
+export async function atomicUpdateFinancialProfile(
+  database: NemoDatabase,
+  profile: Partial<FinancialProfile> & { monthlyIncomeNet: number }
+): Promise<FinancialProfile> {
+  const existing = await database.financialProfiles.get('default');
+  const now = new Date().toISOString();
+  const updated: FinancialProfile = {
+    id: 'default',
+    monthlyIncomeGross: profile.monthlyIncomeGross ?? existing?.monthlyIncomeGross,
+    monthlyIncomeNet: profile.monthlyIncomeNet,
+    paydayDayOfMonth: profile.paydayDayOfMonth ?? existing?.paydayDayOfMonth ?? 25,
+    currency: profile.currency ?? existing?.currency ?? 'MYR',
+    updatedAt: now,
+  };
+  await database.financialProfiles.put(updated);
+  return updated;
+}
+
+/**
+ * Adds or updates a recurring financial commitment.
+ */
+export async function atomicAddCommitment(
+  database: NemoDatabase,
+  entry: Omit<FinancialCommitment, 'id' | 'createdAt' | 'updatedAt' | 'isPaidThisMonth' | 'autoRenew'> & {
+    id?: string;
+    isPaidThisMonth?: boolean;
+    autoRenew?: boolean;
+    createdAt?: string;
+    updatedAt?: string;
+  }
+): Promise<FinancialCommitment> {
+  const now = new Date().toISOString();
+  const commitment: FinancialCommitment = {
+    id: entry.id || `com_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+    title: entry.title.trim(),
+    amount: entry.amount,
+    category: entry.category,
+    dueDayOfMonth: entry.dueDayOfMonth,
+    isPaidThisMonth: entry.isPaidThisMonth ?? false,
+    lastPaidMonthYear: entry.lastPaidMonthYear,
+    notes: entry.notes?.trim() || undefined,
+    autoRenew: entry.autoRenew ?? true,
+    createdAt: entry.createdAt || now,
+    updatedAt: now,
+  };
+  await database.financialCommitments.put(commitment);
+  return commitment;
+}
+
+/**
+ * Toggles a commitment payment status for the given month/year cycle.
+ */
+export async function atomicToggleCommitmentPaid(
+  database: NemoDatabase,
+  id: string,
+  isPaid: boolean,
+  monthYear?: string
+): Promise<void> {
+  const now = new Date().toISOString();
+  const currentMonth = monthYear || `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}`;
+  await database.financialCommitments.update(id, {
+    isPaidThisMonth: isPaid,
+    lastPaidMonthYear: isPaid ? currentMonth : undefined,
+    updatedAt: now,
+  });
+}
+
+export async function atomicDeleteCommitment(database: NemoDatabase, id: string): Promise<void> {
+  await database.financialCommitments.delete(id);
+}
+
+/**
+ * Adds or updates a debt liability item.
+ */
+export async function atomicAddDebt(
+  database: NemoDatabase,
+  entry: Omit<DebtItem, 'id' | 'createdAt' | 'updatedAt' | 'priority'> & {
+    id?: string;
+    priority?: DebtPriority;
+    createdAt?: string;
+    updatedAt?: string;
+  }
+): Promise<DebtItem> {
+  const now = new Date().toISOString();
+  const debt: DebtItem = {
+    id: entry.id || `debt_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+    title: entry.title.trim(),
+    creditor: entry.creditor.trim(),
+    originalPrincipal: entry.originalPrincipal,
+    currentBalance: entry.currentBalance,
+    monthlyInstallment: entry.monthlyInstallment,
+    interestRatePercent: entry.interestRatePercent,
+    targetPayoffDate: entry.targetPayoffDate,
+    priority: entry.priority || 'snowball',
+    notes: entry.notes?.trim() || undefined,
+    createdAt: entry.createdAt || now,
+    updatedAt: now,
+  };
+  await database.debts.put(debt);
+  return debt;
+}
+
+/**
+ * Records a debt payment and automatically decrements the remaining principal.
+ */
+export async function atomicRecordDebtPayment(
+  database: NemoDatabase,
+  entry: Omit<DebtPayment, 'id' | 'paidAt'> & { id?: string; paidAt?: string }
+): Promise<DebtPayment> {
+  return await database.transaction('rw', [database.debts, database.debtPayments], async () => {
+    const debt = await database.debts.get(entry.debtId);
+    if (!debt) {
+      throw new Error(`Debt with ID "${entry.debtId}" does not exist.`);
+    }
+
+    const payment: DebtPayment = {
+      id: entry.id || `dp_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+      debtId: entry.debtId,
+      amount: entry.amount,
+      paidAt: entry.paidAt || new Date().toISOString(),
+      note: entry.note?.trim() || undefined,
+    };
+
+    await database.debtPayments.put(payment);
+
+    // Atomically decrement remaining balance
+    const updatedBalance = Math.max(0, debt.currentBalance - entry.amount);
+    await database.debts.update(debt.id, {
+      currentBalance: updatedBalance,
+      updatedAt: new Date().toISOString(),
+    });
+
+    return payment;
+  });
+}
+
+/**
+ * Atomically deletes a debt and all its associated payment records.
+ */
+export async function atomicDeleteDebt(database: NemoDatabase, debtId: string): Promise<void> {
+  await database.transaction('rw', [database.debts, database.debtPayments], async () => {
+    await database.debts.delete(debtId);
+    const payments = await database.debtPayments.where('debtId').equals(debtId).toArray();
+    for (const p of payments) {
+      await database.debtPayments.delete(p.id);
+    }
+  });
+}
+
+/**
+ * Adds or updates a wishlist item.
+ */
+export async function atomicAddWishlistItem(
+  database: NemoDatabase,
+  entry: Omit<WishlistItem, 'id' | 'addedAt' | 'isBought' | 'coolingOffDays' | 'priority'> & {
+    id?: string;
+    priority?: WishlistPriority;
+    isBought?: boolean;
+    coolingOffDays?: number;
+    addedAt?: string;
+  }
+): Promise<WishlistItem> {
+  const item: WishlistItem = {
+    id: entry.id || `wsh_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+    title: entry.title.trim(),
+    estimatedPrice: entry.estimatedPrice,
+    priority: entry.priority || 'medium',
+    storeUrl: entry.storeUrl?.trim() || undefined,
+    isBought: entry.isBought ?? false,
+    boughtAt: entry.boughtAt,
+    coolingOffDays: entry.coolingOffDays ?? 7,
+    addedAt: entry.addedAt || new Date().toISOString(),
+    targetSavingsGoalId: entry.targetSavingsGoalId,
+    notes: entry.notes?.trim() || undefined,
+  };
+  await database.wishlistItems.put(item);
+  return item;
+}
+
+/**
+ * Marks a wishlist item as purchased.
+ */
+export async function atomicToggleWishlistBought(
+  database: NemoDatabase,
+  id: string,
+  isBought: boolean
+): Promise<void> {
+  await database.wishlistItems.update(id, {
+    isBought,
+    boughtAt: isBought ? new Date().toISOString() : undefined,
+  });
+}
+
+/**
+ * Converts a wishlist item into a target savings goal.
+ */
+export async function atomicConvertWishlistToSavings(
+  database: NemoDatabase,
+  wishlistId: string,
+  goalOptions?: { color?: string; category?: SavingsGoal['category']; targetDate?: string }
+): Promise<SavingsGoal> {
+  return await database.transaction('rw', [database.wishlistItems, database.savingsGoals], async () => {
+    const wish = await database.wishlistItems.get(wishlistId);
+    if (!wish) {
+      throw new Error(`Wishlist item "${wishlistId}" not found.`);
+    }
+
+    const now = new Date().toISOString();
+    const goal: SavingsGoal = {
+      id: `svg_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+      title: wish.title,
+      targetAmount: wish.estimatedPrice,
+      currentAmount: 0,
+      category: goalOptions?.category || 'gadget',
+      targetDate: goalOptions?.targetDate,
+      color: goalOptions?.color || '#34D399',
+      createdAt: now,
+      updatedAt: now,
+    };
+
+    await database.savingsGoals.put(goal);
+    await database.wishlistItems.update(wishlistId, {
+      targetSavingsGoalId: goal.id,
+    });
+
+    return goal;
+  });
+}
+
+export async function atomicDeleteWishlistItem(database: NemoDatabase, id: string): Promise<void> {
+  await database.wishlistItems.delete(id);
+}
+
+/**
+ * Adds or updates a target savings goal (sinking fund).
+ */
+export async function atomicAddSavingsGoal(
+  database: NemoDatabase,
+  entry: Omit<SavingsGoal, 'id' | 'createdAt' | 'updatedAt' | 'category' | 'color' | 'currentAmount'> & {
+    id?: string;
+    category?: SavingsGoalCategory;
+    color?: string;
+    currentAmount?: number;
+    createdAt?: string;
+    updatedAt?: string;
+  }
+): Promise<SavingsGoal> {
+  const now = new Date().toISOString();
+  const goal: SavingsGoal = {
+    id: entry.id || `svg_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+    title: entry.title.trim(),
+    targetAmount: entry.targetAmount,
+    currentAmount: entry.currentAmount ?? 0,
+    category: entry.category || 'other',
+    targetDate: entry.targetDate,
+    color: entry.color || '#38BDF8',
+    icon: entry.icon,
+    createdAt: entry.createdAt || now,
+    updatedAt: now,
+  };
+  await database.savingsGoals.put(goal);
+  return goal;
+}
+
+/**
+ * Records a deposit or withdrawal for a savings goal, updating current amount.
+ */
+export async function atomicRecordSavingsDeposit(
+  database: NemoDatabase,
+  entry: Omit<SavingsDeposit, 'id' | 'loggedAt'> & { id?: string; loggedAt?: string }
+): Promise<SavingsDeposit> {
+  return await database.transaction('rw', [database.savingsGoals, database.savingsDeposits], async () => {
+    const goal = await database.savingsGoals.get(entry.savingsGoalId);
+    if (!goal) {
+      throw new Error(`Savings goal "${entry.savingsGoalId}" not found.`);
+    }
+
+    const deposit: SavingsDeposit = {
+      id: entry.id || `dep_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+      savingsGoalId: entry.savingsGoalId,
+      amount: entry.amount,
+      type: entry.type,
+      loggedAt: entry.loggedAt || new Date().toISOString(),
+      note: entry.note?.trim() || undefined,
+    };
+
+    await database.savingsDeposits.put(deposit);
+
+    const newAmount = entry.type === 'deposit'
+      ? goal.currentAmount + entry.amount
+      : Math.max(0, goal.currentAmount - entry.amount);
+
+    await database.savingsGoals.update(goal.id, {
+      currentAmount: newAmount,
+      updatedAt: new Date().toISOString(),
+    });
+
+    return deposit;
+  });
+}
+
+/**
+ * Atomically deletes a savings goal, its deposit logs, and unlinks related wishlist items.
+ */
+export async function atomicDeleteSavingsGoal(database: NemoDatabase, goalId: string): Promise<void> {
+  await database.transaction('rw', [database.savingsGoals, database.savingsDeposits, database.wishlistItems], async () => {
+    await database.savingsGoals.delete(goalId);
+    const deposits = await database.savingsDeposits.where('savingsGoalId').equals(goalId).toArray();
+    for (const d of deposits) {
+      await database.savingsDeposits.delete(d.id);
+    }
+    const relatedWishes = await database.wishlistItems.where('targetSavingsGoalId').equals(goalId).toArray();
+    for (const w of relatedWishes) {
+      await database.wishlistItems.update(w.id, { targetSavingsGoalId: undefined });
+    }
+  });
 }

@@ -9,6 +9,7 @@ import {
   GraduationCap,
   Target,
   HeartPulse,
+  Wallet,
   BarChart3,
   Settings,
   Cloud,
@@ -32,7 +33,7 @@ export const MobileNav: React.FC<MobileNavProps> = ({
 }) => {
   const [isMoreOpen, setIsMoreOpen] = useState(false);
   const { pathname } = useLocation();
-  const moreActive = ['/academics', '/goals', '/health', '/insights', '/settings'].some(path => pathname.startsWith(path));
+  const moreActive = ['/academics', '/goals', '/health', '/finance', '/insights', '/settings'].some(path => pathname.startsWith(path));
 
   const mainTabs = [
     { to: '/overview', label: 'Today', icon: LayoutDashboard },
@@ -45,6 +46,7 @@ export const MobileNav: React.FC<MobileNavProps> = ({
     { to: '/academics', label: 'Academics', icon: GraduationCap, desc: 'Semesters, subjects & assignments' },
     { to: '/goals', label: 'Goals', icon: Target, desc: 'Target milestones & progress' },
     { to: '/health', label: 'Health', icon: HeartPulse, desc: 'Hydration, diet, workouts & metrics' },
+    { to: '/finance', label: 'Finance', icon: Wallet, desc: 'Komitmen, hutang, hajat & simpanan' },
     { to: '/insights', label: 'Insights', icon: BarChart3, desc: 'Local metrics & charts' },
     { to: '/settings', label: 'Settings', icon: Settings, desc: 'Profile, appearance & backups' },
   ];

@@ -201,7 +201,14 @@ export type SyncEntityType =
   | 'hydrationLog'
   | 'dietLog'
   | 'workoutLog'
-  | 'bodyMetric';
+  | 'bodyMetric'
+  | 'financialProfile'
+  | 'financialCommitment'
+  | 'debtItem'
+  | 'debtPayment'
+  | 'wishlistItem'
+  | 'savingsGoal'
+  | 'savingsDeposit';
 
 // ============================================================================
 // HEALTH & WELLNESS DOMAIN TYPES
@@ -262,6 +269,102 @@ export interface BodyMetric {
   weightKg: number;
   bodyFatPercent?: number;
   loggedAt: string; // ISO string
+}
+
+// ============================================================================
+// FINANCE & WEALTH DOMAIN TYPES
+// ============================================================================
+
+export interface FinancialProfile {
+  id: string; // 'default'
+  monthlyIncomeGross?: number;
+  monthlyIncomeNet: number;
+  paydayDayOfMonth?: number; // 1 - 31
+  currency: string; // default 'MYR'
+  updatedAt: string;
+}
+
+export type FinancialCommitmentCategory = 'needs' | 'utilities' | 'lifestyle' | 'protection' | 'other';
+
+export interface FinancialCommitment {
+  id: string; // 'com_...'
+  title: string;
+  amount: number;
+  category: FinancialCommitmentCategory;
+  dueDayOfMonth: number; // 1 - 31
+  isPaidThisMonth: boolean;
+  lastPaidMonthYear?: string; // 'YYYY-MM'
+  notes?: string;
+  autoRenew: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export type DebtPriority = 'snowball' | 'avalanche' | 'normal';
+
+export interface DebtItem {
+  id: string; // 'debt_...'
+  title: string;
+  creditor: string;
+  originalPrincipal: number;
+  currentBalance: number;
+  monthlyInstallment: number;
+  interestRatePercent?: number;
+  targetPayoffDate?: string; // YYYY-MM-DD
+  priority: DebtPriority;
+  notes?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface DebtPayment {
+  id: string; // 'dp_...'
+  debtId: string;
+  amount: number;
+  paidAt: string; // ISO string
+  note?: string;
+}
+
+export type WishlistPriority = 'high' | 'medium' | 'low';
+
+export interface WishlistItem {
+  id: string; // 'wsh_...'
+  title: string;
+  estimatedPrice: number;
+  priority: WishlistPriority;
+  storeUrl?: string;
+  isBought: boolean;
+  boughtAt?: string;
+  coolingOffDays: number; // default 7
+  addedAt: string; // ISO string
+  targetSavingsGoalId?: string;
+  notes?: string;
+}
+
+export type SavingsGoalCategory = 'travel' | 'gadget' | 'emergency' | 'vehicle' | 'other';
+
+export interface SavingsGoal {
+  id: string; // 'svg_...'
+  title: string;
+  targetAmount: number;
+  currentAmount: number;
+  category: SavingsGoalCategory;
+  targetDate?: string; // YYYY-MM-DD
+  color: string;
+  icon?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export type SavingsDepositType = 'deposit' | 'withdrawal';
+
+export interface SavingsDeposit {
+  id: string; // 'dep_...'
+  savingsGoalId: string;
+  amount: number;
+  type: SavingsDepositType;
+  loggedAt: string; // ISO string
+  note?: string;
 }
 
 export interface SyncMutation {

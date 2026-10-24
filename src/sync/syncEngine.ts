@@ -317,6 +317,13 @@ class SyncEngine {
       dietLog: db.dietLogs,
       workoutLog: db.workoutLogs,
       bodyMetric: db.bodyMetrics,
+      financialProfile: db.financialProfiles,
+      financialCommitment: db.financialCommitments,
+      debtItem: db.debts,
+      debtPayment: db.debtPayments,
+      wishlistItem: db.wishlistItems,
+      savingsGoal: db.savingsGoals,
+      savingsDeposit: db.savingsDeposits,
     };
     const current = await tables[mut.entityType].get(mut.entityId);
     if (mut.operation === 'DELETE') return current === undefined;
@@ -346,6 +353,13 @@ class SyncEngine {
       dietLog: 'diet_logs',
       workoutLog: 'workout_logs',
       bodyMetric: 'body_metrics',
+      financialProfile: 'financial_profiles',
+      financialCommitment: 'financial_commitments',
+      debtItem: 'debts',
+      debtPayment: 'debt_payments',
+      wishlistItem: 'wishlist_items',
+      savingsGoal: 'savings_goals',
+      savingsDeposit: 'savings_deposits',
     };
 
     const tableName = tableMap[mut.entityType];
@@ -535,6 +549,49 @@ class SyncEngine {
       else await db.bodyMetrics.put(mappers.bodyMetric.toLocal(row));
     }
 
+    // Pull finance tables
+    const remoteFinProfiles = await this.fetchRemoteRows('financial_profiles', userId);
+    for (const row of remoteFinProfiles) {
+      if (row.is_deleted === true) await this.applyRemoteTombstone('financialProfile', row);
+      else await db.financialProfiles.put(mappers.financialProfile.toLocal(row));
+    }
+
+    const remoteCommitments = await this.fetchRemoteRows('financial_commitments', userId);
+    for (const row of remoteCommitments) {
+      if (row.is_deleted === true) await this.applyRemoteTombstone('financialCommitment', row);
+      else await db.financialCommitments.put(mappers.financialCommitment.toLocal(row));
+    }
+
+    const remoteDebts = await this.fetchRemoteRows('debts', userId);
+    for (const row of remoteDebts) {
+      if (row.is_deleted === true) await this.applyRemoteTombstone('debtItem', row);
+      else await db.debts.put(mappers.debtItem.toLocal(row));
+    }
+
+    const remoteDebtPayments = await this.fetchRemoteRows('debt_payments', userId);
+    for (const row of remoteDebtPayments) {
+      if (row.is_deleted === true) await this.applyRemoteTombstone('debtPayment', row);
+      else await db.debtPayments.put(mappers.debtPayment.toLocal(row));
+    }
+
+    const remoteWishlist = await this.fetchRemoteRows('wishlist_items', userId);
+    for (const row of remoteWishlist) {
+      if (row.is_deleted === true) await this.applyRemoteTombstone('wishlistItem', row);
+      else await db.wishlistItems.put(mappers.wishlistItem.toLocal(row));
+    }
+
+    const remoteSavingsGoals = await this.fetchRemoteRows('savings_goals', userId);
+    for (const row of remoteSavingsGoals) {
+      if (row.is_deleted === true) await this.applyRemoteTombstone('savingsGoal', row);
+      else await db.savingsGoals.put(mappers.savingsGoal.toLocal(row));
+    }
+
+    const remoteSavingsDeposits = await this.fetchRemoteRows('savings_deposits', userId);
+    for (const row of remoteSavingsDeposits) {
+      if (row.is_deleted === true) await this.applyRemoteTombstone('savingsDeposit', row);
+      else await db.savingsDeposits.put(mappers.savingsDeposit.toLocal(row));
+    }
+
     // Pull profile settings & avatar
     const { data: remoteProfile, error: profileError } = await supabase
       .from('profiles')
@@ -637,6 +694,13 @@ class SyncEngine {
       dietLog: db.dietLogs,
       workoutLog: db.workoutLogs,
       bodyMetric: db.bodyMetrics,
+      financialProfile: db.financialProfiles,
+      financialCommitment: db.financialCommitments,
+      debtItem: db.debts,
+      debtPayment: db.debtPayments,
+      wishlistItem: db.wishlistItems,
+      savingsGoal: db.savingsGoals,
+      savingsDeposit: db.savingsDeposits,
     };
     const table = tables[entityType];
     const local = await table.get(row.id);
@@ -675,6 +739,13 @@ class SyncEngine {
         dietLogs,
         workoutLogs,
         bodyMetrics,
+        financialProfiles,
+        financialCommitments,
+        debts,
+        debtPayments,
+        wishlistItems,
+        savingsGoals,
+        savingsDeposits,
       ] = await Promise.all([
         db.settings.get('default'),
         db.projects.toArray(),
@@ -692,6 +763,13 @@ class SyncEngine {
         db.dietLogs.toArray(),
         db.workoutLogs.toArray(),
         db.bodyMetrics.toArray(),
+        db.financialProfiles.toArray(),
+        db.financialCommitments.toArray(),
+        db.debts.toArray(),
+        db.debtPayments.toArray(),
+        db.wishlistItems.toArray(),
+        db.savingsGoals.toArray(),
+        db.savingsDeposits.toArray(),
       ]);
 
       const upsert = async (table: string, rows: Record<string, unknown>[], label: string) => {
@@ -785,6 +863,41 @@ class SyncEngine {
       if (bodyMetrics.length) {
         const rows = bodyMetrics.map((b) => mappers.bodyMetric.toRemote(b, userId));
         await upsert('body_metrics', rows, 'body metrics');
+      }
+
+      if (financialProfiles.length) {
+        const rows = financialProfiles.map((p) => mappers.financialProfile.toRemote(p, userId));
+        await upsert('financial_profiles', rows, 'financial profiles');
+      }
+
+      if (financialCommitments.length) {
+        const rows = financialCommitments.map((c) => mappers.financialCommitment.toRemote(c, userId));
+        await upsert('financial_commitments', rows, 'financial commitments');
+      }
+
+      if (debts.length) {
+        const rows = debts.map((d) => mappers.debtItem.toRemote(d, userId));
+        await upsert('debts', rows, 'debts');
+      }
+
+      if (debtPayments.length) {
+        const rows = debtPayments.map((dp) => mappers.debtPayment.toRemote(dp, userId));
+        await upsert('debt_payments', rows, 'debt payments');
+      }
+
+      if (wishlistItems.length) {
+        const rows = wishlistItems.map((w) => mappers.wishlistItem.toRemote(w, userId));
+        await upsert('wishlist_items', rows, 'wishlist items');
+      }
+
+      if (savingsGoals.length) {
+        const rows = savingsGoals.map((s) => mappers.savingsGoal.toRemote(s, userId));
+        await upsert('savings_goals', rows, 'savings goals');
+      }
+
+      if (savingsDeposits.length) {
+        const rows = savingsDeposits.map((sd) => mappers.savingsDeposit.toRemote(sd, userId));
+        await upsert('savings_deposits', rows, 'savings deposits');
       }
 
       // Ownerless/legacy mutations deliberately stay quarantined. They cannot

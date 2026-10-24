@@ -12,6 +12,7 @@ import {
   Target,
   Zap,
   HeartPulse,
+  Wallet,
   Droplet,
   Flame,
   Activity,
@@ -52,6 +53,10 @@ export const InsightsPage: React.FC = () => {
       dietLogs,
       workoutLogs,
       bodyMetrics,
+      financialProfiles,
+      financialCommitments,
+      debts,
+      savingsGoals,
     ] = await Promise.all([
       db.projects.toArray(),
       db.tasks.toArray(),
@@ -62,6 +67,10 @@ export const InsightsPage: React.FC = () => {
       db.dietLogs.toArray(),
       db.workoutLogs.toArray(),
       db.bodyMetrics.toArray(),
+      db.financialProfiles.toArray(),
+      db.financialCommitments.toArray(),
+      db.debts.toArray(),
+      db.savingsGoals.toArray(),
     ]);
     return {
       projects,
@@ -73,6 +82,10 @@ export const InsightsPage: React.FC = () => {
       dietLogs,
       workoutLogs,
       bodyMetrics,
+      financialProfiles,
+      financialCommitments,
+      debts,
+      savingsGoals,
     };
   }, []);
 
@@ -85,6 +98,10 @@ export const InsightsPage: React.FC = () => {
   const dietLogs = data?.dietLogs ?? [];
   const workoutLogs = data?.workoutLogs ?? [];
   const bodyMetrics = data?.bodyMetrics ?? [];
+  const financialProfiles = data?.financialProfiles ?? [];
+  const financialCommitments = data?.financialCommitments ?? [];
+  const debts = data?.debts ?? [];
+  const savingsGoals = data?.savingsGoals ?? [];
 
   // 7-Day Rolling Velocity calculation
   const velocityData = useMemo(() => {
@@ -231,6 +248,38 @@ export const InsightsPage: React.FC = () => {
       hasAnyHealthData,
     };
   }, [hydrationLogs, dietLogs, workoutLogs, bodyMetrics]);
+
+  // Genuine Local Finance & Cash Flow Metrics calculation
+  const financeMetrics = useMemo(() => {
+    const profile = financialProfiles[0] ?? null;
+    const monthlyIncome = profile?.monthlyIncomeNet ?? 0;
+    const totalCommitments = financialCommitments.reduce((sum, c) => sum + (c.amount || 0), 0);
+    const totalDebtInstallments = debts.reduce((sum, d) => sum + (d.monthlyInstallment || 0), 0);
+    const safeToSpend = Math.max(0, monthlyIncome - totalCommitments - totalDebtInstallments);
+    const safeToSpendRatio = monthlyIncome > 0 ? Math.round((safeToSpend / monthlyIncome) * 100) : 0;
+    const totalSaved = savingsGoals.reduce((sum, g) => sum + (g.currentAmount || 0), 0);
+    const totalSavingsTarget = savingsGoals.reduce((sum, g) => sum + (g.targetAmount || 0), 0);
+    const savingsRatio = totalSavingsTarget > 0 ? Math.min(100, Math.round((totalSaved / totalSavingsTarget) * 100)) : 0;
+    const totalDebtBalance = debts.reduce((sum, d) => sum + (d.currentBalance || 0), 0);
+    const hasData =
+      financialProfiles.length > 0 ||
+      financialCommitments.length > 0 ||
+      debts.length > 0 ||
+      savingsGoals.length > 0;
+
+    return {
+      monthlyIncome,
+      totalCommitments,
+      totalDebtInstallments,
+      safeToSpend,
+      safeToSpendRatio,
+      totalSaved,
+      totalSavingsTarget,
+      savingsRatio,
+      totalDebtBalance,
+      hasData,
+    };
+  }, [financialProfiles, financialCommitments, debts, savingsGoals]);
 
   const {
     years,
@@ -1130,6 +1179,54 @@ export const InsightsPage: React.FC = () => {
                   {healthMetrics.latestWeight !== null ? `${healthMetrics.latestWeight} kg` : '—'}
                 </strong>
                 <span>Latest weight</span>
+              </div>
+            </div>
+          </section>
+
+          <section className="glass-panel insights-bottom-panel">
+            <div className="insights-panel-heading">
+              <h2>Financial Vitality</h2>
+              <Wallet size={22} aria-hidden="true" className="text-emerald-400" />
+            </div>
+            <div className="insights-bottom-metrics">
+              <div>
+                <strong>
+                  {financeMetrics.hasData && financeMetrics.monthlyIncome > 0 ? (
+                    <>
+                      <AnimatedNumber value={financeMetrics.safeToSpendRatio} />
+                      <span className="text-xs font-normal text-content-secondary ml-1">%</span>
+                    </>
+                  ) : (
+                    '—'
+                  )}
+                </strong>
+                <span>Safe-to-Spend</span>
+              </div>
+              <div>
+                <strong>
+                  {financeMetrics.hasData ? (
+                    <>
+                      <span className="text-xs font-normal text-content-secondary mr-1">RM</span>
+                      <AnimatedNumber value={Math.round(financeMetrics.totalCommitments + financeMetrics.totalDebtInstallments)} />
+                    </>
+                  ) : (
+                    '—'
+                  )}
+                </strong>
+                <span>Monthly Burn</span>
+              </div>
+              <div>
+                <strong>
+                  {financeMetrics.hasData ? (
+                    <>
+                      <span className="text-xs font-normal text-content-secondary mr-1">RM</span>
+                      <AnimatedNumber value={Math.round(financeMetrics.totalSaved)} />
+                    </>
+                  ) : (
+                    '—'
+                  )}
+                </strong>
+                <span>Total Saved</span>
               </div>
             </div>
           </section>

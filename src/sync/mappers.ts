@@ -15,6 +15,13 @@ import type {
   DietLog,
   WorkoutLog,
   BodyMetric,
+  FinancialProfile,
+  FinancialCommitment,
+  DebtItem,
+  DebtPayment,
+  WishlistItem,
+  SavingsGoal,
+  SavingsDeposit,
 } from '@/domain/types';
 
 export const mappers = {
@@ -495,6 +502,226 @@ export const mappers = {
         weightKg: Number(remote.weight_kg),
         bodyFatPercent: remote.body_fat_percent != null ? Number(remote.body_fat_percent) : undefined,
         loggedAt: remote.logged_at,
+      };
+    },
+  },
+
+  financialProfile: {
+    toRemote(local: FinancialProfile, userId: string) {
+      return {
+        id: local.id,
+        user_id: userId,
+        monthly_income_gross: local.monthlyIncomeGross ?? null,
+        monthly_income_net: local.monthlyIncomeNet,
+        payday_day_of_month: local.paydayDayOfMonth ?? 25,
+        currency: local.currency || 'MYR',
+        version: 1,
+        is_deleted: false,
+        updated_at: local.updatedAt,
+      };
+    },
+    toLocal(remote: any): FinancialProfile {
+      return {
+        id: remote.id,
+        monthlyIncomeGross: remote.monthly_income_gross != null ? Number(remote.monthly_income_gross) : undefined,
+        monthlyIncomeNet: Number(remote.monthly_income_net),
+        paydayDayOfMonth: remote.payday_day_of_month != null ? Number(remote.payday_day_of_month) : 25,
+        currency: remote.currency || 'MYR',
+        updatedAt: remote.updated_at,
+      };
+    },
+  },
+
+  financialCommitment: {
+    toRemote(local: FinancialCommitment, userId: string) {
+      return {
+        id: local.id,
+        user_id: userId,
+        title: local.title,
+        amount: local.amount,
+        category: local.category,
+        due_day_of_month: local.dueDayOfMonth,
+        is_paid_this_month: local.isPaidThisMonth,
+        last_paid_month_year: local.lastPaidMonthYear || null,
+        notes: local.notes || null,
+        auto_renew: local.autoRenew,
+        version: 1,
+        is_deleted: false,
+        created_at: local.createdAt,
+        updated_at: local.updatedAt,
+      };
+    },
+    toLocal(remote: any): FinancialCommitment {
+      return {
+        id: remote.id,
+        title: remote.title,
+        amount: Number(remote.amount),
+        category: remote.category,
+        dueDayOfMonth: Number(remote.due_day_of_month),
+        isPaidThisMonth: Boolean(remote.is_paid_this_month),
+        lastPaidMonthYear: remote.last_paid_month_year || undefined,
+        notes: remote.notes || undefined,
+        autoRenew: Boolean(remote.auto_renew),
+        createdAt: remote.created_at,
+        updatedAt: remote.updated_at,
+      };
+    },
+  },
+
+  debtItem: {
+    toRemote(local: DebtItem, userId: string) {
+      return {
+        id: local.id,
+        user_id: userId,
+        title: local.title,
+        creditor: local.creditor,
+        original_principal: local.originalPrincipal,
+        current_balance: local.currentBalance,
+        monthly_installment: local.monthlyInstallment,
+        interest_rate_percent: local.interestRatePercent ?? null,
+        target_payoff_date: local.targetPayoffDate || null,
+        priority: local.priority,
+        notes: local.notes || null,
+        version: 1,
+        is_deleted: false,
+        created_at: local.createdAt,
+        updated_at: local.updatedAt,
+      };
+    },
+    toLocal(remote: any): DebtItem {
+      return {
+        id: remote.id,
+        title: remote.title,
+        creditor: remote.creditor,
+        originalPrincipal: Number(remote.original_principal),
+        currentBalance: Number(remote.current_balance),
+        monthlyInstallment: Number(remote.monthly_installment),
+        interestRatePercent: remote.interest_rate_percent != null ? Number(remote.interest_rate_percent) : undefined,
+        targetPayoffDate: remote.target_payoff_date || undefined,
+        priority: remote.priority,
+        notes: remote.notes || undefined,
+        createdAt: remote.created_at,
+        updatedAt: remote.updated_at,
+      };
+    },
+  },
+
+  debtPayment: {
+    toRemote(local: DebtPayment, userId: string) {
+      return {
+        id: local.id,
+        user_id: userId,
+        debt_id: local.debtId,
+        amount: local.amount,
+        paid_at: local.paidAt,
+        note: local.note || null,
+        version: 1,
+        is_deleted: false,
+      };
+    },
+    toLocal(remote: any): DebtPayment {
+      return {
+        id: remote.id,
+        debtId: remote.debt_id,
+        amount: Number(remote.amount),
+        paidAt: remote.paid_at,
+        note: remote.note || undefined,
+      };
+    },
+  },
+
+  wishlistItem: {
+    toRemote(local: WishlistItem, userId: string) {
+      return {
+        id: local.id,
+        user_id: userId,
+        title: local.title,
+        estimated_price: local.estimatedPrice,
+        priority: local.priority,
+        store_url: local.storeUrl || null,
+        is_bought: local.isBought,
+        bought_at: local.boughtAt || null,
+        cooling_off_days: local.coolingOffDays,
+        target_savings_goal_id: local.targetSavingsGoalId || null,
+        notes: local.notes || null,
+        version: 1,
+        is_deleted: false,
+        added_at: local.addedAt,
+      };
+    },
+    toLocal(remote: any): WishlistItem {
+      return {
+        id: remote.id,
+        title: remote.title,
+        estimatedPrice: Number(remote.estimated_price),
+        priority: remote.priority,
+        storeUrl: remote.store_url || undefined,
+        isBought: Boolean(remote.is_bought),
+        boughtAt: remote.bought_at || undefined,
+        coolingOffDays: Number(remote.cooling_off_days),
+        targetSavingsGoalId: remote.target_savings_goal_id || undefined,
+        notes: remote.notes || undefined,
+        addedAt: remote.added_at,
+      };
+    },
+  },
+
+  savingsGoal: {
+    toRemote(local: SavingsGoal, userId: string) {
+      return {
+        id: local.id,
+        user_id: userId,
+        title: local.title,
+        target_amount: local.targetAmount,
+        current_amount: local.currentAmount,
+        category: local.category,
+        target_date: local.targetDate || null,
+        color: local.color,
+        icon: local.icon || null,
+        version: 1,
+        is_deleted: false,
+        created_at: local.createdAt,
+        updated_at: local.updatedAt,
+      };
+    },
+    toLocal(remote: any): SavingsGoal {
+      return {
+        id: remote.id,
+        title: remote.title,
+        targetAmount: Number(remote.target_amount),
+        currentAmount: Number(remote.current_amount),
+        category: remote.category,
+        targetDate: remote.target_date || undefined,
+        color: remote.color,
+        icon: remote.icon || undefined,
+        createdAt: remote.created_at,
+        updatedAt: remote.updated_at,
+      };
+    },
+  },
+
+  savingsDeposit: {
+    toRemote(local: SavingsDeposit, userId: string) {
+      return {
+        id: local.id,
+        user_id: userId,
+        savings_goal_id: local.savingsGoalId,
+        amount: local.amount,
+        type: local.type,
+        logged_at: local.loggedAt,
+        note: local.note || null,
+        version: 1,
+        is_deleted: false,
+      };
+    },
+    toLocal(remote: any): SavingsDeposit {
+      return {
+        id: remote.id,
+        savingsGoalId: remote.savings_goal_id,
+        amount: Number(remote.amount),
+        type: remote.type,
+        loggedAt: remote.logged_at,
+        note: remote.note || undefined,
       };
     },
   },

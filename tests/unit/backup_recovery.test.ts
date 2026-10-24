@@ -244,6 +244,13 @@ describe('Sprint 2 — Backup, Export & Disaster Recovery', () => {
         dietLogs: [],
         workoutLogs: [],
         bodyMetrics: [],
+        financialProfiles: [],
+        financialCommitments: [],
+        debts: [],
+        debtPayments: [],
+        wishlistItems: [],
+        savingsGoals: [],
+        savingsDeposits: [],
       },
     };
 
