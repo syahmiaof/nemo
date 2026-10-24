@@ -18,6 +18,8 @@ import {
   ArrowDownRight,
   ArrowUpRight,
   CheckCircle2,
+  Sparkles,
+  TrendingUp,
 } from 'lucide-react';
 
 interface SavingsGoalsCardProps {
@@ -41,28 +43,48 @@ interface SavingsGoalsCardProps {
   onDeleteSavingsGoal: (id: string) => Promise<void>;
 }
 
-const CATEGORY_ICONS: Record<SavingsGoalCategory, React.ElementType> = {
-  emergency: Shield,
-  travel: Compass,
-  gadget: Laptop,
-  vehicle: Car,
-  other: PiggyBank,
-};
-
-const CATEGORY_LABELS: Record<SavingsGoalCategory, string> = {
-  emergency: 'Tabung Kecemasan (3-6 Bulan)',
-  travel: 'Percutian / Travel',
-  gadget: 'Gajet & Komputer',
-  vehicle: 'Kereta & Motor',
-  other: 'Lain-lain',
+const CATEGORY_CONFIG: Record<
+  SavingsGoalCategory,
+  { label: string; icon: React.ElementType; color: string; fillGradient: string }
+> = {
+  emergency: {
+    label: 'Emergency Reserve (3-6 Months)',
+    icon: Shield,
+    color: 'text-emerald-400 bg-emerald-500/15 border-emerald-400/30',
+    fillGradient: 'from-emerald-600/90 via-teal-500/80 to-emerald-400/60',
+  },
+  travel: {
+    label: 'Travel & Exploration',
+    icon: Compass,
+    color: 'text-sky-400 bg-sky-500/15 border-sky-400/30',
+    fillGradient: 'from-sky-600/90 via-cyan-500/80 to-sky-400/60',
+  },
+  gadget: {
+    label: 'Technology & Hardware',
+    icon: Laptop,
+    color: 'text-purple-400 bg-purple-500/15 border-purple-400/30',
+    fillGradient: 'from-purple-600/90 via-indigo-500/80 to-purple-400/60',
+  },
+  vehicle: {
+    label: 'Vehicle & Mobility',
+    icon: Car,
+    color: 'text-amber-400 bg-amber-500/15 border-amber-400/30',
+    fillGradient: 'from-amber-600/90 via-orange-500/80 to-amber-400/60',
+  },
+  other: {
+    label: 'Special Target',
+    icon: PiggyBank,
+    color: 'text-teal-400 bg-teal-500/15 border-teal-400/30',
+    fillGradient: 'from-teal-600/90 via-emerald-500/80 to-teal-400/60',
+  },
 };
 
 const CATEGORY_OPTIONS = [
-  { value: 'emergency', label: 'Tabung Kecemasan (3-6 Bulan)' },
-  { value: 'travel', label: 'Percutian & Travel' },
-  { value: 'gadget', label: 'Gajet & Komputer' },
-  { value: 'vehicle', label: 'Kenderaan / Maintanens' },
-  { value: 'other', label: 'Lain-lain' },
+  { value: 'emergency', label: 'Emergency Reserve (3-6 Months Buffer)' },
+  { value: 'travel', label: 'Travel & Exploration' },
+  { value: 'gadget', label: 'Technology & Hardware Upgrades' },
+  { value: 'vehicle', label: 'Vehicle & Mobility Fund' },
+  { value: 'other', label: 'Special Target / Sinking Fund' },
 ];
 
 export const SavingsGoalsCard: React.FC<SavingsGoalsCardProps> = ({
@@ -117,11 +139,11 @@ export const SavingsGoalsCard: React.FC<SavingsGoalsCardProps> = ({
     const currNum = currentAmount ? parseFloat(currentAmount) : 0;
 
     if (!title.trim()) {
-      setAddError('Sila masukkan nama tabung simpanan.');
+      setAddError('Please enter a goal or fund title.');
       return;
     }
     if (isNaN(targetNum) || targetNum <= 0) {
-      setAddError('Sila masukkan sasaran jumlah yang sah.');
+      setAddError('Please enter a valid target amount.');
       return;
     }
 
@@ -137,7 +159,7 @@ export const SavingsGoalsCard: React.FC<SavingsGoalsCardProps> = ({
       });
       setIsAddModalOpen(false);
     } catch (err: unknown) {
-      setAddError(err instanceof Error ? err.message : 'Gagal mencipta tabung.');
+      setAddError(err instanceof Error ? err.message : 'Failed to create savings goal.');
     } finally {
       setIsSubmitting(false);
     }
@@ -157,7 +179,7 @@ export const SavingsGoalsCard: React.FC<SavingsGoalsCardProps> = ({
 
     const amtNum = parseFloat(depositAmount);
     if (isNaN(amtNum) || amtNum <= 0) {
-      setDepositError('Sila masukkan amaun transaksi yang sah.');
+      setDepositError('Please enter a valid transaction amount.');
       return;
     }
 
@@ -171,170 +193,269 @@ export const SavingsGoalsCard: React.FC<SavingsGoalsCardProps> = ({
       });
       setDepositGoalId(null);
     } catch (err: unknown) {
-      setDepositError(err instanceof Error ? err.message : 'Gagal merekod transaksi simpanan.');
+      setDepositError(err instanceof Error ? err.message : 'Failed to record transaction.');
     } finally {
       setIsDepositing(false);
     }
   };
 
   return (
-    <div className="bg-surface-elevated/70 backdrop-blur-md border border-border-subtle rounded-2xl p-5 shadow-sm space-y-5">
+    <div className="rounded-2xl border border-white/[0.08] bg-[#0c1527]/80 backdrop-blur-xl p-5 md:p-6 shadow-2xl relative overflow-hidden transition-all duration-300">
+      {/* Background ambient lighting */}
+      <div className="absolute -top-16 -right-16 w-56 h-56 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-16 -left-16 w-56 h-56 bg-teal-500/10 rounded-full blur-3xl pointer-events-none" />
+
       {/* Header */}
-      <div className="flex items-center justify-between flex-wrap gap-3">
-        <div className="flex items-center gap-2.5">
-          <div className="w-9 h-9 rounded-xl bg-accent-mint/10 border border-accent-mint/20 flex items-center justify-center text-accent-mint">
+      <div className="flex items-center justify-between flex-wrap gap-4 mb-6 relative z-10">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-emerald-500/15 border border-emerald-400/30 flex items-center justify-center text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.25)]">
             <PiggyBank className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="text-base font-bold text-content-primary tracking-tight">
-              Tabung Simpanan & Sinking Funds
+            <h3 className="text-base font-semibold text-content-primary flex items-center gap-2">
+              Savings Goals & Sinking Funds
+              {overallProgressPercent >= 100 && totalTarget > 0 && (
+                <span className="inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                  <Sparkles className="w-3 h-3" /> All Targets Achieved!
+                </span>
+              )}
             </h3>
             <p className="text-xs text-content-secondary">
-              Simpanan berfokus untuk kecemasan, travel, impian gajet, dan sasaran masa depan
+              Purpose-driven capital allocation for emergencies, travel, tech investments, and future milestones
             </p>
           </div>
         </div>
 
-        <Button
+        <button
           type="button"
-          variant="primary"
-          size="sm"
           onClick={handleOpenAddModal}
-          className="flex items-center gap-1.5"
+          className="px-3.5 py-2 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-400/35 text-emerald-300 text-xs font-semibold flex items-center gap-1.5 transition-all active:scale-95 shadow-[0_0_12px_rgba(16,185,129,0.2)]"
         >
           <Plus className="w-4 h-4" />
-          <span>Cipta Tabung</span>
-        </Button>
+          <span>Create Sinking Fund</span>
+        </button>
       </div>
 
-      {/* Summary Totals */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <div className="p-3.5 rounded-xl bg-surface border border-border-subtle">
-          <span className="text-[11px] font-medium text-content-tertiary uppercase tracking-wider block">
-            Jumlah Terkumpul
+      {/* Summary Metrics */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 mb-6 relative z-10">
+        <div className="p-4 rounded-xl border border-white/[0.08] bg-white/[0.03] backdrop-blur-md">
+          <span className="text-[11px] font-semibold text-content-secondary uppercase tracking-wider block mb-1">
+            Total Capital Accumulated
           </span>
-          <span className="text-lg font-bold text-accent-mint">{formatRM(totalSaved)}</span>
+          <div className="text-2xl font-bold font-mono tracking-tight text-emerald-400">
+            {formatRM(totalSaved)}
+          </div>
         </div>
-        <div className="p-3.5 rounded-xl bg-surface border border-border-subtle">
-          <span className="text-[11px] font-medium text-content-tertiary uppercase tracking-wider block">
-            Sasaran Keseluruhan
+
+        <div className="p-4 rounded-xl border border-white/[0.08] bg-white/[0.03] backdrop-blur-md">
+          <span className="text-[11px] font-semibold text-content-secondary uppercase tracking-wider block mb-1">
+            Aggregate Target Objective
           </span>
-          <span className="text-lg font-bold text-content-primary">{formatRM(totalTarget)}</span>
+          <div className="text-2xl font-bold font-mono tracking-tight text-content-primary">
+            {formatRM(totalTarget)}
+          </div>
         </div>
-        <div className="p-3.5 rounded-xl bg-surface border border-border-subtle">
-          <span className="text-[11px] font-medium text-content-tertiary uppercase tracking-wider block">
-            Peratusan Tercapai
-          </span>
-          <span className="text-lg font-bold text-accent-sky">{overallProgressPercent}%</span>
+
+        <div className="p-4 rounded-xl border border-white/[0.08] bg-white/[0.03] backdrop-blur-md flex items-center justify-between">
+          <div>
+            <span className="text-[11px] font-semibold text-content-secondary uppercase tracking-wider block mb-1">
+              Overall Fulfillment
+            </span>
+            <div className="text-2xl font-bold font-mono tracking-tight text-cyan-300">
+              {overallProgressPercent}%
+            </div>
+          </div>
+          {/* Circular SVG Mini Gauge */}
+          <div className="relative w-12 h-12 flex items-center justify-center">
+            <svg className="w-12 h-12 transform -rotate-90">
+              <circle
+                cx="24"
+                cy="24"
+                r="18"
+                stroke="currentColor"
+                strokeWidth="3.5"
+                className="text-white/[0.08]"
+                fill="transparent"
+              />
+              <circle
+                cx="24"
+                cy="24"
+                r="18"
+                stroke="currentColor"
+                strokeWidth="3.5"
+                strokeDasharray={113}
+                strokeDashoffset={113 - (113 * overallProgressPercent) / 100}
+                strokeLinecap="round"
+                className="text-emerald-400 transition-all duration-700 ease-out"
+                fill="transparent"
+              />
+            </svg>
+            <TrendingUp className="w-4 h-4 text-emerald-400 absolute" />
+          </div>
         </div>
       </div>
 
-      {/* Savings Goals Grid */}
+      {/* Sinking Funds Visual Grid */}
       {savingsGoals.length === 0 ? (
-        <div className="py-10 text-center rounded-xl border border-dashed border-border-subtle bg-surface/50">
-          <PiggyBank className="w-8 h-8 mx-auto text-content-tertiary mb-2 opacity-60" />
-          <p className="text-sm font-medium text-content-secondary">Tiada tabung simpanan aktif</p>
+        <div className="py-12 text-center rounded-xl border border-dashed border-white/[0.1] bg-white/[0.02] relative z-10">
+          <PiggyBank className="w-10 h-10 mx-auto text-content-tertiary mb-3 opacity-60" />
+          <p className="text-sm font-semibold text-content-secondary">No active sinking funds</p>
           <p className="text-xs text-content-tertiary max-w-sm mx-auto mt-1">
-            Mulakan tabung kecemasan atau rancang percutian impian anda dengan mencipta tabung simpanan hari ini.
+            Build your emergency runway or start accumulating capital for high-priority targets.
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 relative z-10">
           {savingsGoals.map((goal) => {
-            const Icon = CATEGORY_ICONS[goal.category || 'other'];
+            const config = CATEGORY_CONFIG[goal.category || 'other'];
+            const Icon = config.icon;
             const percent = goal.targetAmount > 0
               ? Math.min(100, Math.round((goal.currentAmount / goal.targetAmount) * 100))
               : 0;
             const isCompleted = goal.currentAmount >= goal.targetAmount;
             const pace = calculateMonthlySavingsPace(goal);
+            const goalDeposits = deposits.filter((d) => d.savingsGoalId === goal.id);
+
+            // Wave height calculation for visual reservoir
+            const waveHeight = Math.max(10, Math.min(100, percent));
 
             return (
               <div
                 key={goal.id}
-                className="p-4 rounded-xl bg-surface border border-border-subtle hover:border-border-emphasis transition-all space-y-3.5 flex flex-col justify-between"
+                className="rounded-xl border border-white/[0.08] bg-white/[0.03] hover:border-emerald-400/30 p-4 relative overflow-hidden transition-all duration-300 flex flex-col justify-between group"
               >
-                <div className="space-y-2">
+                {/* Ambient glow on hover */}
+                <div className="absolute -top-10 -right-10 w-32 h-32 bg-emerald-500/5 rounded-full blur-2xl pointer-events-none group-hover:bg-emerald-500/10 transition-colors" />
+
+                <div className="space-y-3 relative z-10">
+                  {/* Top Bar: Icon, Title & Actions */}
                   <div className="flex items-start justify-between gap-3">
-                    <div className="flex items-center gap-2.5 min-w-0">
-                      <div className="w-9 h-9 rounded-lg bg-surface-solid border border-border-subtle flex items-center justify-center text-accent-mint flex-shrink-0">
-                        <Icon className="w-4 h-4" />
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 border ${config.color}`}>
+                        <Icon className="w-5 h-5" />
                       </div>
                       <div className="min-w-0">
                         <h4 className="text-sm font-bold text-content-primary truncate">{goal.title}</h4>
-                        <span className="text-[10px] font-medium text-content-tertiary">
-                          {CATEGORY_LABELS[goal.category || 'other']}
+                        <span className="text-[10px] font-medium text-content-secondary block">
+                          {config.label}
                         </span>
                       </div>
                     </div>
 
                     <div className="flex items-center gap-1.5 flex-shrink-0">
-                      <Button
+                      <button
                         type="button"
-                        variant="secondary"
-                        size="sm"
                         onClick={() => handleOpenDeposit(goal)}
-                        className="text-xs py-1 px-2.5 h-auto flex items-center gap-1"
+                        className="px-2.5 py-1 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-400/30 text-emerald-300 text-xs font-semibold flex items-center gap-1 transition-all active:scale-95"
                       >
-                        <Plus className="w-3.5 h-3.5 text-accent-mint" />
-                        <span>Simpan</span>
-                      </Button>
+                        <Plus className="w-3.5 h-3.5" />
+                        <span>Deposit / Withdraw</span>
+                      </button>
 
                       <button
                         type="button"
                         onClick={() => setDeleteId(goal.id)}
-                        className="p-1.5 text-content-tertiary hover:text-accent-ember rounded-lg hover:bg-surface-solid transition-colors"
-                        title="Padam tabung"
+                        className="p-1.5 text-content-tertiary hover:text-rose-400 rounded-lg hover:bg-white/[0.05] transition-colors"
+                        title="Delete fund"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
                     </div>
                   </div>
 
-                  {/* Progress Numbers */}
-                  <div className="flex items-baseline justify-between pt-1">
-                    <div>
-                      <span className="text-xs text-content-tertiary block">Terkumpul</span>
-                      <span className="text-lg font-extrabold text-accent-mint">{formatRM(goal.currentAmount)}</span>
-                    </div>
-                    <div className="text-right">
-                      <span className="text-xs text-content-tertiary block">Sasaran</span>
-                      <span className="text-sm font-bold text-content-primary">{formatRM(goal.targetAmount)}</span>
-                    </div>
-                  </div>
+                  {/* Visual Sinking Fund Liquid Reservoir & Progress */}
+                  <div className="grid grid-cols-12 gap-3 items-center pt-1">
+                    {/* Compact Fluid Sinking Fund Gauge (Like Health Hydration) */}
+                    <div className="col-span-4 sm:col-span-3 flex justify-center">
+                      <div className="w-20 h-24 rounded-2xl border-2 border-emerald-400/30 bg-gradient-to-b from-[#0e1d38]/90 to-[#07101f]/95 relative overflow-hidden shadow-[inset_0_2px_12px_rgba(16,185,129,0.15)] p-0.5">
+                        {/* Glass reflection top highlight */}
+                        <div className="absolute top-0 left-0 right-0 h-7 bg-gradient-to-b from-white/[0.12] to-transparent pointer-events-none rounded-t-xl z-20" />
+                        <div className="absolute top-1.5 left-2 w-1 h-6 bg-white/25 rounded-full blur-[0.5px] pointer-events-none z-20" />
 
-                  {/* Progress Bar */}
-                  <div className="w-full h-2 rounded-full bg-surface-solid overflow-hidden border border-border-subtle">
-                    <div
-                      className={`h-full transition-all duration-500 rounded-full ${
-                        isCompleted ? 'bg-accent-mint' : 'bg-gradient-to-r from-accent-sky to-accent-mint'
-                      }`}
-                      style={{ width: `${percent}%` }}
-                    />
+                        {/* Liquid Wave Fill */}
+                        <div
+                          className="absolute bottom-0 left-0 right-0 transition-all duration-700 ease-out z-10"
+                          style={{ height: `${waveHeight}%` }}
+                        >
+                          {/* Wave crest */}
+                          <div className="absolute -top-2 left-0 right-0 w-[200%] h-3 opacity-75">
+                            <svg viewBox="0 0 1200 120" preserveAspectRatio="none" className="w-full h-full fill-emerald-300/60">
+                              <path d="M0,0 C150,90 350,-40 500,40 C650,120 900,10 1200,40 L1200,120 L0,120 Z" />
+                            </svg>
+                          </div>
+                          {/* Liquid Body */}
+                          <div className={`w-full h-full bg-gradient-to-t ${config.fillGradient} shadow-[0_-3px_15px_rgba(16,185,129,0.35)] backdrop-blur-sm`} />
+                        </div>
+
+                        {/* Center Percentage Display */}
+                        <div className="absolute inset-0 flex flex-col items-center justify-center z-20 pointer-events-none select-none">
+                          <span className="text-base font-extrabold font-mono text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
+                            {percent}%
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Monetary Metrics & Bar */}
+                    <div className="col-span-8 sm:col-span-9 space-y-2">
+                      <div className="flex items-baseline justify-between">
+                        <div>
+                          <span className="text-[10px] uppercase font-semibold text-content-secondary block">
+                            Accumulated
+                          </span>
+                          <span className="text-xl font-bold font-mono text-emerald-400">
+                            {formatRM(goal.currentAmount)}
+                          </span>
+                        </div>
+                        <div className="text-right">
+                          <span className="text-[10px] uppercase font-semibold text-content-secondary block">
+                            Target Goal
+                          </span>
+                          <span className="text-sm font-bold font-mono text-content-primary">
+                            {formatRM(goal.targetAmount)}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Progress Bar with Glow */}
+                      <div className="w-full h-2 rounded-full bg-black/40 overflow-hidden border border-white/[0.08] relative">
+                        <div
+                          className={`h-full transition-all duration-500 rounded-full ${
+                            isCompleted
+                              ? 'bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.6)]'
+                              : 'bg-gradient-to-r from-teal-400 to-emerald-400 shadow-[0_0_8px_rgba(45,212,191,0.5)]'
+                          }`}
+                          style={{ width: `${percent}%` }}
+                        />
+                      </div>
+                    </div>
                   </div>
                 </div>
 
                 {/* Footer Info (Pace & Target Date) */}
-                <div className="pt-2 border-t border-border-subtle/60 flex items-center justify-between text-xs text-content-tertiary flex-wrap gap-2">
+                <div className="pt-3 mt-3 border-t border-white/[0.06] flex items-center justify-between text-xs text-content-secondary flex-wrap gap-2 relative z-10">
                   <div className="flex items-center gap-2">
                     {goal.targetDate && (
-                      <span className="flex items-center gap-1">
-                        <Calendar className="w-3.5 h-3.5" />
-                        Sasaran: {goal.targetDate}
+                      <span className="flex items-center gap-1 text-[11px] text-content-tertiary">
+                        <Calendar className="w-3.5 h-3.5 text-cyan-400" />
+                        Target: {goal.targetDate}
                       </span>
                     )}
-                    {deposits.filter((d) => d.savingsGoalId === goal.id).length > 0 && (
-                      <span>({deposits.filter((d) => d.savingsGoalId === goal.id).length} rekod)</span>
+                    {goalDeposits.length > 0 && (
+                      <span className="text-[10px] text-content-tertiary">
+                        ({goalDeposits.length} logs)
+                      </span>
                     )}
                   </div>
 
                   {isCompleted ? (
-                    <span className="text-[11px] font-bold text-accent-mint flex items-center gap-1">
+                    <span className="text-[11px] font-bold text-emerald-300 flex items-center gap-1 bg-emerald-500/15 border border-emerald-500/30 px-2 py-0.5 rounded-md">
                       <CheckCircle2 className="w-3.5 h-3.5" />
-                      Sasaran Tercapai!
+                      Target Fulfilled!
                     </span>
                   ) : pace.suggestedMonthly > 0 ? (
-                    <span className="text-[11px] font-medium text-accent-sky">
-                      Cadangan: ~{formatRM(pace.suggestedMonthly)}/bulan
+                    <span className="text-[11px] font-medium text-cyan-300 bg-cyan-500/10 border border-cyan-500/20 px-2 py-0.5 rounded-md">
+                      Suggested Pace: ~{formatRM(pace.suggestedMonthly)} / mo
                     </span>
                   ) : null}
                 </div>
@@ -344,26 +465,26 @@ export const SavingsGoalsCard: React.FC<SavingsGoalsCardProps> = ({
         </div>
       )}
 
-      {/* Add Savings Goal Modal */}
+      {/* Create Sinking Fund Modal */}
       <Modal
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
-        title="Cipta Tabung Simpanan"
-        description="Tetapkan matlamat kewangan khas untuk memudahkan anda menabung secara konsisten."
+        title="Create Sinking Fund"
+        description="Allocate a targeted capital fund for upcoming expenses, buffers, or major acquisitions."
         maxWidth="md"
       >
         <form onSubmit={handleAddSubmit} className="space-y-4 pt-2">
           {addError && (
-            <div className="p-3 text-xs rounded-xl bg-accent-ember/10 border border-accent-ember/20 text-accent-ember">
+            <div className="p-3 text-xs rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-300">
               {addError}
             </div>
           )}
 
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-content-secondary">Nama Tabung</label>
+            <label className="text-xs font-semibold text-content-secondary">Goal / Sinking Fund Title</label>
             <Input
               type="text"
-              placeholder="Contoh: Tabung Kecemasan 3 Bulan / Percutian Jepun"
+              placeholder="e.g. 6-Month Emergency Runway / Japan Travel / M3 MacBook Pro"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               required
@@ -373,12 +494,12 @@ export const SavingsGoalsCard: React.FC<SavingsGoalsCardProps> = ({
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-content-secondary">Jumlah Sasaran (RM)</label>
+              <label className="text-xs font-semibold text-content-secondary">Target Capital (RM)</label>
               <Input
                 type="number"
                 step="0.01"
                 min="0"
-                placeholder="Contoh: 5000.00"
+                placeholder="e.g. 10000.00"
                 value={targetAmount}
                 onChange={(e) => setTargetAmount(e.target.value)}
                 required
@@ -386,12 +507,12 @@ export const SavingsGoalsCard: React.FC<SavingsGoalsCardProps> = ({
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-content-secondary">Jumlah Permulaan Sedia Ada (RM)</label>
+              <label className="text-xs font-semibold text-content-secondary">Initial Seed Capital (RM)</label>
               <Input
                 type="number"
                 step="0.01"
                 min="0"
-                placeholder="Contoh: 500.00"
+                placeholder="e.g. 1000.00"
                 value={currentAmount}
                 onChange={(e) => setCurrentAmount(e.target.value)}
               />
@@ -400,7 +521,7 @@ export const SavingsGoalsCard: React.FC<SavingsGoalsCardProps> = ({
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-content-secondary">Kategori Tabung</label>
+              <label className="text-xs font-semibold text-content-secondary">Category</label>
               <Select
                 options={CATEGORY_OPTIONS}
                 value={category}
@@ -409,7 +530,7 @@ export const SavingsGoalsCard: React.FC<SavingsGoalsCardProps> = ({
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-content-secondary">Tarikh Sasaran (Pilihan)</label>
+              <label className="text-xs font-semibold text-content-secondary">Target Date (Optional)</label>
               <Input
                 type="date"
                 value={targetDate}
@@ -419,21 +540,21 @@ export const SavingsGoalsCard: React.FC<SavingsGoalsCardProps> = ({
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-content-secondary">Catatan (Pilihan)</label>
+            <label className="text-xs font-semibold text-content-secondary">Storage Notes (Optional)</label>
             <Input
               type="text"
-              placeholder="Disimpan dalam ASB / Versa / akaun simpanan khusus"
+              placeholder="e.g. Deposited in high-yield cash fund / ASB / separate vault"
               value={note}
               onChange={(e) => setNote(e.target.value)}
             />
           </div>
 
-          <div className="flex items-center justify-end gap-2.5 pt-4 border-t border-border-subtle">
+          <div className="flex items-center justify-end gap-2.5 pt-4 border-t border-white/[0.08]">
             <Button type="button" variant="ghost" onClick={() => setIsAddModalOpen(false)} disabled={isSubmitting}>
-              Batal
+              Cancel
             </Button>
             <Button type="submit" variant="primary" disabled={isSubmitting}>
-              {isSubmitting ? 'Menyimpan...' : 'Cipta Tabung'}
+              {isSubmitting ? 'Creating...' : 'Create Sinking Fund'}
             </Button>
           </div>
         </form>
@@ -443,54 +564,54 @@ export const SavingsGoalsCard: React.FC<SavingsGoalsCardProps> = ({
       <Modal
         isOpen={Boolean(depositGoalId)}
         onClose={() => setDepositGoalId(null)}
-        title="Rekod Transaksi Tabung"
-        description="Masukkan simpanan masuk atau pengeluaran dana untuk tabung ini."
+        title="Record Sinking Fund Transaction"
+        description="Deposit capital to accelerate progress or log an authorized capital withdrawal."
         maxWidth="sm"
       >
         <form onSubmit={handleDepositSubmit} className="space-y-4 pt-2">
           {depositError && (
-            <div className="p-3 text-xs rounded-xl bg-accent-ember/10 border border-accent-ember/20 text-accent-ember">
+            <div className="p-3 text-xs rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-300">
               {depositError}
             </div>
           )}
 
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-content-secondary">Jenis Transaksi</label>
+            <label className="text-xs font-semibold text-content-secondary">Transaction Direction</label>
             <div className="grid grid-cols-2 gap-2">
               <button
                 type="button"
                 onClick={() => setDepositType('deposit')}
                 className={`py-2 px-3 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 border transition-all ${
                   depositType === 'deposit'
-                    ? 'bg-accent-mint/10 border-accent-mint text-accent-mint font-bold'
-                    : 'bg-surface border-border-subtle text-content-secondary'
+                    ? 'bg-emerald-500/20 border-emerald-400/40 text-emerald-300 font-bold shadow-[0_0_12px_rgba(16,185,129,0.2)]'
+                    : 'bg-white/[0.03] border-white/[0.08] text-content-secondary'
                 }`}
               >
                 <ArrowDownRight className="w-4 h-4" />
-                Simpan (Deposit)
+                Deposit Capital
               </button>
               <button
                 type="button"
                 onClick={() => setDepositType('withdrawal')}
                 className={`py-2 px-3 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 border transition-all ${
                   depositType === 'withdrawal'
-                    ? 'bg-accent-ember/10 border-accent-ember text-accent-ember font-bold'
-                    : 'bg-surface border-border-subtle text-content-secondary'
+                    ? 'bg-rose-500/20 border-rose-400/40 text-rose-300 font-bold shadow-[0_0_12px_rgba(244,63,94,0.2)]'
+                    : 'bg-white/[0.03] border-white/[0.08] text-content-secondary'
                 }`}
               >
                 <ArrowUpRight className="w-4 h-4" />
-                Keluarkan (Withdraw)
+                Withdraw Capital
               </button>
             </div>
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-content-secondary">Amaun (RM)</label>
+            <label className="text-xs font-semibold text-content-secondary">Amount (RM)</label>
             <Input
               type="number"
               step="0.01"
               min="0.01"
-              placeholder="Contoh: 100.00"
+              placeholder="e.g. 250.00"
               value={depositAmount}
               onChange={(e) => setDepositAmount(e.target.value)}
               required
@@ -499,21 +620,21 @@ export const SavingsGoalsCard: React.FC<SavingsGoalsCardProps> = ({
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-content-secondary">Catatan (Pilihan)</label>
+            <label className="text-xs font-semibold text-content-secondary">Note / Memo (Optional)</label>
             <Input
               type="text"
-              placeholder="Contoh: Baki duit belanja mingguan"
+              placeholder="e.g. Monthly automated allocation / bonus top-up"
               value={depositNote}
               onChange={(e) => setDepositNote(e.target.value)}
             />
           </div>
 
-          <div className="flex items-center justify-end gap-2.5 pt-4 border-t border-border-subtle">
+          <div className="flex items-center justify-end gap-2.5 pt-4 border-t border-white/[0.08]">
             <Button type="button" variant="ghost" onClick={() => setDepositGoalId(null)} disabled={isDepositing}>
-              Batal
+              Cancel
             </Button>
             <Button type="submit" variant="primary" disabled={isDepositing}>
-              {isDepositing ? 'Merekod...' : 'Sahkan Transaksi'}
+              {isDepositing ? 'Recording...' : 'Confirm Transaction'}
             </Button>
           </div>
         </form>
@@ -529,9 +650,9 @@ export const SavingsGoalsCard: React.FC<SavingsGoalsCardProps> = ({
             setDeleteId(null);
           }
         }}
-        title="Padam Tabung Simpanan?"
-        description="Tabung simpanan ini dan semua sejarah transaksi di dalamnya akan dipadamkan."
-        confirmLabel="Padam"
+        title="Delete Sinking Fund?"
+        description="This sinking fund and all its associated transaction logs will be permanently deleted."
+        confirmLabel="Delete"
       />
     </div>
   );

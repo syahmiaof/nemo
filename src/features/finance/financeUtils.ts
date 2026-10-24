@@ -80,10 +80,10 @@ export function calculateDebtPayoffProjection(debt: DebtItem): {
   projectedPayoffText: string;
 } {
   if (debt.currentBalance <= 0) {
-    return { monthsRemaining: 0, projectedPayoffText: 'Lunas Sepenuhnya' };
+    return { monthsRemaining: 0, projectedPayoffText: 'Fully Paid Off' };
   }
   if (!debt.monthlyInstallment || debt.monthlyInstallment <= 0) {
-    return { monthsRemaining: 0, projectedPayoffText: 'Tiada jadual bayaran' };
+    return { monthsRemaining: 0, projectedPayoffText: 'No scheduled installment' };
   }
 
   const monthsRemaining = Math.ceil(debt.currentBalance / debt.monthlyInstallment);
@@ -91,14 +91,14 @@ export function calculateDebtPayoffProjection(debt: DebtItem): {
   payoffDate.setMonth(payoffDate.getMonth() + monthsRemaining);
 
   const monthNames = [
-    'Jan', 'Feb', 'Mac', 'Apr', 'Mei', 'Jun',
-    'Jul', 'Ogo', 'Sep', 'Okt', 'Nov', 'Dis'
+    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
   ];
   const formattedDate = `${monthNames[payoffDate.getMonth()]} ${payoffDate.getFullYear()}`;
 
   return {
     monthsRemaining,
-    projectedPayoffText: `${formattedDate} (~${monthsRemaining} bulan lagi)`,
+    projectedPayoffText: `${formattedDate} (~${monthsRemaining} ${monthsRemaining === 1 ? 'month' : 'months'} remaining)`,
   };
 }
 

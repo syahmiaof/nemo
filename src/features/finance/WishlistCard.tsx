@@ -16,6 +16,7 @@ import {
   CheckCircle2,
   Circle,
   Sparkles,
+  ShieldCheck,
 } from 'lucide-react';
 
 interface WishlistCardProps {
@@ -35,23 +36,35 @@ interface WishlistCardProps {
 
 type WishlistFilter = 'all' | 'active' | 'cooling' | 'bought';
 
-const PRIORITY_LABELS: Record<WishlistPriority, { label: string; color: string }> = {
-  high: { label: 'Keutamaan Tinggi', color: 'text-accent-amber bg-accent-amber/10 border-accent-amber/20' },
-  medium: { label: 'Sederhana', color: 'text-accent-sky bg-accent-sky/10 border-accent-sky/20' },
-  low: { label: 'Rendah', color: 'text-content-secondary bg-surface-solid border-border-subtle' },
+const PRIORITY_LABELS: Record<WishlistPriority, { label: string; color: string; glow: string }> = {
+  high: {
+    label: 'High Priority',
+    color: 'text-amber-400 bg-amber-500/15 border-amber-400/30',
+    glow: 'shadow-[0_0_12px_rgba(245,158,11,0.2)]',
+  },
+  medium: {
+    label: 'Medium Priority',
+    color: 'text-sky-400 bg-sky-500/15 border-sky-400/30',
+    glow: 'shadow-[0_0_12px_rgba(56,189,248,0.2)]',
+  },
+  low: {
+    label: 'Low Priority',
+    color: 'text-content-secondary bg-white/[0.04] border-white/[0.08]',
+    glow: '',
+  },
 };
 
 const PRIORITY_OPTIONS = [
-  { value: 'medium', label: 'Sederhana (Kehendak Biasa)' },
-  { value: 'high', label: 'Keutamaan Tinggi' },
-  { value: 'low', label: 'Keutamaan Rendah' },
+  { value: 'medium', label: 'Medium Priority (Standard Desire)' },
+  { value: 'high', label: 'High Priority (Significant Goal)' },
+  { value: 'low', label: 'Low Priority (Casual Want)' },
 ];
 
 const COOLING_OFF_OPTIONS = [
-  { value: '7', label: '7 Hari (Barang Kecil / Aksesori)' },
-  { value: '14', label: '14 Hari (Standard - Disyorkan)' },
-  { value: '30', label: '30 Hari (Barang Mahal / Elektronik)' },
-  { value: '0', label: 'Tiada (Keperluan Mendesak)' },
+  { value: '7', label: '7 Days (Small accessories / Books)' },
+  { value: '14', label: '14 Days (Standard Recommended Rule)' },
+  { value: '30', label: '30 Days (Major Electronics / Luxury)' },
+  { value: '0', label: 'None (Immediate Necessity)' },
 ];
 
 export const WishlistCard: React.FC<WishlistCardProps> = ({
@@ -70,9 +83,9 @@ export const WishlistCard: React.FC<WishlistCardProps> = ({
   const [title, setTitle] = useState('');
   const [price, setPrice] = useState('');
   const [priority, setPriority] = useState<WishlistPriority>('medium');
-  const [url, setUrl] = useState('');
+  const [storeUrl, setStoreUrl] = useState('');
   const [coolingDays, setCoolingDays] = useState('14');
-  const [note, setNote] = useState('');
+  const [notes, setNotes] = useState('');
   const [formError, setFormError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -95,9 +108,9 @@ export const WishlistCard: React.FC<WishlistCardProps> = ({
     setTitle('');
     setPrice('');
     setPriority('medium');
-    setUrl('');
+    setStoreUrl('');
     setCoolingDays('14');
-    setNote('');
+    setNotes('');
     setFormError(null);
     setIsAddModalOpen(true);
   };
@@ -108,11 +121,11 @@ export const WishlistCard: React.FC<WishlistCardProps> = ({
     const coolingNum = parseInt(coolingDays, 10);
 
     if (!title.trim()) {
-      setFormError('Sila masukkan nama barang hajat.');
+      setFormError('Please enter a wishlist item title.');
       return;
     }
     if (isNaN(priceNum) || priceNum <= 0) {
-      setFormError('Sila masukkan anggaran harga yang sah.');
+      setFormError('Please enter a valid estimated price.');
       return;
     }
 
@@ -122,78 +135,93 @@ export const WishlistCard: React.FC<WishlistCardProps> = ({
         title: title.trim(),
         estimatedPrice: priceNum,
         priority,
-        storeUrl: url.trim() || undefined,
+        storeUrl: storeUrl.trim() || undefined,
         coolingOffDays: isNaN(coolingNum) ? 14 : coolingNum,
-        notes: note.trim() || undefined,
+        notes: notes.trim() || undefined,
       });
       setIsAddModalOpen(false);
     } catch (err: unknown) {
-      setFormError(err instanceof Error ? err.message : 'Gagal menambah barang hajat.');
+      setFormError(err instanceof Error ? err.message : 'Failed to add wishlist item.');
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="bg-surface-elevated/70 backdrop-blur-md border border-border-subtle rounded-2xl p-5 shadow-sm space-y-5">
+    <div className="rounded-2xl border border-white/[0.08] bg-[#0c1527]/80 backdrop-blur-xl p-5 md:p-6 shadow-2xl relative overflow-hidden transition-all duration-300">
+      {/* Background ambient lighting */}
+      <div className="absolute -top-16 -right-16 w-56 h-56 bg-sky-500/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-16 -left-16 w-56 h-56 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+
       {/* Header */}
-      <div className="flex items-center justify-between flex-wrap gap-3">
-        <div className="flex items-center gap-2.5">
-          <div className="w-9 h-9 rounded-xl bg-accent-sky/10 border border-accent-sky/20 flex items-center justify-center text-accent-sky">
+      <div className="flex items-center justify-between flex-wrap gap-4 mb-6 relative z-10">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-sky-500/15 border border-sky-400/30 flex items-center justify-center text-sky-400 shadow-[0_0_15px_rgba(56,189,248,0.25)]">
             <ShoppingBag className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="text-base font-bold text-content-primary tracking-tight">
-              Senarai Hajat & Anti-Impuls
+            <h3 className="text-base font-semibold text-content-primary flex items-center gap-2">
+              Wishlist & Anti-Impulse Vault
+              <span className="inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-300 border border-sky-500/30">
+                <ShieldCheck className="w-3 h-3" /> Impulse Protected
+              </span>
             </h3>
             <p className="text-xs text-content-secondary">
-              Kawalan nafsu membeli dengan tempoh bertenang (cooling-off) automatik
+              Curate desired purchases with automated emotional cooling-off periods to eliminate impulse buys
             </p>
           </div>
         </div>
 
-        <Button
+        <button
           type="button"
-          variant="primary"
-          size="sm"
           onClick={handleOpenAddModal}
-          className="flex items-center gap-1.5"
+          className="px-3.5 py-2 rounded-xl bg-sky-500/20 hover:bg-sky-500/30 border border-sky-400/35 text-sky-300 text-xs font-semibold flex items-center gap-1.5 transition-all active:scale-95 shadow-[0_0_12px_rgba(56,189,248,0.2)]"
         >
           <Plus className="w-4 h-4" />
-          <span>Tambah Hajat</span>
-        </Button>
+          <span>Add Wishlist Item</span>
+        </button>
       </div>
 
       {/* Value Counter & Anti-Impulse Banner */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <div className="p-3.5 rounded-xl bg-surface border border-border-subtle flex items-center justify-between">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6 relative z-10">
+        <div className="rounded-xl border border-white/[0.08] bg-white/[0.03] p-4 flex items-center justify-between">
           <div>
             <span className="text-[11px] font-medium text-content-tertiary uppercase tracking-wider block">
-              Nilai Keseluruhan Hajat Aktif
+              Active Desires Total Value
             </span>
-            <span className="text-lg font-bold text-content-primary">{formatRM(totalActiveValue)}</span>
+            <span className="text-2xl font-bold font-mono tracking-tight text-white">
+              {formatRM(totalActiveValue)}
+            </span>
+            <span className="text-[10px] text-content-tertiary mt-1 block">Unpurchased wishlist total</span>
           </div>
-          <Sparkles className="w-5 h-5 text-accent-sky opacity-80" />
+          <div className="w-10 h-10 rounded-xl bg-sky-500/10 border border-sky-400/20 flex items-center justify-center text-sky-400">
+            <Sparkles className="w-5 h-5" />
+          </div>
         </div>
 
-        <div className="p-3.5 rounded-xl bg-surface border border-border-subtle flex items-center justify-between">
+        <div className="rounded-xl border border-white/[0.08] bg-white/[0.03] p-4 flex items-center justify-between">
           <div>
             <span className="text-[11px] font-medium text-content-tertiary uppercase tracking-wider block">
-              Dalam Tempoh Bertenang (Cooling-off)
+              In Cooling-Off Period
             </span>
-            <span className="text-lg font-bold text-accent-amber">{coolingCount} barang</span>
+            <span className="text-2xl font-bold font-mono tracking-tight text-amber-400">
+              {coolingCount} {coolingCount === 1 ? 'item' : 'items'}
+            </span>
+            <span className="text-[10px] text-amber-400/80 mt-1 block">Resting before purchase review</span>
           </div>
-          <Hourglass className="w-5 h-5 text-accent-amber opacity-80" />
+          <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-400/20 flex items-center justify-center text-amber-400">
+            <Hourglass className="w-5 h-5" />
+          </div>
         </div>
       </div>
 
       {/* Sub-Filter Tabs */}
-      <div className="flex items-center gap-1.5 border-b border-border-subtle pb-2 overflow-x-auto scrollbar-none">
+      <div className="flex items-center gap-2 border-b border-white/[0.08] pb-3 mb-4 overflow-x-auto scrollbar-none relative z-10">
         {[
-          { key: 'active', label: 'Aktif (Belum Beli)' },
-          { key: 'cooling', label: `Tempoh Bertenang (${coolingCount})` },
-          { key: 'bought', label: 'Sudah Dibeli' },
-          { key: 'all', label: 'Semua' },
+          { key: 'active', label: `Active Wants (${wishlistItems.filter((w) => !w.isBought).length})` },
+          { key: 'cooling', label: `Cooling Down (${coolingCount})` },
+          { key: 'bought', label: `Purchased (${wishlistItems.filter((w) => w.isBought).length})` },
+          { key: 'all', label: `All (${wishlistItems.length})` },
         ].map((t) => (
           <button
             key={t.key}
@@ -201,8 +229,8 @@ export const WishlistCard: React.FC<WishlistCardProps> = ({
             onClick={() => setFilter(t.key as WishlistFilter)}
             className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all whitespace-nowrap ${
               filter === t.key
-                ? 'bg-surface-solid border border-border-emphasis text-content-primary shadow-xs'
-                : 'text-content-secondary hover:text-content-primary hover:bg-surface'
+                ? 'bg-white/[0.08] border border-white/[0.15] text-white shadow-xs'
+                : 'text-content-secondary hover:text-white hover:bg-white/[0.04]'
             }`}
           >
             {t.label}
@@ -212,26 +240,31 @@ export const WishlistCard: React.FC<WishlistCardProps> = ({
 
       {/* Wishlist Items List */}
       {filteredItems.length === 0 ? (
-        <div className="py-10 text-center rounded-xl border border-dashed border-border-subtle bg-surface/50">
-          <ShoppingBag className="w-8 h-8 mx-auto text-content-tertiary mb-2 opacity-60" />
-          <p className="text-sm font-medium text-content-secondary">Tiada item hajat dalam tab ini</p>
-          <p className="text-xs text-content-tertiary max-w-sm mx-auto mt-1">
-            Nampak barang idaman? Letakkan di sini dan biarkan sistem menghitung tempoh bertenang sebelum anda berbelanja.
+        <div className="py-12 text-center rounded-2xl border border-dashed border-white/[0.08] bg-white/[0.01] relative z-10">
+          <ShoppingBag className="w-10 h-10 mx-auto text-content-tertiary mb-3 opacity-50" />
+          <p className="text-sm font-semibold text-content-primary">No wishlist items in this view</p>
+          <p className="text-xs text-content-secondary max-w-sm mx-auto mt-1">
+            Spot something you want? Park it here and let the cooling-off vault protect your wallet from impulse spending.
           </p>
         </div>
       ) : (
-        <div className="space-y-3">
+        <div className="space-y-3 relative z-10">
           {filteredItems.map((item) => {
             const cooling = calculateCoolingOffStatus(item);
             const priorityMeta = PRIORITY_LABELS[item.priority || 'medium'];
+            const totalCoolingDays = item.coolingOffDays ?? 14;
+            const coolingProgressPercent =
+              totalCoolingDays > 0
+                ? Math.min(100, Math.round((cooling.daysElapsed / totalCoolingDays) * 100))
+                : 100;
 
             return (
               <div
                 key={item.id}
-                className={`p-4 rounded-xl border transition-all ${
+                className={`p-4 rounded-xl border transition-all duration-200 space-y-3 ${
                   item.isBought
-                    ? 'bg-surface/40 border-border-subtle opacity-70'
-                    : 'bg-surface border-border-subtle hover:border-border-emphasis'
+                    ? 'bg-white/[0.02] border-white/[0.05] opacity-70'
+                    : 'bg-white/[0.04] border-white/[0.08] hover:border-sky-400/30'
                 }`}
               >
                 <div className="flex items-start justify-between gap-3">
@@ -239,32 +272,34 @@ export const WishlistCard: React.FC<WishlistCardProps> = ({
                     <button
                       type="button"
                       onClick={() => onToggleBought(item.id, !item.isBought)}
-                      className="mt-0.5 text-content-tertiary hover:text-accent-mint transition-colors p-0.5"
-                      title={item.isBought ? 'Tandakan belum beli' : 'Tandakan sudah dibeli'}
+                      className="mt-0.5 text-content-tertiary hover:text-emerald-400 transition-colors p-0.5"
+                      title={item.isBought ? 'Mark as active' : 'Mark as purchased'}
                     >
                       {item.isBought ? (
-                        <CheckCircle2 className="w-5 h-5 text-accent-mint" />
+                        <CheckCircle2 className="w-5 h-5 text-emerald-400" />
                       ) : (
                         <Circle className="w-5 h-5 text-content-tertiary hover:text-content-secondary" />
                       )}
                     </button>
 
-                    <div className="space-y-1 min-w-0">
+                    <div className="space-y-1.5 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
                         <span
                           className={`text-sm font-bold truncate ${
-                            item.isBought ? 'line-through text-content-tertiary' : 'text-content-primary'
+                            item.isBought ? 'line-through text-content-tertiary' : 'text-white'
                           }`}
                         >
                           {item.title}
                         </span>
-                        <span className={`text-[10px] font-medium px-2 py-0.5 rounded-md border ${priorityMeta.color}`}>
+                        <span
+                          className={`text-[10px] font-semibold px-2 py-0.5 rounded-md border ${priorityMeta.color} ${priorityMeta.glow}`}
+                        >
                           {priorityMeta.label}
                         </span>
                         {item.targetSavingsGoalId && (
-                          <span className="text-[10px] font-medium px-2 py-0.5 rounded-md bg-accent-sky/10 border border-accent-sky/20 text-accent-sky flex items-center gap-1">
+                          <span className="text-[10px] font-medium px-2 py-0.5 rounded-md bg-cyan-500/15 border border-cyan-400/30 text-cyan-300 flex items-center gap-1 shadow-[0_0_10px_rgba(6,182,212,0.15)]">
                             <PiggyBank className="w-3 h-3" />
-                            Ditukar ke Tabung
+                            Target Sinking Fund Linked
                           </span>
                         )}
                       </div>
@@ -272,14 +307,14 @@ export const WishlistCard: React.FC<WishlistCardProps> = ({
                       {/* Cooling-off Notice & Notes */}
                       <div className="flex items-center gap-3 text-xs text-content-tertiary flex-wrap">
                         {cooling.isCooling ? (
-                          <span className="flex items-center gap-1 text-[11px] font-semibold text-accent-amber bg-accent-amber/10 border border-accent-amber/20 px-2 py-0.5 rounded-md">
+                          <span className="flex items-center gap-1.5 text-[11px] font-semibold text-amber-400 bg-amber-400/10 border border-amber-400/20 px-2 py-0.5 rounded-md font-mono">
                             <Hourglass className="w-3 h-3" />
-                            Bertenang: {cooling.daysRemaining} hari lagi sebelum disyorkan beli
+                            Cooling: {cooling.daysRemaining}d remaining before review ({coolingProgressPercent}%)
                           </span>
                         ) : !item.isBought ? (
-                          <span className="flex items-center gap-1 text-[11px] font-semibold text-accent-mint bg-accent-mint/10 border border-accent-mint/20 px-2 py-0.5 rounded-md">
+                          <span className="flex items-center gap-1.5 text-[11px] font-semibold text-emerald-400 bg-emerald-400/10 border border-emerald-400/20 px-2 py-0.5 rounded-md">
                             <CheckCircle2 className="w-3 h-3" />
-                            Tempoh bertenang tamat ({cooling.daysElapsed} hari lalu)
+                            Cooling period complete ({cooling.daysElapsed}d elapsed) — Ready to buy
                           </span>
                         ) : null}
 
@@ -288,10 +323,10 @@ export const WishlistCard: React.FC<WishlistCardProps> = ({
                             href={item.storeUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center gap-1 text-accent-sky hover:underline"
+                            className="flex items-center gap-1 text-sky-400 hover:text-sky-300 hover:underline"
                           >
                             <ExternalLink className="w-3 h-3" />
-                            Pautan Kedai
+                            Store Page
                           </a>
                         )}
 
@@ -301,37 +336,45 @@ export const WishlistCard: React.FC<WishlistCardProps> = ({
                   </div>
 
                   {/* Actions & Price */}
-                  <div className="flex items-center gap-3 flex-shrink-0">
+                  <div className="flex items-center gap-3.5 flex-shrink-0">
                     <div className="text-right">
-                      <span className="text-sm font-bold text-content-primary block">
+                      <span className="text-base font-bold font-mono tracking-tight text-white block">
                         {formatRM(item.estimatedPrice)}
                       </span>
                     </div>
 
                     {!item.isBought && !item.targetSavingsGoalId && (
-                      <Button
+                      <button
                         type="button"
-                        variant="ghost"
-                        size="sm"
                         onClick={() => setConvertId(item.id)}
-                        className="text-xs text-accent-sky hover:text-accent-sky flex items-center gap-1"
-                        title="Tukar ke Tabung Simpanan"
+                        className="px-2.5 py-1 rounded-lg bg-cyan-500/15 hover:bg-cyan-500/25 border border-cyan-400/30 text-cyan-300 text-xs font-semibold flex items-center gap-1.5 transition-all active:scale-95 shadow-[0_0_10px_rgba(6,182,212,0.15)]"
+                        title="Convert to Sinking Fund Savings Goal"
                       >
                         <PiggyBank className="w-3.5 h-3.5" />
-                        <span className="hidden sm:inline">Kumpul Duit</span>
-                      </Button>
+                        <span className="hidden sm:inline">Save Up</span>
+                      </button>
                     )}
 
                     <button
                       type="button"
                       onClick={() => setDeleteId(item.id)}
-                      className="p-1.5 text-content-tertiary hover:text-accent-ember rounded-lg hover:bg-surface-solid transition-colors"
-                      title="Padam barang hajat"
+                      className="p-1.5 text-content-tertiary hover:text-rose-400 rounded-lg hover:bg-white/[0.06] transition-colors"
+                      title="Delete wishlist item"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
                 </div>
+
+                {/* Visual Cooling Progress Bar */}
+                {cooling.isCooling && (
+                  <div className="w-full h-1.5 rounded-full bg-white/[0.08] overflow-hidden">
+                    <div
+                      className="h-full bg-gradient-to-r from-amber-500 to-sky-400 rounded-full transition-all duration-500"
+                      style={{ width: `${coolingProgressPercent}%` }}
+                    />
+                  </div>
+                )}
               </div>
             );
           })}
@@ -342,8 +385,8 @@ export const WishlistCard: React.FC<WishlistCardProps> = ({
       <Modal
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
-        title="Tambah Barang Hajat (Wishlist)"
-        description="Catat barang yang anda ingin beli berserta tempoh bertenang untuk menapis pembelian emosi."
+        title="Add Wishlist Item"
+        description="Record an item you desire along with a cooling-off timer to eliminate impulse spending."
         maxWidth="md"
       >
         <form onSubmit={handleAddSubmit} className="space-y-4 pt-2">
@@ -354,10 +397,10 @@ export const WishlistCard: React.FC<WishlistCardProps> = ({
           )}
 
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-content-secondary">Nama Barang</label>
+            <label className="text-xs font-semibold text-content-secondary">Item Name</label>
             <Input
               type="text"
-              placeholder="Contoh: Kasut Lari Nike / Monitor 4K / Beg Travel"
+              placeholder="e.g. Sony WH-1000XM5 / 4K Monitor / Travel Backpack"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               required
@@ -367,12 +410,12 @@ export const WishlistCard: React.FC<WishlistCardProps> = ({
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-content-secondary">Anggaran Harga (RM)</label>
+              <label className="text-xs font-semibold text-content-secondary">Estimated Price (RM)</label>
               <Input
                 type="number"
                 step="0.01"
                 min="0"
-                placeholder="Contoh: 350.00"
+                placeholder="e.g. 1299.00"
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
                 required
@@ -380,7 +423,7 @@ export const WishlistCard: React.FC<WishlistCardProps> = ({
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-content-secondary">Tahap Keutamaan</label>
+              <label className="text-xs font-semibold text-content-secondary">Priority Level</label>
               <Select
                 options={PRIORITY_OPTIONS}
                 value={priority}
@@ -391,7 +434,7 @@ export const WishlistCard: React.FC<WishlistCardProps> = ({
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-content-secondary">Tempoh Bertenang (Anti-Impuls)</label>
+              <label className="text-xs font-semibold text-content-secondary">Cooling-Off Rule (Anti-Impulse)</label>
               <Select
                 options={COOLING_OFF_OPTIONS}
                 value={coolingDays}
@@ -400,32 +443,32 @@ export const WishlistCard: React.FC<WishlistCardProps> = ({
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-content-secondary">Pautan URL Kedai (Pilihan)</label>
+              <label className="text-xs font-semibold text-content-secondary">Store URL (Optional)</label>
               <Input
                 type="url"
                 placeholder="https://shopee.com.my/..."
-                value={url}
-                onChange={(e) => setUrl(e.target.value)}
+                value={storeUrl}
+                onChange={(e) => setStoreUrl(e.target.value)}
               />
             </div>
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-content-secondary">Catatan / Alasan Ingin Beli</label>
+            <label className="text-xs font-semibold text-content-secondary">Why do I want this? (Notes)</label>
             <Input
               type="text"
-              placeholder="Kenapa saya perlukannya? Adakah alternatif percuma?"
-              value={note}
-              onChange={(e) => setNote(e.target.value)}
+              placeholder="Will this improve productivity or health? Any free alternatives?"
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
             />
           </div>
 
           <div className="flex items-center justify-end gap-2.5 pt-4 border-t border-border-subtle">
             <Button type="button" variant="ghost" onClick={() => setIsAddModalOpen(false)} disabled={isSubmitting}>
-              Batal
+              Cancel
             </Button>
             <Button type="submit" variant="primary" disabled={isSubmitting}>
-              {isSubmitting ? 'Menyimpan...' : 'Masukkan ke Senarai'}
+              {isSubmitting ? 'Saving...' : 'Add to Wishlist'}
             </Button>
           </div>
         </form>
@@ -441,9 +484,9 @@ export const WishlistCard: React.FC<WishlistCardProps> = ({
             setConvertId(null);
           }
         }}
-        title="Tukar Jadi Tabung Simpanan?"
-        description="Sistem akan mencipta satu matlamat tabung simpanan (sinking fund) dengan sasaran harga barang ini supaya anda boleh menabung sedikit demi sedikit."
-        confirmLabel="Cipta Tabung"
+        title="Convert to Sinking Fund Goal?"
+        description="Nemo will create a dedicated target savings goal for this item's price so you can deposit money toward it incrementally."
+        confirmLabel="Create Goal"
       />
 
       {/* Delete Confirmation */}
@@ -456,9 +499,9 @@ export const WishlistCard: React.FC<WishlistCardProps> = ({
             setDeleteId(null);
           }
         }}
-        title="Padam Barang Hajat?"
-        description="Barang hajat ini akan dipadamkan daripada senarai anda."
-        confirmLabel="Padam"
+        title="Delete Wishlist Item?"
+        description="This item will be permanently removed from your wishlist vault."
+        confirmLabel="Delete"
       />
     </div>
   );
