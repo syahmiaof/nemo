@@ -66,7 +66,7 @@ export function OverviewPage() {
       taskMap.set(t.id, t);
       if (t.status === 'done') {
         completedList.push(t);
-      } else {
+      } else if (!Boolean(t.isWatchlist || t.tags?.includes('watchlist'))) {
         openList.push(t);
         if (t.dueDate && t.dueDate < today) {
           overdueList.push(t);

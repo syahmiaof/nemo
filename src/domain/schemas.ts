@@ -56,6 +56,7 @@ export const TaskSchema = z.object({
   blockedReason: z.string().max(500).optional(),
   parentType: z.enum(['project', 'assignment', 'goal']).optional(),
   parentId: z.string().optional(),
+  isWatchlist: z.boolean().optional(),
   createdAt: z.string(),
   completedAt: z.string().optional(),
   updatedAt: z.string(),

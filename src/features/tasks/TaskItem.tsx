@@ -8,6 +8,8 @@ import {
   FolderGit2,
   GraduationCap,
   Target,
+  Bookmark,
+  Sparkles,
 } from 'lucide-react';
 import { PriorityBadge, StatusBadge } from '@/components/ui/Badge';
 import { formatDisplayDate, isOverdue } from '@/lib/dates';
@@ -28,6 +30,7 @@ export interface TaskItemProps {
   onToggleStatus: (task: Task, e: React.MouseEvent<HTMLButtonElement>) => void;
   onEdit: (task: Task) => void;
   onDeleteRequest: (task: Task, triggerExitAnimation: () => Promise<void>) => void;
+  onActivate?: (task: Task) => void;
 }
 
 export const TaskItem: React.FC<TaskItemProps> = ({
@@ -40,6 +43,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({
   onToggleStatus,
   onEdit,
   onDeleteRequest,
+  onActivate,
 }) => {
   const reduced = useReducedMotion();
   const cardRef = useRef<HTMLDivElement>(null);
@@ -49,7 +53,8 @@ export const TaskItem: React.FC<TaskItemProps> = ({
   const titleRef = useRef<HTMLSpanElement>(null);
 
   const isDone = task.status === 'done';
-  const isTaskOverdue = Boolean(task.dueDate && isOverdue(task.dueDate) && !isDone);
+  const isWatchlist = Boolean(task.isWatchlist || task.tags.includes('watchlist'));
+  const isTaskOverdue = Boolean(!isWatchlist && task.dueDate && isOverdue(task.dueDate) && !isDone);
 
   // Determine parent badge
   let parentLabel: string | undefined;
@@ -306,6 +311,13 @@ export const TaskItem: React.FC<TaskItemProps> = ({
                 {task.title}
               </span>
 
+              {isWatchlist && (
+                <span className="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-md bg-sky-500/15 border border-sky-400/30 text-sky-300 font-mono flex-shrink-0">
+                  <Bookmark className="w-3 h-3 text-sky-400" />
+                  Watchlist
+                </span>
+              )}
+
               {parentLabel && (
                 <span className="inline-flex items-center gap-1.5 text-[10px] px-2 py-0.5 rounded-md bg-white/[0.06] border border-white/10 text-content-secondary font-mono truncate max-w-[160px]">
                   <ParentIcon className="w-3 h-3 text-accent-mint" />
@@ -342,6 +354,18 @@ export const TaskItem: React.FC<TaskItemProps> = ({
 
         {/* Right: Badges & Controls */}
         <div className="flex items-center gap-2 self-end sm:self-center relative z-10 flex-shrink-0">
+          {onActivate && isWatchlist && !isDone && (
+            <button
+              type="button"
+              onClick={() => onActivate(task)}
+              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold bg-sky-500/20 hover:bg-sky-500/30 border border-sky-400/40 text-sky-200 transition-all shadow-sm hover:scale-[1.02] active:scale-[0.98]"
+              title="Activate task to Today's queue"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-sky-300" />
+              <span>Activate</span>
+            </button>
+          )}
+
           <PriorityBadge priority={task.priority} size="sm" />
           <StatusBadge status={task.status} size="sm" />
 

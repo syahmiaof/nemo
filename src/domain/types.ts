@@ -64,6 +64,7 @@ export interface Task {
   blockedReason?: string;
   parentType?: 'project' | 'assignment' | 'goal';
   parentId?: string;
+  isWatchlist?: boolean;
   createdAt: string;
   completedAt?: string;
   updatedAt: string;

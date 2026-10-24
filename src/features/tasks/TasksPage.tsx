@@ -7,6 +7,7 @@ import {
   CheckSquare,
   Plus,
   Search,
+  Bookmark,
 } from 'lucide-react';
 import { db, atomicSetTaskStatus, atomicDeleteTask } from '@/db/nemoDb';
 import { Button } from '@/components/ui/Button';
@@ -27,9 +28,10 @@ export const TasksPage: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const reduced = useReducedMotion();
-  const [activeFilter, setActiveFilter] = useState<'all' | 'today' | 'upcoming' | 'overdue' | 'done'>('all');
+  const [activeFilter, setActiveFilter] = useState<'all' | 'today' | 'upcoming' | 'overdue' | 'watchlist' | 'done'>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isWatchlistModalMode, setIsWatchlistModalMode] = useState(false);
   const [taskToEdit, setTaskToEdit] = useState<Task | null>(null);
   const [taskToDelete, setTaskToDelete] = useState<Task | null>(null);
   const [focusedTaskId, setFocusedTaskId] = useState<string | null>(null);
@@ -132,12 +134,16 @@ export const TasksPage: React.FC = () => {
     let todayCount = 0;
     let upcomingCount = 0;
     let overdueCount = 0;
+    let watchlistCount = 0;
     let doneCount = 0;
 
     for (let i = 0; i < tasks.length; i++) {
       const t = tasks[i];
+      const isW = Boolean(t.isWatchlist || t.tags?.includes('watchlist'));
       if (t.status === 'done') {
         doneCount++;
+      } else if (isW) {
+        watchlistCount++;
       } else {
         allCount++;
         if (t.dueDate === todayStr) {
@@ -155,6 +161,7 @@ export const TasksPage: React.FC = () => {
         { key: 'today', label: 'Due Today', count: todayCount },
         { key: 'upcoming', label: 'Upcoming', count: upcomingCount },
         { key: 'overdue', label: 'Overdue', count: overdueCount },
+        { key: 'watchlist', label: 'Watchlist', count: watchlistCount },
         { key: 'done', label: 'Completed', count: doneCount },
       ],
       projectMap: new Map(projects.map((p) => [p.id, p.title])),
@@ -171,12 +178,17 @@ export const TasksPage: React.FC = () => {
     const q = deferredSearch.trim().toLowerCase();
 
     return tasks.filter((task) => {
+      const isW = Boolean(task.isWatchlist || task.tags?.includes('watchlist'));
+
       // Status/Date tabs: completed tasks are cleanly archived to the 'Completed' tab
       if (activeFilter === 'done') {
         if (task.status !== 'done') return false;
+      } else if (activeFilter === 'watchlist') {
+        // Watchlist tab: show active items parked for later
+        if (task.status === 'done' || !isW) return false;
       } else {
-        // Active tabs (all, today, upcoming, overdue): exclude completed/archived tasks
-        if (task.status === 'done') return false;
+        // Active tabs (all, today, upcoming, overdue): exclude completed AND watchlist items
+        if (task.status === 'done' || isW) return false;
 
         if (activeFilter === 'today') {
           if (task.dueDate !== todayStr) return false;
@@ -200,6 +212,15 @@ export const TasksPage: React.FC = () => {
       if (activeFilter === 'done') {
         return (b.completedAt || '').localeCompare(a.completedAt || '');
       }
+
+      if (activeFilter === 'watchlist') {
+        // Sort watchlist items by newest or priority
+        const prioRank: Record<string, number> = { urgent: 1, high: 2, medium: 3, low: 4 };
+        const diff = (prioRank[a.priority] || 3) - (prioRank[b.priority] || 3);
+        if (diff !== 0) return diff;
+        return (b.createdAt || '').localeCompare(a.createdAt || '');
+      }
+
       // Prioritize overdue and earliest due date
       if (a.dueDate && b.dueDate) {
         const dateDiff = a.dueDate.localeCompare(b.dueDate);
@@ -259,6 +280,17 @@ export const TasksPage: React.FC = () => {
     success(nextStatus === 'done' ? 'Task completed' : 'Task reopened');
   };
 
+  const handleActivateTask = async (task: Task) => {
+    const updatedTags = (task.tags || []).filter((t) => t.toLowerCase() !== 'watchlist');
+    await db.tasks.update(task.id, {
+      isWatchlist: false,
+      tags: updatedTags,
+      dueDate: todayStr,
+      updatedAt: new Date().toISOString(),
+    });
+    success('Task activated', `"${task.title}" moved to Due Today.`);
+  };
+
   const handleDeleteRequest = (task: Task, triggerExitAnimation: () => Promise<void>) => {
     exitAnimationTriggers.current.set(task.id, triggerExitAnimation);
     setTaskToDelete(task);
@@ -295,22 +327,41 @@ export const TasksPage: React.FC = () => {
           />
         </div>
 
-        <Button
-          onClick={() => {
-            setTaskToEdit(null);
-            setIsModalOpen(true);
-          }}
-          className="gap-2 self-end sm:self-center"
-        >
-          <Plus className="w-4 h-4" />
-          <span>New Task</span>
-        </Button>
+        <div className="flex items-center gap-2.5 self-end sm:self-center">
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={() => {
+              setTaskToEdit(null);
+              setIsWatchlistModalMode(true);
+              setIsModalOpen(true);
+            }}
+            className="gap-1.5 border-sky-500/30 text-sky-300 hover:text-sky-200 hover:bg-sky-500/10 hover:border-sky-500/50"
+          >
+            <Bookmark className="w-4 h-4 text-sky-400" />
+            <span>Add Watchlist</span>
+          </Button>
+
+          <Button
+            type="button"
+            onClick={() => {
+              setTaskToEdit(null);
+              setIsWatchlistModalMode(false);
+              setIsModalOpen(true);
+            }}
+            className="gap-2"
+          >
+            <Plus className="w-4 h-4" />
+            <span>New Task</span>
+          </Button>
+        </div>
       </div>
 
       {/* Segmented Filter Tabs */}
       <div className="page-filters flex flex-wrap pb-1 gap-1.5">
         {filterTabs.map((tab) => {
           const isActive = activeFilter === tab.key;
+          const isWatchlistTab = tab.key === 'watchlist';
           return (
             <button
               key={tab.key}
@@ -318,15 +369,22 @@ export const TasksPage: React.FC = () => {
               onClick={() => setActiveFilter(tab.key as any)}
               className={`flex items-center gap-2 px-3.5 py-2 text-xs font-medium rounded-xl transition-all whitespace-nowrap cursor-pointer ${
                 isActive
-                  ? 'bg-white/[0.1] text-white font-semibold border border-white/15 shadow-sm'
+                  ? isWatchlistTab
+                    ? 'bg-sky-500/20 text-sky-200 font-semibold border border-sky-400/40 shadow-sm'
+                    : 'bg-white/[0.1] text-white font-semibold border border-white/15 shadow-sm'
                   : 'text-content-secondary hover:text-content-primary hover:bg-white/[0.03] border border-transparent'
               }`}
             >
-              <span>{tab.label}</span>
+              <span className="flex items-center gap-1.5">
+                {isWatchlistTab && <Bookmark className="w-3.5 h-3.5 text-sky-400" />}
+                {tab.label}
+              </span>
               <span
                 className={`text-[10px] px-1.5 py-0.5 rounded-md font-mono transition-transform duration-200 ${
                   tab.key === 'overdue' && tab.count > 0
                     ? 'bg-accent-ember/20 text-accent-ember border border-accent-ember/30'
+                    : isWatchlistTab && tab.count > 0
+                    ? 'bg-sky-500/25 text-sky-300 border border-sky-400/30'
                     : isActive
                     ? 'bg-white/[0.15] text-white scale-105'
                     : 'bg-white/[0.05] text-content-tertiary'
@@ -342,10 +400,12 @@ export const TasksPage: React.FC = () => {
       {/* Task List */}
       {filteredTasks.length === 0 ? (
         <EmptyState
-          icon={CheckSquare}
+          icon={activeFilter === 'watchlist' ? Bookmark : CheckSquare}
           title={
             searchQuery
               ? 'No matching tasks'
+              : activeFilter === 'watchlist'
+              ? 'Your Watchlist is empty'
               : activeFilter === 'done'
               ? 'No completed tasks archived'
               : 'No tasks in this view'
@@ -353,16 +413,25 @@ export const TasksPage: React.FC = () => {
           description={
             searchQuery
               ? 'Try modifying your search query or switching tabs.'
+              : activeFilter === 'watchlist'
+              ? 'Park tasks and ideas you want to do later without deadline stress or overdue reminders.'
               : activeFilter === 'done'
               ? 'When you finish tasks, they will be archived here to keep your active list clean.'
               : 'Add tasks to organize daily actions, link them to projects, or track academic assignments.'
           }
-          actionLabel={searchQuery || activeFilter === 'done' ? undefined : 'Add Task'}
+          actionLabel={
+            searchQuery || activeFilter === 'done'
+              ? undefined
+              : activeFilter === 'watchlist'
+              ? 'Add Watchlist Item'
+              : 'Add Task'
+          }
           onAction={
             searchQuery || activeFilter === 'done'
               ? undefined
               : () => {
                   setTaskToEdit(null);
+                  setIsWatchlistModalMode(activeFilter === 'watchlist');
                   setIsModalOpen(true);
                 }
           }
@@ -381,9 +450,11 @@ export const TasksPage: React.FC = () => {
               onToggleStatus={handleToggleTask}
               onEdit={(t) => {
                 setTaskToEdit(t);
+                setIsWatchlistModalMode(Boolean(t.isWatchlist || t.tags?.includes('watchlist')));
                 setIsModalOpen(true);
               }}
               onDeleteRequest={handleDeleteRequest}
+              onActivate={handleActivateTask}
             />
           ))}
 
@@ -407,8 +478,10 @@ export const TasksPage: React.FC = () => {
         onClose={() => {
           setIsModalOpen(false);
           setTaskToEdit(null);
+          setIsWatchlistModalMode(false);
         }}
         taskToEdit={taskToEdit}
+        isWatchlistMode={isWatchlistModalMode}
       />
 
       {/* Delete Confirmation Dialog */}

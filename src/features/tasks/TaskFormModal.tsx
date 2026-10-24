@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
+import { Bookmark } from 'lucide-react';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
@@ -17,6 +18,7 @@ interface TaskFormModalProps {
   taskToEdit?: Task | null;
   defaultParentType?: 'project' | 'assignment' | 'goal';
   defaultParentId?: string;
+  isWatchlistMode?: boolean;
 }
 
 export const TaskFormModal: React.FC<TaskFormModalProps> = ({
@@ -25,6 +27,7 @@ export const TaskFormModal: React.FC<TaskFormModalProps> = ({
   taskToEdit,
   defaultParentType,
   defaultParentId,
+  isWatchlistMode = false,
 }) => {
   const [title, setTitle] = useState('');
   const [notes, setNotes] = useState('');
@@ -34,6 +37,7 @@ export const TaskFormModal: React.FC<TaskFormModalProps> = ({
   const [dueTime, setDueTime] = useState('');
   const [tagsInput, setTagsInput] = useState('');
   const [selectedProjectId, setSelectedProjectId] = useState('');
+  const [isWatchlist, setIsWatchlist] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { success, error } = useToast();
@@ -49,17 +53,19 @@ export const TaskFormModal: React.FC<TaskFormModalProps> = ({
       setDueTime(taskToEdit.dueTime || '');
       setTagsInput(taskToEdit.tags.join(', '));
       setSelectedProjectId(taskToEdit.parentType === 'project' ? taskToEdit.parentId || '' : '');
+      setIsWatchlist(Boolean(taskToEdit.isWatchlist || taskToEdit.tags?.includes('watchlist')));
     } else {
       setTitle('');
       setNotes('');
       setStatus('todo');
       setPriority('medium');
-      setDueDate(getTodayLocalDateString());
+      setDueDate(isWatchlistMode ? '' : getTodayLocalDateString());
       setDueTime('');
-      setTagsInput('');
+      setTagsInput(isWatchlistMode ? 'watchlist' : '');
       setSelectedProjectId(defaultParentType === 'project' ? defaultParentId || '' : '');
+      setIsWatchlist(Boolean(isWatchlistMode));
     }
-  }, [taskToEdit, defaultParentType, defaultParentId, isOpen]);
+  }, [taskToEdit, defaultParentType, defaultParentId, isOpen, isWatchlistMode]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -72,10 +78,18 @@ export const TaskFormModal: React.FC<TaskFormModalProps> = ({
     const now = new Date().toISOString();
 
     try {
-      const tags = tagsInput
+      let tags = tagsInput
         .split(',')
         .map((t) => t.trim())
         .filter(Boolean);
+
+      if (isWatchlist) {
+        if (!tags.includes('watchlist')) {
+          tags.push('watchlist');
+        }
+      } else {
+        tags = tags.filter((t) => t.toLowerCase() !== 'watchlist');
+      }
 
       let parentType: 'project' | 'assignment' | 'goal' | undefined = taskToEdit ? taskToEdit.parentType : defaultParentType;
       let parentId: string | undefined = taskToEdit ? taskToEdit.parentId : defaultParentId;
@@ -113,6 +127,7 @@ export const TaskFormModal: React.FC<TaskFormModalProps> = ({
             parentType,
             parentId,
             tags,
+            isWatchlist,
             completedAt,
             updatedAt: now,
           });
@@ -132,12 +147,17 @@ export const TaskFormModal: React.FC<TaskFormModalProps> = ({
           parentType,
           parentId,
           tags,
+          isWatchlist,
           completedAt: status === 'done' ? now : undefined,
           createdAt: now,
           updatedAt: now,
         });
 
-        success('Task created', `"${title.trim()}" added.`);
+        if (isWatchlist) {
+          success('Added to Watchlist', `"${title.trim()}" parked for later.`);
+        } else {
+          success('Task created', `"${title.trim()}" added.`);
+        }
       }
 
       onClose();
@@ -153,19 +173,51 @@ export const TaskFormModal: React.FC<TaskFormModalProps> = ({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title={taskToEdit ? 'Edit Task' : 'New Task'}
-      description="Single canonical task with date, priority, and parent context."
+      title={
+        taskToEdit
+          ? (isWatchlist ? 'Edit Watchlist Item' : 'Edit Task')
+          : (isWatchlist ? 'Add to Watchlist' : 'New Task')
+      }
+      description={
+        isWatchlist
+          ? 'Park this idea or task to do later without deadline pressure or overdue alerts.'
+          : 'Single canonical task with date, priority, and parent context.'
+      }
       maxWidth="md"
     >
       <form onSubmit={handleSubmit} className="space-y-4">
         <Input
           label="Task Title"
-          placeholder="e.g. Implement user authentication"
+          placeholder={isWatchlist ? 'e.g. Explore machine learning tutorials' : 'e.g. Implement user authentication'}
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           required
           autoFocus
         />
+
+        {/* Watchlist Toggle */}
+        <div
+          className="flex items-start gap-3 p-3 rounded-xl border border-sky-500/20 bg-sky-500/5 hover:bg-sky-500/10 transition-colors cursor-pointer select-none"
+          onClick={() => setIsWatchlist(!isWatchlist)}
+        >
+          <input
+            type="checkbox"
+            id="task-watchlist-toggle"
+            checked={isWatchlist}
+            onChange={(e) => setIsWatchlist(e.target.checked)}
+            className="h-4 w-4 mt-0.5 rounded border-white/20 text-sky-400 focus:ring-sky-400 cursor-pointer"
+            onClick={(e) => e.stopPropagation()}
+          />
+          <label htmlFor="task-watchlist-toggle" className="flex flex-col cursor-pointer">
+            <span className="text-xs font-semibold text-content-primary flex items-center gap-1.5">
+              <Bookmark className="w-3.5 h-3.5 text-sky-400" />
+              Park in Task Watchlist (Do Later)
+            </span>
+            <span className="text-[11px] text-content-tertiary">
+              Park this idea safely. It won't trigger overdue alarms or crowd your daily queue until activated.
+            </span>
+          </label>
+        </div>
 
         <div className="grid grid-cols-2 gap-3">
           <Select
@@ -194,7 +246,7 @@ export const TaskFormModal: React.FC<TaskFormModalProps> = ({
 
         <div className="grid grid-cols-2 gap-3">
           <Input
-            label="Due Date"
+            label="Due Date (Optional for Watchlist)"
             type="date"
             value={dueDate}
             onChange={(e) => setDueDate(e.target.value)}
@@ -222,25 +274,25 @@ export const TaskFormModal: React.FC<TaskFormModalProps> = ({
 
         <Input
           label="Tags (comma separated)"
-          placeholder="backend, bug, design"
+          placeholder="watchlist, idea, reading"
           value={tagsInput}
           onChange={(e) => setTagsInput(e.target.value)}
         />
 
         <Textarea
           label="Notes / Subtasks / References"
-          placeholder="Add extra context or check items..."
+          placeholder="Add extra context, links, or ideas to explore later..."
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
           rows={3}
         />
 
-        <div className="flex items-center justify-end gap-3 pt-3 border-t border-border-subtle">
+        <div className="flex items-center justify-end gap-3 pt-3 border-t border-white/10">
           <Button type="button" variant="ghost" onClick={onClose} disabled={isSubmitting}>
             Cancel
           </Button>
           <Button type="submit" isLoading={isSubmitting}>
-            {taskToEdit ? 'Save Changes' : 'Create Task'}
+            {taskToEdit ? 'Save Changes' : (isWatchlist ? 'Add to Watchlist' : 'Create Task')}
           </Button>
         </div>
       </form>

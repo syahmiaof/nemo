@@ -127,4 +127,43 @@ describe('Projects and Canonical Tasks Invariants', () => {
     const remainingFocus = await db.focusSelections.where('effectiveLocalDate').equals(today).toArray();
     expect(remainingFocus).toHaveLength(2);
   });
+
+  it('parks watchlist task with tag, isolates from active tasks, and activates to today queue', async () => {
+    const today = getTodayLocalDateString();
+    const now = new Date().toISOString();
+
+    // Add a parked watchlist task
+    await db.tasks.add({
+      id: 'task_watchlist_1',
+      title: 'Explore Rust WebAssembly bindings',
+      status: 'todo',
+      priority: 'low',
+      isWatchlist: true,
+      tags: ['watchlist', 'research'],
+      createdAt: now,
+      updatedAt: now,
+    });
+
+    const allTasks = await db.tasks.toArray();
+    const watchlistTasks = allTasks.filter((t) => t.isWatchlist || t.tags.includes('watchlist'));
+    const regularTasks = allTasks.filter((t) => !t.isWatchlist && !t.tags.includes('watchlist'));
+
+    expect(watchlistTasks).toHaveLength(1);
+    expect(watchlistTasks[0].id).toBe('task_watchlist_1');
+    expect(regularTasks).toHaveLength(0);
+
+    // Activate the watchlist task
+    const updatedTags = watchlistTasks[0].tags.filter((t) => t.toLowerCase() !== 'watchlist');
+    await db.tasks.update('task_watchlist_1', {
+      isWatchlist: false,
+      tags: updatedTags,
+      dueDate: today,
+      updatedAt: new Date().toISOString(),
+    });
+
+    const activated = await db.tasks.get('task_watchlist_1');
+    expect(activated?.isWatchlist).toBe(false);
+    expect(activated?.tags).not.toContain('watchlist');
+    expect(activated?.dueDate).toBe(today);
+  });
 });

@@ -77,6 +77,11 @@ export const mappers = {
 
   task: {
     toRemote(local: Task, userId: string) {
+      const tags = [...(local.tags || [])];
+      if (local.isWatchlist && !tags.includes('watchlist')) {
+        tags.push('watchlist');
+      }
+
       return {
         id: local.id,
         user_id: userId,
@@ -88,7 +93,7 @@ export const mappers = {
         due_time: local.dueTime || null,
         start_date: local.startDate || null,
         estimated_minutes: local.estimatedMinutes || null,
-        tags: local.tags || [],
+        tags,
         blocked_reason: local.blockedReason || null,
         parent_type: local.parentType || null,
         parent_id: local.parentId || null,
@@ -98,6 +103,11 @@ export const mappers = {
       };
     },
     toLocal(remote: any): Task {
+      const isWatchlist = Boolean(
+        remote.is_watchlist ||
+        (Array.isArray(remote.tags) && remote.tags.includes('watchlist'))
+      );
+
       return {
         id: remote.id,
         title: remote.title,
@@ -112,6 +122,7 @@ export const mappers = {
         blockedReason: remote.blocked_reason || undefined,
         parentType: remote.parent_type || undefined,
         parentId: remote.parent_id || undefined,
+        isWatchlist,
         completedAt: remote.completed_at || undefined,
         createdAt: remote.created_at,
         updatedAt: remote.updated_at,

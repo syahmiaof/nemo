@@ -217,7 +217,7 @@ export const CalendarPage: React.FC = () => {
 
     // 1. Tasks with dueDate
     for (const t of tasks) {
-      if (t.dueDate) {
+      if (t.dueDate && !Boolean(t.isWatchlist || t.tags?.includes('watchlist'))) {
         list.push({
           id: `task_${t.id}`,
           sourceType: 'task',
