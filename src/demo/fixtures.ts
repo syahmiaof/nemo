@@ -360,20 +360,20 @@ export function createDemoFixtures(anchor = new Date()): FixtureData {
   ];
 
   const financialCommitments: FixtureData['financialCommitments'] = [
-    { id: 'demo-com-1', title: 'Sewa Bilik Kondominium', amount: 750, category: 'needs', dueDayOfMonth: 1, isPaidThisMonth: true, lastPaidMonthYear: '2026-10', autoRenew: true, createdAt: iso(-60), updatedAt: iso(0) },
-    { id: 'demo-com-2', title: 'TNB Elektrik & Air', amount: 120, category: 'utilities', dueDayOfMonth: 15, isPaidThisMonth: true, lastPaidMonthYear: '2026-10', autoRenew: true, createdAt: iso(-60), updatedAt: iso(0) },
+    { id: 'demo-com-1', title: 'Apartment Rental & Maintenance', amount: 750, category: 'needs', dueDayOfMonth: 1, isPaidThisMonth: true, lastPaidMonthYear: '2026-10', autoRenew: true, createdAt: iso(-60), updatedAt: iso(0) },
+    { id: 'demo-com-2', title: 'TNB Electricity & Water Utilities', amount: 120, category: 'utilities', dueDayOfMonth: 15, isPaidThisMonth: true, lastPaidMonthYear: '2026-10', autoRenew: true, createdAt: iso(-60), updatedAt: iso(0) },
     { id: 'demo-com-3', title: 'Time Fibre Internet 200Mbps', amount: 99, category: 'utilities', dueDayOfMonth: 20, isPaidThisMonth: false, autoRenew: true, createdAt: iso(-60), updatedAt: iso(0) },
-    { id: 'demo-com-4', title: 'Takaful Hayat & Medical Card', amount: 180, category: 'protection', dueDayOfMonth: 28, isPaidThisMonth: false, autoRenew: true, createdAt: iso(-60), updatedAt: iso(0) },
+    { id: 'demo-com-4', title: 'Medical Card & Life Takaful', amount: 180, category: 'protection', dueDayOfMonth: 28, isPaidThisMonth: false, autoRenew: true, createdAt: iso(-60), updatedAt: iso(0) },
     { id: 'demo-com-5', title: 'Spotify & Netflix Premium', amount: 55, category: 'lifestyle', dueDayOfMonth: 10, isPaidThisMonth: true, lastPaidMonthYear: '2026-10', autoRenew: true, createdAt: iso(-60), updatedAt: iso(0) },
   ];
 
   const debts: FixtureData['debts'] = [
-    { id: 'demo-dbt-1', title: 'Pinjaman PTPTN Ijazah', creditor: 'PTPTN', originalPrincipal: 28000, currentBalance: 14200, interestRatePercent: 1.0, monthlyInstallment: 250, priority: 'snowball', targetPayoffDate: '2031-06-30', createdAt: iso(-180), updatedAt: iso(0) },
-    { id: 'demo-dbt-2', title: 'Pinjaman Kereta Perodua Myvi', creditor: 'Maybank Islamic', originalPrincipal: 48000, currentBalance: 21600, interestRatePercent: 3.2, monthlyInstallment: 490, priority: 'normal', targetPayoffDate: '2029-12-31', createdAt: iso(-240), updatedAt: iso(0) },
+    { id: 'demo-dbt-1', title: 'PTPTN Tertiary Education Loan', creditor: 'PTPTN', originalPrincipal: 28000, currentBalance: 14200, interestRatePercent: 1.0, monthlyInstallment: 250, priority: 'snowball', targetPayoffDate: '2031-06-30', createdAt: iso(-180), updatedAt: iso(0) },
+    { id: 'demo-dbt-2', title: 'Car Hire Purchase Loan (Myvi)', creditor: 'Maybank Islamic', originalPrincipal: 48000, currentBalance: 21600, interestRatePercent: 3.2, monthlyInstallment: 490, priority: 'normal', targetPayoffDate: '2029-12-31', createdAt: iso(-240), updatedAt: iso(0) },
   ];
 
   const debtPayments: FixtureData['debtPayments'] = [
-    { id: 'demo-dpay-1', debtId: 'demo-dbt-1', amount: 250, paidAt: iso(-10), note: 'Autodebit Potongan Gaji' },
+    { id: 'demo-dpay-1', debtId: 'demo-dbt-1', amount: 250, paidAt: iso(-10), note: 'Automated Salary Deduction' },
   ];
 
   const wishlistItems: FixtureData['wishlistItems'] = [
@@ -383,12 +383,12 @@ export function createDemoFixtures(anchor = new Date()): FixtureData {
   ];
 
   const savingsGoals: FixtureData['savingsGoals'] = [
-    { id: 'demo-svg-1', title: 'Tabung Kecemasan 3 Bulan', targetAmount: 6000, currentAmount: 3500, category: 'emergency', color: '#34D399', createdAt: iso(-120), updatedAt: iso(0) },
-    { id: 'demo-svg-2', title: 'Percutian Musim Sejuk Jepun', targetAmount: 4500, currentAmount: 2200, category: 'travel', targetDate: '2027-02-15', color: '#38BDF8', createdAt: iso(-90), updatedAt: iso(0) },
+    { id: 'demo-svg-1', title: '3-Month Emergency Runway', targetAmount: 6000, currentAmount: 3500, category: 'emergency', color: '#34D399', createdAt: iso(-120), updatedAt: iso(0) },
+    { id: 'demo-svg-2', title: 'Japan Winter Holiday Fund', targetAmount: 4500, currentAmount: 2200, category: 'travel', targetDate: '2027-02-15', color: '#38BDF8', createdAt: iso(-90), updatedAt: iso(0) },
   ];
 
   const savingsDeposits: FixtureData['savingsDeposits'] = [
-    { id: 'demo-sdep-1', savingsGoalId: 'demo-svg-1', amount: 500, type: 'deposit', loggedAt: iso(-15), note: 'Simpanan gaji lepas' },
+    { id: 'demo-sdep-1', savingsGoalId: 'demo-svg-1', amount: 500, type: 'deposit', loggedAt: iso(-15), note: 'Previous Paycheck Allocation' },
   ];
 
   const data: FixtureData = {
