@@ -267,7 +267,7 @@ export const WishlistCard: React.FC<WishlistCardProps> = ({
                     : 'bg-white/[0.04] border-white/[0.08] hover:border-sky-400/30'
                 }`}
               >
-                <div className="flex items-start justify-between gap-3">
+                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
                   <div className="flex items-start gap-3 min-w-0">
                     <button
                       type="button"
@@ -336,8 +336,8 @@ export const WishlistCard: React.FC<WishlistCardProps> = ({
                   </div>
 
                   {/* Actions & Price */}
-                  <div className="flex items-center gap-3.5 flex-shrink-0">
-                    <div className="text-right">
+                  <div className="flex items-center justify-between sm:justify-end gap-3.5 flex-shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-white/[0.04]">
+                    <div className="text-left sm:text-right">
                       <span className="text-base font-bold font-mono tracking-tight text-white block">
                         {formatRM(item.estimatedPrice)}
                       </span>
@@ -351,7 +351,7 @@ export const WishlistCard: React.FC<WishlistCardProps> = ({
                         title="Convert to Sinking Fund Savings Goal"
                       >
                         <PiggyBank className="w-3.5 h-3.5" />
-                        <span className="hidden sm:inline">Save Up</span>
+                        <span>Save Up</span>
                       </button>
                     )}
 

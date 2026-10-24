@@ -280,13 +280,13 @@ export const MonthlyCommitmentsCard: React.FC<MonthlyCommitmentsCardProps> = ({
             return (
               <div
                 key={item.id}
-                className={`flex items-center justify-between p-4 rounded-xl border transition-all duration-200 ${
+                className={`flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-xl border transition-all duration-200 ${
                   item.isPaidThisMonth
                     ? 'bg-white/[0.02] border-white/[0.05] opacity-75'
                     : 'bg-white/[0.04] border-white/[0.08] hover:border-amber-400/30'
                 }`}
               >
-                <div className="flex items-center gap-3.5 min-w-0">
+                <div className="flex items-start sm:items-center gap-3 min-w-0">
                   <button
                     type="button"
                     onClick={() => onTogglePaid(item.id, !item.isPaidThisMonth)}
@@ -340,8 +340,8 @@ export const MonthlyCommitmentsCard: React.FC<MonthlyCommitmentsCardProps> = ({
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3.5 flex-shrink-0">
-                  <div className="text-right">
+                <div className="flex items-center justify-between sm:justify-end gap-3.5 flex-shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-white/[0.04]">
+                  <div className="text-left sm:text-right">
                     <span
                       className={`text-base font-bold font-mono tracking-tight block ${
                         item.isPaidThisMonth ? 'text-content-tertiary' : 'text-white'
