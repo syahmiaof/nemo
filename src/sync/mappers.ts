@@ -97,6 +97,7 @@ export const mappers = {
         blocked_reason: local.blockedReason || null,
         parent_type: local.parentType || null,
         parent_id: local.parentId || null,
+        is_watchlist: local.isWatchlist ?? false,
         completed_at: local.completedAt || null,
         created_at: local.createdAt,
         updated_at: local.updatedAt,
@@ -672,7 +673,7 @@ export const mappers = {
         coolingOffDays: Number(remote.cooling_off_days),
         targetSavingsGoalId: remote.target_savings_goal_id || undefined,
         notes: remote.notes || undefined,
-        addedAt: remote.added_at,
+        addedAt: remote.added_at || remote.created_at || new Date().toISOString(),
       };
     },
   },

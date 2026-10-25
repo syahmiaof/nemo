@@ -1,5 +1,7 @@
 -- Remove the insecure built-in default member password without changing any existing account.
 -- Callers must supply an explicit password for each newly created or updated member.
+DROP FUNCTION IF EXISTS public.admin_add_workspace_member(text, text);
+
 CREATE OR REPLACE FUNCTION public.admin_add_workspace_member(
   p_email text,
   p_password text

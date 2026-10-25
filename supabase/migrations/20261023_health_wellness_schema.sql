@@ -25,12 +25,14 @@ CREATE INDEX IF NOT EXISTS idx_hydration_logs_user_date ON public.hydration_logs
 
 ALTER TABLE public.hydration_logs ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "hydration_logs_owner_access" ON public.hydration_logs;
 CREATE POLICY "hydration_logs_owner_access"
   ON public.hydration_logs FOR ALL
   TO authenticated
   USING (auth.uid() = user_id AND public.is_approved_owner())
   WITH CHECK (auth.uid() = user_id AND public.is_approved_owner());
 
+DROP TRIGGER IF EXISTS trg_hydration_logs_updated_at ON public.hydration_logs;
 CREATE TRIGGER trg_hydration_logs_updated_at
   BEFORE UPDATE ON public.hydration_logs
   FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
@@ -60,12 +62,14 @@ CREATE INDEX IF NOT EXISTS idx_diet_logs_user_date ON public.diet_logs(user_id, 
 
 ALTER TABLE public.diet_logs ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "diet_logs_owner_access" ON public.diet_logs;
 CREATE POLICY "diet_logs_owner_access"
   ON public.diet_logs FOR ALL
   TO authenticated
   USING (auth.uid() = user_id AND public.is_approved_owner())
   WITH CHECK (auth.uid() = user_id AND public.is_approved_owner());
 
+DROP TRIGGER IF EXISTS trg_diet_logs_updated_at ON public.diet_logs;
 CREATE TRIGGER trg_diet_logs_updated_at
   BEFORE UPDATE ON public.diet_logs
   FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
@@ -96,12 +100,14 @@ CREATE INDEX IF NOT EXISTS idx_workout_logs_user_date ON public.workout_logs(use
 
 ALTER TABLE public.workout_logs ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "workout_logs_owner_access" ON public.workout_logs;
 CREATE POLICY "workout_logs_owner_access"
   ON public.workout_logs FOR ALL
   TO authenticated
   USING (auth.uid() = user_id AND public.is_approved_owner())
   WITH CHECK (auth.uid() = user_id AND public.is_approved_owner());
 
+DROP TRIGGER IF EXISTS trg_workout_logs_updated_at ON public.workout_logs;
 CREATE TRIGGER trg_workout_logs_updated_at
   BEFORE UPDATE ON public.workout_logs
   FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
@@ -127,12 +133,14 @@ CREATE INDEX IF NOT EXISTS idx_body_metrics_user_date ON public.body_metrics(use
 
 ALTER TABLE public.body_metrics ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "body_metrics_owner_access" ON public.body_metrics;
 CREATE POLICY "body_metrics_owner_access"
   ON public.body_metrics FOR ALL
   TO authenticated
   USING (auth.uid() = user_id AND public.is_approved_owner())
   WITH CHECK (auth.uid() = user_id AND public.is_approved_owner());
 
+DROP TRIGGER IF EXISTS trg_body_metrics_updated_at ON public.body_metrics;
 CREATE TRIGGER trg_body_metrics_updated_at
   BEFORE UPDATE ON public.body_metrics
   FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();

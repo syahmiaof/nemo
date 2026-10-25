@@ -122,6 +122,7 @@ CREATE TABLE IF NOT EXISTS public.wishlist_items (
   notes TEXT,
   version INTEGER NOT NULL DEFAULT 1,
   is_deleted BOOLEAN NOT NULL DEFAULT FALSE,
+  added_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
@@ -218,3 +219,4 @@ BEGIN
       FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
   END IF;
 END $$;
+
