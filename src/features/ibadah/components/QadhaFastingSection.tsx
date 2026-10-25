@@ -63,15 +63,15 @@ export const QadhaFastingSection: React.FC<QadhaFastingSectionProps> = ({
           </div>
           <div>
             <h3 className="text-base font-semibold text-content-primary flex items-center gap-2">
-              Qadha Puasa & Fidyah Berganda
+              Missed Fasting &amp; Compounding Fidyah
               {totalRemainingDays === 0 && records.length > 0 && (
                 <span className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center gap-1">
-                  <ShieldCheck className="w-3 h-3" /> Puasa Langsai!
+                  <ShieldCheck className="w-3 h-3" /> Fasting Completed!
                 </span>
               )}
             </h3>
             <p className="text-xs text-content-secondary">
-              Kira hutang puasa Ramadan dan bayaran fidyah berganda tahun mengikut Mazhab Syafi&apos;i
+              Calculate missed Ramadan fasts and compounding fidyah dues according to Shafi&apos;i jurisprudence
             </p>
           </div>
         </div>
@@ -82,7 +82,7 @@ export const QadhaFastingSection: React.FC<QadhaFastingSectionProps> = ({
           className="px-3.5 py-2 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-400/35 text-emerald-300 text-xs font-semibold flex items-center gap-1.5 transition-all active:scale-95 shadow-[0_0_12px_rgba(16,185,129,0.2)]"
         >
           <Calculator className="w-4 h-4" />
-          <span>Kira Fidyah / Tambah Rekod</span>
+          <span>Calculate Fidyah / Add Record</span>
         </button>
       </div>
 
@@ -90,19 +90,19 @@ export const QadhaFastingSection: React.FC<QadhaFastingSectionProps> = ({
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6 relative z-10">
         <div className="rounded-xl border border-white/[0.08] bg-white/[0.03] p-4 flex flex-col justify-between">
           <span className="text-[11px] font-medium text-content-tertiary uppercase tracking-wider block">
-            Baki Hari Puasa
+            Remaining Fasting Days
           </span>
           <span className="text-2xl font-bold font-mono tracking-tight text-amber-400">
-            {totalRemainingDays} <span className="text-xs font-normal text-content-secondary">hari</span>
+            {totalRemainingDays} <span className="text-xs font-normal text-content-secondary">days</span>
           </span>
           <span className="text-[10px] text-content-secondary mt-1 block">
-            {totalCompletedDays} selesai daripada {totalMissedDays} hari asal
+            {totalCompletedDays} made up of {totalMissedDays} original days
           </span>
         </div>
 
         <div className="rounded-xl border border-white/[0.08] bg-white/[0.03] p-4 flex flex-col justify-between">
           <span className="text-[11px] font-medium text-content-tertiary uppercase tracking-wider block">
-            Baki Fidyah Tertunggak
+            Outstanding Fidyah Balance
           </span>
           <span
             className={`text-2xl font-bold font-mono tracking-tight ${
@@ -112,19 +112,19 @@ export const QadhaFastingSection: React.FC<QadhaFastingSectionProps> = ({
             {formatRM(totalFidyahOutstanding)}
           </span>
           <span className="text-[10px] text-content-secondary mt-1 block">
-            {formatRM(totalFidyahPaid)} telah dibayar zakat
+            {formatRM(totalFidyahPaid)} settled / paid
           </span>
         </div>
 
         <div className="rounded-xl border border-white/[0.08] bg-white/[0.03] p-4 flex flex-col justify-between">
           <span className="text-[11px] font-medium text-content-tertiary uppercase tracking-wider block">
-            Jumlah Keseluruhan Fidyah
+            Total Fidyah Liability
           </span>
           <span className="text-2xl font-bold font-mono tracking-tight text-white">
             {formatRM(totalFidyahAmount)}
           </span>
           <span className="text-[10px] text-cyan-400 mt-1 block">
-            {records.length} rekod tahun tertunggak
+            {records.length} overdue year records
           </span>
         </div>
       </div>
@@ -133,9 +133,9 @@ export const QadhaFastingSection: React.FC<QadhaFastingSectionProps> = ({
       {records.length === 0 ? (
         <div className="py-10 text-center rounded-2xl border border-dashed border-white/[0.08] bg-white/[0.01] relative z-10">
           <Moon className="w-10 h-10 mx-auto text-content-tertiary mb-3 opacity-50" />
-          <p className="text-sm font-semibold text-content-primary">Tiada rekod qadha puasa atau fidyah</p>
+          <p className="text-sm font-semibold text-content-primary">No missed fasts or fidyah records yet</p>
           <p className="text-xs text-content-secondary max-w-sm mx-auto mt-1">
-            Klik &quot;Kira Fidyah / Tambah Rekod&quot; di atas untuk mengira puasa Ramadan yang tertinggal daripada tahun-tahun lampau.
+            Click &quot;Calculate Fidyah / Add Record&quot; above to calculate missed Ramadan fasts from previous years.
           </p>
         </div>
       ) : (
@@ -153,29 +153,29 @@ export const QadhaFastingSection: React.FC<QadhaFastingSectionProps> = ({
                       Ramadan {r.yearGregorian} ({r.yearHijri}H)
                     </span>
                     <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-white/[0.05] border border-white/[0.08] text-content-secondary">
-                      {r.yearsDelayed} Tahun Tertangguh
+                      {r.yearsDelayed} Years Delayed
                     </span>
                     {r.isFidyahPaid ? (
                       <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-emerald-500/15 border border-emerald-400/30 text-emerald-300 flex items-center gap-1">
                         <CheckCircle2 className="w-3 h-3 text-emerald-400" />
-                        Fidyah Selesai
+                        Fidyah Settled
                       </span>
                     ) : (
                       <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-rose-500/15 border border-rose-400/30 text-rose-300">
-                        Fidyah Belum Dibayar
+                        Fidyah Unpaid
                       </span>
                     )}
                   </div>
 
                   <div className="flex items-center gap-3 text-xs text-content-tertiary flex-wrap">
                     <span>
-                      Puasa: <strong className="text-white font-mono">{r.qadhaCompletedDays}</strong> / {r.missedDays} hari ganti
+                      Fasts: <strong className="text-white font-mono">{r.qadhaCompletedDays}</strong> / {r.missedDays} made up
                     </span>
                     <span>
-                      Baki: <strong className={isFullyQadha ? 'text-emerald-400' : 'text-amber-400'}>{r.remainingDays} hari</strong>
+                      Remaining: <strong className={isFullyQadha ? 'text-emerald-400' : 'text-amber-400'}>{r.remainingDays} days</strong>
                     </span>
                     <span>
-                      Kiraan Fidyah: <strong className="text-emerald-400 font-mono">{formatRM(r.totalFidyahAmount)}</strong>
+                      Fidyah Due: <strong className="text-emerald-400 font-mono">{formatRM(r.totalFidyahAmount)}</strong>
                     </span>
                   </div>
 
@@ -195,7 +195,7 @@ export const QadhaFastingSection: React.FC<QadhaFastingSectionProps> = ({
                       className="px-3 py-1.5 rounded-lg bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-400/30 text-emerald-300 text-xs font-semibold flex items-center gap-1.5 transition-all active:scale-95 shadow-[0_0_8px_rgba(16,185,129,0.15)]"
                     >
                       <Plus className="w-3.5 h-3.5 text-emerald-400" />
-                      <span>Ganti 1 Hari</span>
+                      <span>Fast 1 Day</span>
                     </button>
                   )}
 
@@ -211,12 +211,12 @@ export const QadhaFastingSection: React.FC<QadhaFastingSectionProps> = ({
                     {r.isFidyahPaid ? (
                       <>
                         <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-                        <span>Fidyah Dibayar</span>
+                        <span>Fidyah Paid</span>
                       </>
                     ) : (
                       <>
                         <Circle className="w-3.5 h-3.5 text-cyan-400" />
-                        <span>Tanda Fidyah Dibayar</span>
+                        <span>Mark Fidyah Paid</span>
                       </>
                     )}
                   </button>
@@ -225,7 +225,7 @@ export const QadhaFastingSection: React.FC<QadhaFastingSectionProps> = ({
                     type="button"
                     onClick={() => setDeleteId(r.id)}
                     className="p-1.5 text-content-tertiary hover:text-rose-400 rounded-lg hover:bg-white/[0.06] transition-colors"
-                    title="Padam rekod"
+                    title="Delete record"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
@@ -253,9 +253,9 @@ export const QadhaFastingSection: React.FC<QadhaFastingSectionProps> = ({
             setDeleteId(null);
           }
         }}
-        title="Padam Rekod Puasa & Fidyah"
-        description="Adakah anda pasti mahu memadam rekod ini dari peranti?"
-        confirmLabel="Padam"
+        title="Delete Fasting & Fidyah Record"
+        description="Are you sure you want to delete this fasting record from your device?"
+        confirmLabel="Delete"
         variant="danger"
       />
     </div>

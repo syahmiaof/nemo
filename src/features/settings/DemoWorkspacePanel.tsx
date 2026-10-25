@@ -1,5 +1,14 @@
 import { useState } from 'react';
-import { FlaskConical, RotateCcw, FolderGit2, CheckSquare, GraduationCap, Target } from 'lucide-react';
+import {
+  FlaskConical,
+  RotateCcw,
+  FolderGit2,
+  CheckSquare,
+  GraduationCap,
+  Compass,
+  Moon,
+  Wallet,
+} from 'lucide-react';
 import { getWorkspaceMode, switchWorkspace, resetDemoWorkspace } from '@/db/workspace';
 import { Button } from '@/components/ui/Button';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
@@ -87,14 +96,14 @@ export function DemoWorkspacePanel() {
         </div>
 
         {/* Feature Overview Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 pt-2 relative z-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 pt-2 relative z-10">
           <div className="p-3.5 rounded-xl bg-white/[0.02] border border-white/[0.06] space-y-1.5">
             <div className="flex items-center gap-2 text-white font-semibold text-xs">
               <FolderGit2 className="w-4 h-4 text-accent-mint" />
               <span>18 Curated Projects & Covers</span>
             </div>
             <p className="text-[11px] text-content-secondary leading-relaxed">
-              Includes full case studies, tech stacks (TypeScript, React, Node.js), client labels, and milestones.
+              Full case studies, tech stacks (TypeScript, React, Node.js), client labels, and linked milestones.
             </p>
           </div>
 
@@ -104,27 +113,47 @@ export function DemoWorkspacePanel() {
               <span>150 Unified Tasks & Focus Slots</span>
             </div>
             <p className="text-[11px] text-content-secondary leading-relaxed">
-              Real priority tags (urgent, high, medium), Today's Focus slots, and realistic 7-day completion histories.
+              Priority tags (urgent, high, medium), Today's Focus slots (max 3), and realistic completion histories.
             </p>
           </div>
 
           <div className="p-3.5 rounded-xl bg-white/[0.02] border border-white/[0.06] space-y-1.5">
             <div className="flex items-center gap-2 text-white font-semibold text-xs">
               <GraduationCap className="w-4 h-4 text-indigo-400" />
-              <span>Coursework, Subjects & Exams</span>
+              <span>Academics, Subjects & Exams</span>
             </div>
             <p className="text-[11px] text-content-secondary leading-relaxed">
-              Two full semesters, graded course deliverables, live countdowns, and scheduled exam dates.
+              Two terms of coursework, assignments, live countdowns, and scheduled exam dates on calendar.
             </p>
           </div>
 
           <div className="p-3.5 rounded-xl bg-white/[0.02] border border-white/[0.06] space-y-1.5">
             <div className="flex items-center gap-2 text-white font-semibold text-xs">
-              <Target className="w-4 h-4 text-amber-400" />
-              <span>Goals, Milestones & Spline Trends</span>
+              <Compass className="w-4 h-4 text-amber-400" />
+              <span>Vision Board & 12M Roadmaps</span>
             </div>
             <p className="text-[11px] text-content-secondary leading-relaxed">
-              Measurable long-term objectives linked to live tasks, with full annual and monthly analytical insights.
+              1-year, 3-year, and 5-year vision cards with Unsplash imagery, cost tracking, and monthly mascots.
+            </p>
+          </div>
+
+          <div className="p-3.5 rounded-xl bg-white/[0.02] border border-white/[0.06] space-y-1.5">
+            <div className="flex items-center gap-2 text-white font-semibold text-xs">
+              <Moon className="w-4 h-4 text-emerald-400" />
+              <span>Ibadah & Spiritual Hub</span>
+            </div>
+            <p className="text-[11px] text-content-secondary leading-relaxed">
+              5 daily prayers with congregation tracking, Sunnah, tasbih counter, and Mazhab Syafi'i fidyah calculator.
+            </p>
+          </div>
+
+          <div className="p-3.5 rounded-xl bg-white/[0.02] border border-white/[0.06] space-y-1.5">
+            <div className="flex items-center gap-2 text-white font-semibold text-xs">
+              <Wallet className="w-4 h-4 text-cyan-400" />
+              <span>Finance & Health Metrics</span>
+            </div>
+            <p className="text-[11px] text-content-secondary leading-relaxed">
+              Recurring salary and freelance incomes, safe-to-spend ratios, debts, hydration, and workout logs.
             </p>
           </div>
         </div>

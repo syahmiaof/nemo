@@ -49,6 +49,12 @@ describe('Isolated deterministic demo workspace', () => {
     expect(data.assignments).toHaveLength(24);
     expect(data.calendarEvents).toHaveLength(20);
     expect(data.goals).toHaveLength(6);
+    expect(data.visionItems).toHaveLength(7);
+    expect(data.monthlyRoadmaps).toHaveLength(12);
+    expect(data.incomeItems).toHaveLength(4);
+    expect(data.ibadahDailyLogs).toHaveLength(3);
+    expect(data.qadhaPrayers).toHaveLength(5);
+    expect(data.qadhaFastings).toHaveLength(3);
     expect(new Set(data.tasks.map(task => task.title)).size).toBe(150);
     expect(data.assetBlobs).toHaveLength(18);
     data.assetBlobs.forEach(asset => expect(asset.data).toMatch(/^data:image\/svg\+xml;base64,/));
@@ -153,5 +159,72 @@ describe('Isolated deterministic demo workspace', () => {
     demo.projects.hook('creating').unsubscribe(failInsertion);
     expect((await demo.tasks.get('demo-task-1'))?.title).toBe('Preserve after failed reset');
     expect(await demo.projects.count()).toBe(18);
+  });
+
+  it('populates and supports interactive operations on all modern tables (vision, roadmaps, income, ibadah, qadha)', async () => {
+    await seedDemoWorkspace(demo, false, anchor);
+
+    // Verify all 6 new tables are seeded with realistic data
+    expect(await demo.visionItems.count()).toBe(7);
+    expect(await demo.monthlyRoadmaps.count()).toBe(12);
+    expect(await demo.incomeItems.count()).toBe(4);
+    expect(await demo.ibadahDailyLogs.count()).toBe(3);
+    expect(await demo.qadhaPrayers.count()).toBe(5);
+    expect(await demo.qadhaFastings.count()).toBe(3);
+
+    // Test interactive mutations (add, edit, toggle, delete)
+    // 1. Vision item edit & toggle
+    await demo.visionItems.update('demo-vis-1', { status: 'manifested', manifestedAt: anchor.toISOString() });
+    const updatedVis = await demo.visionItems.get('demo-vis-1');
+    expect(updatedVis?.status).toBe('manifested');
+
+    // 2. Income stream addition & deletion
+    await demo.incomeItems.add({
+      id: 'demo-inc-test',
+      title: 'Ad-hoc Technical Workshop',
+      amount: 1200,
+      type: 'freelance_project',
+      isRecurring: false,
+      createdAt: anchor.toISOString(),
+      updatedAt: anchor.toISOString(),
+    });
+    expect(await demo.incomeItems.count()).toBe(5);
+    await demo.incomeItems.delete('demo-inc-test');
+    expect(await demo.incomeItems.count()).toBe(4);
+
+    // 3. Ibadah daily log toggle & increment
+    const todayLog = await demo.ibadahDailyLogs.get('ibd_2026-10-20');
+    expect(todayLog).toBeDefined();
+    expect(todayLog?.dhikrCount).toBe(99);
+    await demo.ibadahDailyLogs.update('ibd_2026-10-20', {
+      dhikrCount: 132,
+      sedekahDone: false,
+    });
+    const modifiedLog = await demo.ibadahDailyLogs.get('ibd_2026-10-20');
+    expect(modifiedLog?.dhikrCount).toBe(132);
+    expect(modifiedLog?.sedekahDone).toBe(false);
+
+    // 4. Qadha prayer count adjustment
+    const subuhQadha = await demo.qadhaPrayers.get('qp_subuh');
+    expect(subuhQadha?.remainingCount).toBe(17);
+    await demo.qadhaPrayers.update('qp_subuh', {
+      completedCount: (subuhQadha?.completedCount ?? 0) + 1,
+      remainingCount: (subuhQadha?.remainingCount ?? 0) - 1,
+    });
+    expect((await demo.qadhaPrayers.get('qp_subuh'))?.remainingCount).toBe(16);
+
+    // 5. Qadha fasting fidyah toggle
+    const fasting1445 = await demo.qadhaFastings.get('qf_1445');
+    expect(fasting1445?.isFidyahPaid).toBe(false);
+    await demo.qadhaFastings.update('qf_1445', { isFidyahPaid: true, fidyahPaidAt: anchor.toISOString() });
+    expect((await demo.qadhaFastings.get('qf_1445'))?.isFidyahPaid).toBe(true);
+
+    // 6. Reset demo restores everything to pristine original state
+    await seedDemoWorkspace(demo, true, anchor);
+    expect(await demo.visionItems.count()).toBe(7);
+    expect((await demo.visionItems.get('demo-vis-1'))?.status).toBe('in_progress');
+    expect((await demo.ibadahDailyLogs.get('ibd_2026-10-20'))?.dhikrCount).toBe(99);
+    expect((await demo.qadhaPrayers.get('qp_subuh'))?.remainingCount).toBe(17);
+    expect((await demo.qadhaFastings.get('qf_1445'))?.isFidyahPaid).toBe(false);
   });
 });

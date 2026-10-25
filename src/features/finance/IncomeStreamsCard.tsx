@@ -28,10 +28,10 @@ interface IncomeStreamsCardProps {
 }
 
 const TYPE_OPTIONS: { value: IncomeStreamType; label: string }[] = [
-  { value: 'monthly_salary', label: 'Gaji Tetap Bulanan' },
-  { value: 'freelance_project', label: 'Projek Freelance (One-off)' },
-  { value: 'business_sales', label: 'Jualan Bisnes / Servis' },
-  { value: 'passive_other', label: 'Pelaburan / Dividen / Pasif' },
+  { value: 'monthly_salary', label: 'Monthly Base Salary' },
+  { value: 'freelance_project', label: 'Freelance Project (One-off)' },
+  { value: 'business_sales', label: 'Business / Services Sales' },
+  { value: 'passive_other', label: 'Investments / Dividends / Passive' },
 ];
 
 const TYPE_BADGES: Record<
@@ -39,25 +39,25 @@ const TYPE_BADGES: Record<
   { label: string; bg: string; text: string; border: string }
 > = {
   monthly_salary: {
-    label: 'Gaji Tetap',
+    label: 'Base Salary',
     bg: 'bg-emerald-500/15',
     text: 'text-emerald-300',
     border: 'border-emerald-400/30',
   },
   freelance_project: {
-    label: 'Freelance / Projek',
+    label: 'Freelance / Project',
     bg: 'bg-cyan-500/15',
     text: 'text-cyan-300',
     border: 'border-cyan-400/30',
   },
   business_sales: {
-    label: 'Bisnes',
+    label: 'Business',
     bg: 'bg-purple-500/15',
     text: 'text-purple-300',
     border: 'border-purple-400/30',
   },
   passive_other: {
-    label: 'Pasif / Lain-lain',
+    label: 'Passive / Other',
     bg: 'bg-amber-500/15',
     text: 'text-amber-300',
     border: 'border-amber-400/30',
@@ -119,11 +119,11 @@ export const IncomeStreamsCard: React.FC<IncomeStreamsCardProps> = ({
     const amountNum = parseFloat(amount);
 
     if (!title.trim()) {
-      setFormError('Sila masukkan nama sumber pendapatan.');
+      setFormError('Please enter an income stream name.');
       return;
     }
     if (isNaN(amountNum) || amountNum <= 0) {
-      setFormError('Sila masukkan jumlah pendapatan yang sah.');
+      setFormError('Please enter a valid income amount.');
       return;
     }
 
@@ -139,7 +139,7 @@ export const IncomeStreamsCard: React.FC<IncomeStreamsCardProps> = ({
       });
       setIsAddModalOpen(false);
     } catch (err: unknown) {
-      setFormError(err instanceof Error ? err.message : 'Gagal menambah pendapatan.');
+      setFormError(err instanceof Error ? err.message : 'Failed to add income stream.');
     } finally {
       setIsSubmitting(false);
     }
@@ -159,15 +159,15 @@ export const IncomeStreamsCard: React.FC<IncomeStreamsCardProps> = ({
           </div>
           <div>
             <h3 className="text-base font-semibold text-content-primary flex items-center gap-2">
-              Sumber Pendapatan (Income Streams)
+              Income Streams
               {incomes.length > 0 && (
                 <span className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-400/25">
-                  {incomes.length} Sumber
+                  {incomes.length} Streams
                 </span>
               )}
             </h3>
             <p className="text-xs text-content-secondary">
-              Gaji bulanan tetap, projek freelance, atau pendapatan sampingan one-off
+              Recurring salary, freelance projects, or one-off side income
             </p>
           </div>
         </div>
@@ -178,7 +178,7 @@ export const IncomeStreamsCard: React.FC<IncomeStreamsCardProps> = ({
           className="px-3.5 py-2 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-400/35 text-emerald-300 text-xs font-semibold flex items-center gap-1.5 transition-all active:scale-95 shadow-[0_0_12px_rgba(16,185,129,0.2)]"
         >
           <Plus className="w-4 h-4" />
-          <span>Tambah Pendapatan</span>
+          <span>Add Income Stream</span>
         </button>
       </div>
 
@@ -186,37 +186,37 @@ export const IncomeStreamsCard: React.FC<IncomeStreamsCardProps> = ({
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6 relative z-10">
         <div className="rounded-xl border border-white/[0.08] bg-white/[0.03] p-4 flex flex-col justify-between">
           <span className="text-[11px] font-medium text-content-tertiary uppercase tracking-wider block">
-            Gaji Tetap Bulanan
+            Monthly Fixed Salary
           </span>
           <span className="text-2xl font-bold font-mono tracking-tight text-emerald-400">
             {formatRM(totalRecurring)}
           </span>
           <span className="text-[10px] text-content-secondary mt-1 block">
-            {recurringIncomes.length} punca pendapatan tetap
+            {recurringIncomes.length} recurring sources
           </span>
         </div>
 
         <div className="rounded-xl border border-white/[0.08] bg-white/[0.03] p-4 flex flex-col justify-between">
           <span className="text-[11px] font-medium text-content-tertiary uppercase tracking-wider block">
-            Freelance & Projek (Bulan Ini)
+            Freelance & Projects (This Month)
           </span>
           <span className="text-2xl font-bold font-mono tracking-tight text-cyan-400">
             {formatRM(totalOneOffThisMonth)}
           </span>
           <span className="text-[10px] text-content-secondary mt-1 block">
-            {oneOffIncomesThisMonth.length} bayaran projek one-off
+            {oneOffIncomesThisMonth.length} one-off project payouts
           </span>
         </div>
 
         <div className="rounded-xl border border-white/[0.08] bg-white/[0.03] p-4 flex flex-col justify-between">
           <span className="text-[11px] font-medium text-content-tertiary uppercase tracking-wider block">
-            Jumlah Aliran Masuk
+            Total Inflow (This Month)
           </span>
           <span className="text-2xl font-bold font-mono tracking-tight text-white">
             {formatRM(totalCurrentMonthIncome)}
           </span>
           <span className="text-[10px] text-emerald-400/80 mt-1 block">
-            Tersedia untuk komitmen & perbelanjaan
+            Available for commitments & spending
           </span>
         </div>
       </div>
@@ -225,9 +225,9 @@ export const IncomeStreamsCard: React.FC<IncomeStreamsCardProps> = ({
       {incomes.length === 0 ? (
         <div className="py-10 text-center rounded-2xl border border-dashed border-white/[0.08] bg-white/[0.01] relative z-10">
           <Wallet className="w-10 h-10 mx-auto text-content-tertiary mb-3 opacity-50" />
-          <p className="text-sm font-semibold text-content-primary">Tiada sumber pendapatan direkodkan</p>
+          <p className="text-sm font-semibold text-content-primary">No income streams recorded yet</p>
           <p className="text-xs text-content-secondary max-w-sm mx-auto mt-1">
-            Klik &quot;Tambah Pendapatan&quot; untuk masukkan gaji hakiki anda atau sebarang bayaran freelance projek.
+            Click &quot;Add Income Stream&quot; to log your base salary or any freelance client payments.
           </p>
         </div>
       ) : (
@@ -256,11 +256,11 @@ export const IncomeStreamsCard: React.FC<IncomeStreamsCardProps> = ({
                       </span>
                       {item.isRecurring ? (
                         <span className="text-[10px] text-emerald-400/90 font-medium">
-                          • Setiap Bulan
+                          • Every Month
                         </span>
                       ) : (
                         <span className="text-[10px] text-cyan-400/90 font-medium">
-                          • One-off ({item.dateReceived || 'Bulan ini'})
+                          • One-off ({item.dateReceived || 'This month'})
                         </span>
                       )}
                     </div>
@@ -278,7 +278,7 @@ export const IncomeStreamsCard: React.FC<IncomeStreamsCardProps> = ({
                       +{formatRM(item.amount)}
                     </span>
                     <span className="text-[10px] text-content-tertiary">
-                      {item.isRecurring ? '/bulan' : 'bersih'}
+                      {item.isRecurring ? '/month' : 'net'}
                     </span>
                   </div>
 
@@ -286,7 +286,7 @@ export const IncomeStreamsCard: React.FC<IncomeStreamsCardProps> = ({
                     type="button"
                     onClick={() => setDeleteId(item.id)}
                     className="p-1.5 text-content-tertiary hover:text-rose-400 rounded-lg hover:bg-white/[0.06] transition-colors"
-                    title="Padam rekod pendapatan"
+                    title="Delete income record"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
@@ -301,8 +301,8 @@ export const IncomeStreamsCard: React.FC<IncomeStreamsCardProps> = ({
       <Modal
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
-        title="Tambah Sumber Pendapatan"
-        description="Rekodkan gaji hakiki bulanan atau bayaran projek freelance one-off untuk mengira Safe-to-Spend."
+        title="Add Income Stream"
+        description="Record your fixed monthly salary or one-off freelance project payments to calculate your Safe-to-Spend."
         maxWidth="md"
       >
         <form onSubmit={handleSubmit} className="space-y-4 pt-2">
@@ -314,11 +314,11 @@ export const IncomeStreamsCard: React.FC<IncomeStreamsCardProps> = ({
 
           <div className="space-y-1.5">
             <label className="text-xs font-semibold text-content-secondary">
-              Nama Pendapatan / Sumber
+              Income Stream / Source Name
             </label>
             <Input
               type="text"
-              placeholder="cth: Gaji Tetap / Projek Freelance Sakura Store / Servis Design"
+              placeholder="e.g. Monthly Salary / Sakura Store Web Design / Mobile App UI"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               required
@@ -329,13 +329,13 @@ export const IncomeStreamsCard: React.FC<IncomeStreamsCardProps> = ({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-content-secondary">
-                Jumlah Diterima (RM)
+                Amount Received (RM)
               </label>
               <Input
                 type="number"
                 step="0.01"
                 min="0"
-                placeholder="cth: 3500.00"
+                placeholder="e.g. 3500.00"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
                 required
@@ -344,7 +344,7 @@ export const IncomeStreamsCard: React.FC<IncomeStreamsCardProps> = ({
 
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-content-secondary">
-                Kategori Pendapatan
+                Income Category
               </label>
               <Select
                 options={TYPE_OPTIONS}
@@ -358,12 +358,12 @@ export const IncomeStreamsCard: React.FC<IncomeStreamsCardProps> = ({
           <div className="p-3.5 rounded-xl border border-white/[0.08] bg-white/[0.02] flex items-center justify-between gap-3">
             <div>
               <span className="text-xs font-semibold text-content-primary block">
-                Pendapatan Berulang Setiap Bulan?
+                Recurring Every Month?
               </span>
               <span className="text-[11px] text-content-secondary block mt-0.5">
                 {isRecurring
-                  ? 'Ya (Gaji tetap - akan dikira automatik dalam aliran tunai setiap bulan)'
-                  : 'Tidak (One-off / Freelance - dikira khusus untuk bulan ia diterima)'}
+                  ? 'Yes (Fixed recurring - automatically accounted for in monthly cashflow)'
+                  : 'No (One-off / Freelance - accounted specifically for the received month)'}
               </span>
             </div>
 
@@ -385,7 +385,7 @@ export const IncomeStreamsCard: React.FC<IncomeStreamsCardProps> = ({
           {!isRecurring && (
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-content-secondary">
-                Tarikh Diterima (Bulan Pengiraan)
+                Date Received (Billing Month)
               </label>
               <Input
                 type="date"
@@ -397,11 +397,11 @@ export const IncomeStreamsCard: React.FC<IncomeStreamsCardProps> = ({
 
           <div className="space-y-1.5">
             <label className="text-xs font-semibold text-content-secondary">
-              Nota / Catatan (Pilihan)
+              Notes / Remarks (Optional)
             </label>
             <Input
               type="text"
-              placeholder="cth: Bayaran milestone 1, client Sakura Store"
+              placeholder="e.g. Milestone 1 payment, client Sakura Store"
               value={sourceNotes}
               onChange={(e) => setSourceNotes(e.target.value)}
             />
@@ -414,7 +414,7 @@ export const IncomeStreamsCard: React.FC<IncomeStreamsCardProps> = ({
               onClick={() => setIsAddModalOpen(false)}
               disabled={isSubmitting}
             >
-              Batal
+              Cancel
             </Button>
             <Button
               type="submit"
@@ -422,7 +422,7 @@ export const IncomeStreamsCard: React.FC<IncomeStreamsCardProps> = ({
               disabled={isSubmitting}
               className="bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold"
             >
-              {isSubmitting ? 'Menyimpan...' : 'Simpan Pendapatan'}
+              {isSubmitting ? 'Saving...' : 'Save Income'}
             </Button>
           </div>
         </form>
@@ -431,9 +431,9 @@ export const IncomeStreamsCard: React.FC<IncomeStreamsCardProps> = ({
       {/* Delete Confirmation Dialog */}
       <ConfirmDialog
         isOpen={Boolean(deleteId)}
-        title="Padam Sumber Pendapatan"
-        description="Adakah anda pasti mahu memadam sumber pendapatan ini? Tindakan ini tidak boleh diundur."
-        confirmLabel="Padam"
+        title="Delete Income Stream"
+        description="Are you sure you want to delete this income stream? This action cannot be undone."
+        confirmLabel="Delete"
         variant="danger"
         onConfirm={async () => {
           if (deleteId) {

@@ -397,6 +397,7 @@ export const PrayerStatusSchema = z.enum([
 
 export const DailyPrayerRecordSchema = z.object({
   status: PrayerStatusSchema,
+  completed: z.boolean().optional(),
   isCongregation: z.boolean().optional(),
   timestamp: z.string().optional(),
 });

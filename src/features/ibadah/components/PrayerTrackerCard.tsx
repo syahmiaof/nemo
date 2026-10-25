@@ -39,42 +39,42 @@ const STATUS_CONFIG: Record<
   { label: string; icon: React.ElementType; color: string; border: string; bg: string }
 > = {
   congregation: {
-    label: 'Berjemaah',
+    label: 'Congregational',
     icon: Users,
     color: 'text-emerald-300',
     border: 'border-emerald-400/35',
     bg: 'bg-emerald-500/20',
   },
   on_time: {
-    label: 'Awal Waktu',
+    label: 'Early / On-Time',
     icon: Clock,
     color: 'text-teal-300',
     border: 'border-teal-400/35',
     bg: 'bg-teal-500/20',
   },
   alone: {
-    label: 'Sendirian',
+    label: 'Individual',
     icon: User,
     color: 'text-cyan-300',
     border: 'border-cyan-400/35',
     bg: 'bg-cyan-500/15',
   },
   qadha: {
-    label: 'Qadha',
+    label: 'Qadha / Makeup',
     icon: AlertCircle,
     color: 'text-amber-300',
     border: 'border-amber-400/35',
     bg: 'bg-amber-500/15',
   },
   missed: {
-    label: 'Tidak Sempat',
+    label: 'Missed',
     icon: AlertCircle,
     color: 'text-rose-300',
     border: 'border-rose-400/35',
     bg: 'bg-rose-500/15',
   },
   excused: {
-    label: 'Uzur',
+    label: 'Excused',
     icon: Moon,
     color: 'text-purple-300',
     border: 'border-purple-400/35',
@@ -142,22 +142,22 @@ export const PrayerTrackerCard: React.FC<PrayerTrackerCardProps> = ({
           </div>
           <div>
             <h3 className="text-base font-semibold text-content-primary flex items-center gap-2">
-              Solat Fardhu & Sunat
+              Fardhu & Sunnah Prayers
               {completedFardhuCount === 5 && (
                 <span className="inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                  <Sparkles className="w-3 h-3" /> Lengkap 5 Waktu!
+                  <Sparkles className="w-3 h-3" /> All 5 Completed!
                 </span>
               )}
             </h3>
             <p className="text-xs text-content-secondary">
-              Pelihara solat fardhu di awal waktu dan hidupkan amalan sunat harian
+              Observe obligatory prayers on time and enrich your routine with daily Sunnah acts
             </p>
           </div>
         </div>
 
         {/* Mini Completion Badge */}
         <div className="px-3 py-1.5 rounded-xl border border-white/[0.08] bg-white/[0.03] flex items-center gap-2 text-xs">
-          <span className="text-content-tertiary">Pencapaian Hari Ini:</span>
+          <span className="text-content-tertiary">Today&apos;s Progress:</span>
           <span className="font-mono font-bold text-emerald-400 text-sm">
             {completedFardhuCount} / 5
           </span>
@@ -192,7 +192,7 @@ export const PrayerTrackerCard: React.FC<PrayerTrackerCardProps> = ({
                   type="button"
                   onClick={() => handleTogglePrayer(key)}
                   className="p-1 text-content-tertiary hover:text-emerald-400 transition-colors"
-                  title={isDone ? 'Tanda belum selesai' : 'Tanda selesai'}
+                  title={isDone ? 'Mark as incomplete' : 'Mark as complete'}
                 >
                   {isDone ? (
                     <CheckCircle2 className="w-5 h-5 text-emerald-400" />
@@ -205,7 +205,7 @@ export const PrayerTrackerCard: React.FC<PrayerTrackerCardProps> = ({
               {/* Status Picker if Completed */}
               {isDone ? (
                 <div className="space-y-1">
-                  <span className="text-[10px] text-content-tertiary block">Kualiti / Cara:</span>
+                  <span className="text-[10px] text-content-tertiary block">Performance / Mode:</span>
                   <div className="flex items-center gap-1 flex-wrap">
                     {(['congregation', 'on_time', 'alone', 'qadha'] as PrayerStatus[]).map((st) => (
                       <button
@@ -225,7 +225,7 @@ export const PrayerTrackerCard: React.FC<PrayerTrackerCardProps> = ({
                 </div>
               ) : (
                 <span className="text-[10px] text-content-tertiary italic">
-                  Belum ditunaikan
+                  Not completed yet
                 </span>
               )}
             </div>
@@ -235,17 +235,17 @@ export const PrayerTrackerCard: React.FC<PrayerTrackerCardProps> = ({
 
       {/* Sunnah Prayers Checklist */}
       <div className="pt-4 border-t border-white/[0.06] relative z-10">
-        <span className="text-xs font-semibold text-content-primary mb-3 block flex items-center gap-2">
+        <span className="text-xs font-semibold text-content-primary mb-3 flex items-center gap-2">
           <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-          Solat-Solat Sunat Harian
+          Daily Sunnah Prayers
         </span>
 
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
           {[
-            { key: 'dhuha' as const, label: 'Solat Dhuha (2-8 rakaat)' },
-            { key: 'tahajjud' as const, label: 'Qiamullail / Tahajjud' },
-            { key: 'witir' as const, label: 'Solat Witir (1-3 rakaat)' },
-            { key: 'rawatib' as const, label: 'Sunat Rawatib (Ba\'diyyah/Qabliyyah)' },
+            { key: 'dhuha' as const, label: "Dhuha Prayer (2-8 rak'ahs)" },
+            { key: 'tahajjud' as const, label: 'Tahajjud / Night Vigil' },
+            { key: 'witir' as const, label: "Witr Prayer (1-3 rak'ahs)" },
+            { key: 'rawatib' as const, label: 'Sunnah Rawatib (Pre/Post)' },
           ].map(({ key, label }) => {
             const isChecked = Boolean(sunnah[key]);
             return (

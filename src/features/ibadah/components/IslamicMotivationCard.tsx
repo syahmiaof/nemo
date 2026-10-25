@@ -29,12 +29,12 @@ export const IslamicMotivationCard: React.FC<IslamicMotivationCardProps> = ({
   };
 
   const categories = [
-    { key: 'all', label: 'Semua' },
-    { key: 'sabar', label: 'Sabar' },
-    { key: 'syukur', label: 'Syukur' },
-    { key: 'rezeki', label: 'Rezeki' },
-    { key: 'taubat', label: 'Taubat' },
-    { key: 'istiqamah', label: 'Istiqamah' },
+    { key: 'all', label: 'All Themes' },
+    { key: 'sabar', label: 'Patience (Sabar)' },
+    { key: 'syukur', label: 'Gratitude (Syukur)' },
+    { key: 'rezeki', label: 'Sustenance (Rezeki)' },
+    { key: 'taubat', label: 'Repentance (Taubat)' },
+    { key: 'istiqamah', label: 'Steadfastness (Istiqamah)' },
   ];
 
   return (
@@ -51,10 +51,10 @@ export const IslamicMotivationCard: React.FC<IslamicMotivationCardProps> = ({
           </div>
           <div>
             <h3 className="text-sm font-bold text-white tracking-tight flex items-center gap-2">
-              Kalam Hati & Motivasi Rohani
+              Spiritual Reflections &amp; Motivations
             </h3>
             <p className="text-[11px] text-content-tertiary">
-              Ayat Al-Quran & Hadis Sahih penyuntik ketenangan jiwa
+              Holy Quran verses &amp; Sahih Hadiths for peace of heart
             </p>
           </div>
         </div>
@@ -63,10 +63,10 @@ export const IslamicMotivationCard: React.FC<IslamicMotivationCardProps> = ({
           type="button"
           onClick={handleShuffle}
           className="px-3 py-1.5 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-content-secondary hover:text-white text-xs font-medium flex items-center gap-1.5 transition-all active:scale-95"
-          title="Tukar mutiara kata lain"
+          title="Show another reflection"
         >
           <Shuffle className="w-3.5 h-3.5 text-emerald-400" />
-          <span>Mutiara Lain</span>
+          <span>Next Verse</span>
         </button>
       </div>
 
@@ -116,7 +116,7 @@ export const IslamicMotivationCard: React.FC<IslamicMotivationCardProps> = ({
             {activeQuote.source}
           </span>
           <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-white/[0.05] text-content-tertiary">
-            Kategori: {activeQuote.category}
+            Category: {activeQuote.category}
           </span>
         </div>
       </div>

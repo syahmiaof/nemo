@@ -43,7 +43,7 @@ export const HydrationCard: React.FC<HydrationCardProps> = ({
 
   const handleQuickAdd = async (amount: number) => {
     await onAddWater(amount);
-    triggerFeedback(`+${amount} ml berjaya ditambah!`);
+    triggerFeedback(`+${amount} ml added successfully!`);
   };
 
   const handleCustomAdd = async (e: React.FormEvent) => {
@@ -52,7 +52,7 @@ export const HydrationCard: React.FC<HydrationCardProps> = ({
     if (!isNaN(val) && val > 0) {
       await onAddWater(val);
       setCustomMl('');
-      triggerFeedback(`+${val} ml berjaya ditambah!`);
+      triggerFeedback(`+${val} ml added successfully!`);
     }
   };
 
@@ -65,24 +65,24 @@ export const HydrationCard: React.FC<HydrationCardProps> = ({
     if (!editingLog || !onUpdateLog) return;
     if (editAmountMl <= 0) {
       await onDeleteLog(editingLog.id);
-      triggerFeedback('Rekod dipadam kerana amaun 0 ml');
+      triggerFeedback('Entry removed (0 ml recorded)');
     } else {
       await onUpdateLog(editingLog.id, editAmountMl);
-      triggerFeedback(`Rekod dikemaskini kepada ${editAmountMl} ml`);
+      triggerFeedback(`Hydration updated to ${editAmountMl} ml`);
     }
     setEditingLog(null);
   };
 
   const handleDeleteWithFeedback = async (id: string, amount: number) => {
     await onDeleteLog(id);
-    triggerFeedback(`Log ${amount} ml telah dipadam`);
+    triggerFeedback(`Removed ${amount} ml log`);
   };
 
   const handleSaveGoal = (e: React.FormEvent) => {
     e.preventDefault();
     if (targetGoalInput >= 500 && targetGoalInput <= 6000 && onUpdateDailyGoal) {
       onUpdateDailyGoal(targetGoalInput);
-      triggerFeedback(`Sasaran harian ditukar ke ${targetGoalInput.toLocaleString()} ml`);
+      triggerFeedback(`Daily goal updated to ${targetGoalInput.toLocaleString()} ml`);
       setIsEditingGoal(false);
     }
   };
@@ -126,9 +126,9 @@ export const HydrationCard: React.FC<HydrationCardProps> = ({
                     setIsEditingGoal(true);
                   }}
                   className="inline-flex items-center gap-1 text-[11px] font-medium text-cyan-400/80 hover:text-cyan-300 px-1.5 py-0.5 rounded bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/20 transition-colors"
-                  title="Tukar sasaran objektif harian"
+                  title="Adjust daily intake goal"
                 >
-                  <Pencil className="w-2.5 h-2.5" /> Ubah Sasaran
+                  <Pencil className="w-2.5 h-2.5" /> Adjust Goal
                 </button>
               )}
             </div>
@@ -141,7 +141,7 @@ export const HydrationCard: React.FC<HydrationCardProps> = ({
             <span className="text-xs font-normal text-content-secondary ml-1">ml</span>
           </div>
           <div className="text-[11px] text-content-secondary">
-            {remainingMl > 0 ? `${remainingMl.toLocaleString()} ml lagi untuk capai sasaran` : 'Sasaran harian tercapai! 🎉'}
+            {remainingMl > 0 ? `${remainingMl.toLocaleString()} ml remaining today` : 'Daily target completed! 🎉'}
           </div>
         </div>
       </div>
@@ -192,7 +192,7 @@ export const HydrationCard: React.FC<HydrationCardProps> = ({
         <div className="md:col-span-7 flex flex-col gap-4">
           <div className="text-xs font-semibold uppercase tracking-wider text-content-secondary flex items-center justify-between">
             <span>Quick Log Intake</span>
-            <span className="text-[11px] font-normal lowercase opacity-75">Klik butang untuk rekod serta-merta</span>
+            <span className="text-[11px] font-normal lowercase opacity-75">Click amount to log instantly</span>
           </div>
 
           <div className="grid grid-cols-3 gap-3">
@@ -203,7 +203,7 @@ export const HydrationCard: React.FC<HydrationCardProps> = ({
             >
               <GlassWater className="w-5 h-5 text-cyan-400 group-hover:scale-110 transition-transform mb-1" />
               <span className="text-sm font-semibold text-content-primary">+250 ml</span>
-              <span className="text-[10px] text-content-secondary">Glass (Cawan)</span>
+              <span className="text-[10px] text-content-secondary">Glass</span>
             </button>
 
             <button
@@ -213,7 +213,7 @@ export const HydrationCard: React.FC<HydrationCardProps> = ({
             >
               <Droplet className="w-5 h-5 text-sky-400 group-hover:scale-110 transition-transform mb-1" />
               <span className="text-sm font-semibold text-content-primary">+500 ml</span>
-              <span className="text-[10px] text-content-secondary">Bottle (Botol)</span>
+              <span className="text-[10px] text-content-secondary">Bottle</span>
             </button>
 
             <button
@@ -223,7 +223,7 @@ export const HydrationCard: React.FC<HydrationCardProps> = ({
             >
               <Sparkles className="w-5 h-5 text-teal-400 group-hover:scale-110 transition-transform mb-1" />
               <span className="text-sm font-semibold text-content-primary">+1,000 ml</span>
-              <span className="text-[10px] text-content-secondary">Flask (Bekas Besar)</span>
+              <span className="text-[10px] text-content-secondary">Flask</span>
             </button>
           </div>
 
@@ -237,7 +237,7 @@ export const HydrationCard: React.FC<HydrationCardProps> = ({
                 step="10"
                 value={customMl}
                 onChange={(e) => setCustomMl(e.target.value)}
-                placeholder="Jumlah khusus (contoh: 350)"
+                placeholder="Custom amount (e.g. 350)"
                 className="w-full rounded-xl bg-white/[0.04] border border-white/[0.09] px-3.5 py-2.5 text-xs text-content-primary placeholder:text-content-secondary/50 focus:outline-none focus:border-cyan-400/50 focus:ring-1 focus:ring-cyan-400/30"
               />
               <span className="absolute right-3 top-2.5 text-[11px] text-content-secondary">ml</span>
@@ -247,7 +247,7 @@ export const HydrationCard: React.FC<HydrationCardProps> = ({
               disabled={!customMl}
               className="px-4 py-2.5 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-400/40 text-cyan-300 font-medium text-xs flex items-center gap-1.5 transition-all disabled:opacity-40 disabled:cursor-not-allowed active:scale-95"
             >
-              <Plus className="w-3.5 h-3.5" /> Log Masuk
+              <Plus className="w-3.5 h-3.5" /> Log Intake
             </button>
           </form>
 
@@ -266,15 +266,15 @@ export const HydrationCard: React.FC<HydrationCardProps> = ({
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <span className="text-xs font-semibold text-content-secondary uppercase tracking-wider">
-              Senarai Rekod Hari Ini ({todayLogs.length})
+              Today's Entries ({todayLogs.length})
             </span>
             <span className="text-[11px] text-content-secondary/70">
-              — Boleh edit jumlah atau padam jika silap tekan
+              — Edit volume or delete entries anytime
             </span>
           </div>
           {todayLogs.length > 0 && (
             <span className="text-xs font-mono font-medium text-cyan-300">
-              Jumlah: {totalMl.toLocaleString()} ml
+              Total: {totalMl.toLocaleString()} ml
             </span>
           )}
         </div>
@@ -283,11 +283,10 @@ export const HydrationCard: React.FC<HydrationCardProps> = ({
           <div className="rounded-xl border border-dashed border-white/10 bg-white/[0.02] p-4 text-center">
             <Droplet className="w-6 h-6 text-cyan-400/50 mx-auto mb-1.5" />
             <p className="text-xs text-content-secondary font-medium">
-              Belum ada rekod hidrasi untuk hari ini.
+              No hydration entries recorded for today yet.
             </p>
             <p className="text-[11px] text-content-secondary/60 mt-0.5">
-              Klik butang <strong>+250ml</strong>, <strong>+500ml</strong>, <strong>+1,000ml</strong> atau masukkan jumlah sendiri di atas.
-              Bila dah rekod, butang <strong>Edit</strong> dan <strong>Padam</strong> akan muncul di sini.
+              Click <strong>+250ml</strong>, <strong>+500ml</strong>, <strong>+1,000ml</strong>, or enter a custom amount above to start tracking.
             </p>
           </div>
         ) : (
@@ -312,7 +311,7 @@ export const HydrationCard: React.FC<HydrationCardProps> = ({
                       <button
                         type="button"
                         onClick={() => startEditLog(log)}
-                        title="Edit amaun ml"
+                        title="Edit volume"
                         aria-label="Edit hydration log"
                         className="p-1.5 rounded-lg bg-cyan-500/10 text-cyan-300 hover:bg-cyan-500/25 border border-cyan-500/20 hover:border-cyan-400/40 transition-colors"
                       >
@@ -322,7 +321,7 @@ export const HydrationCard: React.FC<HydrationCardProps> = ({
                     <button
                       type="button"
                       onClick={() => handleDeleteWithFeedback(log.id, log.amountMl)}
-                      title="Padam rekod ini"
+                      title="Delete entry"
                       aria-label="Remove hydration entry"
                       className="p-1.5 rounded-lg bg-rose-500/10 text-rose-300 hover:bg-rose-500/25 border border-rose-500/20 hover:border-rose-400/40 transition-colors"
                     >
@@ -343,7 +342,7 @@ export const HydrationCard: React.FC<HydrationCardProps> = ({
             <div className="flex items-center justify-between border-b border-white/10 pb-3">
               <h4 className="text-sm font-semibold text-content-primary flex items-center gap-2">
                 <Pencil className="w-4 h-4 text-cyan-400" />
-                Kemaskini Rekod Air
+                Edit Hydration Entry
               </h4>
               <button
                 type="button"
@@ -356,7 +355,7 @@ export const HydrationCard: React.FC<HydrationCardProps> = ({
 
             <div>
               <label className="text-xs text-content-secondary block mb-1.5">
-                Jumlah Pengambilan Air (ml)
+                Water Volume (ml)
               </label>
               <input
                 type="number"
@@ -394,14 +393,14 @@ export const HydrationCard: React.FC<HydrationCardProps> = ({
                 onClick={() => setEditingLog(null)}
                 className="px-3.5 py-2 rounded-xl text-xs text-content-secondary hover:text-content-primary transition-colors"
               >
-                Batal
+                Cancel
               </button>
               <button
                 type="button"
                 onClick={handleSaveEdit}
                 className="px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-semibold text-xs transition-colors"
               >
-                Simpan Perubahan
+                Save Changes
               </button>
             </div>
           </div>
@@ -415,7 +414,7 @@ export const HydrationCard: React.FC<HydrationCardProps> = ({
             <div className="flex items-center justify-between border-b border-white/10 pb-3">
               <h4 className="text-sm font-semibold text-content-primary flex items-center gap-2">
                 <Droplet className="w-4 h-4 text-cyan-400" />
-                Tetapkan Sasaran Harian
+                Set Daily Intake Goal
               </h4>
               <button
                 type="button"
@@ -428,7 +427,7 @@ export const HydrationCard: React.FC<HydrationCardProps> = ({
 
             <div>
               <label className="text-xs text-content-secondary block mb-1.5">
-                Sasaran Air Harian (ml)
+                Daily Intake Target (ml)
               </label>
               <input
                 type="number"
@@ -440,7 +439,7 @@ export const HydrationCard: React.FC<HydrationCardProps> = ({
                 className="w-full rounded-xl bg-white/[0.05] border border-white/10 px-3 py-2 text-sm text-cyan-300 font-mono font-bold focus:outline-none focus:border-cyan-400"
               />
               <span className="text-[11px] text-content-secondary/70 mt-1 block">
-                Cadangan umum: 2,000 ml hingga 3,000 ml bergantung kepada berat badan dan aktiviti fizikal.
+                Recommended baseline: 2,000 ml to 3,000 ml depending on body mass and activity level.
               </span>
             </div>
 
@@ -468,13 +467,13 @@ export const HydrationCard: React.FC<HydrationCardProps> = ({
                 onClick={() => setIsEditingGoal(false)}
                 className="px-3.5 py-2 rounded-xl text-xs text-content-secondary hover:text-content-primary transition-colors"
               >
-                Batal
+                Cancel
               </button>
               <button
                 type="submit"
                 className="px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-semibold text-xs transition-colors"
               >
-                Simpan Sasaran
+                Save Target
               </button>
             </div>
           </form>

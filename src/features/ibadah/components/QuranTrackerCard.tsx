@@ -75,15 +75,15 @@ export const QuranTrackerCard: React.FC<QuranTrackerCardProps> = ({
           </div>
           <div>
             <h3 className="text-base font-semibold text-content-primary flex items-center gap-2">
-              Al-Quran & Tadabbur
+              Holy Quran &amp; Tadabbur
               {isSaved && (
                 <span className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center gap-1">
-                  <Check className="w-3 h-3" /> Disimpan
+                  <Check className="w-3 h-3" /> Saved
                 </span>
               )}
             </h3>
             <p className="text-xs text-content-secondary">
-              Tilawah harian, penanda surah/ayat, dan catatan iktibar tadabbur
+              Daily recitation, surah/ayah bookmarking, and contemplation notes
             </p>
           </div>
         </div>
@@ -97,7 +97,7 @@ export const QuranTrackerCard: React.FC<QuranTrackerCardProps> = ({
               className="px-2.5 py-1.5 rounded-lg bg-cyan-500/15 hover:bg-cyan-500/25 border border-cyan-400/30 text-cyan-300 text-xs font-semibold flex items-center gap-1 transition-all active:scale-95 shadow-[0_0_8px_rgba(6,182,212,0.15)]"
             >
               <Plus className="w-3 h-3" />
-              <span>{inc} M/S</span>
+              <span>+{inc} Pages</span>
             </button>
           ))}
         </div>
@@ -108,13 +108,13 @@ export const QuranTrackerCard: React.FC<QuranTrackerCardProps> = ({
         <div className="md:col-span-5 rounded-xl border border-white/[0.08] bg-white/[0.03] p-4 flex items-center justify-between">
           <div className="space-y-1">
             <span className="text-[11px] font-medium text-content-tertiary uppercase tracking-wider block">
-              Muka Surat Hari Ini
+              Pages Read Today
             </span>
             <div className="text-3xl font-extrabold font-mono text-cyan-400 tracking-tight">
-              {pagesRead} <span className="text-sm font-normal text-content-secondary">muka surat</span>
+              {pagesRead} <span className="text-sm font-normal text-content-secondary">pages</span>
             </div>
             <p className="text-[11px] text-content-tertiary">
-              ~{(pagesRead / 20).toFixed(1)} juzuk dibaca hari ini
+              ~{(pagesRead / 20).toFixed(1)} juz&apos; completed today
             </p>
           </div>
 
@@ -128,11 +128,11 @@ export const QuranTrackerCard: React.FC<QuranTrackerCardProps> = ({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
             <div className="space-y-1">
               <label className="text-[11px] font-semibold text-content-secondary">
-                Surah Terakhir Dibaca
+                Last Read Surah
               </label>
               <Input
                 type="text"
-                placeholder="cth: Al-Kahfi / Al-Baqarah"
+                placeholder="e.g. Al-Kahf / Al-Baqarah"
                 value={lastSurah}
                 onChange={(e) => setLastSurah(e.target.value)}
               />
@@ -140,12 +140,12 @@ export const QuranTrackerCard: React.FC<QuranTrackerCardProps> = ({
 
             <div className="space-y-1">
               <label className="text-[11px] font-semibold text-content-secondary">
-                Ayat Terakhir
+                Last Ayah
               </label>
               <Input
                 type="number"
                 min="1"
-                placeholder="cth: 110"
+                placeholder="e.g. 110"
                 value={lastAyah}
                 onChange={(e) => setLastAyah(e.target.value)}
               />
@@ -154,11 +154,11 @@ export const QuranTrackerCard: React.FC<QuranTrackerCardProps> = ({
 
           <div className="space-y-1">
             <label className="text-[11px] font-semibold text-content-secondary">
-              Catatan Tadabbur / Refleksi Ayat
+              Tadabbur Notes / Ayah Reflection
             </label>
             <Input
               type="text"
-              placeholder="cth: Peringatan tentang godaan fitnah dunia dan pentingnya istiqamah..."
+              placeholder="e.g. Lessons on worldly tests, gratitude, and staying steadfast..."
               value={tadabburNotes}
               onChange={(e) => setTadabburNotes(e.target.value)}
             />
@@ -169,7 +169,7 @@ export const QuranTrackerCard: React.FC<QuranTrackerCardProps> = ({
               type="submit"
               className="px-3 py-1.5 rounded-lg bg-white/[0.06] hover:bg-white/[0.1] border border-white/[0.1] text-xs font-semibold text-white transition-all active:scale-95"
             >
-              Simpan Penanda & Catatan
+              Save Bookmark &amp; Reflection
             </button>
           </div>
         </form>

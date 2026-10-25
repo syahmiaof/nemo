@@ -1,17 +1,16 @@
 /**
- * Mazhab Syafi'i Fidyah Compounding Calculator for Malaysia
+ * Shafi'i Madhhab Fidyah Compounding Calculator for Malaysia
  *
- * Kaedah Kiraan:
- * Menurut Mazhab Syafi'i di Malaysia, fidyah dikenakan sekiranya puasa Ramadan
- * ditinggalkan dan tidak diganti (qadha) sehingga tiba bulan Ramadan tahun berikutnya.
+ * Calculation Method:
+ * According to Shafi'i jurisprudence in Malaysia, fidyah is due if Ramadan fasting
+ * was missed and not made up (qadha) before the arrival of the subsequent Ramadan.
  *
- * Sekiranya berlalu beberapa tahun, fidyah akan BERGANDA mengikut bilangan tahun
- * yang tertangguh:
+ * If multiple years pass, fidyah compounds for each delayed year:
  *
- * Fidyah (RM) = Hari Tertinggal x Bilangan Tahun Tertangguh x Kadar Fidyah (RM/hari)
+ * Fidyah (RM) = Days Missed x Number of Delayed Years x Fidyah Rate (RM/day)
  *
- * Nota: Sekiranya puasa ditinggalkan pada tahun semasa (0 tahun tertangguh sebelum
- * Ramadan seterusnya tiba), tiada fidyah dikenakan, hanya qadha wajib dilakukan.
+ * Note: If fasting was missed in the current year cycle (0 delayed years before
+ * the next Ramadan arrives), no fidyah is due, only obligatory qadha fasting is required.
  */
 
 export interface FidyahCalculationResult {
@@ -41,8 +40,8 @@ export function calculateFidyahCompounded(
       requiresQadha: safeDays > 0,
       formulaDescription:
         safeDays > 0
-          ? `${safeDays} hari qadha (Tahun semasa — belum melepasi Ramadan berikutnya, tiada bayaran fidyah).`
-          : 'Tiada baki hari tinggal.',
+          ? `${safeDays} makeup days (Current cycle — before the next Ramadan arrives, no fidyah due yet).`
+          : 'No remaining missed days.',
     };
   }
 
@@ -54,7 +53,7 @@ export function calculateFidyahCompounded(
     ratePerDay: safeRate,
     totalFidyahAmount: total,
     requiresQadha: true,
-    formulaDescription: `${safeDays} hari × ${safeYears} tahun tertangguh × RM ${safeRate.toFixed(2)} = RM ${total.toFixed(2)}`,
+    formulaDescription: `${safeDays} days × ${safeYears} ${safeYears === 1 ? 'year' : 'years'} delayed × RM ${safeRate.toFixed(2)} = RM ${total.toFixed(2)}`,
   };
 }
 

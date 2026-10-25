@@ -55,7 +55,7 @@ export const DhikrSedekahCard: React.FC<DhikrSedekahCardProps> = ({
                 <Sparkles className="w-4 h-4" />
               </div>
               <div>
-                <h4 className="text-sm font-bold text-white tracking-tight">Tasbih Digital</h4>
+                <h4 className="text-sm font-bold text-white tracking-tight">Digital Tasbih Counter</h4>
                 <p className="text-[11px] text-content-tertiary">SubhanAllah • Alhamdulillah • Allahu Akbar</p>
               </div>
             </div>
@@ -85,7 +85,7 @@ export const DhikrSedekahCard: React.FC<DhikrSedekahCardProps> = ({
               {dhikrCount}
             </div>
             <span className="text-[11px] text-content-tertiary block mt-1">
-              Sasaran: {targetGoal}x ({Math.floor(dhikrCount / targetGoal)} pusingan selesai)
+              Target: {targetGoal}x ({Math.floor(dhikrCount / targetGoal)} {Math.floor(dhikrCount / targetGoal) === 1 ? 'round' : 'rounds'} completed)
             </span>
           </div>
 
@@ -96,14 +96,14 @@ export const DhikrSedekahCard: React.FC<DhikrSedekahCardProps> = ({
               className="flex-1 py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-bold text-sm shadow-[0_0_15px_rgba(16,185,129,0.3)] active:scale-98 transition-all flex items-center justify-center gap-2"
             >
               <Plus className="w-4 h-4" />
-              <span>Tekan Tasbih (+1)</span>
+              <span>Count (+1)</span>
             </button>
 
             <button
               type="button"
               onClick={() => handleIncrement(10)}
               className="px-3.5 py-3 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] border border-white/[0.08] text-content-primary text-xs font-semibold active:scale-95 transition-all"
-              title="Tambah 10x"
+              title="Add 10x"
             >
               +10
             </button>
@@ -112,7 +112,7 @@ export const DhikrSedekahCard: React.FC<DhikrSedekahCardProps> = ({
               type="button"
               onClick={handleReset}
               className="p-3 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.08] text-content-tertiary hover:text-rose-400 active:scale-95 transition-all"
-              title="Reset kiraan tasbih"
+              title="Reset tasbih counter"
             >
               <RotateCcw className="w-4 h-4" />
             </button>
@@ -131,15 +131,15 @@ export const DhikrSedekahCard: React.FC<DhikrSedekahCardProps> = ({
               <Sun className="w-4 h-4" />
             </div>
             <div>
-              <h4 className="text-sm font-bold text-white tracking-tight">Sedekah Subuh & Keberkatan</h4>
-              <p className="text-[11px] text-content-tertiary">Doa para malaikat di setiap awal pagi</p>
+              <h4 className="text-sm font-bold text-white tracking-tight">Dawn Charity (Sedekah Subuh)</h4>
+              <p className="text-[11px] text-content-tertiary">The angels&apos; prayer every morning for those who spend</p>
             </div>
           </div>
 
           <p className="text-xs text-content-secondary leading-relaxed bg-white/[0.02] border border-white/[0.05] p-3 rounded-xl italic">
-            &ldquo;Tidak ada satu subuh pun yang dialami hamba-hamba Allah melainkan turun dua malaikat. Salah satunya berdoa: Ya Allah, berikanlah ganti bagi orang yang berinfak...&rdquo;
+            &ldquo;There is not a day upon which servants wake in the morning but that two angels descend. One says: O Allah, give to him who spends in charity a compensation...&rdquo;
             <span className="block text-[10px] text-amber-400/90 font-medium not-italic mt-1">
-              — Sahih Al-Bukhari & Muslim
+              — Sahih Al-Bukhari &amp; Muslim
             </span>
           </p>
 
@@ -160,10 +160,10 @@ export const DhikrSedekahCard: React.FC<DhikrSedekahCardProps> = ({
               )}
               <div className="text-left">
                 <span className={`text-xs font-bold block ${sedekahDone ? 'text-emerald-300' : 'text-white'}`}>
-                  Sedekah Subuh Hari Ini
+                  Today&apos;s Dawn Charity
                 </span>
                 <span className="text-[11px] text-content-tertiary block mt-0.5">
-                  {sedekahDone ? 'Alhamdulillah, telah disempurnakan!' : 'Tabung fizikal / QR Online'}
+                  {sedekahDone ? 'Alhamdulillah, fulfilled for today!' : 'Physical coin box or online QR donation'}
                 </span>
               </div>
             </div>

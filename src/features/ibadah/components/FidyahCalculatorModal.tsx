@@ -64,11 +64,11 @@ export const FidyahCalculatorModal: React.FC<FidyahCalculatorModalProps> = ({
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     if (parsedDays <= 0) {
-      setFormError('Sila masukkan bilangan hari tinggal yang sah.');
+      setFormError('Please enter a valid number of missed days.');
       return;
     }
     if (parsedMissedYear > currentYear) {
-      setFormError('Tahun Ramadan mestilah tahun semasa atau tahun sebelumnya.');
+      setFormError('Ramadan year must be the current year or earlier.');
       return;
     }
 
@@ -85,7 +85,7 @@ export const FidyahCalculatorModal: React.FC<FidyahCalculatorModalProps> = ({
       });
       onClose();
     } catch (err: unknown) {
-      setFormError(err instanceof Error ? err.message : 'Gagal menyimpan rekod fidyah.');
+      setFormError(err instanceof Error ? err.message : 'Failed to save fidyah record.');
     } finally {
       setIsSubmitting(false);
     }
@@ -95,8 +95,8 @@ export const FidyahCalculatorModal: React.FC<FidyahCalculatorModalProps> = ({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="Kalkulator Fidyah Berganda (Mazhab Syafi'i)"
-      description="Kira kadar fidyah berganda mengikut bilangan tahun tertangguh dan kadar rasmi zakat negeri di Malaysia."
+      title="Compounding Fidyah Calculator (Shafi'i Madhhab)"
+      description="Calculate compounding fidyah rates based on delayed years and Malaysian state zakat boards."
       maxWidth="md"
     >
       <form onSubmit={handleSave} className="space-y-4 pt-2">
@@ -109,12 +109,12 @@ export const FidyahCalculatorModal: React.FC<FidyahCalculatorModalProps> = ({
         {/* State Selection */}
         <div className="space-y-1.5">
           <label className="text-xs font-semibold text-content-secondary">
-            Negeri Pembayaran / Kadar Zakat
+            State of Payment / Zakat Board Rate
           </label>
           <Select
             options={OFFICIAL_FIDYAH_STATE_RATES.map((s) => ({
               value: s.state,
-              label: `${s.state} — RM ${s.ratePerDay.toFixed(2)}/hari`,
+              label: `${s.state} — RM ${s.ratePerDay.toFixed(2)}/day`,
             }))}
             value={selectedState}
             onChange={(e) => handleStateChange(e.target.value)}
@@ -130,7 +130,7 @@ export const FidyahCalculatorModal: React.FC<FidyahCalculatorModalProps> = ({
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div className="space-y-1.5">
             <label className="text-xs font-semibold text-content-secondary">
-              Tahun Ramadan Ditinggalkan (Masihi)
+              Missed Ramadan Year (Gregorian)
             </label>
             <Input
               type="number"
@@ -141,13 +141,13 @@ export const FidyahCalculatorModal: React.FC<FidyahCalculatorModalProps> = ({
               required
             />
             <span className="text-[10px] text-content-tertiary block">
-              Tahun Hijrah: ~{hijriYear}H ({yearsDelayed} tahun tertangguh)
+              Hijri Year: ~{hijriYear}H ({yearsDelayed} {yearsDelayed === 1 ? 'year' : 'years'} delayed)
             </span>
           </div>
 
           <div className="space-y-1.5">
             <label className="text-xs font-semibold text-content-secondary">
-              Bilangan Hari Puasa Ditinggalkan
+              Number of Missed Fasting Days
             </label>
             <Input
               type="number"
@@ -158,7 +158,7 @@ export const FidyahCalculatorModal: React.FC<FidyahCalculatorModalProps> = ({
               required
             />
             <span className="text-[10px] text-content-tertiary block">
-              Wajib diganti (qadha) {parsedDays} hari puasa
+              Obligatory to make up (qadha) {parsedDays} {parsedDays === 1 ? 'day' : 'days'}
             </span>
           </div>
         </div>
@@ -166,7 +166,7 @@ export const FidyahCalculatorModal: React.FC<FidyahCalculatorModalProps> = ({
         {/* Custom Rate Input if needed */}
         <div className="space-y-1.5">
           <label className="text-xs font-semibold text-content-secondary">
-            Kadar Fidyah Sehari (RM)
+            Fidyah Rate per Day (RM)
           </label>
           <Input
             type="number"
@@ -183,7 +183,7 @@ export const FidyahCalculatorModal: React.FC<FidyahCalculatorModalProps> = ({
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-emerald-300 flex items-center gap-1.5">
               <Calculator className="w-4 h-4 text-emerald-400" />
-              Jumlah Kiraan Fidyah:
+              Total Calculated Fidyah:
             </span>
             <span className="text-2xl font-extrabold font-mono text-emerald-400">
               {formatRM(calcResult.totalFidyahAmount)}
@@ -193,7 +193,7 @@ export const FidyahCalculatorModal: React.FC<FidyahCalculatorModalProps> = ({
           <div className="text-[11px] text-emerald-200/90 space-y-1 font-mono">
             <div>Formula: {calcResult.formulaDescription}</div>
             <div className="text-[10px] font-sans text-content-secondary">
-              *Hukum: Selain membayar fidyah RM {calcResult.totalFidyahAmount.toFixed(2)}, anda <strong>wajib qadha {parsedDays} hari</strong> puasa yang ditinggalkan.
+              *Ruling: In addition to paying fidyah of RM {calcResult.totalFidyahAmount.toFixed(2)}, you are still <strong>obligated to make up (qadha) {parsedDays} {parsedDays === 1 ? 'day' : 'days'}</strong> of missed fasting.
             </div>
           </div>
 
@@ -204,7 +204,7 @@ export const FidyahCalculatorModal: React.FC<FidyahCalculatorModalProps> = ({
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1 text-[11px] text-cyan-400 hover:text-cyan-300 underline font-medium pt-1"
             >
-              <span>Bayar Fidyah Online di Portal Rasmi {activeStateRate.state}</span>
+              <span>Pay Fidyah Online via Official {activeStateRate.state} Zakat Portal</span>
               <ExternalLink className="w-3 h-3" />
             </a>
           )}
@@ -213,11 +213,11 @@ export const FidyahCalculatorModal: React.FC<FidyahCalculatorModalProps> = ({
         {/* Notes */}
         <div className="space-y-1.5">
           <label className="text-xs font-semibold text-content-secondary">
-            Catatan (Pilihan)
+            Notes / Remarks (Optional)
           </label>
           <Input
             type="text"
-            placeholder="cth: Tertinggal kerana sakit/musafir Ramadhan 2022"
+            placeholder="e.g. Missed due to illness / travel during Ramadan 2022"
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
           />
@@ -225,7 +225,7 @@ export const FidyahCalculatorModal: React.FC<FidyahCalculatorModalProps> = ({
 
         <div className="flex items-center justify-end gap-3 pt-3 border-t border-white/[0.08]">
           <Button type="button" variant="ghost" onClick={onClose} disabled={isSubmitting}>
-            Batal
+            Cancel
           </Button>
           <Button
             type="submit"
@@ -233,7 +233,7 @@ export const FidyahCalculatorModal: React.FC<FidyahCalculatorModalProps> = ({
             disabled={isSubmitting}
             className="bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold"
           >
-            {isSubmitting ? 'Menyimpan...' : 'Simpan Rekod Fidyah'}
+            {isSubmitting ? 'Saving...' : 'Save Fidyah Record'}
           </Button>
         </div>
       </form>

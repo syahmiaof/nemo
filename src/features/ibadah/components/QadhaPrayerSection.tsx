@@ -9,11 +9,11 @@ interface QadhaPrayerSectionProps {
 }
 
 const PRAYERS: { key: PrayerTimeName; label: string }[] = [
-  { key: 'subuh', label: 'Subuh (2 Rakaat)' },
-  { key: 'zohor', label: 'Zohor (4 Rakaat)' },
-  { key: 'asar', label: 'Asar (4 Rakaat)' },
-  { key: 'maghrib', label: 'Maghrib (3 Rakaat)' },
-  { key: 'isyak', label: 'Isyak (4 Rakaat)' },
+  { key: 'subuh', label: "Fajr / Subuh (2 Rak'ahs)" },
+  { key: 'zohor', label: "Dhuhr / Zohor (4 Rak'ahs)" },
+  { key: 'asar', label: "Asr / Asar (4 Rak'ahs)" },
+  { key: 'maghrib', label: "Maghrib (3 Rak'ahs)" },
+  { key: 'isyak', label: "Isha / Isyak (4 Rak'ahs)" },
 ];
 
 export const QadhaPrayerSection: React.FC<QadhaPrayerSectionProps> = ({
@@ -43,15 +43,15 @@ export const QadhaPrayerSection: React.FC<QadhaPrayerSectionProps> = ({
           </div>
           <div>
             <h3 className="text-base font-semibold text-content-primary flex items-center gap-2">
-              Kalkulator & Pengira Qadha Solat
+              Missed Prayers (Qadha) Tracker
               {totalRemaining === 0 && (
                 <span className="inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                  <ShieldCheck className="w-3 h-3" /> Selesai Semua!
+                  <ShieldCheck className="w-3 h-3" /> All Settled!
                 </span>
               )}
             </h3>
             <p className="text-xs text-content-secondary">
-              Jejak hutang solat fardhu lampau dan kemaskini baki setiap kali selesai qadha
+              Track outstanding missed obligatory prayers and log makeup completions anytime
             </p>
           </div>
         </div>
@@ -59,10 +59,10 @@ export const QadhaPrayerSection: React.FC<QadhaPrayerSectionProps> = ({
         {/* Total Remaining Counter */}
         <div className="px-4 py-2 rounded-xl border border-white/[0.08] bg-white/[0.03] text-right">
           <span className="text-[10px] uppercase tracking-wider text-content-tertiary block">
-            Baki Hutang Solat
+            Remaining Missed Prayers
           </span>
           <span className="text-xl font-bold font-mono text-amber-400">
-            {totalRemaining} <span className="text-xs font-normal text-content-secondary">waktu</span>
+            {totalRemaining} <span className="text-xs font-normal text-content-secondary">prayers</span>
           </span>
         </div>
       </div>
@@ -71,10 +71,10 @@ export const QadhaPrayerSection: React.FC<QadhaPrayerSectionProps> = ({
       <div className="space-y-1.5 mb-6 relative z-10">
         <div className="flex items-center justify-between text-xs">
           <span className="text-content-secondary">
-            Langsaian: <strong className="text-emerald-400 font-mono">{totalCompleted}</strong> selesai daripada {grandTotal} waktu
+            Progress: <strong className="text-emerald-400 font-mono">{totalCompleted}</strong> made up out of {grandTotal} total
           </span>
           <span className="text-xs font-bold text-white font-mono">
-            {progressRatio}% Langsai
+            {progressRatio}% Settled
           </span>
         </div>
 
@@ -108,10 +108,10 @@ export const QadhaPrayerSection: React.FC<QadhaPrayerSectionProps> = ({
                 <span className="text-xs font-bold text-white block capitalize">{label}</span>
                 <div className="text-2xl font-extrabold font-mono text-amber-400 mt-1">
                   {item.remainingCount}{' '}
-                  <span className="text-[10px] font-normal text-content-tertiary">baki</span>
+                  <span className="text-[10px] font-normal text-content-tertiary">left</span>
                 </div>
                 <span className="text-[10px] text-content-secondary block mt-0.5">
-                  ({item.completedCount} selesai)
+                  ({item.completedCount} made up)
                 </span>
               </div>
 
@@ -124,7 +124,7 @@ export const QadhaPrayerSection: React.FC<QadhaPrayerSectionProps> = ({
                   className="w-full py-1.5 rounded-lg bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-400/30 text-emerald-300 text-xs font-semibold flex items-center justify-center gap-1.5 transition-all active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed shadow-[0_0_8px_rgba(16,185,129,0.15)]"
                 >
                   <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-                  <span>Selesai 1</span>
+                  <span>Made Up 1</span>
                 </button>
 
                 <div className="flex items-center gap-1.5">
@@ -132,7 +132,7 @@ export const QadhaPrayerSection: React.FC<QadhaPrayerSectionProps> = ({
                     type="button"
                     onClick={() => onAdjustTotalMissed(key, 1)}
                     className="flex-1 py-1 rounded-md bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-[11px] text-content-secondary hover:text-white flex items-center justify-center gap-1 transition-colors"
-                    title="Tambah 1 hutang waktu"
+                    title="Add 1 missed prayer"
                   >
                     <Plus className="w-3 h-3 text-amber-400" />
                     <span>+1</span>
@@ -142,7 +142,7 @@ export const QadhaPrayerSection: React.FC<QadhaPrayerSectionProps> = ({
                     type="button"
                     onClick={() => onAdjustTotalMissed(key, 5)}
                     className="flex-1 py-1 rounded-md bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-[11px] text-content-secondary hover:text-white flex items-center justify-center gap-1 transition-colors"
-                    title="Tambah 5 waktu (1 hari penuh)"
+                    title="Add 5 missed prayers (1 full day)"
                   >
                     <Plus className="w-3 h-3 text-amber-400" />
                     <span>+5</span>
@@ -153,7 +153,7 @@ export const QadhaPrayerSection: React.FC<QadhaPrayerSectionProps> = ({
                       type="button"
                       onClick={() => onAdjustTotalMissed(key, -1)}
                       className="p-1 rounded-md bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-content-tertiary hover:text-rose-400 transition-colors"
-                      title="Tolak 1 daripada kiraan asal jika terlebih kira"
+                      title="Subtract 1 if miscalculated"
                     >
                       <Minus className="w-3 h-3" />
                     </button>

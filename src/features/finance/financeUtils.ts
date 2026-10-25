@@ -85,7 +85,7 @@ export function calculateDebtPayoffProjection(debt: DebtItem): {
     return { monthsRemaining: 0, projectedPayoffText: 'Fully Paid Off' };
   }
   if (debt.debtType === 'lumpsum_flexible') {
-    return { monthsRemaining: 0, projectedPayoffText: 'Fleksibel (bayar bila ada duit)' };
+    return { monthsRemaining: 0, projectedPayoffText: 'Flexible (pay at your own pace)' };
   }
   if (!debt.monthlyInstallment || debt.monthlyInstallment <= 0) {
     return { monthsRemaining: 0, projectedPayoffText: 'No scheduled installment' };

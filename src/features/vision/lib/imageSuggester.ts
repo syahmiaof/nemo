@@ -132,7 +132,7 @@ export const CURATED_VISION_PRESETS: VisionImagePreset[] = [
     url: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1200&q=80',
     thumbnailUrl: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=400&q=80',
     title: 'Compounding Investment & Trading Growth',
-    keywords: ['invest', 'investment', 'stock', 'crypto', 'portfolio', 'dividend', 'simpanan', 'savings', 'emergency fund', 'compound', 'growth'],
+    keywords: ['invest', 'investment', 'stock', 'crypto', 'portfolio', 'dividend', 'wealth', 'savings', 'emergency fund', 'compound', 'growth'],
     category: 'wealth_finance',
   },
   {

@@ -333,7 +333,7 @@ export const DebtsManagerCard: React.FC<DebtsManagerCardProps> = ({
                       {debt.debtType === 'lumpsum_flexible' ? (
                         <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-cyan-500/15 border border-cyan-400/30 text-cyan-300 shadow-[0_0_10px_rgba(6,182,212,0.15)] flex items-center gap-1">
                           <Sparkles className="w-3 h-3 text-cyan-400" />
-                          Hutang Fleksibel / Lumpsum
+                          Flexible Debt / Lumpsum
                         </span>
                       ) : (
                         <span
@@ -348,7 +348,7 @@ export const DebtsManagerCard: React.FC<DebtsManagerCardProps> = ({
                     <div className="flex items-center gap-3 text-xs text-content-tertiary flex-wrap">
                       {debt.debtType === 'lumpsum_flexible' ? (
                         <span>
-                          Komitmen Bulanan: <strong className="text-cyan-300 font-medium">Tiada (Bayar bila mampu)</strong>
+                          Monthly Commitment: <strong className="text-cyan-300 font-medium">None (Pay at your own pace)</strong>
                         </span>
                       ) : (
                         <span>
@@ -361,11 +361,11 @@ export const DebtsManagerCard: React.FC<DebtsManagerCardProps> = ({
                         </span>
                       )}
                       <span>
-                        Status Langsaian: <strong className="text-emerald-400 font-medium">{projection.projectedPayoffText}</strong>
+                        Payoff Projection: <strong className="text-emerald-400 font-medium">{projection.projectedPayoffText}</strong>
                       </span>
                       {debtPayments.length > 0 && (
                         <span className="text-cyan-400 font-medium font-mono">
-                          ({debtPayments.length} {debtPayments.length === 1 ? 'bayaran' : 'bayaran'} direkodkan)
+                          ({debtPayments.length} {debtPayments.length === 1 ? 'payment' : 'payments'} recorded)
                         </span>
                       )}
                     </div>
@@ -424,8 +424,8 @@ export const DebtsManagerCard: React.FC<DebtsManagerCardProps> = ({
       <Modal
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
-        title="Daftar Pinjaman atau Hutang"
-        description="Daftar pinjaman kereta, ansuran bank, atau hutang fleksibel/lumpsum untuk menjejaki baki dan kebebasan kewangan anda."
+        title="Register Loan or Debt"
+        description="Track car loans, mortgages, student loans, or flexible lumpsum debts to monitor balances and financial freedom."
         maxWidth="md"
       >
         <form onSubmit={handleAddSubmit} className="space-y-4 pt-2">
@@ -437,7 +437,7 @@ export const DebtsManagerCard: React.FC<DebtsManagerCardProps> = ({
 
           {/* Debt Type Selector */}
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-content-secondary">Jenis Pinjaman / Hutang</label>
+            <label className="text-xs font-semibold text-content-secondary">Loan / Debt Type</label>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               <button
                 type="button"
@@ -450,10 +450,10 @@ export const DebtsManagerCard: React.FC<DebtsManagerCardProps> = ({
               >
                 <div className="text-xs font-bold text-white flex items-center gap-1.5">
                   <CreditCard className="w-3.5 h-3.5 text-amber-400" />
-                  Ansuran Tetap
+                  Fixed Installment
                 </div>
                 <div className="text-[11px] text-content-tertiary mt-1">
-                  Kereta, rumah, PTPTN (ada bayaran tetap setiap bulan)
+                  Car, mortgage, student loan (fixed monthly installments)
                 </div>
               </button>
 
@@ -468,10 +468,10 @@ export const DebtsManagerCard: React.FC<DebtsManagerCardProps> = ({
               >
                 <div className="text-xs font-bold text-white flex items-center gap-1.5">
                   <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
-                  Hutang Fleksibel / Lumpsum
+                  Flexible Debt / Lumpsum
                 </div>
                 <div className="text-[11px] text-content-tertiary mt-1">
-                  Hutang kawan / saudara (tiada ansuran bulanan, bayar bila ada duit)
+                  Personal/peer loan (no fixed monthly bill, pay when funds available)
                 </div>
               </button>
             </div>
@@ -479,10 +479,10 @@ export const DebtsManagerCard: React.FC<DebtsManagerCardProps> = ({
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-content-secondary">Nama Hutang / Pinjaman</label>
+              <label className="text-xs font-semibold text-content-secondary">Loan / Debt Name</label>
               <Input
                 type="text"
-                placeholder={debtType === 'lumpsum_flexible' ? 'cth: Hutang Kawan (Zul)' : 'cth: Honda City / PTPTN'}
+                placeholder={debtType === 'lumpsum_flexible' ? 'e.g. Peer Loan (Zul)' : 'e.g. Honda City / Student Loan'}
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 required
@@ -491,10 +491,10 @@ export const DebtsManagerCard: React.FC<DebtsManagerCardProps> = ({
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-content-secondary">Pihak / Peminjam / Institusi</label>
+              <label className="text-xs font-semibold text-content-secondary">Lender / Creditor / Institution</label>
               <Input
                 type="text"
-                placeholder={debtType === 'lumpsum_flexible' ? 'cth: Kawan Baik / Saudara' : 'cth: Maybank / PTPTN'}
+                placeholder={debtType === 'lumpsum_flexible' ? 'e.g. Close Friend / Family' : 'e.g. Maybank / Education Fund'}
                 value={creditor}
                 onChange={(e) => setCreditor(e.target.value)}
                 required
@@ -504,12 +504,12 @@ export const DebtsManagerCard: React.FC<DebtsManagerCardProps> = ({
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-content-secondary">Jumlah Asal Pinjaman (RM)</label>
+              <label className="text-xs font-semibold text-content-secondary">Original Principal Amount (RM)</label>
               <Input
                 type="number"
                 step="0.01"
                 min="0"
-                placeholder={debtType === 'lumpsum_flexible' ? 'cth: 1500.00' : 'cth: 30000.00'}
+                placeholder={debtType === 'lumpsum_flexible' ? 'e.g. 1500.00' : 'e.g. 30000.00'}
                 value={originalPrincipal}
                 onChange={(e) => setOriginalPrincipal(e.target.value)}
                 required
@@ -517,12 +517,12 @@ export const DebtsManagerCard: React.FC<DebtsManagerCardProps> = ({
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-content-secondary">Baki Semasa (RM)</label>
+              <label className="text-xs font-semibold text-content-secondary">Current Balance (RM)</label>
               <Input
                 type="number"
                 step="0.01"
                 min="0"
-                placeholder={debtType === 'lumpsum_flexible' ? 'cth: 1500.00' : 'cth: 14000.00'}
+                placeholder={debtType === 'lumpsum_flexible' ? 'e.g. 1500.00' : 'e.g. 14000.00'}
                 value={currentBalance}
                 onChange={(e) => setCurrentBalance(e.target.value)}
                 required
@@ -533,12 +533,12 @@ export const DebtsManagerCard: React.FC<DebtsManagerCardProps> = ({
           {debtType === 'installment' ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-content-secondary">Ansuran Bulanan (RM)</label>
+                <label className="text-xs font-semibold text-content-secondary">Monthly Installment (RM)</label>
                 <Input
                   type="number"
                   step="0.01"
                   min="0"
-                  placeholder="cth: 250.00"
+                  placeholder="e.g. 250.00"
                   value={monthlyInstallment}
                   onChange={(e) => setMonthlyInstallment(e.target.value)}
                   required
@@ -546,12 +546,12 @@ export const DebtsManagerCard: React.FC<DebtsManagerCardProps> = ({
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-content-secondary">Kadar Faedah (%) - Pilihan</label>
+                <label className="text-xs font-semibold text-content-secondary">Interest Rate (%) - Optional</label>
                 <Input
                   type="number"
                   step="0.01"
                   min="0"
-                  placeholder="cth: 3.2"
+                  placeholder="e.g. 3.2"
                   value={interestRate}
                   onChange={(e) => setInterestRate(e.target.value)}
                 />
@@ -561,10 +561,10 @@ export const DebtsManagerCard: React.FC<DebtsManagerCardProps> = ({
             <div className="p-3.5 rounded-xl bg-cyan-500/10 border border-cyan-400/25 text-xs text-cyan-200">
               <div className="font-semibold text-cyan-300 flex items-center gap-1.5 mb-1">
                 <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
-                Bayaran Fleksibel / Lumpsum
+                Flexible / Lumpsum Repayment
               </div>
               <p className="text-[11px] text-cyan-200/80 leading-relaxed">
-                Hutang ini <strong>tidak akan memotong</strong> aliran tunai bulanan tetap anda (RM 0.00/bulan). Anda boleh rekod bayaran sebahagian atau lumpsum penuh bila-bila masa bila ada duit lebih atau rezeki projek!
+                This debt <strong>does not reduce</strong> your fixed monthly recurring cashflow (RM 0.00/mo). You can log partial or full lumpsum payments at any time as extra project income or savings permit!
               </p>
             </div>
           )}

@@ -43,6 +43,12 @@ export async function seedDemoWorkspace(database: NemoDatabase, reset = false, a
     if (fixtures.wishlistItems?.length) await database.wishlistItems.bulkAdd(fixtures.wishlistItems);
     if (fixtures.savingsGoals?.length) await database.savingsGoals.bulkAdd(fixtures.savingsGoals);
     if (fixtures.savingsDeposits?.length) await database.savingsDeposits.bulkAdd(fixtures.savingsDeposits);
+    if (fixtures.visionItems?.length) await database.visionItems.bulkAdd(fixtures.visionItems);
+    if (fixtures.monthlyRoadmaps?.length) await database.monthlyRoadmaps.bulkAdd(fixtures.monthlyRoadmaps);
+    if (fixtures.incomeItems?.length) await database.incomeItems.bulkAdd(fixtures.incomeItems);
+    if (fixtures.ibadahDailyLogs?.length) await database.ibadahDailyLogs.bulkAdd(fixtures.ibadahDailyLogs);
+    if (fixtures.qadhaPrayers?.length) await database.qadhaPrayers.bulkAdd(fixtures.qadhaPrayers);
+    if (fixtures.qadhaFastings?.length) await database.qadhaFastings.bulkAdd(fixtures.qadhaFastings);
   });
 }
 

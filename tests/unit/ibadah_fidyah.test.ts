@@ -14,14 +14,14 @@ describe('Ibadah Hub - Fidyah Compounding Calculator (Mazhab Syafi\'i)', () => {
     expect(result.yearsDelayed).toBe(0);
     expect(result.totalFidyahAmount).toBe(0);
     expect(result.requiresQadha).toBe(true);
-    expect(result.formulaDescription).toContain('Tahun semasa');
+    expect(result.formulaDescription).toContain('Current cycle');
   });
 
   it('calculates 1-year delayed fidyah accurately (days * 1 * rate)', () => {
     // 5 missed days, 1 year delayed, standard rate RM 4.00/cupak
     const result = calculateFidyahCompounded(5, 1, 4.00);
     expect(result.totalFidyahAmount).toBe(20.00);
-    expect(result.formulaDescription).toContain('5 hari × 1 tahun tertangguh × RM 4.00 = RM 20.00');
+    expect(result.formulaDescription).toContain('5 days × 1 year delayed × RM 4.00 = RM 20.00');
   });
 
   it('calculates compounding multi-year fidyah for past years (days * years * rate)', () => {
@@ -125,6 +125,6 @@ describe('Finance Hub - Lumpsum Flexible Debt & Safe-to-Spend', () => {
 
     const projection = calculateDebtPayoffProjection(flexibleDebt);
     expect(projection.monthsRemaining).toBe(0);
-    expect(projection.projectedPayoffText).toContain('Fleksibel');
+    expect(projection.projectedPayoffText).toMatch(/Fleksibel|Flexible/i);
   });
 });

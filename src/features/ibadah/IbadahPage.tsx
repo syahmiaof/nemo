@@ -226,13 +226,13 @@ export const IbadahPage: React.FC = () => {
     <div ref={containerRef} className="space-y-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
       {/* Page Heading */}
       <PageHeading
-        title="Pusat Ibadah & Rohani"
-        description="Pantau solat fardhu 5 waktu, tilawah Al-Quran, pengira qadha solat, kalkulator fidyah puasa berganda, dan amalan harian."
+        title="Ibadah & Spiritual Hub"
+        description="Track daily 5 obligatory prayers, Quran recitation, missed prayer makeup ledger, compounding fasting fidyah calculator, and spiritual habits."
         stats={[
-          { label: 'Solat Fardhu', value: completedFardhuCount, icon: Clock, note: 'daripada 5 waktu' },
-          { label: 'Al-Quran Hari Ini', value: currentLog?.quranPagesRead || 0, icon: BookOpen, note: 'muka surat' },
-          { label: 'Baki Qadha Solat', value: totalQadhaPrayersRemaining, icon: Flame, note: 'waktu' },
-          { label: 'Baki Qadha Puasa', value: totalQadhaFastingRemaining, icon: Moon, note: 'hari' },
+          { label: 'Fardhu Prayers', value: completedFardhuCount, icon: Clock, note: 'out of 5 daily' },
+          { label: "Today's Quran", value: currentLog?.quranPagesRead || 0, icon: BookOpen, note: 'pages read' },
+          { label: 'Qadha Prayers Debt', value: totalQadhaPrayersRemaining, icon: Flame, note: 'prayers left' },
+          { label: 'Missed Fasting Debt', value: totalQadhaFastingRemaining, icon: Moon, note: 'days left' },
         ]}
       />
 
@@ -244,11 +244,11 @@ export const IbadahPage: React.FC = () => {
       {/* Sub-Navigation Tabs */}
       <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
         {[
-          { key: 'all', label: 'Semua Bahagian', icon: LayoutGrid },
-          { key: 'daily', label: 'Amalan Harian & Solat', icon: Clock },
-          { key: 'qadha_solat', label: `Hutang Solat (${totalQadhaPrayersRemaining})`, icon: Flame },
-          { key: 'qadha_puasa', label: `Puasa & Fidyah (${totalQadhaFastingRemaining}h)`, icon: Moon },
-          { key: 'motivation', label: 'Mutiara Kalam', icon: Sparkles },
+          { key: 'all', label: 'All Sections', icon: LayoutGrid },
+          { key: 'daily', label: 'Daily Habits & Prayers', icon: Clock },
+          { key: 'qadha_solat', label: `Missed Prayers (${totalQadhaPrayersRemaining})`, icon: Flame },
+          { key: 'qadha_puasa', label: `Fasting & Fidyah (${totalQadhaFastingRemaining}d)`, icon: Moon },
+          { key: 'motivation', label: 'Spiritual Reflections', icon: Sparkles },
         ].map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.key;

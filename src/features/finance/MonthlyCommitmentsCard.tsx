@@ -304,10 +304,10 @@ export const MonthlyCommitmentsCard: React.FC<MonthlyCommitmentsCardProps> = ({
         <Sparkles className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" />
         <div>
           <span className="font-semibold text-cyan-300">
-            Kitaran Aktif: <span className="capitalize">{currentMonthLabel}</span>
+            Active Cycle: <span className="capitalize">{currentMonthLabel}</span>
           </span>
           <p className="text-[11px] text-cyan-200/80 mt-0.5 leading-relaxed">
-            Bila anda tanda (✓) sudah bayar, bil direkodkan selesai bagi bulan {currentMonthLabel}. Apabila masuk 1hb bulan baru nanti, checklist ini akan auto-reset semula secara automatik!
+            When you check (✓) as paid, the bill is marked complete for {currentMonthLabel}. On the 1st of each new month, this checklist will automatically reset for the new cycle!
           </p>
         </div>
       </div>
