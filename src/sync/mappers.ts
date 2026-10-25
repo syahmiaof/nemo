@@ -22,6 +22,7 @@ import type {
   WishlistItem,
   SavingsGoal,
   SavingsDeposit,
+  VisionItem,
 } from '@/domain/types';
 
 export const mappers = {
@@ -737,4 +738,62 @@ export const mappers = {
       };
     },
   },
+
+  visionItem: {
+    toRemote(local: VisionItem, userId: string) {
+      return toRemoteVisionItem(local, userId);
+    },
+    toLocal(remote: any): VisionItem {
+      return toLocalVisionItem(remote);
+    },
+  },
 };
+
+export function toRemoteVisionItem(local: VisionItem, userId: string) {
+  return {
+    id: local.id,
+    user_id: userId,
+    title: local.title,
+    description: local.description || null,
+    image_url: local.imageUrl,
+    image_thumbnail_url: local.imageThumbnailUrl || null,
+    horizon: local.horizon,
+    category: local.category,
+    target_date: local.targetDate || null,
+    estimated_cost: local.estimatedCost ?? null,
+    linked_goal_id: local.linkedGoalId || null,
+    linked_savings_goal_id: local.linkedSavingsGoalId || null,
+    why_it_matters: local.whyItMatters || null,
+    status: local.status,
+    manifested_at: local.manifestedAt || null,
+    order: local.order ?? 0,
+    archived_at: local.archivedAt || null,
+    version: 1,
+    is_deleted: false,
+    created_at: local.createdAt,
+    updated_at: local.updatedAt,
+  };
+}
+
+export function toLocalVisionItem(remote: any): VisionItem {
+  return {
+    id: remote.id,
+    title: remote.title,
+    description: remote.description || undefined,
+    imageUrl: remote.image_url,
+    imageThumbnailUrl: remote.image_thumbnail_url || undefined,
+    horizon: remote.horizon,
+    category: remote.category,
+    targetDate: remote.target_date || undefined,
+    estimatedCost: remote.estimated_cost !== null && remote.estimated_cost !== undefined ? Number(remote.estimated_cost) : undefined,
+    linkedGoalId: remote.linked_goal_id || undefined,
+    linkedSavingsGoalId: remote.linked_savings_goal_id || undefined,
+    whyItMatters: remote.why_it_matters || undefined,
+    status: remote.status,
+    manifestedAt: remote.manifested_at || undefined,
+    order: remote.order !== null && remote.order !== undefined ? Number(remote.order) : 0,
+    archivedAt: remote.archived_at || undefined,
+    createdAt: remote.created_at,
+    updatedAt: remote.updated_at,
+  };
+}

@@ -296,6 +296,40 @@ export const SavingsDepositSchema = z.object({
   note: z.string().optional(),
 });
 
+export const VisionHorizonSchema = z.enum(['short_term', 'mid_term', 'long_term', 'north_star']);
+
+export const VisionCategorySchema = z.enum([
+  'wealth_finance',
+  'career_tech',
+  'travel_adventure',
+  'health_lifestyle',
+  'personal_spiritual',
+  'other',
+]);
+
+export const VisionStatusSchema = z.enum(['dreaming', 'in_progress', 'manifested']);
+
+export const VisionItemSchema = z.object({
+  id: z.string().min(1),
+  title: z.string().min(1, 'Title is required').max(200),
+  description: z.string().max(2000).optional(),
+  imageUrl: z.string().min(1, 'Image URL is required'),
+  imageThumbnailUrl: z.string().optional(),
+  horizon: VisionHorizonSchema,
+  category: VisionCategorySchema,
+  targetDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Must be YYYY-MM-DD').optional(),
+  estimatedCost: z.number().nonnegative().optional(),
+  linkedGoalId: z.string().optional(),
+  linkedSavingsGoalId: z.string().optional(),
+  whyItMatters: z.string().max(2000).optional(),
+  status: VisionStatusSchema.default('dreaming'),
+  manifestedAt: z.string().optional(),
+  order: z.number().int().default(0),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+  archivedAt: z.string().optional(),
+});
+
 /**
  * Complete Backup Envelope Schema for atomic import and export
  */
@@ -327,6 +361,7 @@ export const BackupSchema = z.object({
     wishlistItems: z.array(WishlistItemSchema).optional().default([]),
     savingsGoals: z.array(SavingsGoalSchema).optional().default([]),
     savingsDeposits: z.array(SavingsDepositSchema).optional().default([]),
+    visionItems: z.array(VisionItemSchema).optional().default([]),
   }),
 });
 

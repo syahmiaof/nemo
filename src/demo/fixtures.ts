@@ -391,6 +391,58 @@ export function createDemoFixtures(anchor = new Date()): FixtureData {
     { id: 'demo-sdep-1', savingsGoalId: 'demo-svg-1', amount: 500, type: 'deposit', loggedAt: iso(-15), note: 'Previous Paycheck Allocation' },
   ];
 
+  const visionItems: FixtureData['visionItems'] = [
+    {
+      id: 'demo-vis-1',
+      title: 'Japan Cherry Blossom & Kyoto Tour',
+      description: 'Explore the historic alleys of Gion, Mount Fuji, and serene tea houses.',
+      imageUrl: 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=1200&q=80',
+      imageThumbnailUrl: 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=400&q=80',
+      horizon: 'mid_term',
+      category: 'travel_adventure',
+      targetDate: '2027-04-10',
+      estimatedCost: 7500,
+      linkedSavingsGoalId: 'demo-svg-2',
+      whyItMatters: 'Experience ancient shrines, temples, and tranquil spring foliage in person.',
+      status: 'in_progress',
+      order: 0,
+      createdAt: iso(-60),
+      updatedAt: iso(0),
+    },
+    {
+      id: 'demo-vis-2',
+      title: 'Aesthetic Minimal Dual-Monitor Setup',
+      description: 'Clean Scandinavian walnut standing desk with ambient bias backlighting.',
+      imageUrl: 'https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?auto=format&fit=crop&w=1200&q=80',
+      imageThumbnailUrl: 'https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?auto=format&fit=crop&w=400&q=80',
+      horizon: 'short_term',
+      category: 'career_tech',
+      targetDate: '2026-12-15',
+      estimatedCost: 3500,
+      whyItMatters: 'Deep focus environment for engineering and creative flow.',
+      status: 'in_progress',
+      order: 1,
+      createdAt: iso(-30),
+      updatedAt: iso(0),
+    },
+    {
+      id: 'demo-vis-3',
+      title: 'Contemporary Architectural Villa',
+      description: 'Spacious light-filled sanctuary with private garden courtyard and lap pool.',
+      imageUrl: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
+      imageThumbnailUrl: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=400&q=80',
+      horizon: 'long_term',
+      category: 'wealth_finance',
+      targetDate: '2029-12-31',
+      estimatedCost: 850000,
+      whyItMatters: 'Long-term family security and generational sanctuary.',
+      status: 'dreaming',
+      order: 2,
+      createdAt: iso(-90),
+      updatedAt: iso(0),
+    },
+  ];
+
   const data: FixtureData = {
     settings: { id: 'default', displayName: 'Alex Morgan', theme: 'aurora', accent: 'ember', weekStartsOn: 1, hourFormat: '24h', reduceMotion: false, onboardingCompleted: true, databaseVersion: 1 },
     projects, tasks, milestones, semesters, subjects, assignments, calendarEvents, goals,
@@ -410,6 +462,7 @@ export function createDemoFixtures(anchor = new Date()): FixtureData {
     wishlistItems,
     savingsGoals,
     savingsDeposits,
+    visionItems,
   };
   return BackupSchema.parse({ app: 'nemo', version: 1, exportedAt: iso(0), data }).data;
 }

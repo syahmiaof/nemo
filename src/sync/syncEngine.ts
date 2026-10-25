@@ -324,6 +324,7 @@ class SyncEngine {
       wishlistItem: db.wishlistItems,
       savingsGoal: db.savingsGoals,
       savingsDeposit: db.savingsDeposits,
+      visionItem: db.visionItems,
     };
     const current = await tables[mut.entityType].get(mut.entityId);
     if (mut.operation === 'DELETE') return current === undefined;
@@ -360,6 +361,7 @@ class SyncEngine {
       wishlistItem: 'wishlist_items',
       savingsGoal: 'savings_goals',
       savingsDeposit: 'savings_deposits',
+      visionItem: 'vision_items',
     };
 
     const tableName = tableMap[mut.entityType];
@@ -592,6 +594,22 @@ class SyncEngine {
       else await db.savingsDeposits.put(mappers.savingsDeposit.toLocal(row));
     }
 
+    // Pull vision board items
+    const remoteVisionItems = await this.fetchRemoteRows('vision_items', userId);
+    for (const row of remoteVisionItems) {
+      if (row.is_deleted === true) await this.applyRemoteTombstone('visionItem', row);
+      else {
+        const local = await db.visionItems.get(row.id);
+        const remoteItem = mappers.visionItem.toLocal(row);
+        if (!local) {
+          await db.visionItems.put(remoteItem);
+        } else {
+          const { resolved } = resolveGenericLWW(local, remoteItem);
+          await db.visionItems.put(resolved);
+        }
+      }
+    }
+
     // Pull profile settings & avatar
     const { data: remoteProfile, error: profileError } = await supabase
       .from('profiles')
@@ -701,6 +719,7 @@ class SyncEngine {
       wishlistItem: db.wishlistItems,
       savingsGoal: db.savingsGoals,
       savingsDeposit: db.savingsDeposits,
+      visionItem: db.visionItems,
     };
     const table = tables[entityType];
     const local = await table.get(row.id);
@@ -746,6 +765,7 @@ class SyncEngine {
         wishlistItems,
         savingsGoals,
         savingsDeposits,
+        visionItems,
       ] = await Promise.all([
         db.settings.get('default'),
         db.projects.toArray(),
@@ -770,6 +790,7 @@ class SyncEngine {
         db.wishlistItems.toArray(),
         db.savingsGoals.toArray(),
         db.savingsDeposits.toArray(),
+        db.visionItems.toArray(),
       ]);
 
       const upsert = async (table: string, rows: Record<string, unknown>[], label: string) => {
@@ -898,6 +919,11 @@ class SyncEngine {
       if (savingsDeposits.length) {
         const rows = savingsDeposits.map((sd) => mappers.savingsDeposit.toRemote(sd, userId));
         await upsert('savings_deposits', rows, 'savings deposits');
+      }
+
+      if (visionItems.length) {
+        const rows = visionItems.map((v) => mappers.visionItem.toRemote(v, userId));
+        await upsert('vision_items', rows, 'vision items');
       }
 
       // Ownerless/legacy mutations deliberately stay quarantined. They cannot

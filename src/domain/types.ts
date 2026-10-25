@@ -209,7 +209,8 @@ export type SyncEntityType =
   | 'debtPayment'
   | 'wishlistItem'
   | 'savingsGoal'
-  | 'savingsDeposit';
+  | 'savingsDeposit'
+  | 'visionItem';
 
 // ============================================================================
 // HEALTH & WELLNESS DOMAIN TYPES
@@ -366,6 +367,43 @@ export interface SavingsDeposit {
   type: SavingsDepositType;
   loggedAt: string; // ISO string
   note?: string;
+}
+
+// ============================================================================
+// VISION BOARD DOMAIN TYPES
+// ============================================================================
+
+export type VisionHorizon = 'short_term' | 'mid_term' | 'long_term' | 'north_star';
+
+export type VisionCategory =
+  | 'wealth_finance'
+  | 'career_tech'
+  | 'travel_adventure'
+  | 'health_lifestyle'
+  | 'personal_spiritual'
+  | 'other';
+
+export type VisionStatus = 'dreaming' | 'in_progress' | 'manifested';
+
+export interface VisionItem {
+  id: string;
+  title: string;
+  description?: string;
+  imageUrl: string;
+  imageThumbnailUrl?: string;
+  horizon: VisionHorizon;
+  category: VisionCategory;
+  targetDate?: string;
+  estimatedCost?: number;
+  linkedGoalId?: string;
+  linkedSavingsGoalId?: string;
+  whyItMatters?: string;
+  status: VisionStatus;
+  manifestedAt?: string;
+  order: number;
+  createdAt: string;
+  updatedAt: string;
+  archivedAt?: string;
 }
 
 export interface SyncMutation {

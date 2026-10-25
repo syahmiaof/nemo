@@ -143,6 +143,18 @@ export function validateReferentialIntegrity(data: BackupData['data']): { valid:
     }
   }
 
+  if (data.visionItems) {
+    checkUniqueIds(data.visionItems, 'visionItems');
+    for (const vi of data.visionItems) {
+      if (vi.linkedGoalId && !goalIds.has(vi.linkedGoalId)) {
+        errors.push(`VisionItem "${vi.id}" references non-existent goal "${vi.linkedGoalId}".`);
+      }
+      if (vi.linkedSavingsGoalId && !savingsGoalIds.has(vi.linkedSavingsGoalId)) {
+        errors.push(`VisionItem "${vi.id}" references non-existent savingsGoal "${vi.linkedSavingsGoalId}".`);
+      }
+    }
+  }
+
   return {
     valid: errors.length === 0,
     errors,
@@ -177,6 +189,7 @@ export async function auditDatabaseIntegrity(database: NemoDatabase): Promise<In
     wishlistItems,
     savingsGoals,
     savingsDeposits,
+    visionItems,
   ] = await Promise.all([
     database.settings.get('default'),
     database.projects.toArray(),
@@ -201,6 +214,7 @@ export async function auditDatabaseIntegrity(database: NemoDatabase): Promise<In
     database.wishlistItems.toArray(),
     database.savingsGoals.toArray(),
     database.savingsDeposits.toArray(),
+    database.visionItems.toArray(),
   ]);
 
   const stats: Record<string, number> = {
@@ -227,6 +241,7 @@ export async function auditDatabaseIntegrity(database: NemoDatabase): Promise<In
     wishlistItems: wishlistItems.length,
     savingsGoals: savingsGoals.length,
     savingsDeposits: savingsDeposits.length,
+    visionItems: visionItems.length,
   };
 
   const issues: string[] = [];
@@ -270,6 +285,7 @@ export async function auditDatabaseIntegrity(database: NemoDatabase): Promise<In
     wishlistItems,
     savingsGoals,
     savingsDeposits,
+    visionItems,
   });
 
   issues.push(...refCheck.errors);

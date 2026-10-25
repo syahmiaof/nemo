@@ -4,9 +4,6 @@ import { Link } from 'react-router-dom';
 import {
   Plus,
   ArrowUpRight,
-  FolderGit2,
-  Clock,
-  CheckCircle2,
 } from 'lucide-react';
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
@@ -19,10 +16,7 @@ import { PageHeading, AnimatedNumber } from '@/components/ui/PageHeading';
 import { QuickAddModal } from '@/app/QuickAddModal';
 import { SparkOfFocusCard } from './components/SparkOfFocusCard';
 import { FocusSlotsSection } from './components/FocusSlotsSection';
-import { WeeklyMomentumCard } from './components/WeeklyMomentumCard';
-import { ActiveProjectsSection } from './components/ActiveProjectsSection';
 import { GoalsInMotionSection } from './components/GoalsInMotionSection';
-import { OperationalSection } from './components/OperationalSection';
 import { getTodayLocalDateString, parseLocalDateString } from '@/lib/dates';
 import type { Task } from '@/domain/types';
 
@@ -40,7 +34,6 @@ export function OverviewPage() {
   const pageContainerRef = useRef<HTMLDivElement>(null);
   const chartSummaryRef = useRef<HTMLDivElement>(null);
 
-
   const tasks = useLiveQuery(() => db.tasks.toArray(), []) || [];
   const projects = useLiveQuery(() => db.projects.toArray(), []) || [];
   const milestones = useLiveQuery(() => db.milestones.toArray(), []) || [];
@@ -52,26 +45,18 @@ export function OverviewPage() {
       [today]
     ) || [];
 
-  const { open, active, completed, overdue, focused, nextTasks, academic, recentCompleted } = useMemo(() => {
+  const { open, focused } = useMemo(() => {
     const taskMap = new Map<string, Task>();
     const openList: Task[] = [];
-    const completedList: Task[] = [];
-    const overdueList: Task[] = [];
 
     for (let i = 0; i < tasks.length; i++) {
       const t = tasks[i];
       taskMap.set(t.id, t);
-      if (t.status === 'done') {
-        completedList.push(t);
-      } else if (!Boolean(t.isWatchlist || t.tags?.includes('watchlist'))) {
+      if (t.status !== 'done' && !Boolean(t.isWatchlist || t.tags?.includes('watchlist'))) {
         openList.push(t);
-        if (t.dueDate && t.dueDate < today) {
-          overdueList.push(t);
-        }
       }
     }
 
-    const activeList = projects.filter((p) => p.status === 'in_progress' && !p.archivedAt);
     const manualFocused = selections
       .map((s) => taskMap.get(s.taskId))
       .filter((t): t is Task => !!t && t.status !== 'done');
@@ -95,31 +80,11 @@ export function OverviewPage() {
       }
     }
 
-    const next = [...openList]
-      .sort((a, b) => (a.dueDate || '9999').localeCompare(b.dueDate || '9999'))
-      .slice(0, 4);
-
-    const acad = assignments
-      .filter((a) => a.status !== 'submitted' && a.status !== 'graded' && a.dueDate)
-      .sort((a, b) => a.dueDate!.localeCompare(b.dueDate!))
-      .slice(0, 3);
-
-    const recent = [...completedList]
-      .filter((t) => t.completedAt)
-      .sort((a, b) => (b.completedAt || '').localeCompare(a.completedAt || ''))
-      .slice(0, 4);
-
     return {
       open: openList,
-      active: activeList,
-      completed: completedList,
-      overdue: overdueList,
       focused: focusedList,
-      nextTasks: next,
-      academic: acad,
-      recentCompleted: recent,
     };
-  }, [tasks, projects, assignments, selections, today]);
+  }, [tasks, selections, today]);
 
   // Trend data for the Tavola Spline Chart (strictly Projects momentum)
   const trend = useMemo(() => {
@@ -148,17 +113,6 @@ export function OverviewPage() {
     const last = previous.reduce((a, b) => a + b, 0);
     return { current, previous, labels, total, last };
   }, [projects, today]);
-
-  // Completion percentage for the radial weekly gauge
-  const weeklyRatio = useMemo(() => {
-    const cutoff = new Date();
-    cutoff.setHours(0, 0, 0, 0);
-    cutoff.setDate(cutoff.getDate() - 6);
-    const doneCount = completed.filter(task => task.completedAt && new Date(task.completedAt) >= cutoff).length;
-    const totalCount = doneCount + open.length;
-    if (totalCount === 0) return 0;
-    return Math.min(100, Math.round((doneCount / totalCount) * 100));
-  }, [completed, open.length]);
 
   // Derived goal progress for motivational visual cards
   const goalStats = useMemo(() => {
@@ -235,17 +189,6 @@ export function OverviewPage() {
   };
 
   const hasData = tasks.length + projects.length + assignments.length > 0;
-  // Active / in the making projects for Overview:
-  // Strictly EXCLUDE completed and archived projects.
-  // Show in_progress projects, or on_hold projects when none are in_progress.
-  const activeProjects = projects
-    .filter((p) => !p.archivedAt && p.status !== 'completed' && (p.status === 'in_progress' || p.status === 'on_hold'))
-    .sort((a, b) => {
-      if (a.status === 'in_progress' && b.status !== 'in_progress') return -1;
-      if (b.status === 'in_progress' && a.status !== 'in_progress') return 1;
-      return 0;
-    })
-    .slice(0, 2);
 
   return (
     <div ref={pageContainerRef} className="overview-page">
@@ -253,24 +196,6 @@ export function OverviewPage() {
       <PageHeading
         title="Make room for progress."
         description="Track your daily priorities, projects, and commitments."
-        stats={[
-          {
-            label: 'Active projects',
-            value: active.length,
-            icon: FolderGit2,
-          },
-          {
-            label: 'Tasks need attention',
-            value: open.filter((t) => t.dueDate && t.dueDate <= today).length,
-            icon: Clock,
-            note: overdue.length ? `${overdue.length} overdue` : undefined,
-          },
-          {
-            label: 'Tasks completed',
-            value: completed.length,
-            icon: CheckCircle2,
-          },
-        ]}
       />
 
       {!hasData && (
@@ -303,7 +228,7 @@ export function OverviewPage() {
         </section>
       )}
 
-      {/* Flagship 58:42 Split (Momentum Spline Chart vs Today's Focus Pass) */}
+      {/* Flagship Split (Momentum Spline Chart vs Today's Focus Pass) */}
       <div className="overview-primary">
         {/* Left Analytical Panel: Spline Chart (Projects Momentum) */}
         <section className="glass-panel productivity-panel" data-enter aria-labelledby="productivity-title">
@@ -367,36 +292,10 @@ export function OverviewPage() {
         <SparkOfFocusCard />
       </div>
 
-      {/* Middle Grid: Weekly Momentum Donut Gauge + Active Projects (In the making) */}
-      <div className="overview-middle-grid">
-        <WeeklyMomentumCard
-          weeklyRatio={weeklyRatio}
-          finishedCount={trend.total}
-          openCount={open.length}
-          activeProjectCount={active.length}
-          academicCount={academic.length}
-          overdueCount={overdue.length}
-        />
-
-        <ActiveProjectsSection
-          projects={activeProjects}
-          milestones={milestones}
-          tasks={tasks}
-        />
-      </div>
-
       {/* Motivational Goals in Motion Visual Section */}
       <GoalsInMotionSection
         goalStats={goalStats}
         milestones={milestones}
-      />
-
-      {/* Operational Footer (3-Column Layout: Commitments, Study, Recent Activity) */}
-      <OperationalSection
-        nextTasks={nextTasks}
-        academic={academic}
-        recentCompleted={recentCompleted}
-        onComplete={complete}
       />
 
       <QuickAddModal isOpen={quickAdd} onClose={() => setQuickAdd(false)} />

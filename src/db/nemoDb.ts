@@ -24,6 +24,7 @@ import type {
   WishlistItem,
   SavingsGoal,
   SavingsDeposit,
+  VisionItem,
 } from '@/domain/types';
 import { BackupSchema, type BackupData } from '@/domain/schemas';
 import { databaseNameForMode, getWorkspaceMode, REAL_DATABASE_NAME } from './workspaceMode';
@@ -57,6 +58,7 @@ export class NemoDatabase extends Dexie {
   wishlistItems!: EntityTable<WishlistItem, 'id'>;
   savingsGoals!: EntityTable<SavingsGoal, 'id'>;
   savingsDeposits!: EntityTable<SavingsDeposit, 'id'>;
+  visionItems!: EntityTable<VisionItem, 'id'>;
 
   constructor(name = REAL_DATABASE_NAME) {
     super(name);
@@ -134,6 +136,33 @@ export class NemoDatabase extends Dexie {
       savingsGoals: 'id, category, targetDate, createdAt',
       savingsDeposits: 'id, savingsGoalId, type, loggedAt',
     });
+    this.version(5).stores({
+      settings: 'id',
+      projects: 'id, status, priority, dueDate, createdAt, completedAt',
+      tasks: 'id, status, priority, dueDate, parentType, parentId, createdAt, completedAt',
+      milestones: 'id, ownerType, ownerId, targetDate, completedAt, order',
+      semesters: 'id, status, createdAt',
+      subjects: 'id, semesterId, createdAt',
+      assignments: 'id, subjectId, status, dueDate, submittedAt, createdAt',
+      calendarEvents: 'id, startAt, endAt, isAllDay, subjectId, createdAt',
+      goals: 'id, status, targetDate, createdAt, achievedAt',
+      goalTaskLinks: 'id, goalId, taskId, [goalId+taskId]',
+      focusSelections: 'id, taskId, effectiveLocalDate, [effectiveLocalDate+taskId]',
+      assetBlobs: 'id, ownerType, ownerId, mimeType, createdAt',
+      syncMutations: 'id, entityType, entityId, status, createdAt, ownerUserId, [ownerUserId+status]',
+      hydrationLogs: 'id, date, amountMl, loggedAt',
+      dietLogs: 'id, date, mealType, calories, loggedAt',
+      workoutLogs: 'id, date, type, durationMinutes, distanceKm, completedAt',
+      bodyMetrics: 'id, date, weightKg, loggedAt',
+      financialProfiles: 'id, updatedAt',
+      financialCommitments: 'id, category, dueDayOfMonth, isPaidThisMonth, lastPaidMonthYear, createdAt',
+      debts: 'id, priority, targetPayoffDate, createdAt',
+      debtPayments: 'id, debtId, paidAt',
+      wishlistItems: 'id, priority, isBought, targetSavingsGoalId, addedAt',
+      savingsGoals: 'id, category, targetDate, createdAt',
+      savingsDeposits: 'id, savingsGoalId, type, loggedAt',
+      visionItems: 'id, horizon, category, status, linkedGoalId, linkedSavingsGoalId, targetDate, order, updatedAt',
+    });
 
   }
 }
@@ -204,6 +233,7 @@ export async function exportWorkspaceBackup(targetDb: NemoDatabase = db): Promis
     wishlistItems,
     savingsGoals,
     savingsDeposits,
+    visionItems,
   ] = await Promise.all([
     ensureSettings(targetDb),
     targetDb.projects.toArray(),
@@ -228,6 +258,7 @@ export async function exportWorkspaceBackup(targetDb: NemoDatabase = db): Promis
     targetDb.wishlistItems.toArray(),
     targetDb.savingsGoals.toArray(),
     targetDb.savingsDeposits.toArray(),
+    targetDb.visionItems.toArray(),
   ]);
 
   const backup: BackupData = {
@@ -258,6 +289,7 @@ export async function exportWorkspaceBackup(targetDb: NemoDatabase = db): Promis
       wishlistItems,
       savingsGoals,
       savingsDeposits,
+      visionItems,
     },
   };
 
@@ -321,6 +353,7 @@ export async function importWorkspaceBackup(jsonContent: string, targetDb: NemoD
       targetDb.wishlistItems,
       targetDb.savingsGoals,
       targetDb.savingsDeposits,
+      targetDb.visionItems,
     ], async () => {
       // Clear existing records
       await Promise.all([
@@ -347,6 +380,7 @@ export async function importWorkspaceBackup(jsonContent: string, targetDb: NemoD
         targetDb.wishlistItems.clear(),
         targetDb.savingsGoals.clear(),
         targetDb.savingsDeposits.clear(),
+        targetDb.visionItems.clear(),
       ]);
 
       // Insert backup records
@@ -373,6 +407,7 @@ export async function importWorkspaceBackup(jsonContent: string, targetDb: NemoD
       if (data.wishlistItems?.length) await targetDb.wishlistItems.bulkAdd(data.wishlistItems);
       if (data.savingsGoals?.length) await targetDb.savingsGoals.bulkAdd(data.savingsGoals);
       if (data.savingsDeposits?.length) await targetDb.savingsDeposits.bulkAdd(data.savingsDeposits);
+      if (data.visionItems?.length) await targetDb.visionItems.bulkAdd(data.visionItems);
     });
 
     return { success: true };
@@ -411,6 +446,7 @@ export async function resetWorkspaceData(targetDb: NemoDatabase = db): Promise<v
     targetDb.wishlistItems,
     targetDb.savingsGoals,
     targetDb.savingsDeposits,
+    targetDb.visionItems,
   ], async () => {
     await Promise.all([
       targetDb.settings.clear(),
@@ -436,6 +472,7 @@ export async function resetWorkspaceData(targetDb: NemoDatabase = db): Promise<v
       targetDb.wishlistItems.clear(),
       targetDb.savingsGoals.clear(),
       targetDb.savingsDeposits.clear(),
+      targetDb.visionItems.clear(),
     ]);
   });
   await ensureSettings(targetDb);

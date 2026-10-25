@@ -251,6 +251,7 @@ describe('Sprint 2 — Backup, Export & Disaster Recovery', () => {
         wishlistItems: [],
         savingsGoals: [],
         savingsDeposits: [],
+        visionItems: [],
       },
     };
 

@@ -16,8 +16,7 @@ test.describe('Overview & Insights Functional Audit', () => {
     // Verify presence of key analytical panels
     await expect(page.getByRole('heading', { name: 'Your momentum' })).toBeVisible();
     await expect(page.getByRole('heading', { name: "Today's focus" })).toBeVisible();
-    await expect(page.getByRole('heading', { name: 'Weekly momentum' })).toBeVisible();
-    await expect(page.getByRole('heading', { name: 'Coming into view' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Goals in motion' })).toBeVisible();
 
     // Verify Your momentum displays Projects momentum
     await expect(page.getByText(/Projects finished in the last 7 days/i)).toBeVisible();

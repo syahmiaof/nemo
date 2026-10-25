@@ -7,6 +7,9 @@ import {
   Calendar,
   GraduationCap,
   Target,
+  Sparkles,
+  HeartPulse,
+  Wallet,
   BarChart3,
   Settings,
   ShieldCheck,
@@ -29,6 +32,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ settings }) => {
   const navPersonal = [
     { to: '/academics', label: 'Academics', icon: GraduationCap },
     { to: '/goals', label: 'Goals', icon: Target },
+    { to: '/vision', label: 'Vision', icon: Sparkles },
+    { to: '/health', label: 'Health', icon: HeartPulse },
+    { to: '/finance', label: 'Finance', icon: Wallet },
     { to: '/insights', label: 'Insights', icon: BarChart3 },
   ];
 

@@ -12,5 +12,25 @@ export function AnimatedNumber({value}:{value:number}) {
  return <span ref={ref} aria-label={String(value)}>{value.toLocaleString()}</span>;
 }
 export function PageHeading({title,description,stats=[]}:{title:string;description?:string;stats?:{label:string;value:number;icon:LucideIcon;note?:string}[]}) {
- return <section className="page-heading" data-enter><div className="page-heading-copy"><MotionTitle text={title}/>{description&&<p>{description}</p>}</div><dl className="page-stats">{stats.map(({label,value,icon:Icon,note})=><div className="page-stat" key={label}><span className="stat-icon"><Icon size={21}/></span><div><dd><AnimatedNumber value={value}/>{note&&<span className="metric-note">{note}</span>}</dd><dt>{label}</dt></div></div>)}</dl></section>;
+ return (
+  <section className="page-heading" data-enter>
+   <div className="page-heading-copy">
+    <MotionTitle text={title}/>
+    {description&&<p>{description}</p>}
+   </div>
+   {stats.length > 0 && (
+    <dl className="page-stats">
+     {stats.map(({label,value,icon:Icon,note})=>(
+      <div className="page-stat" key={label}>
+       <span className="stat-icon"><Icon size={21}/></span>
+       <div>
+        <dd><AnimatedNumber value={value}/>{note&&<span className="metric-note">{note}</span>}</dd>
+        <dt>{label}</dt>
+       </div>
+      </div>
+     ))}
+    </dl>
+   )}
+  </section>
+ );
 }
