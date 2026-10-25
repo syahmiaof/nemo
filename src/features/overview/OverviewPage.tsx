@@ -23,8 +23,6 @@ import { WeeklyMomentumCard } from './components/WeeklyMomentumCard';
 import { ActiveProjectsSection } from './components/ActiveProjectsSection';
 import { GoalsInMotionSection } from './components/GoalsInMotionSection';
 import { OperationalSection } from './components/OperationalSection';
-import { animateMetricSwitch } from './motion/overviewMotion';
-import { useReducedMotion } from '@/design/useReducedMotion';
 import { getTodayLocalDateString, parseLocalDateString } from '@/lib/dates';
 import type { Task } from '@/domain/types';
 
@@ -37,12 +35,11 @@ const localDay = (date: Date) =>
 
 export function OverviewPage() {
   const [quickAdd, setQuickAdd] = useState(false);
-  const [metric, setMetric] = useState<'tasks' | 'projects'>('tasks');
   const { success, error } = useToast();
   const today = getTodayLocalDateString();
   const pageContainerRef = useRef<HTMLDivElement>(null);
   const chartSummaryRef = useRef<HTMLDivElement>(null);
-  const reduced = useReducedMotion();
+
 
   const tasks = useLiveQuery(() => db.tasks.toArray(), []) || [];
   const projects = useLiveQuery(() => db.projects.toArray(), []) || [];
@@ -124,12 +121,9 @@ export function OverviewPage() {
     };
   }, [tasks, projects, assignments, selections, today]);
 
-  // Trend data for the Tavola Spline Chart
+  // Trend data for the Tavola Spline Chart (strictly Projects momentum)
   const trend = useMemo(() => {
-    const records =
-      metric === 'tasks'
-        ? tasks.filter((t) => t.status === 'done')
-        : projects.filter((p) => p.status === 'completed');
+    const records = projects.filter((p) => p.status === 'completed');
     const current: number[] = [];
     const previous: number[] = [];
     const labels: string[] = [];
@@ -153,7 +147,7 @@ export function OverviewPage() {
     const total = current.reduce((a, b) => a + b, 0);
     const last = previous.reduce((a, b) => a + b, 0);
     return { current, previous, labels, total, last };
-  }, [tasks, projects, metric, today]);
+  }, [projects, today]);
 
   // Completion percentage for the radial weekly gauge
   const weeklyRatio = useMemo(() => {
@@ -194,7 +188,7 @@ export function OverviewPage() {
     },
     {
       scope: pageContainerRef,
-      dependencies: [tasks.length, projects.length, assignments.length, goals.length, metric],
+      dependencies: [tasks.length, projects.length, assignments.length, goals.length],
     }
   );
 
@@ -237,14 +231,6 @@ export function OverviewPage() {
       });
     } catch {
       error('Could not add focus task');
-    }
-  };
-
-  const handleMetricChange = (newMetric: 'tasks' | 'projects') => {
-    if (newMetric === metric) return;
-    setMetric(newMetric);
-    if (chartSummaryRef.current && !reduced) {
-      animateMetricSwitch(chartSummaryRef.current);
     }
   };
 
@@ -319,23 +305,13 @@ export function OverviewPage() {
 
       {/* Flagship 58:42 Split (Momentum Spline Chart vs Today's Focus Pass) */}
       <div className="overview-primary">
-        {/* Left Analytical Panel: Spline Chart */}
+        {/* Left Analytical Panel: Spline Chart (Projects Momentum) */}
         <section className="glass-panel productivity-panel" data-enter aria-labelledby="productivity-title">
           <div className="panel-heading">
             <h2 id="productivity-title">Your momentum</h2>
-            <div className="segmented" aria-label="Productivity metric">
-              {(['tasks', 'projects'] as const).map((m) => (
-                <button
-                  key={m}
-                  type="button"
-                  aria-pressed={metric === m}
-                  className={metric === m ? 'is-selected' : ''}
-                  onClick={() => handleMetricChange(m)}
-                >
-                  {m === 'tasks' ? 'Tasks' : 'Projects'}
-                </button>
-              ))}
-            </div>
+            <span className="text-[11px] font-mono font-medium px-2.5 py-0.5 rounded-full bg-accent-mint/15 text-accent-mint border border-accent-mint/30">
+              Projects
+            </span>
             <Link to="/insights" className="icon-button" aria-label="Open insights">
               <ArrowUpRight size={20} />
             </Link>
@@ -346,9 +322,7 @@ export function OverviewPage() {
               <AnimatedNumber value={trend.total} />
             </strong>
             <div>
-              <p>
-                {metric === 'tasks' ? 'Tasks' : 'Projects'} finished in the last 7 days
-              </p>
+              <p>Projects finished in the last 7 days</p>
               <span className="trend-note">
                 {trend.total - trend.last >= 0 ? '+' : ''}
                 {trend.total - trend.last} vs previous 7 days
@@ -373,7 +347,7 @@ export function OverviewPage() {
             comparisonValues={trend.previous}
             seriesName="This week"
             comparisonName="Previous 7 days"
-            unit={metric}
+            unit="projects"
             height={135}
           />
         </section>

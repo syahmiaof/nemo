@@ -19,16 +19,8 @@ test.describe('Overview & Insights Functional Audit', () => {
     await expect(page.getByRole('heading', { name: 'Weekly momentum' })).toBeVisible();
     await expect(page.getByRole('heading', { name: 'Coming into view' })).toBeVisible();
 
-    // Toggle metric on spline chart (Tasks -> Projects -> Tasks)
-    const projectsBtn = page.getByRole('button', { name: 'Projects', exact: true });
-    await projectsBtn.click();
-    await page.waitForTimeout(300);
+    // Verify Your momentum displays Projects momentum
     await expect(page.getByText(/Projects finished in the last 7 days/i)).toBeVisible();
-
-    const tasksBtn = page.getByRole('button', { name: 'Tasks', exact: true });
-    await tasksBtn.click();
-    await page.waitForTimeout(300);
-    await expect(page.getByText(/Tasks finished in the last 7 days/i)).toBeVisible();
   });
 
   test('Insights page displays accurate analytics and year selection', async ({ page }) => {
@@ -42,11 +34,11 @@ test.describe('Overview & Insights Functional Audit', () => {
 
     // Metric toggle in insights: Tasks vs Projects
     await page.getByRole('button', { name: 'Projects', exact: true }).click();
-    await page.waitForTimeout(300);
+
     await expect(page.locator('.insights-total').getByText(/projects completed in/i)).toBeVisible();
 
     await page.getByRole('button', { name: 'Tasks', exact: true }).click();
-    await page.waitForTimeout(300);
+
     await expect(page.locator('.insights-total').getByText(/tasks completed in/i)).toBeVisible();
 
     // Verify reporting year select is interactive
