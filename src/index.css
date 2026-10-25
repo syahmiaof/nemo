@@ -1118,3 +1118,31 @@ input::placeholder,textarea::placeholder {opacity:1;}
 }
 
 .profile-quick-menu { position: absolute !important; top: calc(100% + 10px) !important; right: 0 !important; z-index: 1000 !important; }
+
+/* Mascot Keyframe Animations for Roadmap Journey */
+@keyframes bounce-gentle {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes float-slow {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-2px);
+  }
+}
+
+.animate-bounce-gentle {
+  animation: bounce-gentle 1.8s ease-in-out infinite;
+}
+
+.animate-float-slow {
+  animation: float-slow 3.5s ease-in-out infinite;
+}
+

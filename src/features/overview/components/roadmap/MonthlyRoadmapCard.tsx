@@ -7,6 +7,7 @@ interface MonthlyRoadmapCardProps {
   item: MonthlyRoadmapItem;
   isCurrentMonth: boolean;
   position?: 'top' | 'bottom';
+  className?: string;
   onEdit: (item: MonthlyRoadmapItem) => void;
   onToggleComplete: (item: MonthlyRoadmapItem) => void;
 }
@@ -34,6 +35,7 @@ const MONTH_THEMES: Record<number, { border: string; glow: string; text: string;
 export const MonthlyRoadmapCard: React.FC<MonthlyRoadmapCardProps> = ({
   item,
   isCurrentMonth,
+  className = '',
   onEdit,
   onToggleComplete,
 }) => {
@@ -46,115 +48,115 @@ export const MonthlyRoadmapCard: React.FC<MonthlyRoadmapCardProps> = ({
   const isInProgress = item.status === 'in_progress';
 
   return (
-    <div className="group relative flex flex-col w-full transition-all duration-300">
-      {/* Main Glass Card */}
+    <div className={`roadmap-card-anim group relative flex flex-col w-full h-full transition-all duration-300 ${className}`}>
+      {/* Main Ultra-Compact Glass Card */}
       <div
-        className={`relative glass-panel p-4 sm:p-5 rounded-2xl border transition-all duration-300 hover:-translate-y-1 hover:shadow-xl w-full ${
+        className={`relative glass-panel p-3 sm:p-3.5 rounded-2xl border transition-all duration-300 hover:-translate-y-1 hover:shadow-lg w-full h-full flex flex-col justify-between ${
           isCurrentMonth
-            ? 'border-accent-mint/60 bg-accent-mint/[0.04] shadow-[0_0_24px_rgba(52,211,153,0.18)]'
+            ? 'border-accent-mint/60 bg-accent-mint/[0.05] shadow-[0_0_20px_rgba(52,211,153,0.18)] ring-1 ring-accent-mint/30'
             : isCompleted
             ? 'border-emerald-500/30 bg-emerald-500/[0.02]'
             : 'border-white/10 hover:border-white/20 bg-white/[0.02]'
         }`}
       >
-        {/* Top Header: Station Pill, Current Stop Radar, Edit Action */}
-        <div className="flex items-center justify-between gap-2 mb-3">
-          <div className="flex items-center gap-2 flex-wrap">
-            <span
-              className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-full border ${theme.border} ${theme.bg} ${theme.text}`}
-            >
-              {monthNum} • {monthCode}
-            </span>
-
-            {isCurrentMonth && (
-              <span className="flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-accent-mint/20 text-accent-mint border border-accent-mint/50 animate-pulse">
-                <span className="w-1.5 h-1.5 rounded-full bg-accent-mint animate-ping" />
-                Current Stop
+        <div>
+          {/* Top Header: Compact Month Pill & Actions */}
+          <div className="flex items-center justify-between gap-1 mb-2">
+            <div className="flex items-center gap-1.5 min-w-0">
+              <span
+                className={`text-[10px] font-mono font-bold px-1.5 py-0.5 rounded-md border shrink-0 ${theme.border} ${theme.bg} ${theme.text}`}
+              >
+                {monthNum} • {monthCode}
               </span>
-            )}
+
+              {isCurrentMonth && (
+                <span className="flex items-center gap-1 text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-accent-mint/20 text-accent-mint border border-accent-mint/40 shrink-0">
+                  <span className="w-1 h-1 rounded-full bg-accent-mint animate-ping" />
+                  Active
+                </span>
+              )}
+            </div>
+
+            <div className="flex items-center gap-0.5 shrink-0">
+              <button
+                onClick={() => onToggleComplete(item)}
+                className={`p-1 rounded-md border transition-all ${
+                  isCompleted
+                    ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40 hover:bg-emerald-500/30'
+                    : isInProgress
+                    ? 'bg-accent-mint/15 text-accent-mint border-accent-mint/30 hover:bg-accent-mint/25'
+                    : 'bg-white/5 text-white/40 border-white/10 hover:text-white hover:bg-white/10'
+                }`}
+                title={isCompleted ? 'Mark as ongoing' : 'Mark as completed'}
+                aria-label={`Toggle completion for ${monthCode}`}
+              >
+                <CheckCircle2 size={13} />
+              </button>
+              <button
+                onClick={() => onEdit(item)}
+                className="p-1 rounded-md text-white/40 hover:text-white hover:bg-white/10 border border-transparent hover:border-white/10 transition-colors"
+                title="Edit monthly goal & strategy"
+                aria-label={`Edit ${monthCode} roadmap`}
+              >
+                <Edit3 size={13} />
+              </button>
+            </div>
           </div>
 
-          <div className="flex items-center gap-1">
-            <button
-              onClick={() => onToggleComplete(item)}
-              className={`p-1.5 rounded-lg border transition-all ${
-                isCompleted
-                  ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40 hover:bg-emerald-500/30'
-                  : isInProgress
-                  ? 'bg-accent-mint/15 text-accent-mint border-accent-mint/30 hover:bg-accent-mint/25'
-                  : 'bg-white/5 text-white/40 border-white/10 hover:text-white hover:bg-white/10'
+          {/* Mascot Centerpiece & 1-Line Bold Theme */}
+          <div className="flex items-center gap-2.5 mb-2">
+            <div
+              className={`w-[42px] h-[42px] rounded-xl flex items-center justify-center shrink-0 border relative transition-transform duration-300 group-hover:scale-105 ${
+                isCurrentMonth
+                  ? 'bg-accent-mint/10 border-accent-mint/40 shadow-[0_0_12px_rgba(52,211,153,0.2)]'
+                  : 'bg-white/5 border-white/10'
               }`}
-              title={isCompleted ? 'Mark as ongoing' : 'Mark as completed'}
-              aria-label={`Toggle completion for ${monthCode}`}
             >
-              <CheckCircle2 size={15} />
-            </button>
-            <button
-              onClick={() => onEdit(item)}
-              className="p-1.5 rounded-lg text-white/40 hover:text-white hover:bg-white/10 border border-transparent hover:border-white/10 transition-colors"
-              title="Edit monthly goal & strategy"
-              aria-label={`Edit ${monthCode} roadmap`}
-            >
-              <Edit3 size={14} />
-            </button>
-          </div>
-        </div>
+              {getMascotComponent(item.mascot, 38, '', isCurrentMonth)}
+            </div>
 
-        {/* Mascot Centerpiece & Title */}
-        <div className="flex items-start gap-3.5 mb-3.5">
-          <div
-            className={`w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 border relative transition-transform duration-300 group-hover:scale-105 ${
-              isCurrentMonth
-                ? 'bg-accent-mint/10 border-accent-mint/40 shadow-[0_0_16px_rgba(52,211,153,0.2)]'
-                : 'bg-white/5 border-white/10'
-            }`}
-          >
-            {getMascotComponent(item.mascot, 46, '', isCurrentMonth)}
+            <div className="min-w-0 flex-1">
+              <h3 className="text-xs sm:text-[13px] font-bold text-white tracking-tight truncate group-hover:text-accent-mint transition-colors">
+                {item.theme}
+              </h3>
+              <span className="text-[10px] text-white/50 flex items-center gap-1 truncate mt-0.5">
+                <Sparkles size={10} className={theme.text} />
+                {mascotInfo.label}
+              </span>
+            </div>
           </div>
 
-          <div className="min-w-0 flex-1">
-            <h3 className="text-sm sm:text-base font-bold text-white tracking-tight line-clamp-1 group-hover:text-accent-mint transition-colors">
-              {item.theme}
-            </h3>
-            <span className="text-[11px] text-white/50 flex items-center gap-1 mt-0.5">
-              <Sparkles size={11} className={theme.text} />
-              {mascotInfo.label}
+          {/* Primary Goal Target (Compact 2-Line) */}
+          <div className="mb-1.5 p-2 rounded-lg bg-white/[0.02] border border-white/5">
+            <span className="block text-[9px] font-semibold uppercase tracking-wider text-white/40 mb-0.5">
+              Goal
             </span>
+            <p className="text-[11px] text-white/90 font-medium leading-snug line-clamp-2">
+              {item.primaryGoal}
+            </p>
           </div>
-        </div>
 
-        {/* Primary Goal Section */}
-        <div className="mb-3 p-2.5 rounded-xl bg-white/[0.02] border border-white/5">
-          <span className="block text-[10px] font-semibold uppercase tracking-wider text-white/50 mb-1">
-            Goal Target
-          </span>
-          <p className="text-xs text-white/90 font-medium leading-relaxed line-clamp-2">
-            {item.primaryGoal}
-          </p>
-        </div>
-
-        {/* Execution Strategy */}
-        <div className="p-2.5 rounded-xl bg-white/[0.02] border border-white/5">
-          <span className="block text-[10px] font-semibold uppercase tracking-wider text-accent-mint/70 mb-1">
-            Strategy & Daily Habits
-          </span>
-          <p className="text-xs text-white/70 leading-relaxed line-clamp-2">
-            {item.strategy}
-          </p>
+          {/* Execution Strategy (Compact 1-Line Snippet) */}
+          <div className="px-2 py-1.5 rounded-lg bg-white/[0.02] border border-white/5 flex items-center gap-1.5 min-w-0">
+            <span className="text-[10px] shrink-0">🎯</span>
+            <p className="text-[10px] text-white/60 truncate flex-1" title={item.strategy}>
+              {item.strategy}
+            </p>
+          </div>
         </div>
 
         {/* Status Footer Pill */}
-        <div className="mt-3.5 pt-2.5 border-t border-white/5 flex items-center justify-between text-[11px]">
+        <div className="mt-2 pt-1.5 border-t border-white/5 flex items-center justify-between text-[10px]">
           <span className="text-white/40 flex items-center gap-1">
-            <Clock size={12} />
+            <Clock size={11} />
             <span>Status</span>
           </span>
           <span
-            className={`font-medium capitalize px-2 py-0.5 rounded-md ${
+            className={`font-medium capitalize px-1.5 py-0.5 rounded text-[10px] ${
               isCompleted
-                ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+                ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/25'
                 : isInProgress
-                ? 'bg-accent-mint/10 text-accent-mint border border-accent-mint/30 font-semibold'
+                ? 'bg-accent-mint/15 text-accent-mint border border-accent-mint/30 font-semibold'
                 : 'text-white/40 bg-white/5'
             }`}
           >
