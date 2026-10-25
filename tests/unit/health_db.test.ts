@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { db, resetWorkspaceData, exportWorkspaceBackup, importWorkspaceBackup } from '@/db/nemoDb';
 import {
   atomicAddHydration,
+  atomicUpdateHydration,
   atomicDeleteHydration,
   atomicLogDiet,
   atomicDeleteDiet,
@@ -112,6 +113,23 @@ describe('Health & Wellness — Key-In Data & Aggregations Suite', () => {
       expect(remainingLogs.map((l) => l.id)).toEqual(expect.arrayContaining([entry1.id, entry3.id]));
       const updatedTotal = remainingLogs.reduce((sum, l) => sum + l.amountMl, 0);
       expect(updatedTotal).toBe(1250); // 250 + 1000 = 1250 ml
+    });
+
+    it('updates a hydration entry via atomicUpdateHydration and verifies updated amount and total', async () => {
+      const today = '2026-10-23';
+
+      const entry = await atomicAddHydration(db, { date: today, amountMl: 250 });
+      expect(entry.amountMl).toBe(250);
+
+      // User modifies 250ml to 450ml
+      await atomicUpdateHydration(db, entry.id, { amountMl: 450 });
+
+      const updated = await db.hydrationLogs.get(entry.id);
+      expect(updated?.amountMl).toBe(450);
+
+      const logs = await db.hydrationLogs.where('date').equals(today).toArray();
+      const total = logs.reduce((sum, l) => sum + l.amountMl, 0);
+      expect(total).toBe(450);
     });
   });
 

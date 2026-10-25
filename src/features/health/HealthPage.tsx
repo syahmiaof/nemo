@@ -5,6 +5,7 @@ import { useGSAP } from '@gsap/react';
 import { db } from '@/db/nemoDb';
 import {
   atomicAddHydration,
+  atomicUpdateHydration,
   atomicDeleteHydration,
   atomicLogDiet,
   atomicDeleteDiet,
@@ -32,6 +33,14 @@ function getTodayLocalDate(): string {
 
 export const HealthPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<HealthTab>('all');
+  const [dailyGoalMl, setDailyGoalMl] = useState<number>(() => {
+    try {
+      const saved = localStorage.getItem('nemo_hydration_goal_ml');
+      return saved ? parseInt(saved, 10) || 2500 : 2500;
+    } catch {
+      return 2500;
+    }
+  });
   const containerRef = useRef<HTMLDivElement>(null);
   const reducedMotion = useReducedMotion();
   const todayStr = getTodayLocalDate();
@@ -85,7 +94,7 @@ export const HealthPage: React.FC = () => {
         title="Health & Wellness"
         description="Hydration velocity, nutritional macros, active training, and body composition"
         stats={[
-          { label: 'Water (ml)', value: todayHydrationMl, icon: Droplet, note: 'of 2500ml' },
+          { label: 'Water (ml)', value: todayHydrationMl, icon: Droplet, note: `of ${dailyGoalMl}ml` },
           { label: 'Intake (kcal)', value: todayDietCalories, icon: Utensils },
           { label: 'Active Burn (kcal)', value: todayBurnedCalories, icon: Activity },
           { label: 'Weight (kg)', value: Math.round(latestWeight * 10) / 10, icon: Scale },
@@ -162,6 +171,7 @@ export const HealthPage: React.FC = () => {
             <HydrationCard
               logs={hydrationLogs}
               todayStr={todayStr}
+              dailyGoalMl={dailyGoalMl}
               onAddWater={async (amountMl) => {
                 await atomicAddHydration(db, {
                   date: todayStr,
@@ -169,8 +179,19 @@ export const HealthPage: React.FC = () => {
                   loggedAt: new Date().toISOString(),
                 });
               }}
+              onUpdateLog={async (id, amountMl) => {
+                await atomicUpdateHydration(db, id, { amountMl });
+              }}
               onDeleteLog={async (id) => {
                 await atomicDeleteHydration(db, id);
+              }}
+              onUpdateDailyGoal={(goal) => {
+                setDailyGoalMl(goal);
+                try {
+                  localStorage.setItem('nemo_hydration_goal_ml', String(goal));
+                } catch {
+                  // ignore
+                }
               }}
             />
           </div>

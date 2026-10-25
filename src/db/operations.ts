@@ -589,6 +589,16 @@ export async function atomicDeleteHydration(database: NemoDatabase, id: string):
   await database.hydrationLogs.delete(id);
 }
 
+export async function atomicUpdateHydration(
+  database: NemoDatabase,
+  id: string,
+  updates: Partial<Pick<HydrationLog, 'amountMl' | 'date' | 'loggedAt'>>
+): Promise<void> {
+  const existing = await database.hydrationLogs.get(id);
+  if (!existing) return;
+  await database.hydrationLogs.update(id, updates);
+}
+
 /**
  * Atomically records a diet meal log.
  */
