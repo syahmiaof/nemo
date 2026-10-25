@@ -40,12 +40,19 @@ async function run() {
   await page.goto('http://localhost:4173/health', { waitUntil: 'networkidle' });
   await page.waitForTimeout(1500);
 
-  // Capture initial state
+  // Dismiss welcome overlay if present
+  const welcomeDismiss = page.locator('text=Workspace ready');
+  if (await welcomeDismiss.isVisible()) {
+    await welcomeDismiss.click();
+    await page.waitForTimeout(500);
+  }
+
+  // Capture navbar with Ibadah
   await page.screenshot({
-    path: path.join(ARTIFACT_DIR, 'qa_desktop_health_hub_initial.png'),
+    path: path.join(ARTIFACT_DIR, 'qa_desktop_navbar_with_ibadah.png'),
     fullPage: false,
   });
-  console.log('Saved qa_desktop_health_hub_initial.png');
+  console.log('Saved qa_desktop_navbar_with_ibadah.png');
 
   // Click +250ml and +500ml
   console.log('3. Logging hydration entries...');
