@@ -589,6 +589,17 @@ export async function atomicDeleteHydration(database: NemoDatabase, id: string):
   await database.hydrationLogs.delete(id);
 }
 
+export async function atomicClearHydrationLogs(
+  database: NemoDatabase,
+  ids?: string[]
+): Promise<void> {
+  if (ids && ids.length > 0) {
+    await database.hydrationLogs.bulkDelete(ids);
+  } else {
+    await database.hydrationLogs.clear();
+  }
+}
+
 export async function atomicUpdateHydration(
   database: NemoDatabase,
   id: string,

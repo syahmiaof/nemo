@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import type { HydrationLog } from '@/domain/types';
 import { GlassWater, Droplet, Plus, Trash2, Sparkles, Pencil, X, CheckCheck } from 'lucide-react';
+import { ManageHydrationModal } from './ManageHydrationModal';
 
 interface HydrationCardProps {
   logs: HydrationLog[];
@@ -27,6 +28,7 @@ export const HydrationCard: React.FC<HydrationCardProps> = ({
   const [isEditingGoal, setIsEditingGoal] = useState(false);
   const [targetGoalInput, setTargetGoalInput] = useState<number>(dailyGoalMl);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
+  const [isManageHistoryOpen, setIsManageHistoryOpen] = useState(false);
 
   const todayLogs = logs
     .filter((l) => l.date === todayStr)
@@ -263,20 +265,30 @@ export const HydrationCard: React.FC<HydrationCardProps> = ({
 
       {/* Today's History Log List & Management */}
       <div className="mt-6 pt-5 border-t border-white/[0.08] relative z-10">
-        <div className="flex items-center justify-between mb-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
           <div className="flex items-center gap-2">
             <span className="text-xs font-semibold text-content-secondary uppercase tracking-wider">
               Today's Entries ({todayLogs.length})
             </span>
-            <span className="text-[11px] text-content-secondary/70">
+            <span className="text-[11px] text-content-secondary/70 hidden sm:inline">
               — Edit volume or delete entries anytime
             </span>
           </div>
-          {todayLogs.length > 0 && (
-            <span className="text-xs font-mono font-medium text-cyan-300">
-              Total: {totalMl.toLocaleString()} ml
-            </span>
-          )}
+          <div className="flex items-center gap-2">
+            {todayLogs.length > 0 && (
+              <span className="text-xs font-mono font-medium text-cyan-300 mr-1">
+                Total: {totalMl.toLocaleString()} ml
+              </span>
+            )}
+            <button
+              type="button"
+              onClick={() => setIsManageHistoryOpen(true)}
+              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium text-cyan-300 hover:text-cyan-200 bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/20 transition-colors"
+              title="View, edit, or reset past days' hydration logs"
+            >
+              <Pencil className="w-3 h-3" /> Full History & Clear ({logs.length})
+            </button>
+          </div>
         </div>
 
         {todayLogs.length === 0 ? (
@@ -479,6 +491,12 @@ export const HydrationCard: React.FC<HydrationCardProps> = ({
           </form>
         </div>
       )}
+
+      {/* Full History & Reset Modal */}
+      <ManageHydrationModal
+        isOpen={isManageHistoryOpen}
+        onClose={() => setIsManageHistoryOpen(false)}
+      />
     </div>
   );
 };

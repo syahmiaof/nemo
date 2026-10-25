@@ -20,6 +20,7 @@ import {
   TrendingDown,
   TrendingUp,
   Minus,
+  Pencil,
 } from 'lucide-react';
 import { db } from '@/db/nemoDb';
 import { isOverdue } from '@/lib/dates';
@@ -28,6 +29,7 @@ import { TavolaSplineChart } from '@/components/ui/TavolaSplineChart';
 import { useReducedMotion } from '@/design/useReducedMotion';
 import { MotionTitle } from '@/components/ui/MotionTitle';
 import { AnimatedNumber } from '@/components/ui/PageHeading';
+import { ManageHydrationModal } from '@/features/health/ManageHydrationModal';
 
 gsap.registerPlugin(useGSAP);
 
@@ -37,6 +39,7 @@ export const InsightsPage: React.FC = () => {
   const currentYear = new Date().getFullYear();
   const [selectedYear, setSelectedYear] = useState(currentYear);
   const [series, setSeries] = useState<'tasks' | 'projects'>('tasks');
+  const [isHydrationModalOpen, setIsHydrationModalOpen] = useState(false);
   const motionRoot = useRef<HTMLDivElement>(null);
   const rhythmChartRef = useRef<HTMLDivElement>(null);
   const donutRef = useRef<HTMLDivElement>(null);
@@ -878,8 +881,19 @@ export const InsightsPage: React.FC = () => {
               <div>
                 <div className="flex items-center justify-between mb-3">
                   <span className="text-xs font-medium text-content-secondary">7-Day Hydration</span>
-                  <div className="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 group-hover:scale-105 transition-transform">
-                    <Droplet size={16} />
+                  <div className="flex items-center gap-1.5">
+                    <button
+                      type="button"
+                      onClick={() => setIsHydrationModalOpen(true)}
+                      className="p-1 rounded-lg bg-cyan-500/10 text-cyan-300 hover:bg-cyan-500/25 border border-cyan-500/20 transition-colors"
+                      title="Manage, edit or reset hydration logs"
+                      aria-label="Manage hydration logs"
+                    >
+                      <Pencil size={12} />
+                    </button>
+                    <div className="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 group-hover:scale-105 transition-transform">
+                      <Droplet size={16} />
+                    </div>
                   </div>
                 </div>
                 <div className="flex items-baseline gap-1.5">
@@ -911,14 +925,32 @@ export const InsightsPage: React.FC = () => {
                         style={{ width: `${Math.min(100, Math.max(4, healthMetrics.hydrationAdherenceRate))}%` }}
                       />
                     </div>
-                    <span className="text-[10px] text-content-secondary/70 mt-1 block">
-                      vs {healthMetrics.hydrationDailyGoal.toLocaleString()} ml daily target
-                    </span>
+                    <div className="flex items-center justify-between mt-2 pt-1.5 border-t border-white/[0.04]">
+                      <span className="text-[10px] text-content-secondary/70">
+                        vs {healthMetrics.hydrationDailyGoal.toLocaleString()} ml daily target
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => setIsHydrationModalOpen(true)}
+                        className="inline-flex items-center gap-1 text-[11px] font-medium text-cyan-400 hover:text-cyan-300 transition-colors"
+                      >
+                        <Pencil size={10} /> Edit / Clear
+                      </button>
+                    </div>
                   </>
                 ) : (
-                  <p className="text-xs text-content-secondary/70 italic">
-                    No hydration logged in past 7 days.
-                  </p>
+                  <div className="flex items-center justify-between">
+                    <p className="text-xs text-content-secondary/70 italic">
+                      No logs in past 7 days.
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => setIsHydrationModalOpen(true)}
+                      className="text-[11px] font-medium text-cyan-400 hover:text-cyan-300 hover:underline"
+                    >
+                      + Add Log
+                    </button>
+                  </div>
                 )}
               </div>
             </div>
@@ -1236,6 +1268,12 @@ export const InsightsPage: React.FC = () => {
       <p className="insights-source">
         Calculated from your workspace on this device. No simulated metrics.
       </p>
+
+      {/* Interactive Hydration Manager Modal */}
+      <ManageHydrationModal
+        isOpen={isHydrationModalOpen}
+        onClose={() => setIsHydrationModalOpen(false)}
+      />
     </div>
   );
 };

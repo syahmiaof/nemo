@@ -4,6 +4,7 @@ import {
   atomicAddHydration,
   atomicUpdateHydration,
   atomicDeleteHydration,
+  atomicClearHydrationLogs,
   atomicLogDiet,
   atomicDeleteDiet,
   atomicLogWorkout,
@@ -130,6 +131,38 @@ describe('Health & Wellness — Key-In Data & Aggregations Suite', () => {
       const logs = await db.hydrationLogs.where('date').equals(today).toArray();
       const total = logs.reduce((sum, l) => sum + l.amountMl, 0);
       expect(total).toBe(450);
+    });
+
+    it('clears hydration logs via atomicClearHydrationLogs and resets 7-day average from 107 ml/day to 0', async () => {
+      // User logged 750ml across the past 7 days (750 / 7 = 107.14 -> 107 ml/day)
+      await atomicAddHydration(db, { date: '2026-10-23', amountMl: 500 });
+      await atomicAddHydration(db, { date: '2026-10-24', amountMl: 250 });
+
+      let past7Logs = await db.hydrationLogs.toArray();
+      expect(past7Logs).toHaveLength(2);
+      let total7Day = past7Logs.reduce((sum, l) => sum + l.amountMl, 0);
+      expect(total7Day).toBe(750);
+      let avg7Day = Math.round(total7Day / 7);
+      expect(avg7Day).toBe(107); // 750 / 7 = 107
+
+      // User clears past 7-day logs
+      const idsToClear = past7Logs.map((l) => l.id);
+      await atomicClearHydrationLogs(db, idsToClear);
+
+      past7Logs = await db.hydrationLogs.toArray();
+      expect(past7Logs).toHaveLength(0);
+      total7Day = past7Logs.reduce((sum, l) => sum + l.amountMl, 0);
+      avg7Day = Math.round(total7Day / 7);
+      expect(avg7Day).toBe(0); // successfully cleared back to 0
+    });
+
+    it('clears all hydration logs globally when no IDs are passed to atomicClearHydrationLogs', async () => {
+      await atomicAddHydration(db, { date: '2026-10-20', amountMl: 1000 });
+      await atomicAddHydration(db, { date: '2026-10-21', amountMl: 1500 });
+      expect(await db.hydrationLogs.count()).toBe(2);
+
+      await atomicClearHydrationLogs(db);
+      expect(await db.hydrationLogs.count()).toBe(0);
     });
   });
 
