@@ -210,7 +210,8 @@ export type SyncEntityType =
   | 'wishlistItem'
   | 'savingsGoal'
   | 'savingsDeposit'
-  | 'visionItem';
+  | 'visionItem'
+  | 'monthlyRoadmap';
 
 // ============================================================================
 // HEALTH & WELLNESS DOMAIN TYPES
@@ -404,6 +405,37 @@ export interface VisionItem {
   createdAt: string;
   updatedAt: string;
   archivedAt?: string;
+}
+
+// ============================================================================
+// MONTHLY JOURNEY ROADMAP DOMAIN TYPES
+// ============================================================================
+
+export type RoadmapMascot =
+  | 'rocket'
+  | 'coder'
+  | 'scholar'
+  | 'wealth'
+  | 'archer'
+  | 'zen'
+  | 'sprinter'
+  | 'champion';
+
+export type RoadmapStatus = 'upcoming' | 'in_progress' | 'completed';
+
+export interface MonthlyRoadmapItem {
+  id: string; // e.g. "rm_2026_01"
+  year: number; // e.g. 2026
+  month: number; // 1 to 12
+  theme: string; // e.g. "Habit Reboot & Reset"
+  primaryGoal: string; // e.g. "Ship Nemo v1 and achieve 30-day streak"
+  strategy: string; // e.g. "Daily 90m deep focus, zero phone before 9am"
+  mascot: RoadmapMascot;
+  status: RoadmapStatus;
+  completedAt?: string;
+  notes?: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface SyncMutation {

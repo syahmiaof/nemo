@@ -36,6 +36,7 @@ export function registerDexieSyncHooks(database: NemoDatabase) {
     { table: database.savingsGoals, entityType: 'savingsGoal' },
     { table: database.savingsDeposits, entityType: 'savingsDeposit' },
     { table: database.visionItems, entityType: 'visionItem' },
+    { table: database.monthlyRoadmaps, entityType: 'monthlyRoadmap' },
   ];
 
   const createMutation = (

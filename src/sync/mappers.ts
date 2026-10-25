@@ -23,6 +23,7 @@ import type {
   SavingsGoal,
   SavingsDeposit,
   VisionItem,
+  MonthlyRoadmapItem,
 } from '@/domain/types';
 
 export const mappers = {
@@ -747,6 +748,15 @@ export const mappers = {
       return toLocalVisionItem(remote);
     },
   },
+
+  monthlyRoadmap: {
+    toRemote(local: MonthlyRoadmapItem, userId: string) {
+      return toRemoteMonthlyRoadmap(local, userId);
+    },
+    toLocal(remote: any): MonthlyRoadmapItem {
+      return toLocalMonthlyRoadmap(remote);
+    },
+  },
 };
 
 export function toRemoteVisionItem(local: VisionItem, userId: string) {
@@ -793,6 +803,43 @@ export function toLocalVisionItem(remote: any): VisionItem {
     manifestedAt: remote.manifested_at || undefined,
     order: remote.order !== null && remote.order !== undefined ? Number(remote.order) : 0,
     archivedAt: remote.archived_at || undefined,
+    createdAt: remote.created_at,
+    updatedAt: remote.updated_at,
+  };
+}
+
+export function toRemoteMonthlyRoadmap(local: MonthlyRoadmapItem, userId: string) {
+  return {
+    id: local.id,
+    user_id: userId,
+    year: local.year,
+    month: local.month,
+    theme: local.theme,
+    primary_goal: local.primaryGoal,
+    strategy: local.strategy,
+    mascot: local.mascot,
+    status: local.status,
+    completed_at: local.completedAt || null,
+    notes: local.notes || null,
+    version: 1,
+    is_deleted: false,
+    created_at: local.createdAt,
+    updated_at: local.updatedAt,
+  };
+}
+
+export function toLocalMonthlyRoadmap(remote: any): MonthlyRoadmapItem {
+  return {
+    id: remote.id,
+    year: Number(remote.year),
+    month: Number(remote.month),
+    theme: remote.theme,
+    primaryGoal: remote.primary_goal,
+    strategy: remote.strategy,
+    mascot: remote.mascot,
+    status: remote.status,
+    completedAt: remote.completed_at || undefined,
+    notes: remote.notes || undefined,
     createdAt: remote.created_at,
     updatedAt: remote.updated_at,
   };

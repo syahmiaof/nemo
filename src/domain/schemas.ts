@@ -330,6 +330,34 @@ export const VisionItemSchema = z.object({
   archivedAt: z.string().optional(),
 });
 
+export const RoadmapMascotSchema = z.enum([
+  'rocket',
+  'coder',
+  'scholar',
+  'wealth',
+  'archer',
+  'zen',
+  'sprinter',
+  'champion',
+]);
+
+export const RoadmapStatusSchema = z.enum(['upcoming', 'in_progress', 'completed']);
+
+export const MonthlyRoadmapItemSchema = z.object({
+  id: z.string().min(1),
+  year: z.number().int().min(2020).max(2099),
+  month: z.number().int().min(1).max(12),
+  theme: z.string().min(1, 'Theme is required').max(120),
+  primaryGoal: z.string().min(1, 'Primary goal is required').max(300),
+  strategy: z.string().min(1, 'Strategy is required').max(300),
+  mascot: RoadmapMascotSchema,
+  status: RoadmapStatusSchema.default('upcoming'),
+  completedAt: z.string().optional(),
+  notes: z.string().max(2000).optional(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+});
+
 /**
  * Complete Backup Envelope Schema for atomic import and export
  */
@@ -362,6 +390,7 @@ export const BackupSchema = z.object({
     savingsGoals: z.array(SavingsGoalSchema).optional().default([]),
     savingsDeposits: z.array(SavingsDepositSchema).optional().default([]),
     visionItems: z.array(VisionItemSchema).optional().default([]),
+    monthlyRoadmaps: z.array(MonthlyRoadmapItemSchema).optional().default([]),
   }),
 });
 

@@ -17,6 +17,7 @@ import { QuickAddModal } from '@/app/QuickAddModal';
 import { SparkOfFocusCard } from './components/SparkOfFocusCard';
 import { FocusSlotsSection } from './components/FocusSlotsSection';
 import { GoalsInMotionSection } from './components/GoalsInMotionSection';
+import { MonthlyJourneySection } from './components/roadmap/MonthlyJourneySection';
 import { getTodayLocalDateString, parseLocalDateString } from '@/lib/dates';
 import type { Task } from '@/domain/types';
 
@@ -297,6 +298,9 @@ export function OverviewPage() {
         goalStats={goalStats}
         milestones={milestones}
       />
+
+      {/* Lively Monthly Journey Roadmap (6-Month Partitioned Timeline) */}
+      <MonthlyJourneySection />
 
       <QuickAddModal isOpen={quickAdd} onClose={() => setQuickAdd(false)} />
     </div>

@@ -155,6 +155,10 @@ export function validateReferentialIntegrity(data: BackupData['data']): { valid:
     }
   }
 
+  if (data.monthlyRoadmaps) {
+    checkUniqueIds(data.monthlyRoadmaps, 'monthlyRoadmaps');
+  }
+
   return {
     valid: errors.length === 0,
     errors,
@@ -190,6 +194,7 @@ export async function auditDatabaseIntegrity(database: NemoDatabase): Promise<In
     savingsGoals,
     savingsDeposits,
     visionItems,
+    monthlyRoadmaps,
   ] = await Promise.all([
     database.settings.get('default'),
     database.projects.toArray(),
@@ -215,6 +220,7 @@ export async function auditDatabaseIntegrity(database: NemoDatabase): Promise<In
     database.savingsGoals.toArray(),
     database.savingsDeposits.toArray(),
     database.visionItems.toArray(),
+    database.monthlyRoadmaps.toArray(),
   ]);
 
   const stats: Record<string, number> = {
@@ -242,6 +248,7 @@ export async function auditDatabaseIntegrity(database: NemoDatabase): Promise<In
     savingsGoals: savingsGoals.length,
     savingsDeposits: savingsDeposits.length,
     visionItems: visionItems.length,
+    monthlyRoadmaps: monthlyRoadmaps.length,
   };
 
   const issues: string[] = [];
@@ -286,6 +293,7 @@ export async function auditDatabaseIntegrity(database: NemoDatabase): Promise<In
     savingsGoals,
     savingsDeposits,
     visionItems,
+    monthlyRoadmaps,
   });
 
   issues.push(...refCheck.errors);

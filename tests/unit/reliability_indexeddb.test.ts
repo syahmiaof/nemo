@@ -25,8 +25,8 @@ describe('Sprint 2 — IndexedDB Reliability & Multi-Table Transactions', () => 
     await testDb.delete();
   });
 
-  it('preserves all object stores with proper indices and schema version 5', () => {
-    expect(testDb.verno).toBe(5);
+  it('preserves all object stores with proper indices and schema version 6', () => {
+    expect(testDb.verno).toBe(6);
     const storeNames = testDb.tables.map((t) => t.name);
     const expectedStores = [
       'settings',
@@ -54,11 +54,12 @@ describe('Sprint 2 — IndexedDB Reliability & Multi-Table Transactions', () => 
       'savingsGoals',
       'savingsDeposits',
       'visionItems',
+      'monthlyRoadmaps',
     ];
     for (const name of expectedStores) {
       expect(storeNames).toContain(name);
     }
-    expect(storeNames.length).toBe(25);
+    expect(storeNames.length).toBe(26);
   });
 
   it('performs atomic project deletion, cleaning up asset blobs and milestones while safely unlinking tasks', async () => {

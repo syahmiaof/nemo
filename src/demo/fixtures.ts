@@ -1,5 +1,6 @@
 import { BackupSchema, type BackupData } from '@/domain/schemas';
 import type { AssetBlob, Milestone, Priority, Task } from '@/domain/types';
+import { DEFAULT_ROADMAP_ITEMS_2026 } from '@/features/overview/data/defaultRoadmaps';
 
 type FixtureData = BackupData['data'];
 
@@ -463,6 +464,7 @@ export function createDemoFixtures(anchor = new Date()): FixtureData {
     savingsGoals,
     savingsDeposits,
     visionItems,
+    monthlyRoadmaps: DEFAULT_ROADMAP_ITEMS_2026,
   };
   return BackupSchema.parse({ app: 'nemo', version: 1, exportedAt: iso(0), data }).data;
 }
