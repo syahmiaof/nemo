@@ -12,6 +12,7 @@ import { GoalDetailPage } from '@/features/goals/GoalDetailPage';
 import { HealthPage } from '@/features/health/HealthPage';
 import { FinancePage } from '@/features/finance/FinancePage';
 import { VisionBoardPage } from '@/features/vision/VisionBoardPage';
+import { IbadahPage } from '@/features/ibadah/IbadahPage';
 import { InsightsPage } from '@/features/insights/InsightsPage';
 import { SettingsPage } from '@/features/settings/SettingsPage';
 import { Button } from '@/components/ui/Button';
@@ -50,6 +51,7 @@ export const router = createBrowserRouter([
       { path: 'goals', element: <GoalsPage /> },
       { path: 'goals/:id', element: <GoalDetailPage /> },
       { path: 'vision', element: <VisionBoardPage /> },
+      { path: 'ibadah', element: <IbadahPage /> },
       { path: 'health', element: <HealthPage /> },
       { path: 'finance', element: <FinancePage /> },
       { path: 'insights', element: <InsightsPage /> },

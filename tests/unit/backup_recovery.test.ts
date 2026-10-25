@@ -253,6 +253,10 @@ describe('Sprint 2 — Backup, Export & Disaster Recovery', () => {
         savingsDeposits: [],
         visionItems: [],
         monthlyRoadmaps: [],
+        incomeItems: [],
+        ibadahDailyLogs: [],
+        qadhaPrayers: [],
+        qadhaFastings: [],
       },
     };
 

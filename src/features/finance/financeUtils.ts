@@ -27,7 +27,9 @@ export function calculateSafeToSpend(
   status: 'healthy' | 'caution' | 'critical';
 } {
   const totalCommitments = commitments.reduce((sum, c) => sum + (c.amount || 0), 0);
-  const totalDebtInstallments = debts.reduce((sum, d) => sum + (d.monthlyInstallment || 0), 0);
+  const totalDebtInstallments = debts
+    .filter((d) => d.debtType !== 'lumpsum_flexible')
+    .reduce((sum, d) => sum + (d.monthlyInstallment || 0), 0);
   const safeToSpend = Math.max(0, monthlyIncomeNet - totalCommitments - totalDebtInstallments);
   
   const safeToSpendRatio = monthlyIncomeNet > 0 
@@ -81,6 +83,9 @@ export function calculateDebtPayoffProjection(debt: DebtItem): {
 } {
   if (debt.currentBalance <= 0) {
     return { monthsRemaining: 0, projectedPayoffText: 'Fully Paid Off' };
+  }
+  if (debt.debtType === 'lumpsum_flexible') {
+    return { monthsRemaining: 0, projectedPayoffText: 'Fleksibel (bayar bila ada duit)' };
   }
   if (!debt.monthlyInstallment || debt.monthlyInstallment <= 0) {
     return { monthsRemaining: 0, projectedPayoffText: 'No scheduled installment' };

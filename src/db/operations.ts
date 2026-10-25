@@ -15,6 +15,11 @@ import type {
   SavingsGoal,
   SavingsGoalCategory,
   SavingsDeposit,
+  IncomeItem,
+  IbadahDailyLog,
+  QadhaPrayerItem,
+  QadhaFastingRecord,
+  PrayerTimeName,
 } from '@/domain/types';
 import type { BackupData } from '@/domain/schemas';
 
@@ -159,6 +164,22 @@ export function validateReferentialIntegrity(data: BackupData['data']): { valid:
     checkUniqueIds(data.monthlyRoadmaps, 'monthlyRoadmaps');
   }
 
+  if (data.incomeItems) {
+    checkUniqueIds(data.incomeItems, 'incomeItems');
+  }
+
+  if (data.ibadahDailyLogs) {
+    checkUniqueIds(data.ibadahDailyLogs, 'ibadahDailyLogs');
+  }
+
+  if (data.qadhaPrayers) {
+    checkUniqueIds(data.qadhaPrayers, 'qadhaPrayers');
+  }
+
+  if (data.qadhaFastings) {
+    checkUniqueIds(data.qadhaFastings, 'qadhaFastings');
+  }
+
   return {
     valid: errors.length === 0,
     errors,
@@ -195,6 +216,10 @@ export async function auditDatabaseIntegrity(database: NemoDatabase): Promise<In
     savingsDeposits,
     visionItems,
     monthlyRoadmaps,
+    incomeItems,
+    ibadahDailyLogs,
+    qadhaPrayers,
+    qadhaFastings,
   ] = await Promise.all([
     database.settings.get('default'),
     database.projects.toArray(),
@@ -221,6 +246,10 @@ export async function auditDatabaseIntegrity(database: NemoDatabase): Promise<In
     database.savingsDeposits.toArray(),
     database.visionItems.toArray(),
     database.monthlyRoadmaps.toArray(),
+    database.incomeItems.toArray(),
+    database.ibadahDailyLogs.toArray(),
+    database.qadhaPrayers.toArray(),
+    database.qadhaFastings.toArray(),
   ]);
 
   const stats: Record<string, number> = {
@@ -249,6 +278,10 @@ export async function auditDatabaseIntegrity(database: NemoDatabase): Promise<In
     savingsDeposits: savingsDeposits.length,
     visionItems: visionItems.length,
     monthlyRoadmaps: monthlyRoadmaps.length,
+    incomeItems: incomeItems.length,
+    ibadahDailyLogs: ibadahDailyLogs.length,
+    qadhaPrayers: qadhaPrayers.length,
+    qadhaFastings: qadhaFastings.length,
   };
 
   const issues: string[] = [];
@@ -294,6 +327,10 @@ export async function auditDatabaseIntegrity(database: NemoDatabase): Promise<In
     savingsDeposits,
     visionItems,
     monthlyRoadmaps,
+    incomeItems,
+    ibadahDailyLogs,
+    qadhaPrayers,
+    qadhaFastings,
   });
 
   issues.push(...refCheck.errors);
@@ -705,6 +742,18 @@ export async function atomicDeleteCommitment(database: NemoDatabase, id: string)
   await database.financialCommitments.delete(id);
 }
 
+export async function atomicUpdateCommitment(
+  database: NemoDatabase,
+  id: string,
+  updates: Partial<Omit<FinancialCommitment, 'id' | 'createdAt'>>
+): Promise<void> {
+  const now = new Date().toISOString();
+  await database.financialCommitments.update(id, {
+    ...updates,
+    updatedAt: now,
+  });
+}
+
 /**
  * Adds or updates a debt liability item.
  */
@@ -722,9 +771,10 @@ export async function atomicAddDebt(
     id: entry.id || `debt_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
     title: entry.title.trim(),
     creditor: entry.creditor.trim(),
+    debtType: entry.debtType || 'installment',
     originalPrincipal: entry.originalPrincipal,
     currentBalance: entry.currentBalance,
-    monthlyInstallment: entry.monthlyInstallment,
+    monthlyInstallment: entry.debtType === 'lumpsum_flexible' ? (entry.monthlyInstallment || 0) : entry.monthlyInstallment,
     interestRatePercent: entry.interestRatePercent,
     targetPayoffDate: entry.targetPayoffDate,
     priority: entry.priority || 'snowball',
@@ -950,4 +1000,117 @@ export async function atomicDeleteSavingsGoal(database: NemoDatabase, goalId: st
       await database.wishlistItems.update(w.id, { targetSavingsGoalId: undefined });
     }
   });
+}
+
+// ============================================================================
+// INCOME STREAM OPERATIONS
+// ============================================================================
+
+export async function atomicAddIncomeItem(
+  database: NemoDatabase,
+  entry: Omit<IncomeItem, 'id' | 'createdAt' | 'updatedAt'> & { id?: string }
+): Promise<IncomeItem> {
+  const now = new Date().toISOString();
+  const item: IncomeItem = {
+    id: entry.id || `inc_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+    title: entry.title.trim(),
+    amount: entry.amount,
+    type: entry.type,
+    dateReceived: entry.dateReceived,
+    isRecurring: entry.isRecurring,
+    sourceNotes: entry.sourceNotes?.trim() || undefined,
+    createdAt: now,
+    updatedAt: now,
+  };
+  await database.incomeItems.put(item);
+  return item;
+}
+
+export async function atomicUpdateIncomeItem(
+  database: NemoDatabase,
+  id: string,
+  updates: Partial<Omit<IncomeItem, 'id' | 'createdAt'>>
+): Promise<void> {
+  const now = new Date().toISOString();
+  await database.incomeItems.update(id, {
+    ...updates,
+    updatedAt: now,
+  });
+}
+
+export async function atomicDeleteIncomeItem(
+  database: NemoDatabase,
+  id: string
+): Promise<void> {
+  await database.incomeItems.delete(id);
+}
+
+// ============================================================================
+// IBADAH & SPIRITUAL OPERATIONS
+// ============================================================================
+
+export async function atomicSaveIbadahDailyLog(
+  database: NemoDatabase,
+  entry: Omit<IbadahDailyLog, 'createdAt' | 'updatedAt'>
+): Promise<IbadahDailyLog> {
+  const now = new Date().toISOString();
+  const existing = await database.ibadahDailyLogs.get(entry.id);
+  const record: IbadahDailyLog = {
+    ...entry,
+    createdAt: existing?.createdAt || now,
+    updatedAt: now,
+  };
+  await database.ibadahDailyLogs.put(record);
+  return record;
+}
+
+export async function atomicUpdateQadhaPrayer(
+  database: NemoDatabase,
+  prayerType: PrayerTimeName,
+  deltaCompleted: number,
+  deltaTotalMissed = 0
+): Promise<QadhaPrayerItem> {
+  const id = `qp_${prayerType}`;
+  const now = new Date().toISOString();
+  return await database.transaction('rw', database.qadhaPrayers, async () => {
+    const existing = await database.qadhaPrayers.get(id);
+    const totalMissed = Math.max(0, (existing?.totalMissed ?? 0) + deltaTotalMissed);
+    const completedCount = Math.max(0, Math.min(totalMissed, (existing?.completedCount ?? 0) + deltaCompleted));
+    const remainingCount = Math.max(0, totalMissed - completedCount);
+
+    const updated: QadhaPrayerItem = {
+      id,
+      prayerType,
+      totalMissed,
+      completedCount,
+      remainingCount,
+      notes: existing?.notes,
+      createdAt: existing?.createdAt || now,
+      updatedAt: now,
+    };
+    await database.qadhaPrayers.put(updated);
+    return updated;
+  });
+}
+
+export async function atomicUpsertQadhaFastingRecord(
+  database: NemoDatabase,
+  record: Omit<QadhaFastingRecord, 'createdAt' | 'updatedAt'>
+): Promise<QadhaFastingRecord> {
+  const now = new Date().toISOString();
+  const existing = await database.qadhaFastings.get(record.id);
+  const updated: QadhaFastingRecord = {
+    ...record,
+    createdAt: existing?.createdAt || now,
+    updatedAt: now,
+  };
+  await database.qadhaFastings.put(updated);
+  return updated;
+}
+
+export async function atomicDeleteQadhaFastingRecord(
+  database: NemoDatabase,
+  id: string
+): Promise<void> {
+  await database.qadhaFastings.delete(id);
 }

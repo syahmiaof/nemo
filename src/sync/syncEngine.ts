@@ -326,6 +326,10 @@ class SyncEngine {
       savingsDeposit: db.savingsDeposits,
       visionItem: db.visionItems,
       monthlyRoadmap: db.monthlyRoadmaps,
+      incomeItem: db.incomeItems,
+      ibadahDailyLog: db.ibadahDailyLogs,
+      qadhaPrayer: db.qadhaPrayers,
+      qadhaFasting: db.qadhaFastings,
     };
     const current = await tables[mut.entityType].get(mut.entityId);
     if (mut.operation === 'DELETE') return current === undefined;
@@ -364,6 +368,10 @@ class SyncEngine {
       savingsDeposit: 'savings_deposits',
       visionItem: 'vision_items',
       monthlyRoadmap: 'monthly_roadmaps',
+      incomeItem: 'income_items',
+      ibadahDailyLog: 'ibadah_daily_logs',
+      qadhaPrayer: 'qadha_prayers',
+      qadhaFasting: 'qadha_fastings',
     };
 
     const tableName = tableMap[mut.entityType];
@@ -628,6 +636,70 @@ class SyncEngine {
       }
     }
 
+    // Pull income items
+    const remoteIncomes = await this.fetchRemoteRows('income_items', userId);
+    for (const row of remoteIncomes) {
+      if (row.is_deleted === true) await this.applyRemoteTombstone('incomeItem', row);
+      else {
+        const local = await db.incomeItems.get(row.id);
+        const remoteItem = mappers.incomeItem.toLocal(row);
+        if (!local) {
+          await db.incomeItems.put(remoteItem);
+        } else {
+          const { resolved } = resolveGenericLWW(local, remoteItem);
+          await db.incomeItems.put(resolved);
+        }
+      }
+    }
+
+    // Pull ibadah daily logs
+    const remoteIbadah = await this.fetchRemoteRows('ibadah_daily_logs', userId);
+    for (const row of remoteIbadah) {
+      if (row.is_deleted === true) await this.applyRemoteTombstone('ibadahDailyLog', row);
+      else {
+        const local = await db.ibadahDailyLogs.get(row.id);
+        const remoteItem = mappers.ibadahDailyLog.toLocal(row);
+        if (!local) {
+          await db.ibadahDailyLogs.put(remoteItem);
+        } else {
+          const { resolved } = resolveGenericLWW(local, remoteItem);
+          await db.ibadahDailyLogs.put(resolved);
+        }
+      }
+    }
+
+    // Pull qadha prayers
+    const remoteQadhaPrayers = await this.fetchRemoteRows('qadha_prayers', userId);
+    for (const row of remoteQadhaPrayers) {
+      if (row.is_deleted === true) await this.applyRemoteTombstone('qadhaPrayer', row);
+      else {
+        const local = await db.qadhaPrayers.get(row.id);
+        const remoteItem = mappers.qadhaPrayer.toLocal(row);
+        if (!local) {
+          await db.qadhaPrayers.put(remoteItem);
+        } else {
+          const { resolved } = resolveGenericLWW(local, remoteItem);
+          await db.qadhaPrayers.put(resolved);
+        }
+      }
+    }
+
+    // Pull qadha fastings
+    const remoteQadhaFastings = await this.fetchRemoteRows('qadha_fastings', userId);
+    for (const row of remoteQadhaFastings) {
+      if (row.is_deleted === true) await this.applyRemoteTombstone('qadhaFasting', row);
+      else {
+        const local = await db.qadhaFastings.get(row.id);
+        const remoteItem = mappers.qadhaFasting.toLocal(row);
+        if (!local) {
+          await db.qadhaFastings.put(remoteItem);
+        } else {
+          const { resolved } = resolveGenericLWW(local, remoteItem);
+          await db.qadhaFastings.put(resolved);
+        }
+      }
+    }
+
     // Pull profile settings & avatar
     const { data: remoteProfile, error: profileError } = await supabase
       .from('profiles')
@@ -739,6 +811,10 @@ class SyncEngine {
       savingsDeposit: db.savingsDeposits,
       visionItem: db.visionItems,
       monthlyRoadmap: db.monthlyRoadmaps,
+      incomeItem: db.incomeItems,
+      ibadahDailyLog: db.ibadahDailyLogs,
+      qadhaPrayer: db.qadhaPrayers,
+      qadhaFasting: db.qadhaFastings,
     };
     const table = tables[entityType];
     const local = await table.get(row.id);
@@ -786,6 +862,10 @@ class SyncEngine {
         savingsDeposits,
         visionItems,
         monthlyRoadmaps,
+        incomeItems,
+        ibadahDailyLogs,
+        qadhaPrayers,
+        qadhaFastings,
       ] = await Promise.all([
         db.settings.get('default'),
         db.projects.toArray(),
@@ -812,6 +892,10 @@ class SyncEngine {
         db.savingsDeposits.toArray(),
         db.visionItems.toArray(),
         db.monthlyRoadmaps.toArray(),
+        db.incomeItems.toArray(),
+        db.ibadahDailyLogs.toArray(),
+        db.qadhaPrayers.toArray(),
+        db.qadhaFastings.toArray(),
       ]);
 
       const upsert = async (table: string, rows: Record<string, unknown>[], label: string) => {
@@ -950,6 +1034,26 @@ class SyncEngine {
       if (monthlyRoadmaps.length) {
         const rows = monthlyRoadmaps.map((r) => mappers.monthlyRoadmap.toRemote(r, userId));
         await upsert('monthly_roadmaps', rows, 'monthly roadmaps');
+      }
+
+      if (incomeItems.length) {
+        const rows = incomeItems.map((inc) => mappers.incomeItem.toRemote(inc, userId));
+        await upsert('income_items', rows, 'income items');
+      }
+
+      if (ibadahDailyLogs.length) {
+        const rows = ibadahDailyLogs.map((log) => mappers.ibadahDailyLog.toRemote(log, userId));
+        await upsert('ibadah_daily_logs', rows, 'ibadah daily logs');
+      }
+
+      if (qadhaPrayers.length) {
+        const rows = qadhaPrayers.map((qp) => mappers.qadhaPrayer.toRemote(qp, userId));
+        await upsert('qadha_prayers', rows, 'qadha prayers');
+      }
+
+      if (qadhaFastings.length) {
+        const rows = qadhaFastings.map((qf) => mappers.qadhaFasting.toRemote(qf, userId));
+        await upsert('qadha_fastings', rows, 'qadha fastings');
       }
 
       // Ownerless/legacy mutations deliberately stay quarantined. They cannot

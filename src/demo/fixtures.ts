@@ -465,6 +465,10 @@ export function createDemoFixtures(anchor = new Date()): FixtureData {
     savingsDeposits,
     visionItems,
     monthlyRoadmaps: DEFAULT_ROADMAP_ITEMS_2026,
+    incomeItems: [],
+    ibadahDailyLogs: [],
+    qadhaPrayers: [],
+    qadhaFastings: [],
   };
   return BackupSchema.parse({ app: 'nemo', version: 1, exportedAt: iso(0), data }).data;
 }

@@ -24,6 +24,10 @@ import type {
   SavingsDeposit,
   VisionItem,
   MonthlyRoadmapItem,
+  IncomeItem,
+  IbadahDailyLog,
+  QadhaPrayerItem,
+  QadhaFastingRecord,
 } from '@/domain/types';
 
 export const mappers = {
@@ -589,6 +593,7 @@ export const mappers = {
         user_id: userId,
         title: local.title,
         creditor: local.creditor,
+        debt_type: local.debtType || null,
         original_principal: local.originalPrincipal,
         current_balance: local.currentBalance,
         monthly_installment: local.monthlyInstallment,
@@ -607,6 +612,7 @@ export const mappers = {
         id: remote.id,
         title: remote.title,
         creditor: remote.creditor,
+        debtType: remote.debt_type || undefined,
         originalPrincipal: Number(remote.original_principal),
         currentBalance: Number(remote.current_balance),
         monthlyInstallment: Number(remote.monthly_installment),
@@ -755,6 +761,153 @@ export const mappers = {
     },
     toLocal(remote: any): MonthlyRoadmapItem {
       return toLocalMonthlyRoadmap(remote);
+    },
+  },
+
+  incomeItem: {
+    toRemote(local: IncomeItem, userId: string) {
+      return {
+        id: local.id,
+        user_id: userId,
+        title: local.title,
+        amount: local.amount,
+        type: local.type,
+        is_recurring: local.isRecurring,
+        date_received: local.dateReceived || null,
+        notes: local.sourceNotes || null,
+        version: 1,
+        is_deleted: false,
+        created_at: local.createdAt,
+        updated_at: local.updatedAt,
+      };
+    },
+    toLocal(remote: any): IncomeItem {
+      return {
+        id: remote.id,
+        title: remote.title,
+        amount: Number(remote.amount),
+        type: remote.type,
+        isRecurring: Boolean(remote.is_recurring),
+        dateReceived: remote.date_received || undefined,
+        sourceNotes: remote.notes || remote.source_notes || undefined,
+        createdAt: remote.created_at,
+        updatedAt: remote.updated_at,
+      };
+    },
+  },
+
+  ibadahDailyLog: {
+    toRemote(local: IbadahDailyLog, userId: string) {
+      return {
+        id: local.id,
+        user_id: userId,
+        date: local.date,
+        prayers: local.prayers || {},
+        sunnah_prayers: local.sunnahPrayers || {},
+        quran_pages_read: local.quranPagesRead ?? 0,
+        quran_last_surah: local.quranLastSurah || null,
+        quran_last_ayah: local.quranLastAyah ?? null,
+        dhikr_count: local.dhikrCount ?? 0,
+        sedekah_subuh_done: local.sedekahDone ?? false,
+        daily_reflection: local.notes || null,
+        version: 1,
+        is_deleted: false,
+        created_at: local.createdAt,
+        updated_at: local.updatedAt,
+      };
+    },
+    toLocal(remote: any): IbadahDailyLog {
+      return {
+        id: remote.id,
+        date: remote.date,
+        prayers: remote.prayers || {},
+        sunnahPrayers: remote.sunnah_prayers || {},
+        quranPagesRead: Number(remote.quran_pages_read ?? 0),
+        quranLastSurah: remote.quran_last_surah || undefined,
+        quranLastAyah: remote.quran_last_ayah != null ? Number(remote.quran_last_ayah) : undefined,
+        dhikrCount: Number(remote.dhikr_count ?? 0),
+        sedekahDone: Boolean(remote.sedekah_subuh_done ?? remote.sedekah_done),
+        notes: remote.daily_reflection || remote.notes || undefined,
+        createdAt: remote.created_at,
+        updatedAt: remote.updated_at,
+      };
+    },
+  },
+
+  qadhaPrayer: {
+    toRemote(local: QadhaPrayerItem, userId: string) {
+      return {
+        id: local.id,
+        user_id: userId,
+        prayer_type: local.prayerType,
+        count_remaining: local.remainingCount,
+        count_completed: local.completedCount,
+        notes: local.notes || null,
+        version: 1,
+        is_deleted: false,
+        created_at: local.createdAt,
+        updated_at: local.updatedAt,
+      };
+    },
+    toLocal(remote: any): QadhaPrayerItem {
+      const remaining = Number(remote.count_remaining ?? 0);
+      const completed = Number(remote.count_completed ?? 0);
+      return {
+        id: remote.id,
+        prayerType: remote.prayer_type,
+        totalMissed: remaining + completed,
+        completedCount: completed,
+        remainingCount: remaining,
+        notes: remote.notes || undefined,
+        createdAt: remote.created_at,
+        updatedAt: remote.updated_at,
+      };
+    },
+  },
+
+  qadhaFasting: {
+    toRemote(local: QadhaFastingRecord, userId: string) {
+      return {
+        id: local.id,
+        user_id: userId,
+        year_hijri: local.yearHijri,
+        year_gregorian: local.yearGregorian,
+        days_missed: local.missedDays,
+        days_qadha_done: local.qadhaCompletedDays,
+        years_delayed: local.yearsDelayed,
+        fidyah_rate_per_day: local.fidyahRate,
+        is_fidyah_paid: local.isFidyahPaid,
+        fidyah_paid_amount: local.totalFidyahAmount,
+        fidyah_paid_at: local.fidyahPaidAt || null,
+        notes: local.notes || null,
+        version: 1,
+        is_deleted: false,
+        created_at: local.createdAt,
+        updated_at: local.updatedAt,
+      };
+    },
+    toLocal(remote: any): QadhaFastingRecord {
+      const missed = Number(remote.days_missed ?? 0);
+      const qadhaDone = Number(remote.days_qadha_done ?? 0);
+      const remaining = Math.max(0, missed - qadhaDone);
+      const delayed = Number(remote.years_delayed ?? 0);
+      const rate = Number(remote.fidyah_rate_per_day ?? 4.0);
+      return {
+        id: remote.id,
+        yearHijri: Number(remote.year_hijri),
+        yearGregorian: Number(remote.year_gregorian),
+        missedDays: missed,
+        qadhaCompletedDays: qadhaDone,
+        remainingDays: remaining,
+        yearsDelayed: delayed,
+        fidyahRate: rate,
+        totalFidyahAmount: remaining * delayed * rate,
+        isFidyahPaid: Boolean(remote.is_fidyah_paid),
+        fidyahPaidAt: remote.fidyah_paid_at || undefined,
+        notes: remote.notes || undefined,
+        createdAt: remote.created_at,
+        updatedAt: remote.updated_at,
+      };
     },
   },
 };

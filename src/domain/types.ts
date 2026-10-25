@@ -211,7 +211,11 @@ export type SyncEntityType =
   | 'savingsGoal'
   | 'savingsDeposit'
   | 'visionItem'
-  | 'monthlyRoadmap';
+  | 'monthlyRoadmap'
+  | 'incomeItem'
+  | 'ibadahDailyLog'
+  | 'qadhaPrayer'
+  | 'qadhaFasting';
 
 // ============================================================================
 // HEALTH & WELLNESS DOMAIN TYPES
@@ -304,11 +308,13 @@ export interface FinancialCommitment {
 }
 
 export type DebtPriority = 'snowball' | 'avalanche' | 'normal';
+export type DebtType = 'installment' | 'lumpsum_flexible';
 
 export interface DebtItem {
   id: string; // 'debt_...'
   title: string;
   creditor: string;
+  debtType?: DebtType;
   originalPrincipal: number;
   currentBalance: number;
   monthlyInstallment: number;
@@ -436,6 +442,100 @@ export interface MonthlyRoadmapItem {
   notes?: string;
   createdAt: string;
   updatedAt: string;
+}
+
+// ============================================================================
+// FINANCE INCOME STREAM TYPES
+// ============================================================================
+
+export type IncomeStreamType =
+  | 'monthly_salary'
+  | 'freelance_project'
+  | 'business_sales'
+  | 'passive_other';
+
+export interface IncomeItem {
+  id: string; // e.g. "inc_..."
+  title: string; // e.g. "Gaji Hakiki", "Projek Freelance Web"
+  amount: number;
+  type: IncomeStreamType;
+  dateReceived?: string; // YYYY-MM-DD
+  isRecurring: boolean; // true if recurring monthly salary, false for one-off
+  sourceNotes?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// ============================================================================
+// IBADAH & SPIRITUAL HUB DOMAIN TYPES
+// ============================================================================
+
+export type PrayerTimeName = 'subuh' | 'zohor' | 'asar' | 'maghrib' | 'isyak';
+export type PrayerStatus = 'on_time' | 'congregation' | 'alone' | 'qadha' | 'missed' | 'excused';
+
+export interface DailyPrayerRecord {
+  status: PrayerStatus;
+  completed?: boolean;
+  isCongregation?: boolean;
+  timestamp?: string;
+}
+
+export interface DailySunnahPrayers {
+  dhuha?: boolean;
+  tahajjud?: boolean;
+  witir?: boolean;
+  rawatib?: boolean;
+}
+
+export interface IbadahDailyLog {
+  id: string; // 'ibd_YYYY-MM-DD'
+  date: string; // 'YYYY-MM-DD'
+  prayers: Record<PrayerTimeName, DailyPrayerRecord>;
+  sunnahPrayers: DailySunnahPrayers;
+  quranPagesRead: number;
+  quranLastSurah?: string;
+  quranLastAyah?: number;
+  dhikrCount: number;
+  sedekahDone: boolean;
+  notes?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface QadhaPrayerItem {
+  id: string; // e.g. 'qp_subuh', 'qp_zohor'
+  prayerType: PrayerTimeName;
+  totalMissed: number;
+  completedCount: number;
+  remainingCount: number;
+  notes?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface QadhaFastingRecord {
+  id: string; // e.g. 'qf_1444'
+  yearHijri: number; // e.g. 1444
+  yearGregorian: number; // e.g. 2023
+  missedDays: number;
+  qadhaCompletedDays: number;
+  remainingDays: number;
+  yearsDelayed: number; // Compounding multiplier
+  fidyahRate: number; // RM per cupak (e.g. 4.00)
+  totalFidyahAmount: number; // remainingDays * yearsDelayed * fidyahRate
+  isFidyahPaid: boolean;
+  fidyahPaidAt?: string;
+  notes?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface IslamicQuote {
+  id: string;
+  textArabic?: string;
+  translation: string;
+  source: string; // e.g. "Surah Al-Baqarah: 286", "Sahih Al-Bukhari"
+  category: 'sabar' | 'syukur' | 'rezeki' | 'taubat' | 'istiqamah';
 }
 
 export interface SyncMutation {

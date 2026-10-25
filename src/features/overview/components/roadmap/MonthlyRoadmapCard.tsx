@@ -64,20 +64,19 @@ export const MonthlyRoadmapCard: React.FC<MonthlyRoadmapCardProps> = ({
           <div className="flex items-center justify-between gap-1 mb-2">
             <div className="flex items-center gap-1.5 min-w-0">
               <span
-                className={`text-[10px] font-mono font-bold px-1.5 py-0.5 rounded-md border shrink-0 ${theme.border} ${theme.bg} ${theme.text}`}
+                className={`text-[10px] font-mono font-bold px-1.5 py-0.5 rounded-md border shrink-0 flex items-center gap-1.5 ${theme.border} ${theme.bg} ${theme.text}`}
               >
+                {isCurrentMonth && (
+                  <span className="relative flex h-1.5 w-1.5">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent-mint opacity-75" />
+                    <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-accent-mint" />
+                  </span>
+                )}
                 {monthNum} • {monthCode}
               </span>
-
-              {isCurrentMonth && (
-                <span className="flex items-center gap-1 text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-accent-mint/20 text-accent-mint border border-accent-mint/40 shrink-0">
-                  <span className="w-1 h-1 rounded-full bg-accent-mint animate-ping" />
-                  Active
-                </span>
-              )}
             </div>
 
-            <div className="flex items-center gap-0.5 shrink-0">
+            <div className="flex items-center gap-1 shrink-0">
               <button
                 onClick={() => onToggleComplete(item)}
                 className={`p-1 rounded-md border transition-all ${

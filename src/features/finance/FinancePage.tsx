@@ -6,6 +6,7 @@ import { db } from '@/db/nemoDb';
 import {
   atomicUpdateFinancialProfile,
   atomicAddCommitment,
+  atomicUpdateCommitment,
   atomicToggleCommitmentPaid,
   atomicDeleteCommitment,
   atomicAddDebt,
@@ -18,9 +19,12 @@ import {
   atomicAddSavingsGoal,
   atomicRecordSavingsDeposit,
   atomicDeleteSavingsGoal,
+  atomicAddIncomeItem,
+  atomicDeleteIncomeItem,
 } from '@/db/operations';
 import { formatRM, calculateSafeToSpend } from './financeUtils';
 import { FinancialProfileModal } from './FinancialProfileModal';
+import { IncomeStreamsCard } from './IncomeStreamsCard';
 import { MonthlyCommitmentsCard } from './MonthlyCommitmentsCard';
 import { DebtsManagerCard } from './DebtsManagerCard';
 import { WishlistCard } from './WishlistCard';
@@ -42,7 +46,7 @@ import {
 
 gsap.registerPlugin(useGSAP);
 
-type FinanceTab = 'all' | 'commitments' | 'debts' | 'wishlist' | 'savings';
+type FinanceTab = 'all' | 'incomes' | 'commitments' | 'debts' | 'wishlist' | 'savings';
 
 export const FinancePage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<FinanceTab>('all');
@@ -52,6 +56,7 @@ export const FinancePage: React.FC = () => {
 
   // Reactive Dexie queries
   const profiles = useLiveQuery(() => db.financialProfiles.toArray(), []) ?? [];
+  const incomeItems = useLiveQuery(() => db.incomeItems.toArray(), []) ?? [];
   const commitments = useLiveQuery(() => db.financialCommitments.toArray(), []) ?? [];
   const debts = useLiveQuery(() => db.debts.toArray(), []) ?? [];
   const debtPayments = useLiveQuery(() => db.debtPayments.toArray(), []) ?? [];
@@ -60,7 +65,15 @@ export const FinancePage: React.FC = () => {
   const savingsDeposits = useLiveQuery(() => db.savingsDeposits.toArray(), []) ?? [];
 
   const profile = profiles[0] ?? null;
-  const monthlyIncome = profile?.monthlyIncomeNet ?? 0;
+
+  // Monthly income: calculate from itemized streams if provided, otherwise fallback to baseline profile income
+  const currentMonthPrefix = `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}`;
+  const totalItemizedRecurring = incomeItems.filter((i) => i.isRecurring).reduce((sum, i) => sum + (i.amount || 0), 0);
+  const totalItemizedOneOffThisMonth = incomeItems
+    .filter((i) => !i.isRecurring && (!i.dateReceived || i.dateReceived.startsWith(currentMonthPrefix)))
+    .reduce((sum, i) => sum + (i.amount || 0), 0);
+  const totalItemizedIncome = totalItemizedRecurring + totalItemizedOneOffThisMonth;
+  const monthlyIncome = totalItemizedIncome > 0 ? totalItemizedIncome : (profile?.monthlyIncomeNet ?? 0);
 
   // Safe-to-Spend calculations
   const {
@@ -349,6 +362,7 @@ export const FinancePage: React.FC = () => {
       <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
         {[
           { key: 'all', label: 'Overview & All', icon: LayoutGrid },
+          { key: 'incomes', label: `Income Streams (${incomeItems.length})`, icon: Wallet },
           { key: 'commitments', label: `Commitments & Bills (${commitments.length})`, icon: CalendarDays },
           { key: 'debts', label: `Debt Payoff (${debts.length})`, icon: CreditCard },
           { key: 'wishlist', label: `Anti-Impulse Vault (${wishlistItems.length})`, icon: ShoppingBag },
@@ -376,6 +390,20 @@ export const FinancePage: React.FC = () => {
 
       {/* Main Content Sections */}
       <div className="space-y-6">
+        {(activeTab === 'all' || activeTab === 'incomes') && (
+          <div className="finance-card-anim">
+            <IncomeStreamsCard
+              incomes={incomeItems}
+              onAddIncome={async (data) => {
+                await atomicAddIncomeItem(db, data);
+              }}
+              onDeleteIncome={async (id) => {
+                await atomicDeleteIncomeItem(db, id);
+              }}
+            />
+          </div>
+        )}
+
         {(activeTab === 'all' || activeTab === 'commitments') && (
           <div className="finance-card-anim">
             <MonthlyCommitmentsCard
@@ -383,8 +411,12 @@ export const FinancePage: React.FC = () => {
               onAddCommitment={async (data) => {
                 await atomicAddCommitment(db, data);
               }}
+              onUpdateCommitment={async (id, data) => {
+                await atomicUpdateCommitment(db, id, data);
+              }}
               onTogglePaid={async (id, isPaid) => {
-                await atomicToggleCommitmentPaid(db, id, isPaid);
+                const currentMonthYear = `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}`;
+                await atomicToggleCommitmentPaid(db, id, isPaid, currentMonthYear);
               }}
               onDeleteCommitment={async (id) => {
                 await atomicDeleteCommitment(db, id);

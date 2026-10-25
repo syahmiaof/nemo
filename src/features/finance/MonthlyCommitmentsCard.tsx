@@ -14,6 +14,7 @@ import {
   Plus,
   Shield,
   Trash2,
+  Edit3,
   Tv,
   Zap,
   AlertCircle,
@@ -30,6 +31,16 @@ interface MonthlyCommitmentsCardProps {
     dueDayOfMonth: number;
     notes?: string;
   }) => Promise<void>;
+  onUpdateCommitment?: (
+    id: string,
+    data: {
+      title: string;
+      amount: number;
+      category: FinancialCommitmentCategory;
+      dueDayOfMonth: number;
+      notes?: string;
+    }
+  ) => Promise<void>;
   onTogglePaid: (id: string, isPaid: boolean) => Promise<void>;
   onDeleteCommitment: (id: string) => Promise<void>;
 }
@@ -69,10 +80,12 @@ const CATEGORY_OPTIONS = [
 export const MonthlyCommitmentsCard: React.FC<MonthlyCommitmentsCardProps> = ({
   commitments,
   onAddCommitment,
+  onUpdateCommitment,
   onTogglePaid,
   onDeleteCommitment,
 }) => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [editingCommitment, setEditingCommitment] = useState<FinancialCommitment | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
 
   // Form states
@@ -84,21 +97,39 @@ export const MonthlyCommitmentsCard: React.FC<MonthlyCommitmentsCardProps> = ({
   const [formError, setFormError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Aggregations
+  // Aggregations with monthly cycle auto-reset check
+  const currentMonthYear = `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}`;
+  const currentMonthLabel = new Intl.DateTimeFormat('ms-MY', { month: 'long', year: 'numeric' }).format(new Date());
+
+  const isItemPaidThisCycle = (item: FinancialCommitment) =>
+    Boolean(item.isPaidThisMonth && item.lastPaidMonthYear === currentMonthYear);
+
   const totalBurn = commitments.reduce((sum, c) => sum + (c.amount || 0), 0);
   const totalPaid = commitments
-    .filter((c) => c.isPaidThisMonth)
+    .filter(isItemPaidThisCycle)
     .reduce((sum, c) => sum + (c.amount || 0), 0);
   const totalUnpaid = Math.max(0, totalBurn - totalPaid);
   const paidRatio = totalBurn > 0 ? Math.min(100, Math.round((totalPaid / totalBurn) * 100)) : 0;
-  const paidCount = commitments.filter((c) => c.isPaidThisMonth).length;
+  const paidCount = commitments.filter(isItemPaidThisCycle).length;
 
   const handleOpenAddModal = () => {
+    setEditingCommitment(null);
     setTitle('');
     setAmount('');
     setCategory('utilities');
     setDueDay('15');
     setNotes('');
+    setFormError(null);
+    setIsAddModalOpen(true);
+  };
+
+  const handleOpenEditModal = (item: FinancialCommitment) => {
+    setEditingCommitment(item);
+    setTitle(item.title);
+    setAmount(String(item.amount));
+    setCategory(item.category);
+    setDueDay(String(item.dueDayOfMonth));
+    setNotes(item.notes || '');
     setFormError(null);
     setIsAddModalOpen(true);
   };
@@ -123,14 +154,25 @@ export const MonthlyCommitmentsCard: React.FC<MonthlyCommitmentsCardProps> = ({
 
     try {
       setIsSubmitting(true);
-      await onAddCommitment({
-        title: title.trim(),
-        amount: amountNum,
-        category,
-        dueDayOfMonth: dueDayNum,
-        notes: notes.trim() || undefined,
-      });
+      if (editingCommitment && onUpdateCommitment) {
+        await onUpdateCommitment(editingCommitment.id, {
+          title: title.trim(),
+          amount: amountNum,
+          category,
+          dueDayOfMonth: dueDayNum,
+          notes: notes.trim() || undefined,
+        });
+      } else {
+        await onAddCommitment({
+          title: title.trim(),
+          amount: amountNum,
+          category,
+          dueDayOfMonth: dueDayNum,
+          notes: notes.trim() || undefined,
+        });
+      }
       setIsAddModalOpen(false);
+      setEditingCommitment(null);
     } catch (err: unknown) {
       setFormError(err instanceof Error ? err.message : 'Failed to add commitment.');
     } finally {
@@ -257,6 +299,19 @@ export const MonthlyCommitmentsCard: React.FC<MonthlyCommitmentsCardProps> = ({
         </div>
       </div>
 
+      {/* Monthly Cycle Auto-Reset Explanatory Banner */}
+      <div className="flex items-start gap-2.5 p-3.5 rounded-xl bg-cyan-500/10 border border-cyan-400/20 text-xs text-cyan-200 mb-5 relative z-10">
+        <Sparkles className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" />
+        <div>
+          <span className="font-semibold text-cyan-300">
+            Kitaran Aktif: <span className="capitalize">{currentMonthLabel}</span>
+          </span>
+          <p className="text-[11px] text-cyan-200/80 mt-0.5 leading-relaxed">
+            Bila anda tanda (✓) sudah bayar, bil direkodkan selesai bagi bulan {currentMonthLabel}. Apabila masuk 1hb bulan baru nanti, checklist ini akan auto-reset semula secara automatik!
+          </p>
+        </div>
+      </div>
+
       {/* Commitments List */}
       {commitments.length === 0 ? (
         <div className="py-12 text-center rounded-2xl border border-dashed border-white/[0.08] bg-white/[0.01] relative z-10">
@@ -271,17 +326,18 @@ export const MonthlyCommitmentsCard: React.FC<MonthlyCommitmentsCardProps> = ({
           {commitments.map((item) => {
             const Icon = CATEGORY_ICONS[item.category] || CalendarDays;
             const catColor = CATEGORY_COLORS[item.category] || CATEGORY_COLORS.other;
+            const isPaid = isItemPaidThisCycle(item);
             const isDueSoon =
-              !item.isPaidThisMonth &&
+              !isPaid &&
               item.dueDayOfMonth >= currentDay &&
               item.dueDayOfMonth - currentDay <= 3;
-            const isOverdue = !item.isPaidThisMonth && item.dueDayOfMonth < currentDay;
+            const isOverdue = !isPaid && item.dueDayOfMonth < currentDay;
 
             return (
               <div
                 key={item.id}
                 className={`flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-xl border transition-all duration-200 ${
-                  item.isPaidThisMonth
+                  isPaid
                     ? 'bg-white/[0.02] border-white/[0.05] opacity-75'
                     : 'bg-white/[0.04] border-white/[0.08] hover:border-amber-400/30'
                 }`}
@@ -289,11 +345,11 @@ export const MonthlyCommitmentsCard: React.FC<MonthlyCommitmentsCardProps> = ({
                 <div className="flex items-start sm:items-center gap-3 min-w-0">
                   <button
                     type="button"
-                    onClick={() => onTogglePaid(item.id, !item.isPaidThisMonth)}
+                    onClick={() => onTogglePaid(item.id, !isPaid)}
                     className="flex-shrink-0 text-content-tertiary hover:text-emerald-400 transition-colors p-1"
-                    title={item.isPaidThisMonth ? 'Mark as unpaid' : 'Mark as paid'}
+                    title={isPaid ? 'Mark as unpaid' : 'Mark as paid'}
                   >
-                    {item.isPaidThisMonth ? (
+                    {isPaid ? (
                       <CheckCircle2 className="w-5 h-5 text-emerald-400" />
                     ) : (
                       <Circle className="w-5 h-5 text-content-tertiary hover:text-content-secondary" />
@@ -354,14 +410,25 @@ export const MonthlyCommitmentsCard: React.FC<MonthlyCommitmentsCardProps> = ({
                     </span>
                   </div>
 
-                  <button
-                    type="button"
-                    onClick={() => setDeleteId(item.id)}
-                    className="p-1.5 text-content-tertiary hover:text-rose-400 rounded-lg hover:bg-white/[0.06] transition-colors"
-                    title="Delete commitment"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
+                  <div className="flex items-center gap-1">
+                    <button
+                      type="button"
+                      onClick={() => handleOpenEditModal(item)}
+                      className="p-1.5 text-content-tertiary hover:text-white rounded-lg hover:bg-white/[0.06] transition-colors"
+                      title="Edit commitment"
+                      aria-label={`Edit ${item.title}`}
+                    >
+                      <Edit3 className="w-4 h-4" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setDeleteId(item.id)}
+                      className="p-1.5 text-content-tertiary hover:text-rose-400 rounded-lg hover:bg-white/[0.06] transition-colors"
+                      title="Delete commitment"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
                 </div>
               </div>
             );
@@ -369,12 +436,19 @@ export const MonthlyCommitmentsCard: React.FC<MonthlyCommitmentsCardProps> = ({
         </div>
       )}
 
-      {/* Add Commitment Modal */}
+      {/* Add / Edit Commitment Modal */}
       <Modal
         isOpen={isAddModalOpen}
-        onClose={() => setIsAddModalOpen(false)}
-        title="Add Monthly Commitment"
-        description="Enter the details of a fixed living bill or essential payment that recurs each month."
+        onClose={() => {
+          setIsAddModalOpen(false);
+          setEditingCommitment(null);
+        }}
+        title={editingCommitment ? 'Edit Monthly Commitment' : 'Add Monthly Commitment'}
+        description={
+          editingCommitment
+            ? 'Update the bill amount, category, due day, or payment reference.'
+            : 'Enter the details of a fixed living bill or essential payment that recurs each month.'
+        }
         maxWidth="md"
       >
         <form onSubmit={handleFormSubmit} className="space-y-4 pt-2">
@@ -446,11 +520,19 @@ export const MonthlyCommitmentsCard: React.FC<MonthlyCommitmentsCardProps> = ({
           </div>
 
           <div className="flex items-center justify-end gap-2.5 pt-4 border-t border-border-subtle">
-            <Button type="button" variant="ghost" onClick={() => setIsAddModalOpen(false)} disabled={isSubmitting}>
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={() => {
+                setIsAddModalOpen(false);
+                setEditingCommitment(null);
+              }}
+              disabled={isSubmitting}
+            >
               Cancel
             </Button>
             <Button type="submit" variant="primary" disabled={isSubmitting}>
-              {isSubmitting ? 'Saving...' : 'Add Commitment'}
+              {isSubmitting ? 'Saving...' : editingCommitment ? 'Save Changes' : 'Add Commitment'}
             </Button>
           </div>
         </form>

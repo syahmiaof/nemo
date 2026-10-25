@@ -241,9 +241,10 @@ export const DebtItemSchema = z.object({
   id: z.string().min(1),
   title: z.string().min(1),
   creditor: z.string().min(1),
+  debtType: z.enum(['installment', 'lumpsum_flexible']).optional(),
   originalPrincipal: z.number().positive(),
   currentBalance: z.number().nonnegative(),
-  monthlyInstallment: z.number().positive(),
+  monthlyInstallment: z.number().nonnegative(),
   interestRatePercent: z.number().nonnegative().optional(),
   targetPayoffDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
   priority: z.enum(['snowball', 'avalanche', 'normal']),
@@ -358,6 +359,104 @@ export const MonthlyRoadmapItemSchema = z.object({
   updatedAt: z.string(),
 });
 
+// ============================================================================
+// INCOME STREAM SCHEMAS
+// ============================================================================
+
+export const IncomeStreamTypeSchema = z.enum([
+  'monthly_salary',
+  'freelance_project',
+  'business_sales',
+  'passive_other',
+]);
+
+export const IncomeItemSchema = z.object({
+  id: z.string().min(1),
+  title: z.string().min(1),
+  amount: z.number().positive(),
+  type: IncomeStreamTypeSchema,
+  dateReceived: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+  isRecurring: z.boolean().default(false),
+  sourceNotes: z.string().optional(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+});
+
+// ============================================================================
+// IBADAH & SPIRITUAL HUB SCHEMAS
+// ============================================================================
+
+export const PrayerStatusSchema = z.enum([
+  'on_time',
+  'congregation',
+  'alone',
+  'qadha',
+  'missed',
+  'excused',
+]);
+
+export const DailyPrayerRecordSchema = z.object({
+  status: PrayerStatusSchema,
+  isCongregation: z.boolean().optional(),
+  timestamp: z.string().optional(),
+});
+
+export const DailySunnahPrayersSchema = z.object({
+  dhuha: z.boolean().optional(),
+  tahajjud: z.boolean().optional(),
+  witir: z.boolean().optional(),
+  rawatib: z.boolean().optional(),
+});
+
+export const IbadahDailyLogSchema = z.object({
+  id: z.string().min(1),
+  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  prayers: z.object({
+    subuh: DailyPrayerRecordSchema,
+    zohor: DailyPrayerRecordSchema,
+    asar: DailyPrayerRecordSchema,
+    maghrib: DailyPrayerRecordSchema,
+    isyak: DailyPrayerRecordSchema,
+  }),
+  sunnahPrayers: DailySunnahPrayersSchema.default({}),
+  quranPagesRead: z.number().nonnegative().default(0),
+  quranLastSurah: z.string().optional(),
+  quranLastAyah: z.number().nonnegative().optional(),
+  dhikrCount: z.number().nonnegative().default(0),
+  sedekahDone: z.boolean().default(false),
+  notes: z.string().optional(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+});
+
+export const QadhaPrayerItemSchema = z.object({
+  id: z.string().min(1),
+  prayerType: z.enum(['subuh', 'zohor', 'asar', 'maghrib', 'isyak']),
+  totalMissed: z.number().nonnegative(),
+  completedCount: z.number().nonnegative(),
+  remainingCount: z.number().nonnegative(),
+  notes: z.string().optional(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+});
+
+export const QadhaFastingRecordSchema = z.object({
+  id: z.string().min(1),
+  yearHijri: z.number().int().min(1400).max(1500),
+  yearGregorian: z.number().int().min(1980).max(2100),
+  missedDays: z.number().nonnegative(),
+  qadhaCompletedDays: z.number().nonnegative(),
+  remainingDays: z.number().nonnegative(),
+  yearsDelayed: z.number().nonnegative().default(0),
+  fidyahRate: z.number().nonnegative().default(4.0),
+  totalFidyahAmount: z.number().nonnegative().default(0),
+  isFidyahPaid: z.boolean().default(false),
+  fidyahPaidAt: z.string().optional(),
+  notes: z.string().optional(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+});
+
 /**
  * Complete Backup Envelope Schema for atomic import and export
  */
@@ -391,6 +490,10 @@ export const BackupSchema = z.object({
     savingsDeposits: z.array(SavingsDepositSchema).optional().default([]),
     visionItems: z.array(VisionItemSchema).optional().default([]),
     monthlyRoadmaps: z.array(MonthlyRoadmapItemSchema).optional().default([]),
+    incomeItems: z.array(IncomeItemSchema).optional().default([]),
+    ibadahDailyLogs: z.array(IbadahDailyLogSchema).optional().default([]),
+    qadhaPrayers: z.array(QadhaPrayerItemSchema).optional().default([]),
+    qadhaFastings: z.array(QadhaFastingRecordSchema).optional().default([]),
   }),
 });
 

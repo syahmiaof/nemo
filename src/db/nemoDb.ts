@@ -26,6 +26,10 @@ import type {
   SavingsDeposit,
   VisionItem,
   MonthlyRoadmapItem,
+  IncomeItem,
+  IbadahDailyLog,
+  QadhaPrayerItem,
+  QadhaFastingRecord,
 } from '@/domain/types';
 import { BackupSchema, type BackupData } from '@/domain/schemas';
 import { databaseNameForMode, getWorkspaceMode, REAL_DATABASE_NAME } from './workspaceMode';
@@ -61,6 +65,10 @@ export class NemoDatabase extends Dexie {
   savingsDeposits!: EntityTable<SavingsDeposit, 'id'>;
   visionItems!: EntityTable<VisionItem, 'id'>;
   monthlyRoadmaps!: EntityTable<MonthlyRoadmapItem, 'id'>;
+  incomeItems!: EntityTable<IncomeItem, 'id'>;
+  ibadahDailyLogs!: EntityTable<IbadahDailyLog, 'id'>;
+  qadhaPrayers!: EntityTable<QadhaPrayerItem, 'id'>;
+  qadhaFastings!: EntityTable<QadhaFastingRecord, 'id'>;
 
   constructor(name = REAL_DATABASE_NAME) {
     super(name);
@@ -193,6 +201,38 @@ export class NemoDatabase extends Dexie {
       visionItems: 'id, horizon, category, status, linkedGoalId, linkedSavingsGoalId, targetDate, order, updatedAt',
       monthlyRoadmaps: 'id, year, month, status, mascot, updatedAt',
     });
+    this.version(7).stores({
+      settings: 'id',
+      projects: 'id, status, priority, dueDate, createdAt, completedAt',
+      tasks: 'id, status, priority, dueDate, parentType, parentId, createdAt, completedAt',
+      milestones: 'id, ownerType, ownerId, targetDate, completedAt, order',
+      semesters: 'id, status, createdAt',
+      subjects: 'id, semesterId, createdAt',
+      assignments: 'id, subjectId, status, dueDate, submittedAt, createdAt',
+      calendarEvents: 'id, startAt, endAt, isAllDay, subjectId, createdAt',
+      goals: 'id, status, targetDate, createdAt, achievedAt',
+      goalTaskLinks: 'id, goalId, taskId, [goalId+taskId]',
+      focusSelections: 'id, taskId, effectiveLocalDate, [effectiveLocalDate+taskId]',
+      assetBlobs: 'id, ownerType, ownerId, mimeType, createdAt',
+      syncMutations: 'id, entityType, entityId, status, createdAt, ownerUserId, [ownerUserId+status]',
+      hydrationLogs: 'id, date, amountMl, loggedAt',
+      dietLogs: 'id, date, mealType, calories, loggedAt',
+      workoutLogs: 'id, date, type, durationMinutes, distanceKm, completedAt',
+      bodyMetrics: 'id, date, weightKg, loggedAt',
+      financialProfiles: 'id, updatedAt',
+      financialCommitments: 'id, category, dueDayOfMonth, isPaidThisMonth, lastPaidMonthYear, createdAt',
+      debts: 'id, priority, targetPayoffDate, createdAt',
+      debtPayments: 'id, debtId, paidAt',
+      wishlistItems: 'id, priority, isBought, targetSavingsGoalId, addedAt',
+      savingsGoals: 'id, category, targetDate, createdAt',
+      savingsDeposits: 'id, savingsGoalId, type, loggedAt',
+      visionItems: 'id, horizon, category, status, linkedGoalId, linkedSavingsGoalId, targetDate, order, updatedAt',
+      monthlyRoadmaps: 'id, year, month, status, mascot, updatedAt',
+      incomeItems: 'id, type, dateReceived, isRecurring, createdAt',
+      ibadahDailyLogs: 'id, date, updatedAt',
+      qadhaPrayers: 'id, prayerType, updatedAt',
+      qadhaFastings: 'id, yearHijri, yearGregorian, isFidyahPaid, updatedAt',
+    });
 
   }
 }
@@ -265,6 +305,10 @@ export async function exportWorkspaceBackup(targetDb: NemoDatabase = db): Promis
     savingsDeposits,
     visionItems,
     monthlyRoadmaps,
+    incomeItems,
+    ibadahDailyLogs,
+    qadhaPrayers,
+    qadhaFastings,
   ] = await Promise.all([
     ensureSettings(targetDb),
     targetDb.projects.toArray(),
@@ -291,6 +335,10 @@ export async function exportWorkspaceBackup(targetDb: NemoDatabase = db): Promis
     targetDb.savingsDeposits.toArray(),
     targetDb.visionItems.toArray(),
     targetDb.monthlyRoadmaps.toArray(),
+    targetDb.incomeItems.toArray(),
+    targetDb.ibadahDailyLogs.toArray(),
+    targetDb.qadhaPrayers.toArray(),
+    targetDb.qadhaFastings.toArray(),
   ]);
 
   const backup: BackupData = {
@@ -323,6 +371,10 @@ export async function exportWorkspaceBackup(targetDb: NemoDatabase = db): Promis
       savingsDeposits,
       visionItems,
       monthlyRoadmaps,
+      incomeItems,
+      ibadahDailyLogs,
+      qadhaPrayers,
+      qadhaFastings,
     },
   };
 
@@ -388,6 +440,10 @@ export async function importWorkspaceBackup(jsonContent: string, targetDb: NemoD
       targetDb.savingsDeposits,
       targetDb.visionItems,
       targetDb.monthlyRoadmaps,
+      targetDb.incomeItems,
+      targetDb.ibadahDailyLogs,
+      targetDb.qadhaPrayers,
+      targetDb.qadhaFastings,
     ], async () => {
       // Clear existing records
       await Promise.all([
@@ -416,6 +472,10 @@ export async function importWorkspaceBackup(jsonContent: string, targetDb: NemoD
         targetDb.savingsDeposits.clear(),
         targetDb.visionItems.clear(),
         targetDb.monthlyRoadmaps.clear(),
+        targetDb.incomeItems.clear(),
+        targetDb.ibadahDailyLogs.clear(),
+        targetDb.qadhaPrayers.clear(),
+        targetDb.qadhaFastings.clear(),
       ]);
 
       // Insert backup records
@@ -444,6 +504,10 @@ export async function importWorkspaceBackup(jsonContent: string, targetDb: NemoD
       if (data.savingsDeposits?.length) await targetDb.savingsDeposits.bulkAdd(data.savingsDeposits);
       if (data.visionItems?.length) await targetDb.visionItems.bulkAdd(data.visionItems);
       if (data.monthlyRoadmaps?.length) await targetDb.monthlyRoadmaps.bulkAdd(data.monthlyRoadmaps);
+      if (data.incomeItems?.length) await targetDb.incomeItems.bulkAdd(data.incomeItems);
+      if (data.ibadahDailyLogs?.length) await targetDb.ibadahDailyLogs.bulkAdd(data.ibadahDailyLogs);
+      if (data.qadhaPrayers?.length) await targetDb.qadhaPrayers.bulkAdd(data.qadhaPrayers);
+      if (data.qadhaFastings?.length) await targetDb.qadhaFastings.bulkAdd(data.qadhaFastings);
     });
 
     return { success: true };
@@ -484,6 +548,10 @@ export async function resetWorkspaceData(targetDb: NemoDatabase = db): Promise<v
     targetDb.savingsDeposits,
     targetDb.visionItems,
     targetDb.monthlyRoadmaps,
+    targetDb.incomeItems,
+    targetDb.ibadahDailyLogs,
+    targetDb.qadhaPrayers,
+    targetDb.qadhaFastings,
   ], async () => {
     await Promise.all([
       targetDb.settings.clear(),
@@ -511,6 +579,10 @@ export async function resetWorkspaceData(targetDb: NemoDatabase = db): Promise<v
       targetDb.savingsDeposits.clear(),
       targetDb.visionItems.clear(),
       targetDb.monthlyRoadmaps.clear(),
+      targetDb.incomeItems.clear(),
+      targetDb.ibadahDailyLogs.clear(),
+      targetDb.qadhaPrayers.clear(),
+      targetDb.qadhaFastings.clear(),
     ]);
   });
   await ensureSettings(targetDb);

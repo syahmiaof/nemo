@@ -9,6 +9,7 @@ import {
   GraduationCap,
   Target,
   Sparkles,
+  Moon,
   HeartPulse,
   Wallet,
   BarChart3,
@@ -34,7 +35,7 @@ export const MobileNav: React.FC<MobileNavProps> = ({
 }) => {
   const [isMoreOpen, setIsMoreOpen] = useState(false);
   const { pathname } = useLocation();
-  const moreActive = ['/academics', '/goals', '/vision', '/health', '/finance', '/insights', '/settings'].some(path => pathname.startsWith(path));
+  const moreActive = ['/academics', '/goals', '/vision', '/ibadah', '/health', '/finance', '/insights', '/settings'].some(path => pathname.startsWith(path));
 
   const mainTabs = [
     { to: '/overview', label: 'Today', icon: LayoutDashboard },
@@ -47,6 +48,7 @@ export const MobileNav: React.FC<MobileNavProps> = ({
     { to: '/academics', label: 'Academics', icon: GraduationCap, desc: 'Semesters, subjects & assignments' },
     { to: '/goals', label: 'Goals', icon: Target, desc: 'Target milestones & progress' },
     { to: '/vision', label: 'Vision', icon: Sparkles, desc: 'Aspirations, dream boards & manifestations' },
+    { to: '/ibadah', label: 'Ibadah', icon: Moon, desc: 'Solat fardhu & sunat, Al-Quran, qadha & fidyah' },
     { to: '/health', label: 'Health', icon: HeartPulse, desc: 'Hydration, diet, workouts & metrics' },
     { to: '/finance', label: 'Finance', icon: Wallet, desc: 'Commitments, debt payoff, wishlist & savings' },
     { to: '/insights', label: 'Insights', icon: BarChart3, desc: 'Local metrics & charts' },
