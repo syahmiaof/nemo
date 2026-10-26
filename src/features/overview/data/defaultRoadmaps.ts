@@ -155,3 +155,134 @@ export const DEFAULT_ROADMAP_ITEMS_2026: MonthlyRoadmapItem[] = [
     updatedAt: '2026-01-01T00:00:00.000Z',
   },
 ];
+
+export const createDefaultRoadmapForYear = (targetYear: number): MonthlyRoadmapItem[] => {
+  const currentCalendarYear = new Date().getFullYear();
+  const currentCalendarMonth = new Date().getMonth() + 1;
+
+  if (targetYear === 2026) {
+    return DEFAULT_ROADMAP_ITEMS_2026;
+  }
+
+  const BLUEPRINTS = [
+    {
+      month: 1,
+      theme: 'Habit Reboot & Vision',
+      primaryGoal: `Kickstart ${targetYear} with non-negotiable morning routine and clear workspace backlog`,
+      strategy: 'Wake up 6:30am, 90m deep work block before phone, zero social media before 10am',
+      mascot: 'rocket' as const,
+    },
+    {
+      month: 2,
+      theme: 'Deep Work Sprint',
+      primaryGoal: 'Complete core architecture and sprint deliverables without procrastination',
+      strategy: 'Block 2 uninterrupted focus hours daily in calendar, phone in another room',
+      mascot: 'coder' as const,
+    },
+    {
+      month: 3,
+      theme: 'Academic & Skill Mastery',
+      primaryGoal: 'Achieve academic excellence and master advanced specialized skills',
+      strategy: 'Revise key concepts within 24h, solve 3 complex practice challenges weekly',
+      mascot: 'scholar' as const,
+    },
+    {
+      month: 4,
+      theme: 'Finance & Sinking Fund',
+      primaryGoal: 'Optimize personal balance sheet, expand emergency fund, and eliminate impulsive spending',
+      strategy: 'Use 48-hour cool-off rule on discretionary purchases over RM 100, track every sen',
+      mascot: 'wealth' as const,
+    },
+    {
+      month: 5,
+      theme: 'Body & Energy Reboot',
+      primaryGoal: 'Maintain 20 consistent workout sessions and achieve 2.5L daily hydration target',
+      strategy: 'Pack gym bag the night before, hydrate immediately upon waking, sleep by 11pm',
+      mascot: 'sprinter' as const,
+    },
+    {
+      month: 6,
+      theme: 'Mid-Year Horizon Review',
+      primaryGoal: `Audit H1 ${targetYear} progress, prune stalled commitments, and align H2 targets`,
+      strategy: 'Dedicate one full weekend retreat for life audit and quarterly financial recalibration',
+      mascot: 'champion' as const,
+    },
+    {
+      month: 7,
+      theme: 'Execution & Velocity',
+      primaryGoal: 'Ship flagship milestone with high focus and publish live results',
+      strategy: 'Prioritize top 3 daily focus slots first before attending to incoming messages',
+      mascot: 'archer' as const,
+    },
+    {
+      month: 8,
+      theme: 'Mindfulness & Mental Zen',
+      primaryGoal: 'Reduce screen fatigue and cultivate calm emotional resilience during crunch times',
+      strategy: '15-minute daily walk without headphones, zero work screens 1 hour before bed',
+      mascot: 'zen' as const,
+    },
+    {
+      month: 9,
+      theme: 'Strategic Sprint',
+      primaryGoal: 'Complete major seasonal deliverables and documentation ahead of deadlines',
+      strategy: 'Deep focus timeblocks each morning, review rubrics and quality metrics weekly',
+      mascot: 'scholar' as const,
+    },
+    {
+      month: 10,
+      theme: 'Launch & System Polish',
+      primaryGoal: 'Polish personal projects, streamline workflows, and ensure 100% execution discipline',
+      strategy: 'Execute end-to-end verification after every milestone, daily disciplined check-ins',
+      mascot: 'coder' as const,
+    },
+    {
+      month: 11,
+      theme: 'Wealth & Asset Growth',
+      primaryGoal: 'Allocate year-end emergency reserve and review investments & savings goals',
+      strategy: 'Auto-transfer savings on payday immediately, audit recurring subscriptions',
+      mascot: 'wealth' as const,
+    },
+    {
+      month: 12,
+      theme: 'Annual Victory & Celebration',
+      primaryGoal: `Celebrate achieved ${targetYear} milestones, reward personal growth, and dream forward`,
+      strategy: 'Compile yearly wins portfolio, take restful holiday with family, recharge fully',
+      mascot: 'champion' as const,
+    },
+  ];
+
+  return BLUEPRINTS.map((bp) => {
+    let status: MonthlyRoadmapItem['status'] = 'upcoming';
+    let completedAt: string | undefined = undefined;
+
+    if (targetYear < currentCalendarYear) {
+      status = 'completed';
+      completedAt = `${targetYear}-${String(bp.month).padStart(2, '0')}-28T23:59:59.000Z`;
+    } else if (targetYear === currentCalendarYear) {
+      if (bp.month < currentCalendarMonth) {
+        status = 'completed';
+        completedAt = `${targetYear}-${String(bp.month).padStart(2, '0')}-28T23:59:59.000Z`;
+      } else if (bp.month === currentCalendarMonth) {
+        status = 'in_progress';
+      } else {
+        status = 'upcoming';
+      }
+    } else {
+      status = 'upcoming';
+    }
+
+    return {
+      id: `rm_${targetYear}_${String(bp.month).padStart(2, '0')}`,
+      year: targetYear,
+      month: bp.month,
+      theme: bp.theme,
+      primaryGoal: bp.primaryGoal,
+      strategy: bp.strategy,
+      mascot: bp.mascot,
+      status,
+      completedAt,
+      createdAt: `${targetYear}-01-01T00:00:00.000Z`,
+      updatedAt: `${targetYear}-01-01T00:00:00.000Z`,
+    };
+  });
+};

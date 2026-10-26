@@ -5,17 +5,19 @@ import {
   Trophy,
   ChevronLeft,
   ChevronRight,
+  ChevronDown,
   CheckCircle2,
   Edit3,
   Sparkles,
   LayoutGrid,
   Focus,
+  RotateCcw,
 } from 'lucide-react';
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { db } from '@/db/nemoDb';
 import type { MonthlyRoadmapItem } from '@/domain/types';
-import { DEFAULT_ROADMAP_ITEMS_2026 } from '@/features/overview/data/defaultRoadmaps';
+import { createDefaultRoadmapForYear } from '@/features/overview/data/defaultRoadmaps';
 import { MonthlyRoadmapCard } from './MonthlyRoadmapCard';
 import { MonthEditModal } from './MonthEditModal';
 import { getMascotComponent, MASCOT_META } from './MascotIcons';
@@ -36,6 +38,11 @@ export const MonthlyJourneySection: React.FC = () => {
   const currentCalendarMonth = new Date().getMonth() + 1; // 1 to 12
   const currentCalendarYear = new Date().getFullYear();
 
+  // Selected year state defaults to current calendar year (auto-tukar bila masuk tahun baru)
+  const [selectedYear, setSelectedYear] = useState<number>(currentCalendarYear);
+  const [yearMenuOpen, setYearMenuOpen] = useState(false);
+  const yearDropdownRef = useRef<HTMLDivElement>(null);
+
   // View state: 'spotlight' (minimalist focused hero) or 'grid' (6-month grid)
   const [viewMode, setViewMode] = useState<'spotlight' | 'grid'>('spotlight');
   const [selectedMonth, setSelectedMonth] = useState<number>(currentCalendarMonth);
@@ -48,42 +55,82 @@ export const MonthlyJourneySection: React.FC = () => {
   const { success, error } = useToast();
   const reduced = useReducedMotion();
 
-  // Query roadmap items from Dexie
+  // Query recorded distinct years from Dexie
+  const recordedYears = useLiveQuery(
+    async () => {
+      const keys = await db.monthlyRoadmaps.orderBy('year').uniqueKeys();
+      return keys
+        .map((k) => Number(k))
+        .filter((y) => !isNaN(y) && y >= 2000 && y <= 2100);
+    },
+    [],
+    [currentCalendarYear]
+  );
+
+  // Available selectable years: past 3 years, current, upcoming 2, and any recorded
+  const availableYears = useMemo(() => {
+    const yearsSet = new Set<number>([
+      currentCalendarYear - 3,
+      currentCalendarYear - 2,
+      currentCalendarYear - 1,
+      currentCalendarYear,
+      currentCalendarYear + 1,
+      currentCalendarYear + 2,
+      selectedYear,
+      ...(recordedYears || []),
+    ]);
+    return Array.from(yearsSet).sort((a, b) => b - a); // descending order
+  }, [currentCalendarYear, selectedYear, recordedYears]);
+
+  // Handle outside click for year dropdown
+  useEffect(() => {
+    if (!yearMenuOpen) return;
+    const handleClickOutside = (e: MouseEvent) => {
+      if (yearDropdownRef.current && !yearDropdownRef.current.contains(e.target as Node)) {
+        setYearMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [yearMenuOpen]);
+
+  // Query roadmap items from Dexie for selectedYear
   const roadmaps = useLiveQuery(
     async () => {
-      const items = await db.monthlyRoadmaps.where('year').equals(currentCalendarYear).toArray();
+      const items = await db.monthlyRoadmaps.where('year').equals(selectedYear).toArray();
       return items.sort((a, b) => a.month - b.month);
     },
-    [currentCalendarYear],
+    [selectedYear],
     []
   );
 
-  // Auto-seed default roadmap if local database is empty
+  // Auto-seed default roadmap for selectedYear if local database is empty
   useEffect(() => {
     let mounted = true;
-    const ensureDefaults = async () => {
+    const ensureYearRoadmaps = async () => {
       try {
-        const count = await db.monthlyRoadmaps.where('year').equals(currentCalendarYear).count();
+        const count = await db.monthlyRoadmaps.where('year').equals(selectedYear).count();
         if (count === 0 && mounted) {
-          await db.monthlyRoadmaps.bulkAdd(DEFAULT_ROADMAP_ITEMS_2026);
+          const defaults = createDefaultRoadmapForYear(selectedYear);
+          await db.monthlyRoadmaps.bulkAdd(defaults);
         }
       } catch (err) {
-        console.error('Failed to initialize default monthly roadmaps', err);
+        console.error(`Failed to initialize monthly roadmaps for year ${selectedYear}`, err);
       }
     };
-    void ensureDefaults();
+    void ensureYearRoadmaps();
     return () => {
       mounted = false;
     };
-  }, [currentCalendarYear]);
+  }, [selectedYear]);
 
   // All 12 items (with fallback)
   const allItems = useMemo(() => {
     if (!roadmaps || roadmaps.length === 0) {
-      return DEFAULT_ROADMAP_ITEMS_2026;
+      return createDefaultRoadmapForYear(selectedYear);
     }
     return roadmaps.sort((a, b) => a.month - b.month);
-  }, [roadmaps]);
+  }, [roadmaps, selectedYear]);
 
   // Current spotlight item
   const spotlightItem = useMemo(() => {
@@ -102,7 +149,7 @@ export const MonthlyJourneySection: React.FC = () => {
     return allItems.filter((item) => item.status === 'completed').length;
   }, [allItems]);
 
-  // GSAP transition when toggling between view modes or months
+  // GSAP transition when toggling between view modes, months, or years
   useGSAP(
     () => {
       if (reduced || !containerRef.current) return;
@@ -115,8 +162,16 @@ export const MonthlyJourneySection: React.FC = () => {
         );
       }
     },
-    { scope: containerRef, dependencies: [viewMode, selectedMonth, activeHalf] }
+    { scope: containerRef, dependencies: [viewMode, selectedMonth, activeHalf, selectedYear] }
   );
+
+  const handleYearChange = (newYear: number) => {
+    setSelectedYear(newYear);
+    if (newYear === currentCalendarYear) {
+      setSelectedMonth(currentCalendarMonth);
+      setActiveHalf(currentCalendarMonth > 6 ? 'H2' : 'H1');
+    }
+  };
 
   const handleSaveItem = async (updated: MonthlyRoadmapItem) => {
     try {
@@ -170,19 +225,119 @@ export const MonthlyJourneySection: React.FC = () => {
       <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-sky-500/5 rounded-full blur-3xl pointer-events-none" />
 
       {/* Header Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-white/[0.08] relative z-10">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-accent-mint/10 border border-accent-mint/25 flex items-center justify-center text-accent-mint shadow-[0_0_16px_rgba(52,211,153,0.15)] shrink-0">
-            <Map size={20} />
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-white/[0.08] relative z-20">
+        <div className="flex items-center gap-3.5">
+          <div className="w-11 h-11 rounded-2xl bg-accent-mint/10 border border-accent-mint/25 flex items-center justify-center text-accent-mint shadow-[0_0_16px_rgba(52,211,153,0.15)] shrink-0">
+            <Map size={22} />
           </div>
           <div>
-            <div className="flex items-center gap-2 flex-wrap">
+            <div className="flex items-center gap-3 flex-wrap">
               <h2 id="journey-roadmap-title" className="text-lg sm:text-xl font-bold tracking-tight text-white">
                 Annual Journey Roadmap
               </h2>
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-white/5 border border-white/10 text-white/70">
-                {currentCalendarYear}
-              </span>
+
+              {/* Large Interactive Year Controller */}
+              <div
+                ref={yearDropdownRef}
+                className="relative inline-flex items-center rounded-2xl bg-white/[0.04] border border-white/15 p-0.5 backdrop-blur-md shadow-lg group hover:border-accent-mint/40 transition-all"
+              >
+                <button
+                  type="button"
+                  onClick={() => handleYearChange(selectedYear - 1)}
+                  className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl flex items-center justify-center text-white/60 hover:text-white hover:bg-white/10 active:scale-95 transition-all"
+                  title={`Previous Year (${selectedYear - 1})`}
+                  aria-label="Previous Year"
+                >
+                  <ChevronLeft size={16} />
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setYearMenuOpen((v) => !v)}
+                  className="px-2.5 py-0.5 flex items-center gap-1.5 text-lg sm:text-2xl font-black font-mono tracking-wider text-accent-mint hover:text-white transition-colors"
+                  title="Click to select a different year"
+                  aria-expanded={yearMenuOpen}
+                  aria-haspopup="listbox"
+                >
+                  <span>{selectedYear}</span>
+                  <ChevronDown
+                    size={15}
+                    className={`text-accent-mint/70 transition-transform duration-200 ${
+                      yearMenuOpen ? 'rotate-180' : ''
+                    }`}
+                  />
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => handleYearChange(selectedYear + 1)}
+                  className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl flex items-center justify-center text-white/60 hover:text-white hover:bg-white/10 active:scale-95 transition-all"
+                  title={`Next Year (${selectedYear + 1})`}
+                  aria-label="Next Year"
+                >
+                  <ChevronRight size={16} />
+                </button>
+
+                {/* Dropdown Menu for Years */}
+                {yearMenuOpen && (
+                  <div
+                    className="absolute left-1/2 -translate-x-1/2 top-full mt-2 w-44 bg-[#0c1224]/95 border border-white/15 rounded-2xl shadow-2xl p-2 z-50 backdrop-blur-2xl animate-fade-in"
+                    role="listbox"
+                  >
+                    <div className="text-[10px] font-mono uppercase tracking-wider text-white/40 px-2.5 py-1 flex items-center justify-between">
+                      <span>Select Year</span>
+                      <span>Roadmap</span>
+                    </div>
+                    <div className="max-h-56 overflow-y-auto space-y-1 py-1 custom-scrollbar">
+                      {availableYears.map((yr) => {
+                        const isCurrent = yr === currentCalendarYear;
+                        const isSelected = yr === selectedYear;
+                        return (
+                          <button
+                            key={yr}
+                            type="button"
+                            onClick={() => {
+                              handleYearChange(yr);
+                              setYearMenuOpen(false);
+                            }}
+                            className={`w-full text-left px-3 py-2 rounded-xl text-xs font-mono font-bold flex items-center justify-between transition-all ${
+                              isSelected
+                                ? 'bg-accent-mint text-midnight-950 shadow-md font-black'
+                                : 'text-white/80 hover:bg-white/10 hover:text-white'
+                            }`}
+                          >
+                            <span className="text-sm">{yr}</span>
+                            {isCurrent && (
+                              <span
+                                className={`text-[9px] font-sans font-semibold px-1.5 py-0.5 rounded-full ${
+                                  isSelected
+                                    ? 'bg-midnight-950/25 text-midnight-950'
+                                    : 'bg-accent-mint/20 text-accent-mint border border-accent-mint/30'
+                                }`}
+                              >
+                                Current
+                              </span>
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Quick Snap to Current Year if looking at another year */}
+              {selectedYear !== currentCalendarYear && (
+                <button
+                  type="button"
+                  onClick={() => handleYearChange(currentCalendarYear)}
+                  className="text-xs font-mono font-semibold px-2.5 py-1 rounded-xl bg-accent-mint/15 border border-accent-mint/30 text-accent-mint hover:bg-accent-mint/25 transition-all flex items-center gap-1.5 shadow-sm"
+                  title={`Snap back to current year ${currentCalendarYear}`}
+                >
+                  <RotateCcw size={12} />
+                  <span>Reset to {currentCalendarYear}</span>
+                </button>
+              )}
             </div>
             <p className="text-xs text-white/60 mt-0.5">
               Navigate each month with clear intent, focused strategy, and cheerful momentum.
@@ -191,7 +346,7 @@ export const MonthlyJourneySection: React.FC = () => {
         </div>
 
         {/* Controls: View Switcher, Half Switcher & Trophy */}
-        <div className="flex items-center gap-2.5 self-start sm:self-auto flex-wrap">
+        <div className="flex items-center gap-2.5 self-start lg:self-auto flex-wrap">
           {/* Milestone Counter */}
           <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/[0.03] border border-white/10 text-xs text-white/70">
             <Trophy size={13} className="text-accent-mint" />
@@ -348,11 +503,19 @@ export const MonthlyJourneySection: React.FC = () => {
                     <span className="text-xs font-mono font-bold px-2 py-0.5 rounded-md bg-accent-mint/15 border border-accent-mint/30 text-accent-mint uppercase tracking-wider">
                       {MONTH_NAMES[spotlightItem.month - 1]} {spotlightItem.year}
                     </span>
-                    {isSpotlightCurrentMonth && (
+                    {isSpotlightCurrentMonth ? (
                       <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-accent-mint/20 text-accent-mint border border-accent-mint/40 flex items-center gap-1">
                         📍 Current Stop
                       </span>
-                    )}
+                    ) : selectedYear < currentCalendarYear ? (
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-white/5 text-white/60 border border-white/10 flex items-center gap-1">
+                        🏛️ {selectedYear} Archive
+                      </span>
+                    ) : selectedYear > currentCalendarYear ? (
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-300 border border-sky-400/30 flex items-center gap-1">
+                        🚀 {selectedYear} Plan
+                      </span>
+                    ) : null}
                     <span className="text-xs text-white/50 flex items-center gap-1">
                       <Sparkles size={11} className="text-accent-mint" />
                       {mascotInfo.label}
