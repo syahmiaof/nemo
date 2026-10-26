@@ -48,40 +48,41 @@ export const MonthlyRoadmapCard: React.FC<MonthlyRoadmapCardProps> = ({
   const isInProgress = item.status === 'in_progress';
 
   return (
-    <div className={`roadmap-card-anim group relative flex flex-col w-full h-full transition-all duration-300 ${className}`}>
-      {/* Main Ultra-Compact Glass Card */}
+    <div
+      className={`roadmap-card-anim group relative flex flex-col w-full h-full transition-all duration-300 ${className}`}
+    >
+      {/* Minimalist Tile */}
       <div
-        className={`relative glass-panel p-3 sm:p-3.5 rounded-2xl border transition-all duration-300 hover:-translate-y-1 hover:shadow-lg w-full h-full flex flex-col justify-between ${
+        className={`relative glass-panel p-4 rounded-2xl border transition-all duration-300 hover:-translate-y-1 hover:shadow-xl w-full h-full flex flex-col justify-between ${
           isCurrentMonth
-            ? 'border-accent-mint/60 bg-accent-mint/[0.05] shadow-[0_0_20px_rgba(52,211,153,0.18)] ring-1 ring-accent-mint/30'
+            ? 'border-accent-mint/50 bg-accent-mint/[0.04] shadow-[0_0_24px_rgba(52,211,153,0.15)] ring-1 ring-accent-mint/30'
             : isCompleted
             ? 'border-emerald-500/30 bg-emerald-500/[0.02]'
-            : 'border-white/10 hover:border-white/20 bg-white/[0.02]'
+            : 'border-white/[0.08] hover:border-white/20 bg-white/[0.02]'
         }`}
       >
-        <div>
-          {/* Top Header: Compact Month Pill & Actions */}
-          <div className="flex items-center justify-between gap-1 mb-2">
-            <div className="flex items-center gap-1.5 min-w-0">
-              <span
-                className={`text-[10px] font-mono font-bold px-1.5 py-0.5 rounded-md border shrink-0 flex items-center gap-1.5 ${theme.border} ${theme.bg} ${theme.text}`}
-              >
-                {isCurrentMonth && (
-                  <span className="relative flex h-1.5 w-1.5">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent-mint opacity-75" />
-                    <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-accent-mint" />
-                  </span>
-                )}
-                {monthNum} • {monthCode}
-              </span>
-            </div>
+        <div className="space-y-3">
+          {/* Header Row: Month Pill & Actions */}
+          <div className="flex items-center justify-between gap-1.5">
+            <span
+              className={`text-[11px] font-mono font-bold px-2 py-0.5 rounded-md border shrink-0 flex items-center gap-1.5 ${theme.border} ${theme.bg} ${theme.text}`}
+            >
+              {isCurrentMonth && (
+                <span className="relative flex h-1.5 w-1.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent-mint opacity-75" />
+                  <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-accent-mint" />
+                </span>
+              )}
+              {monthNum} • {monthCode}
+            </span>
 
             <div className="flex items-center gap-1 shrink-0">
               <button
+                type="button"
                 onClick={() => onToggleComplete(item)}
-                className={`p-1 rounded-md border transition-all ${
+                className={`p-1.5 rounded-lg border transition-all ${
                   isCompleted
-                    ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40 hover:bg-emerald-500/30'
+                    ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40 hover:bg-emerald-500/30 shadow-[0_0_8px_rgba(16,185,129,0.2)]'
                     : isInProgress
                     ? 'bg-accent-mint/15 text-accent-mint border-accent-mint/30 hover:bg-accent-mint/25'
                     : 'bg-white/5 text-white/40 border-white/10 hover:text-white hover:bg-white/10'
@@ -89,33 +90,34 @@ export const MonthlyRoadmapCard: React.FC<MonthlyRoadmapCardProps> = ({
                 title={isCompleted ? 'Mark as ongoing' : 'Mark as completed'}
                 aria-label={`Toggle completion for ${monthCode}`}
               >
-                <CheckCircle2 size={13} />
+                <CheckCircle2 size={14} />
               </button>
               <button
+                type="button"
                 onClick={() => onEdit(item)}
-                className="p-1 rounded-md text-white/40 hover:text-white hover:bg-white/10 border border-transparent hover:border-white/10 transition-colors"
+                className="p-1.5 rounded-lg text-white/40 hover:text-white hover:bg-white/10 border border-transparent hover:border-white/10 transition-colors"
                 title="Edit monthly goal & strategy"
                 aria-label={`Edit ${monthCode} roadmap`}
               >
-                <Edit3 size={13} />
+                <Edit3 size={14} />
               </button>
             </div>
           </div>
 
-          {/* Mascot Centerpiece & 1-Line Bold Theme */}
-          <div className="flex items-center gap-2.5 mb-2">
+          {/* Theme & Mascot Row */}
+          <div className="flex items-center gap-2.5">
             <div
-              className={`w-[42px] h-[42px] rounded-xl flex items-center justify-center shrink-0 border relative transition-transform duration-300 group-hover:scale-105 ${
+              className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 border transition-transform duration-300 group-hover:scale-105 ${
                 isCurrentMonth
-                  ? 'bg-accent-mint/10 border-accent-mint/40 shadow-[0_0_12px_rgba(52,211,153,0.2)]'
+                  ? 'bg-accent-mint/15 border-accent-mint/40 shadow-[0_0_12px_rgba(52,211,153,0.2)]'
                   : 'bg-white/5 border-white/10'
               }`}
             >
-              {getMascotComponent(item.mascot, 38, '', isCurrentMonth)}
+              {getMascotComponent(item.mascot, 28, '', isCurrentMonth)}
             </div>
 
             <div className="min-w-0 flex-1">
-              <h3 className="text-xs sm:text-[13px] font-bold text-white tracking-tight truncate group-hover:text-accent-mint transition-colors">
+              <h3 className="text-xs sm:text-sm font-bold text-white tracking-tight truncate group-hover:text-accent-mint transition-colors">
                 {item.theme}
               </h3>
               <span className="text-[10px] text-white/50 flex items-center gap-1 truncate mt-0.5">
@@ -125,35 +127,29 @@ export const MonthlyRoadmapCard: React.FC<MonthlyRoadmapCardProps> = ({
             </div>
           </div>
 
-          {/* Primary Goal Target (Compact 2-Line) */}
-          <div className="mb-1.5 p-2 rounded-lg bg-white/[0.02] border border-white/5">
-            <span className="block text-[9px] font-semibold uppercase tracking-wider text-white/40 mb-0.5">
-              Goal
-            </span>
-            <p className="text-[11px] text-white/90 font-medium leading-snug line-clamp-2">
-              {item.primaryGoal}
-            </p>
-          </div>
+          {/* Clean Primary Goal without bulky inner boxes */}
+          <p className="text-xs text-white/85 font-normal leading-relaxed line-clamp-2">
+            {item.primaryGoal}
+          </p>
 
-          {/* Execution Strategy (Compact 1-Line Snippet) */}
-          <div className="px-2 py-1.5 rounded-lg bg-white/[0.02] border border-white/5 flex items-center gap-1.5 min-w-0">
-            <span className="text-[10px] shrink-0">🎯</span>
-            <p className="text-[10px] text-white/60 truncate flex-1" title={item.strategy}>
-              {item.strategy}
+          {/* Strategy Snippet */}
+          {item.strategy && (
+            <p className="text-[11px] text-content-tertiary truncate" title={item.strategy}>
+              🎯 {item.strategy}
             </p>
-          </div>
+          )}
         </div>
 
-        {/* Status Footer Pill */}
-        <div className="mt-2 pt-1.5 border-t border-white/5 flex items-center justify-between text-[10px]">
+        {/* Minimalist Status Footer */}
+        <div className="mt-3 pt-2 border-t border-white/[0.06] flex items-center justify-between text-[10px]">
           <span className="text-white/40 flex items-center gap-1">
             <Clock size={11} />
             <span>Status</span>
           </span>
           <span
-            className={`font-medium capitalize px-1.5 py-0.5 rounded text-[10px] ${
+            className={`font-medium capitalize px-2 py-0.5 rounded-full text-[10px] ${
               isCompleted
-                ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/25'
+                ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30'
                 : isInProgress
                 ? 'bg-accent-mint/15 text-accent-mint border border-accent-mint/30 font-semibold'
                 : 'text-white/40 bg-white/5'

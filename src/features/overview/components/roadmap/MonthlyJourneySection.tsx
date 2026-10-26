@@ -1,6 +1,16 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { Map, Trophy } from 'lucide-react';
+import {
+  Map,
+  Trophy,
+  ChevronLeft,
+  ChevronRight,
+  CheckCircle2,
+  Edit3,
+  Sparkles,
+  LayoutGrid,
+  Focus,
+} from 'lucide-react';
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { db } from '@/db/nemoDb';
@@ -8,14 +18,27 @@ import type { MonthlyRoadmapItem } from '@/domain/types';
 import { DEFAULT_ROADMAP_ITEMS_2026 } from '@/features/overview/data/defaultRoadmaps';
 import { MonthlyRoadmapCard } from './MonthlyRoadmapCard';
 import { MonthEditModal } from './MonthEditModal';
+import { getMascotComponent, MASCOT_META } from './MascotIcons';
 import { useToast } from '@/components/ui/Toast';
 import { useReducedMotion } from '@/design/useReducedMotion';
+
+const MONTH_NAMES = [
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December',
+];
+
+const MONTH_CODES = [
+  'JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN',
+  'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC',
+];
 
 export const MonthlyJourneySection: React.FC = () => {
   const currentCalendarMonth = new Date().getMonth() + 1; // 1 to 12
   const currentCalendarYear = new Date().getFullYear();
 
-  // Default to H2 if current month is Jul-Dec, else H1
+  // View state: 'spotlight' (minimalist focused hero) or 'grid' (6-month grid)
+  const [viewMode, setViewMode] = useState<'spotlight' | 'grid'>('spotlight');
+  const [selectedMonth, setSelectedMonth] = useState<number>(currentCalendarMonth);
   const [activeHalf, setActiveHalf] = useState<'H1' | 'H2'>(
     currentCalendarMonth > 6 ? 'H2' : 'H1'
   );
@@ -54,40 +77,45 @@ export const MonthlyJourneySection: React.FC = () => {
     };
   }, [currentCalendarYear]);
 
-  // Filter 6 months for selected half
-  const visibleItems = useMemo(() => {
+  // All 12 items (with fallback)
+  const allItems = useMemo(() => {
     if (!roadmaps || roadmaps.length === 0) {
-      // Fallback to in-memory default items if Dexie hasn't loaded yet
-      const base = DEFAULT_ROADMAP_ITEMS_2026.filter((item) =>
-        activeHalf === 'H1' ? item.month <= 6 : item.month > 6
-      );
-      return base.sort((a, b) => a.month - b.month);
+      return DEFAULT_ROADMAP_ITEMS_2026;
     }
-    return roadmaps
+    return roadmaps.sort((a, b) => a.month - b.month);
+  }, [roadmaps]);
+
+  // Current spotlight item
+  const spotlightItem = useMemo(() => {
+    return allItems.find((it) => it.month === selectedMonth) || allItems[0];
+  }, [allItems, selectedMonth]);
+
+  // Filter 6 months for selected half (Grid view)
+  const visibleGridItems = useMemo(() => {
+    return allItems
       .filter((item) => (activeHalf === 'H1' ? item.month <= 6 : item.month > 6))
       .sort((a, b) => a.month - b.month);
-  }, [roadmaps, activeHalf]);
+  }, [allItems, activeHalf]);
 
   // Overall milestone statistics across all 12 months
   const completedCount = useMemo(() => {
-    const list = roadmaps && roadmaps.length > 0 ? roadmaps : DEFAULT_ROADMAP_ITEMS_2026;
-    return list.filter((item) => item.status === 'completed').length;
-  }, [roadmaps]);
+    return allItems.filter((item) => item.status === 'completed').length;
+  }, [allItems]);
 
-  // GSAP transition when toggling between H1 and H2
+  // GSAP transition when toggling between view modes or months
   useGSAP(
     () => {
       if (reduced || !containerRef.current) return;
-      const cards = containerRef.current.querySelectorAll('.roadmap-card-anim');
-      if (cards.length > 0) {
+      const animTarget = containerRef.current.querySelectorAll('.roadmap-anim-content');
+      if (animTarget.length > 0) {
         gsap.fromTo(
-          cards,
-          { opacity: 0, y: 12, scale: 0.98 },
-          { opacity: 1, y: 0, scale: 1, duration: 0.4, stagger: 0.05, ease: 'power2.out' }
+          animTarget,
+          { opacity: 0, y: 10 },
+          { opacity: 1, y: 0, duration: 0.35, ease: 'power2.out' }
         );
       }
     },
-    { scope: containerRef, dependencies: [activeHalf] }
+    { scope: containerRef, dependencies: [viewMode, selectedMonth, activeHalf] }
   );
 
   const handleSaveItem = async (updated: MonthlyRoadmapItem) => {
@@ -117,10 +145,23 @@ export const MonthlyJourneySection: React.FC = () => {
     }
   };
 
+  const handlePrevMonth = () => {
+    setSelectedMonth((prev) => (prev > 1 ? prev - 1 : 12));
+  };
+
+  const handleNextMonth = () => {
+    setSelectedMonth((prev) => (prev < 12 ? prev + 1 : 1));
+  };
+
+  const mascotInfo = MASCOT_META[spotlightItem?.mascot] || MASCOT_META.rocket;
+  const isSpotlightCurrentMonth =
+    spotlightItem?.year === currentCalendarYear && spotlightItem?.month === currentCalendarMonth;
+  const isSpotlightCompleted = spotlightItem?.status === 'completed';
+
   return (
     <section
       ref={containerRef}
-      className="glass-panel p-4 sm:p-5 rounded-3xl border border-white/10 relative overflow-hidden"
+      className="glass-panel p-4 sm:p-6 rounded-3xl border border-white/10 relative overflow-hidden mt-6 sm:mt-8 shadow-2xl transition-all duration-300"
       data-enter
       aria-labelledby="journey-roadmap-title"
     >
@@ -129,7 +170,7 @@ export const MonthlyJourneySection: React.FC = () => {
       <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-sky-500/5 rounded-full blur-3xl pointer-events-none" />
 
       {/* Header Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3.5 border-b border-white/10 relative z-10">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-white/[0.08] relative z-10">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-accent-mint/10 border border-accent-mint/25 flex items-center justify-center text-accent-mint shadow-[0_0_16px_rgba(52,211,153,0.15)] shrink-0">
             <Map size={20} />
@@ -149,99 +190,252 @@ export const MonthlyJourneySection: React.FC = () => {
           </div>
         </div>
 
-        {/* Controls: Half-Year Toggle & Telemetry */}
+        {/* Controls: View Switcher, Half Switcher & Trophy */}
         <div className="flex items-center gap-2.5 self-start sm:self-auto flex-wrap">
-          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/[0.03] border border-white/10 text-xs text-white/70">
+          {/* Milestone Counter */}
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/[0.03] border border-white/10 text-xs text-white/70">
             <Trophy size={13} className="text-accent-mint" />
             <span>
               <strong className="text-white font-semibold">{completedCount}</strong> of 12 Reached
             </span>
           </div>
 
-          {/* 6-Month Half Switcher */}
-          <div className="flex items-center p-0.5 rounded-lg bg-white/[0.04] border border-white/10">
+          {/* View Mode Toggle (Spotlight Focus vs Minimalist Grid) */}
+          <div className="flex items-center p-1 rounded-xl bg-white/[0.04] border border-white/10">
             <button
-              onClick={() => setActiveHalf('H1')}
-              className={`px-3 py-1 rounded-md text-xs font-semibold transition-all ${
-                activeHalf === 'H1'
-                  ? 'bg-accent-mint text-midnight-950 shadow-sm'
+              type="button"
+              onClick={() => setViewMode('spotlight')}
+              className={`px-3 py-1 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all ${
+                viewMode === 'spotlight'
+                  ? 'bg-accent-mint text-midnight-950 shadow-sm font-bold'
                   : 'text-white/60 hover:text-white hover:bg-white/5'
               }`}
+              title="Focused minimalist spotlight on active month"
             >
-              H1 (Jan – Jun)
+              <Focus size={13} />
+              <span>Spotlight</span>
             </button>
             <button
-              onClick={() => setActiveHalf('H2')}
-              className={`px-3 py-1 rounded-md text-xs font-semibold transition-all ${
-                activeHalf === 'H2'
-                  ? 'bg-accent-mint text-midnight-950 shadow-sm'
+              type="button"
+              onClick={() => setViewMode('grid')}
+              className={`px-3 py-1 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all ${
+                viewMode === 'grid'
+                  ? 'bg-accent-mint text-midnight-950 shadow-sm font-bold'
                   : 'text-white/60 hover:text-white hover:bg-white/5'
               }`}
+              title="Minimalist 6-month overview grid"
             >
-              H2 (Jul – Dec)
+              <LayoutGrid size={13} />
+              <span>6-Month Grid</span>
             </button>
           </div>
+
+          {/* 6-Month Half Switcher (shown only in Grid view) */}
+          {viewMode === 'grid' && (
+            <div className="flex items-center p-1 rounded-xl bg-white/[0.04] border border-white/10">
+              <button
+                type="button"
+                onClick={() => setActiveHalf('H1')}
+                className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-all ${
+                  activeHalf === 'H1'
+                    ? 'bg-white/15 text-white font-bold'
+                    : 'text-white/50 hover:text-white'
+                }`}
+              >
+                H1 (Jan–Jun)
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveHalf('H2')}
+                className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-all ${
+                  activeHalf === 'H2'
+                    ? 'bg-white/15 text-white font-bold'
+                    : 'text-white/50 hover:text-white'
+                }`}
+              >
+                H2 (Jul–Dec)
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Desktop Roadmap Container: Single-Row 6-Station Journey Track */}
-      <div className="relative mt-3.5 z-10">
-        {/* DESKTOP 6-STATION SINGLE ROW TRACK */}
-        <div className="hidden lg:block relative">
-          {/* Timeline Track Rail with 6 Station Pins */}
-          <div className="relative mb-2">
-            {/* Horizontal Connecting Rail passing directly through pin centers */}
-            <div className="absolute left-[calc(100%/12)] right-[calc(100%/12)] top-[14px] -translate-y-1/2 h-0.5 border-b-2 border-dashed border-white/20 z-0" />
+      {/* Interactive 12-Month Station Rail (Clean Linear Timeline) */}
+      <div className="relative mt-5 mb-4 z-10 px-1">
+        {/* Track Line connecting stations */}
+        <div className="absolute left-4 right-4 top-4 -translate-y-1/2 h-0.5 border-b border-white/[0.12] z-0" />
 
-            <div className="grid grid-cols-6 gap-3 relative z-10">
-              {visibleItems.map((item) => {
-                const isCurrent = item.year === currentCalendarYear && item.month === currentCalendarMonth;
-                const isDone = item.status === 'completed';
-                const monthNum = String(item.month).padStart(2, '0');
+        <div className="grid grid-cols-12 gap-1 sm:gap-2 relative z-10">
+          {allItems.map((item) => {
+            const isCurrent = item.year === currentCalendarYear && item.month === currentCalendarMonth;
+            const isSelected = item.month === selectedMonth;
+            const isDone = item.status === 'completed';
+            const monthCode = MONTH_CODES[item.month - 1];
 
-                return (
-                  <div key={`pin-${item.id}`} className="flex flex-col items-center justify-end">
-                    {/* Circular Station Pin */}
-                    <div className="relative flex items-center justify-center">
-                      {isCurrent && (
-                        <>
-                          <span className="absolute -inset-1 rounded-full bg-accent-mint/40 animate-ping pointer-events-none" />
-                          <span className="absolute -inset-2 rounded-full border border-accent-mint/60 animate-pulse pointer-events-none" />
-                        </>
-                      )}
-                      <div
-                        className={`relative w-7 h-7 rounded-full flex items-center justify-center font-mono font-bold text-[11px] border transition-all duration-300 ${
-                          isDone
-                            ? 'bg-emerald-500 border-emerald-300 text-midnight-950 shadow-[0_0_12px_rgba(16,185,129,0.5)]'
-                            : isCurrent
-                            ? 'bg-accent-mint border-white text-midnight-950 shadow-[0_0_18px_rgba(52,211,153,0.9)] scale-110 ring-4 ring-accent-mint/30'
-                            : 'bg-midnight-900 border-white/30 text-white/50'
-                        }`}
-                        title={`Month ${monthNum}: ${item.theme}`}
-                      >
-                        {monthNum}
+            return (
+              <button
+                key={`rail-${item.month}`}
+                type="button"
+                onClick={() => {
+                  setSelectedMonth(item.month);
+                  if (item.month > 6) setActiveHalf('H2');
+                  else setActiveHalf('H1');
+                }}
+                className="flex flex-col items-center group cursor-pointer focus:outline-none"
+                title={`${monthCode}: ${item.theme}`}
+              >
+                {/* Station Node Button */}
+                <div
+                  className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center font-mono font-bold text-[10px] sm:text-xs border transition-all duration-200 relative ${
+                    isSelected
+                      ? 'bg-accent-mint border-white text-midnight-950 scale-110 shadow-[0_0_16px_rgba(52,211,153,0.8)] ring-2 ring-accent-mint/40 z-10'
+                      : isDone
+                      ? 'bg-emerald-500/80 border-emerald-300 text-midnight-950 shadow-[0_0_8px_rgba(16,185,129,0.3)]'
+                      : isCurrent
+                      ? 'bg-midnight-900 border-accent-mint text-accent-mint shadow-[0_0_10px_rgba(52,211,153,0.3)]'
+                      : 'bg-midnight-900/90 border-white/20 text-white/50 hover:border-white/50 hover:text-white'
+                  }`}
+                >
+                  {isDone ? '✓' : String(item.month).padStart(2, '0')}
+
+                  {/* Pulsing Dot for actual current calendar month */}
+                  {isCurrent && !isSelected && (
+                    <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-accent-mint animate-ping" />
+                  )}
+                </div>
+
+                {/* Station Month Label */}
+                <span
+                  className={`text-[9px] sm:text-[10px] font-mono mt-1 transition-colors ${
+                    isSelected
+                      ? 'text-accent-mint font-bold'
+                      : isCurrent
+                      ? 'text-white font-semibold'
+                      : 'text-white/40 group-hover:text-white/80'
+                  }`}
+                >
+                  {monthCode}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Main Content Area: Spotlight Mode vs Minimalist 6-Tile Grid */}
+      <div className="roadmap-anim-content relative z-10 mt-2">
+        {viewMode === 'spotlight' ? (
+          /* SPOTLIGHT HERO CARD */
+          <div className="rounded-2xl border border-white/[0.08] bg-white/[0.02] p-5 sm:p-6 backdrop-blur-md relative overflow-hidden transition-all">
+            {/* Background ambient radial glow */}
+            <div className="absolute -right-16 -bottom-16 w-64 h-64 bg-accent-mint/10 rounded-full blur-3xl pointer-events-none" />
+
+            <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+              {/* Left Column: Mascot & Title */}
+              <div className="flex items-center gap-4 sm:gap-5 min-w-0 flex-1">
+                <div
+                  className={`w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex items-center justify-center shrink-0 border relative shadow-xl transition-all duration-300 ${
+                    isSpotlightCurrentMonth
+                      ? 'bg-accent-mint/15 border-accent-mint/40 shadow-[0_0_24px_rgba(52,211,153,0.25)]'
+                      : 'bg-white/5 border-white/10'
+                  }`}
+                >
+                  {getMascotComponent(spotlightItem.mascot, 60, '', isSpotlightCurrentMonth)}
+                </div>
+
+                <div className="space-y-1 min-w-0 flex-1">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="text-xs font-mono font-bold px-2 py-0.5 rounded-md bg-accent-mint/15 border border-accent-mint/30 text-accent-mint uppercase tracking-wider">
+                      {MONTH_NAMES[spotlightItem.month - 1]} {spotlightItem.year}
+                    </span>
+                    {isSpotlightCurrentMonth && (
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-accent-mint/20 text-accent-mint border border-accent-mint/40 flex items-center gap-1">
+                        📍 Current Stop
+                      </span>
+                    )}
+                    <span className="text-xs text-white/50 flex items-center gap-1">
+                      <Sparkles size={11} className="text-accent-mint" />
+                      {mascotInfo.label}
+                    </span>
+                  </div>
+
+                  <h3 className="text-lg sm:text-2xl font-bold text-white tracking-tight leading-snug">
+                    {spotlightItem.theme}
+                  </h3>
+
+                  {/* Primary Goal Description (Fully Unclipped) */}
+                  <p className="text-xs sm:text-sm text-white/80 leading-relaxed font-normal pt-1">
+                    {spotlightItem.primaryGoal}
+                  </p>
+
+                  {/* Execution Strategy */}
+                  {spotlightItem.strategy && (
+                    <div className="pt-2">
+                      <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/[0.03] border border-white/[0.08] text-xs text-accent-mint">
+                        <span className="font-semibold">🎯 Focus Strategy:</span>
+                        <span className="text-white/80 font-normal">{spotlightItem.strategy}</span>
                       </div>
                     </div>
+                  )}
+                </div>
+              </div>
 
-                    {/* Connector & Current Stop Tag */}
-                    <div className="h-4 flex items-center justify-center mt-1">
-                      {isCurrent ? (
-                        <span className="text-[9px] font-bold text-accent-mint tracking-tight flex items-center gap-0.5 whitespace-nowrap bg-accent-mint/15 px-1.5 py-0.5 rounded-full border border-accent-mint/40">
-                          📍 Current Stop
-                        </span>
-                      ) : (
-                        <div className="w-0.5 h-2 border-l border-white/20" />
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
+              {/* Right Column: Actions & Month Navigation */}
+              <div className="flex flex-row lg:flex-col items-center lg:items-end justify-between w-full lg:w-auto gap-3 pt-4 lg:pt-0 border-t lg:border-t-0 border-white/[0.08] shrink-0">
+                {/* Status Toggle & Edit Buttons */}
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => handleToggleComplete(spotlightItem)}
+                    className={`px-4 py-2 rounded-xl border text-xs font-semibold flex items-center gap-2 transition-all active:scale-95 ${
+                      isSpotlightCompleted
+                        ? 'bg-emerald-500/20 border-emerald-400/50 text-emerald-300 shadow-[0_0_12px_rgba(16,185,129,0.25)]'
+                        : 'bg-white/[0.05] border-white/10 text-white/80 hover:border-emerald-400/40 hover:text-white'
+                    }`}
+                  >
+                    <CheckCircle2 size={16} className={isSpotlightCompleted ? 'text-emerald-400' : 'text-white/40'} />
+                    <span>{isSpotlightCompleted ? 'Completed' : 'Mark Completed'}</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setEditingItem(spotlightItem)}
+                    className="p-2 rounded-xl bg-white/[0.05] hover:bg-white/10 border border-white/10 text-white/70 hover:text-white transition-colors"
+                    title="Edit monthly goal and strategy"
+                  >
+                    <Edit3 size={16} />
+                  </button>
+                </div>
+
+                {/* Previous / Next Month Navigation */}
+                <div className="flex items-center gap-1.5">
+                  <button
+                    type="button"
+                    onClick={handlePrevMonth}
+                    className="p-2 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] border border-white/10 text-white/60 hover:text-white transition-colors flex items-center gap-1 text-xs"
+                    title="Previous Month"
+                  >
+                    <ChevronLeft size={16} />
+                  </button>
+                  <span className="text-xs font-mono text-white/50 px-1">
+                    {spotlightItem.month} / 12
+                  </span>
+                  <button
+                    type="button"
+                    onClick={handleNextMonth}
+                    className="p-2 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] border border-white/10 text-white/60 hover:text-white transition-colors flex items-center gap-1 text-xs"
+                    title="Next Month"
+                  >
+                    <ChevronRight size={16} />
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
-
-          {/* 6 Cards Chronological Row */}
-          <div className="grid grid-cols-6 gap-3 items-stretch">
-            {visibleItems.map((item) => (
+        ) : (
+          /* MINIMALIST 6-TILE GRID VIEW */
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3.5 items-stretch">
+            {visibleGridItems.map((item) => (
               <MonthlyRoadmapCard
                 key={item.id}
                 item={item}
@@ -251,20 +445,7 @@ export const MonthlyJourneySection: React.FC = () => {
               />
             ))}
           </div>
-        </div>
-
-        {/* MOBILE & TABLET ROADMAP (Responsive Vertical / Multi-Column Grid) */}
-        <div className="lg:hidden grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-          {visibleItems.map((item) => (
-            <MonthlyRoadmapCard
-              key={item.id}
-              item={item}
-              isCurrentMonth={item.year === currentCalendarYear && item.month === currentCalendarMonth}
-              onEdit={setEditingItem}
-              onToggleComplete={handleToggleComplete}
-            />
-          ))}
-        </div>
+        )}
       </div>
 
       {/* Edit Month Roadmap Modal */}
