@@ -299,8 +299,8 @@ class SyncEngine {
    * the committed local state before applying it, so a rolled-back/aborted
    * IndexedDB operation cannot create or delete a remote record by itself.
    */
-  private async isMutationCurrent(mut: SyncMutation): Promise<boolean> {
-    const tables: Record<SyncEntityType, { get: (id: string) => Promise<unknown> }> = {
+  private async getEntityRecord(entityType: SyncEntityType, id: string): Promise<unknown> {
+    const tables: Record<SyncEntityType, { get: (key: string) => Promise<unknown> }> = {
       project: db.projects,
       task: db.tasks,
       milestone: db.milestones,
@@ -331,14 +331,37 @@ class SyncEngine {
       qadhaPrayer: db.qadhaPrayers,
       qadhaFasting: db.qadhaFastings,
     };
-    const current = await tables[mut.entityType].get(mut.entityId);
+    return tables[entityType]?.get(id);
+  }
+
+  /**
+   * A WAL write happens before its corresponding local write completes. Verify
+   * the committed local state before applying it, so a rolled-back/aborted
+   * IndexedDB operation cannot create or delete a remote record by itself.
+   */
+  private async isMutationCurrent(mut: SyncMutation): Promise<boolean> {
+    const current = await this.getEntityRecord(mut.entityType, mut.entityId);
     if (mut.operation === 'DELETE') return current === undefined;
     if (!current || typeof current !== 'object') return false;
-    // A newer local write supersedes this queued snapshot. Its own outbox
-    // record will carry the current payload and be processed separately.
-    return Object.entries(mut.payload).every(([key, queuedValue]) =>
-      JSON.stringify((current as Record<string, unknown>)[key]) === JSON.stringify(queuedValue)
-    );
+
+    // Check if there is a strictly newer pending mutation for this same entity in the queue
+    if (this.currentUserId) {
+      const newerPending = await db.syncMutations
+        .where('[ownerUserId+status]')
+        .equals([this.currentUserId, 'pending'])
+        .filter(
+          (m) =>
+            m.id !== mut.id &&
+            m.entityType === mut.entityType &&
+            m.entityId === mut.entityId &&
+            m.createdAt > mut.createdAt
+        )
+        .count();
+
+      if (newerPending > 0) return false;
+    }
+
+    return true;
   }
 
   private async applyOutboxMutation(mut: SyncMutation, userId: string): Promise<void> {
@@ -391,21 +414,23 @@ class SyncEngine {
     // UPSERT
     let remotePayload: Record<string, any>;
     const mapper = (mappers as any)[mut.entityType];
+    const currentRecord = await this.getEntityRecord(mut.entityType, mut.entityId);
+    const activePayload = (currentRecord && typeof currentRecord === 'object') ? (currentRecord as Record<string, any>) : mut.payload;
 
     if (mut.entityType === 'settings') {
       let avatarData: string | null = null;
-      if (mut.payload?.avatarBlobId) {
-        const blob = await db.assetBlobs.get(mut.payload.avatarBlobId);
+      if (activePayload?.avatarBlobId) {
+        const blob = await db.assetBlobs.get(activePayload.avatarBlobId);
         if (blob?.data) {
           avatarData = blob.data;
         }
       }
-      remotePayload = mappers.settings.toRemote(mut.payload as any, userId, this.currentUserEmail || undefined, avatarData);
+      remotePayload = mappers.settings.toRemote(activePayload as any, userId, this.currentUserEmail || undefined, avatarData);
     } else if (mapper?.toRemote) {
-      remotePayload = mapper.toRemote(mut.payload, userId, this.currentUserEmail);
+      remotePayload = mapper.toRemote(activePayload, userId, this.currentUserEmail);
     } else {
       remotePayload = {
-        ...mut.payload,
+        ...activePayload,
         user_id: userId,
         updated_at: new Date().toISOString(),
       };
@@ -540,68 +565,157 @@ class SyncEngine {
     const remoteHydration = await this.fetchRemoteRows('hydration_logs', userId);
     for (const row of remoteHydration) {
       if (row.is_deleted === true) await this.applyRemoteTombstone('hydrationLog', row);
-      else await db.hydrationLogs.put(mappers.hydrationLog.toLocal(row));
+      else {
+        const local = await db.hydrationLogs.get(row.id);
+        const remoteItem = mappers.hydrationLog.toLocal(row);
+        if (!local) await db.hydrationLogs.put(remoteItem);
+        else {
+          const { resolved } = resolveGenericLWW(local, remoteItem, 'loggedAt', 'logged_at');
+          await db.hydrationLogs.put(resolved);
+        }
+      }
     }
 
     const remoteDiet = await this.fetchRemoteRows('diet_logs', userId);
     for (const row of remoteDiet) {
       if (row.is_deleted === true) await this.applyRemoteTombstone('dietLog', row);
-      else await db.dietLogs.put(mappers.dietLog.toLocal(row));
+      else {
+        const local = await db.dietLogs.get(row.id);
+        const remoteItem = mappers.dietLog.toLocal(row);
+        if (!local) await db.dietLogs.put(remoteItem);
+        else {
+          const { resolved } = resolveGenericLWW(local, remoteItem, 'loggedAt', 'logged_at');
+          await db.dietLogs.put(resolved);
+        }
+      }
     }
 
     const remoteWorkouts = await this.fetchRemoteRows('workout_logs', userId);
     for (const row of remoteWorkouts) {
       if (row.is_deleted === true) await this.applyRemoteTombstone('workoutLog', row);
-      else await db.workoutLogs.put(mappers.workoutLog.toLocal(row));
+      else {
+        const local = await db.workoutLogs.get(row.id);
+        const remoteItem = mappers.workoutLog.toLocal(row);
+        if (!local) await db.workoutLogs.put(remoteItem);
+        else {
+          const { resolved } = resolveGenericLWW(local, remoteItem, 'loggedAt', 'logged_at');
+          await db.workoutLogs.put(resolved);
+        }
+      }
     }
 
     const remoteBodyMetrics = await this.fetchRemoteRows('body_metrics', userId);
     for (const row of remoteBodyMetrics) {
       if (row.is_deleted === true) await this.applyRemoteTombstone('bodyMetric', row);
-      else await db.bodyMetrics.put(mappers.bodyMetric.toLocal(row));
+      else {
+        const local = await db.bodyMetrics.get(row.id);
+        const remoteItem = mappers.bodyMetric.toLocal(row);
+        if (!local) await db.bodyMetrics.put(remoteItem);
+        else {
+          const { resolved } = resolveGenericLWW(local, remoteItem, 'loggedAt', 'logged_at');
+          await db.bodyMetrics.put(resolved);
+        }
+      }
     }
 
     // Pull finance tables
     const remoteFinProfiles = await this.fetchRemoteRows('financial_profiles', userId);
     for (const row of remoteFinProfiles) {
       if (row.is_deleted === true) await this.applyRemoteTombstone('financialProfile', row);
-      else await db.financialProfiles.put(mappers.financialProfile.toLocal(row));
+      else {
+        const local = await db.financialProfiles.get(row.id);
+        const remoteItem = mappers.financialProfile.toLocal(row);
+        if (!local) await db.financialProfiles.put(remoteItem);
+        else {
+          const { resolved } = resolveGenericLWW(local, remoteItem);
+          await db.financialProfiles.put(resolved);
+        }
+      }
     }
 
     const remoteCommitments = await this.fetchRemoteRows('financial_commitments', userId);
     for (const row of remoteCommitments) {
       if (row.is_deleted === true) await this.applyRemoteTombstone('financialCommitment', row);
-      else await db.financialCommitments.put(mappers.financialCommitment.toLocal(row));
+      else {
+        const local = await db.financialCommitments.get(row.id);
+        const remoteItem = mappers.financialCommitment.toLocal(row);
+        if (!local) {
+          await db.financialCommitments.put(remoteItem);
+        } else {
+          const { resolved } = resolveGenericLWW(local, remoteItem);
+          await db.financialCommitments.put(resolved);
+        }
+      }
     }
 
     const remoteDebts = await this.fetchRemoteRows('debts', userId);
     for (const row of remoteDebts) {
       if (row.is_deleted === true) await this.applyRemoteTombstone('debtItem', row);
-      else await db.debts.put(mappers.debtItem.toLocal(row));
+      else {
+        const local = await db.debts.get(row.id);
+        const remoteItem = mappers.debtItem.toLocal(row);
+        if (!local) await db.debts.put(remoteItem);
+        else {
+          const { resolved } = resolveGenericLWW(local, remoteItem);
+          await db.debts.put(resolved);
+        }
+      }
     }
 
     const remoteDebtPayments = await this.fetchRemoteRows('debt_payments', userId);
     for (const row of remoteDebtPayments) {
       if (row.is_deleted === true) await this.applyRemoteTombstone('debtPayment', row);
-      else await db.debtPayments.put(mappers.debtPayment.toLocal(row));
+      else {
+        const local = await db.debtPayments.get(row.id);
+        const remoteItem = mappers.debtPayment.toLocal(row);
+        if (!local) await db.debtPayments.put(remoteItem);
+        else {
+          const { resolved } = resolveGenericLWW(local, remoteItem, 'paidAt', 'paid_at');
+          await db.debtPayments.put(resolved);
+        }
+      }
     }
 
     const remoteWishlist = await this.fetchRemoteRows('wishlist_items', userId);
     for (const row of remoteWishlist) {
       if (row.is_deleted === true) await this.applyRemoteTombstone('wishlistItem', row);
-      else await db.wishlistItems.put(mappers.wishlistItem.toLocal(row));
+      else {
+        const local = await db.wishlistItems.get(row.id);
+        const remoteItem = mappers.wishlistItem.toLocal(row);
+        if (!local) await db.wishlistItems.put(remoteItem);
+        else {
+          const { resolved } = resolveGenericLWW(local, remoteItem, 'addedAt', 'added_at');
+          await db.wishlistItems.put(resolved);
+        }
+      }
     }
 
     const remoteSavingsGoals = await this.fetchRemoteRows('savings_goals', userId);
     for (const row of remoteSavingsGoals) {
       if (row.is_deleted === true) await this.applyRemoteTombstone('savingsGoal', row);
-      else await db.savingsGoals.put(mappers.savingsGoal.toLocal(row));
+      else {
+        const local = await db.savingsGoals.get(row.id);
+        const remoteItem = mappers.savingsGoal.toLocal(row);
+        if (!local) await db.savingsGoals.put(remoteItem);
+        else {
+          const { resolved } = resolveGenericLWW(local, remoteItem);
+          await db.savingsGoals.put(resolved);
+        }
+      }
     }
 
     const remoteSavingsDeposits = await this.fetchRemoteRows('savings_deposits', userId);
     for (const row of remoteSavingsDeposits) {
       if (row.is_deleted === true) await this.applyRemoteTombstone('savingsDeposit', row);
-      else await db.savingsDeposits.put(mappers.savingsDeposit.toLocal(row));
+      else {
+        const local = await db.savingsDeposits.get(row.id);
+        const remoteItem = mappers.savingsDeposit.toLocal(row);
+        if (!local) await db.savingsDeposits.put(remoteItem);
+        else {
+          const { resolved } = resolveGenericLWW(local, remoteItem, 'loggedAt', 'logged_at');
+          await db.savingsDeposits.put(resolved);
+        }
+      }
     }
 
     // Pull vision board items

@@ -89,8 +89,12 @@ export function resolveGenericLWW<T extends Record<string, any>>(
   localTimestampKey = 'updatedAt',
   remoteTimestampKey = 'updated_at'
 ): MergeResult<T> {
-  const localTime = new Date(local[localTimestampKey] || local.createdAt || 0).getTime();
-  const remoteTime = new Date(remote[remoteTimestampKey] || remote.created_at || 0).getTime();
+  const localTime = new Date(
+    local[localTimestampKey] || local[remoteTimestampKey] || local.createdAt || local.created_at || 0
+  ).getTime();
+  const remoteTime = new Date(
+    remote[remoteTimestampKey] || remote[localTimestampKey] || remote.created_at || remote.createdAt || 0
+  ).getTime();
 
   if (localTime >= remoteTime) {
     return { resolved: { ...remote, ...local }, hasConflict: false };

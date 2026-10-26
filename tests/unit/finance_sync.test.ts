@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { mappers } from '@/sync/mappers';
+import { resolveGenericLWW } from '@/sync/conflictResolver';
 import { NemoDatabase } from '@/db/nemoDb';
 import { registerDexieSyncHooks } from '@/sync/dexieHooks';
 import type {
@@ -201,6 +202,69 @@ describe('Finance & Wealth Sync Mappers and Hooks', () => {
       const deleteMutation = mutations.find((m) => m.entityType === 'savingsGoal' && m.operation === 'DELETE');
       expect(deleteMutation).toBeDefined();
       expect(deleteMutation?.entityId).toBe('svg_outbox_test');
+    });
+
+    it('resolves LWW deterministically: newer local paid commitment wins over older remote unpaid commitment', () => {
+      const olderRemoteUnpaid: FinancialCommitment = {
+        id: 'com_lww_1',
+        title: 'Electricity Bill',
+        amount: 150,
+        category: 'utilities',
+        dueDayOfMonth: 15,
+        isPaidThisMonth: false,
+        autoRenew: true,
+        createdAt: '2026-10-25T00:00:00.000Z',
+        updatedAt: '2026-10-25T08:00:00.000Z',
+      };
+
+      const newerLocalPaid: FinancialCommitment = {
+        id: 'com_lww_1',
+        title: 'Electricity Bill',
+        amount: 150,
+        category: 'utilities',
+        dueDayOfMonth: 15,
+        isPaidThisMonth: true,
+        lastPaidMonthYear: '2026-10',
+        autoRenew: true,
+        createdAt: '2026-10-25T00:00:00.000Z',
+        updatedAt: '2026-10-26T08:00:00.000Z',
+      };
+
+      const { resolved } = resolveGenericLWW(newerLocalPaid, olderRemoteUnpaid);
+      expect(resolved.isPaidThisMonth).toBe(true);
+      expect(resolved.lastPaidMonthYear).toBe('2026-10');
+      expect(resolved.updatedAt).toBe('2026-10-26T08:00:00.000Z');
+    });
+
+    it('resolves LWW correctly when remote has newer updatedAt from cloud update', () => {
+      const olderLocal: FinancialCommitment = {
+        id: 'com_lww_2',
+        title: 'Water Bill',
+        amount: 40,
+        category: 'utilities',
+        dueDayOfMonth: 20,
+        isPaidThisMonth: false,
+        autoRenew: true,
+        createdAt: '2026-10-25T00:00:00.000Z',
+        updatedAt: '2026-10-25T08:00:00.000Z',
+      };
+
+      const newerRemotePaid: FinancialCommitment = {
+        id: 'com_lww_2',
+        title: 'Water Bill',
+        amount: 40,
+        category: 'utilities',
+        dueDayOfMonth: 20,
+        isPaidThisMonth: true,
+        lastPaidMonthYear: '2026-10',
+        autoRenew: true,
+        createdAt: '2026-10-25T00:00:00.000Z',
+        updatedAt: '2026-10-26T08:00:00.000Z',
+      };
+
+      const { resolved } = resolveGenericLWW(olderLocal, newerRemotePaid);
+      expect(resolved.isPaidThisMonth).toBe(true);
+      expect(resolved.lastPaidMonthYear).toBe('2026-10');
     });
   });
 });

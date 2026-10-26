@@ -366,7 +366,7 @@ export const MonthlyCommitmentsCard: React.FC<MonthlyCommitmentsCardProps> = ({
                     <div className="flex items-center gap-2 flex-wrap">
                       <span
                         className={`text-sm font-semibold truncate ${
-                          item.isPaidThisMonth ? 'line-through text-content-tertiary' : 'text-content-primary'
+                          isPaid ? 'line-through text-content-tertiary' : 'text-content-primary'
                         }`}
                       >
                         {item.title}
@@ -400,13 +400,13 @@ export const MonthlyCommitmentsCard: React.FC<MonthlyCommitmentsCardProps> = ({
                   <div className="text-left sm:text-right">
                     <span
                       className={`text-base font-bold font-mono tracking-tight block ${
-                        item.isPaidThisMonth ? 'text-content-tertiary' : 'text-white'
+                        isPaid ? 'text-content-tertiary' : 'text-white'
                       }`}
                     >
                       {formatRM(item.amount)}
                     </span>
                     <span className="text-[10px] font-medium text-content-tertiary block">
-                      {item.isPaidThisMonth ? 'Paid This Cycle' : 'Pending'}
+                      {isPaid ? 'Paid This Cycle' : 'Pending'}
                     </span>
                   </div>
 
