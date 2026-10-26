@@ -46,6 +46,10 @@ class SyncEngine {
     return this.isIngesting;
   }
 
+  public setIngestingRemote(value: boolean): void {
+    this.isIngesting = value;
+  }
+
   public getAuthenticatedUserId(): string | null {
     return this.currentUserId;
   }
@@ -283,7 +287,15 @@ class SyncEngine {
       // Step 1: Push pending local mutations to Supabase
       await this.pushPendingMutations();
 
-      // Step 2: Auto-reconcile all local workspace records to Supabase if not yet done this session
+      // Step 2: Pull remote delta since last sync
+      this.isIngesting = true;
+      try {
+        await this.pullRemoteDelta();
+      } finally {
+        this.isIngesting = false;
+      }
+
+      // Step 3: Auto-reconcile any local workspace records to Supabase if not yet done this session
       if (!this.hasReconciledOnLogin && this.currentUserId) {
         try {
           await this.uploadAllLocalData(this.currentUserId);
@@ -291,14 +303,6 @@ class SyncEngine {
         } catch (reconcileErr) {
           console.warn('Auto-reconciliation during sync had non-critical errors:', reconcileErr);
         }
-      }
-
-      // Step 3: Pull remote delta since last sync
-      this.isIngesting = true;
-      try {
-        await this.pullRemoteDelta();
-      } finally {
-        this.isIngesting = false;
       }
 
       const lastSyncAt = new Date().toISOString();
@@ -1106,7 +1110,7 @@ class SyncEngine {
       ]);
 
       const upsert = async (table: string, rows: Record<string, unknown>[], label: string) => {
-        if (this.currentUserId !== userId) {
+        if (this.currentUserId && this.currentUserId !== userId) {
           throw new Error('The signed-in account changed during upload. The remaining local tables were not sent.');
         }
         const { error } = await supabase.from(table as any).upsert(rows);

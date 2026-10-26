@@ -521,69 +521,94 @@ export async function importWorkspaceBackup(jsonContent: string, targetDb: NemoD
  * Completely clears all workspace records and resets to default initial empty state.
  */
 export async function resetWorkspaceData(targetDb: NemoDatabase = db): Promise<void> {
-  await targetDb.transaction('rw', [
-    targetDb.settings,
-    targetDb.projects,
-    targetDb.tasks,
-    targetDb.milestones,
-    targetDb.semesters,
-    targetDb.subjects,
-    targetDb.assignments,
-    targetDb.calendarEvents,
-    targetDb.goals,
-    targetDb.goalTaskLinks,
-    targetDb.focusSelections,
-    targetDb.assetBlobs,
-    targetDb.syncMutations,
-    targetDb.hydrationLogs,
-    targetDb.dietLogs,
-    targetDb.workoutLogs,
-    targetDb.bodyMetrics,
-    targetDb.financialProfiles,
-    targetDb.financialCommitments,
-    targetDb.debts,
-    targetDb.debtPayments,
-    targetDb.wishlistItems,
-    targetDb.savingsGoals,
-    targetDb.savingsDeposits,
-    targetDb.visionItems,
-    targetDb.monthlyRoadmaps,
-    targetDb.incomeItems,
-    targetDb.ibadahDailyLogs,
-    targetDb.qadhaPrayers,
-    targetDb.qadhaFastings,
-  ], async () => {
-    await Promise.all([
-      targetDb.settings.clear(),
-      targetDb.projects.clear(),
-      targetDb.tasks.clear(),
-      targetDb.milestones.clear(),
-      targetDb.semesters.clear(),
-      targetDb.subjects.clear(),
-      targetDb.assignments.clear(),
-      targetDb.calendarEvents.clear(),
-      targetDb.goals.clear(),
-      targetDb.goalTaskLinks.clear(),
-      targetDb.focusSelections.clear(),
-      targetDb.assetBlobs.clear(),
-      targetDb.hydrationLogs.clear(),
-      targetDb.dietLogs.clear(),
-      targetDb.workoutLogs.clear(),
-      targetDb.bodyMetrics.clear(),
-      targetDb.financialProfiles.clear(),
-      targetDb.financialCommitments.clear(),
-      targetDb.debts.clear(),
-      targetDb.debtPayments.clear(),
-      targetDb.wishlistItems.clear(),
-      targetDb.savingsGoals.clear(),
-      targetDb.savingsDeposits.clear(),
-      targetDb.visionItems.clear(),
-      targetDb.monthlyRoadmaps.clear(),
-      targetDb.incomeItems.clear(),
-      targetDb.ibadahDailyLogs.clear(),
-      targetDb.qadhaPrayers.clear(),
-      targetDb.qadhaFastings.clear(),
-    ]);
-  });
-  await ensureSettings(targetDb);
+  let syncEngineRef: any = null;
+  try {
+    const { syncEngine } = await import('@/sync/syncEngine');
+    syncEngineRef = syncEngine;
+    if (typeof syncEngineRef?.setIngestingRemote === 'function') {
+      syncEngineRef.setIngestingRemote(true);
+    }
+  } catch {
+    // Optional syncEngine import
+  }
+
+  try {
+    await targetDb.transaction('rw', [
+      targetDb.settings,
+      targetDb.projects,
+      targetDb.tasks,
+      targetDb.milestones,
+      targetDb.semesters,
+      targetDb.subjects,
+      targetDb.assignments,
+      targetDb.calendarEvents,
+      targetDb.goals,
+      targetDb.goalTaskLinks,
+      targetDb.focusSelections,
+      targetDb.assetBlobs,
+      targetDb.syncMutations,
+      targetDb.hydrationLogs,
+      targetDb.dietLogs,
+      targetDb.workoutLogs,
+      targetDb.bodyMetrics,
+      targetDb.financialProfiles,
+      targetDb.financialCommitments,
+      targetDb.debts,
+      targetDb.debtPayments,
+      targetDb.wishlistItems,
+      targetDb.savingsGoals,
+      targetDb.savingsDeposits,
+      targetDb.visionItems,
+      targetDb.monthlyRoadmaps,
+      targetDb.incomeItems,
+      targetDb.ibadahDailyLogs,
+      targetDb.qadhaPrayers,
+      targetDb.qadhaFastings,
+    ], async () => {
+      await Promise.all([
+        targetDb.settings.clear(),
+        targetDb.projects.clear(),
+        targetDb.tasks.clear(),
+        targetDb.milestones.clear(),
+        targetDb.semesters.clear(),
+        targetDb.subjects.clear(),
+        targetDb.assignments.clear(),
+        targetDb.calendarEvents.clear(),
+        targetDb.goals.clear(),
+        targetDb.goalTaskLinks.clear(),
+        targetDb.focusSelections.clear(),
+        targetDb.assetBlobs.clear(),
+        targetDb.syncMutations.clear(),
+        targetDb.hydrationLogs.clear(),
+        targetDb.dietLogs.clear(),
+        targetDb.workoutLogs.clear(),
+        targetDb.bodyMetrics.clear(),
+        targetDb.financialProfiles.clear(),
+        targetDb.financialCommitments.clear(),
+        targetDb.debts.clear(),
+        targetDb.debtPayments.clear(),
+        targetDb.wishlistItems.clear(),
+        targetDb.savingsGoals.clear(),
+        targetDb.savingsDeposits.clear(),
+        targetDb.visionItems.clear(),
+        targetDb.monthlyRoadmaps.clear(),
+        targetDb.incomeItems.clear(),
+        targetDb.ibadahDailyLogs.clear(),
+        targetDb.qadhaPrayers.clear(),
+        targetDb.qadhaFastings.clear(),
+      ]);
+    });
+    try {
+      const { syncDb } = await import('@/sync/syncDb');
+      await syncDb.syncMutations.clear();
+    } catch {
+      // Legacy sync DB optional cleanup
+    }
+    await ensureSettings(targetDb);
+    await targetDb.syncMutations.clear();
+  } finally {
+    if (typeof syncEngineRef?.setIngestingRemote === 'function') {
+      syncEngineRef.setIngestingRemote(false);
+    }
+  }
 }

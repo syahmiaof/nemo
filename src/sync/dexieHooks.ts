@@ -77,10 +77,15 @@ export function registerDexieSyncHooks(database: NemoDatabase) {
       const mutation = createMutation(entityType, entityId, operation, payload);
 
       const currentTx = Dexie.currentTransaction;
-      const isSyncMutationsInTx =
-        Boolean(currentTx &&
-        currentTx.db === database &&
-        (currentTx.storeNames?.includes('syncMutations') || (currentTx as any).tables?.['syncMutations']));
+      const hasSyncMutations = (tx: any): boolean => {
+        if (!tx) return false;
+        if (tx.storeNames) {
+          if (typeof tx.storeNames.contains === 'function') return tx.storeNames.contains('syncMutations');
+          if (typeof tx.storeNames.includes === 'function') return tx.storeNames.includes('syncMutations');
+        }
+        return Boolean(tx.tables?.['syncMutations'] || tx._tables?.['syncMutations']);
+      };
+      const isSyncMutationsInTx = Boolean(currentTx && currentTx.db === database && hasSyncMutations(currentTx));
 
       if (isSyncMutationsInTx) {
         void database.syncMutations.put(mutation);

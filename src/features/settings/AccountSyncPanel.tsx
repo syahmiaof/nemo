@@ -17,6 +17,7 @@ import { useAuth } from '@/features/auth/AuthContext';
 import { supabase } from '@/lib/supabase';
 import { useSync } from '@/sync/useSync';
 import { useToast } from '@/components/ui/Toast';
+import { resetWorkspaceData } from '@/db/nemoDb';
 import { AdminMembersPanel } from './AdminMembersPanel';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 
@@ -38,6 +39,7 @@ export const AccountSyncPanel: React.FC = () => {
   const handleSignOut = async () => {
     try {
       await signOut();
+      await resetWorkspaceData();
       success('Logged out', 'You have been signed out of Nemo Cloud.');
     } catch {
       toastError('Error', 'Unable to sign out.');

@@ -2,6 +2,7 @@ import React, { createContext, useContext, useEffect, useState, useMemo } from '
 import type { User, Session } from '@supabase/supabase-js';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 import { syncEngine } from '@/sync/syncEngine';
+import { resetWorkspaceData } from '@/db/nemoDb';
 
 interface AuthContextValue {
   isConfigured: boolean;
@@ -23,6 +24,27 @@ const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 const APPROVED_OWNER_EMAIL = 'syahmiaof123@gmail.com';
 const LEGACY_PASSWORD_STORAGE_KEY = 'nemo_owner_active_password';
+const LAST_AUTH_USER_ID_STORAGE_KEY = 'nemo_last_auth_user_id';
+
+function getStoredLastAuthUserId(): string | null {
+  try {
+    return window.localStorage.getItem(LAST_AUTH_USER_ID_STORAGE_KEY);
+  } catch {
+    return null;
+  }
+}
+
+function setStoredLastAuthUserId(userId: string | null): void {
+  try {
+    if (userId) {
+      window.localStorage.setItem(LAST_AUTH_USER_ID_STORAGE_KEY, userId);
+    } else {
+      window.localStorage.removeItem(LAST_AUTH_USER_ID_STORAGE_KEY);
+    }
+  } catch {
+    // Storage can be unavailable in restricted browser contexts.
+  }
+}
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
@@ -73,14 +95,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const approved = await checkOwnerApproval(currentUser.email);
         setIsApprovedOwner(approved);
         if (approved) {
+          const previousUserId = getStoredLastAuthUserId();
+          if (previousUserId && previousUserId !== currentUser.id) {
+            await resetWorkspaceData();
+          }
+          setStoredLastAuthUserId(currentUser.id);
           syncEngine.setAuthenticatedUser(currentUser.id, currentUser.email);
         } else {
           // Deny unapproved users immediately
-          supabase.auth.signOut();
+          await supabase.auth.signOut();
           syncEngine.setAuthenticatedUser(null, null);
+          setStoredLastAuthUserId(null);
+          await resetWorkspaceData();
         }
       } else {
         syncEngine.setAuthenticatedUser(null, null);
+        const previousUserId = getStoredLastAuthUserId();
+        if (previousUserId) {
+          setStoredLastAuthUserId(null);
+          await resetWorkspaceData();
+        }
       }
       setIsLoading(false);
     });
@@ -88,7 +122,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // 2. Listen to auth changes
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (_event, newSession) => {
+    } = supabase.auth.onAuthStateChange(async (event, newSession) => {
       setSession(newSession);
       const currentUser = newSession?.user ?? null;
       setUser(currentUser);
@@ -97,14 +131,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const approved = await checkOwnerApproval(currentUser.email);
         setIsApprovedOwner(approved);
         if (approved) {
+          const previousUserId = getStoredLastAuthUserId();
+          if (previousUserId && previousUserId !== currentUser.id) {
+            await resetWorkspaceData();
+          }
+          setStoredLastAuthUserId(currentUser.id);
           syncEngine.setAuthenticatedUser(currentUser.id, currentUser.email);
         } else {
           await supabase.auth.signOut();
           syncEngine.setAuthenticatedUser(null, null);
+          setStoredLastAuthUserId(null);
+          await resetWorkspaceData();
         }
       } else {
         setIsApprovedOwner(false);
         syncEngine.setAuthenticatedUser(null, null);
+        const previousUserId = getStoredLastAuthUserId();
+        if (previousUserId || event === 'SIGNED_OUT') {
+          setStoredLastAuthUserId(null);
+          await resetWorkspaceData();
+        }
       }
     });
 
@@ -137,13 +183,31 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const approved = await checkOwnerApproval(data.user.email);
         if (!approved) {
           await supabase.auth.signOut();
+          setStoredLastAuthUserId(null);
+          await resetWorkspaceData();
           return {
             success: false,
             error: 'Access denied: Unauthorized owner account.',
           };
         }
         setIsApprovedOwner(true);
+        setUser(data.user);
+        if (data.session) setSession(data.session);
+
+        const previousUserId = getStoredLastAuthUserId();
+        if (previousUserId !== data.user.id) {
+          await resetWorkspaceData();
+        }
+        setStoredLastAuthUserId(data.user.id);
+
         syncEngine.setAuthenticatedUser(data.user.id, data.user.email);
+        if (typeof syncEngine.syncNow === 'function') {
+          try {
+            await syncEngine.syncNow();
+          } catch (syncErr) {
+            console.warn('Post-login cloud sync error:', syncErr);
+          }
+        }
         setIsAuthModalOpen(false);
       }
 
@@ -231,13 +295,31 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const approved = await checkOwnerApproval(data.session.user.email);
         if (!approved) {
           await supabase.auth.signOut();
+          setStoredLastAuthUserId(null);
+          await resetWorkspaceData();
           return {
             success: false,
             error: 'Access denied: This account is not authorized to access this private cloud workspace.',
           };
         }
         setIsApprovedOwner(true);
+        setUser(data.session.user);
+        setSession(data.session);
+
+        const previousUserId = getStoredLastAuthUserId();
+        if (previousUserId !== data.session.user.id) {
+          await resetWorkspaceData();
+        }
+        setStoredLastAuthUserId(data.session.user.id);
+
         syncEngine.setAuthenticatedUser(data.session.user.id, data.session.user.email || null);
+        if (typeof syncEngine.syncNow === 'function') {
+          try {
+            await syncEngine.syncNow();
+          } catch (syncErr) {
+            console.warn('Initial cloud sync on OTP verify error:', syncErr);
+          }
+        }
         setIsAuthModalOpen(false);
       }
 
@@ -256,6 +338,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setSession(null);
     setIsApprovedOwner(false);
     syncEngine.setAuthenticatedUser(null, null);
+    setStoredLastAuthUserId(null);
+    await resetWorkspaceData();
   };
 
   const value = useMemo(
