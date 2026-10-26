@@ -26,6 +26,7 @@ class SyncEngine {
   private currentUserEmail: string | null = null;
   private isIngesting = false;
   private legacyOutboxMigrated = false;
+  private hasReconciledOnLogin = false;
 
   constructor() {
     if (typeof window !== 'undefined') {
@@ -79,6 +80,9 @@ class SyncEngine {
   }
 
   public setAuthenticatedUser(userId: string | null, email: string | null) {
+    if (this.currentUserId !== userId) {
+      this.hasReconciledOnLogin = false;
+    }
     this.currentUserId = userId;
     this.currentUserEmail = email;
 
@@ -200,7 +204,17 @@ class SyncEngine {
       // Step 1: Push pending local mutations to Supabase
       await this.pushPendingMutations();
 
-      // Step 2: Pull remote delta since last sync
+      // Step 2: Auto-reconcile all local workspace records to Supabase if not yet done this session
+      if (!this.hasReconciledOnLogin && this.currentUserId) {
+        try {
+          await this.uploadAllLocalData(this.currentUserId);
+          this.hasReconciledOnLogin = true;
+        } catch (reconcileErr) {
+          console.warn('Auto-reconciliation during sync had non-critical errors:', reconcileErr);
+        }
+      }
+
+      // Step 3: Pull remote delta since last sync
       this.isIngesting = true;
       try {
         await this.pullRemoteDelta();

@@ -27,7 +27,11 @@ export const SyncIndicator: React.FC = () => {
   return (
     <button
       onClick={handleClick}
-      className="header-time-pill flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface border border-border-subtle hover:border-border-emphasis text-xs text-content-secondary hover:text-content-primary transition-colors cursor-pointer"
+      className={`header-time-pill flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs transition-colors cursor-pointer ${
+        !user
+          ? 'bg-amber-500/10 border-amber-500/30 text-amber-300 hover:bg-amber-500/20 shadow-sm animate-pulse'
+          : 'bg-surface border-border-subtle hover:border-border-emphasis text-content-secondary hover:text-content-primary'
+      }`}
       title={getTooltip()}
       aria-label="Cloud Sync Status"
     >
@@ -61,8 +65,8 @@ export const SyncIndicator: React.FC = () => {
         </>
       ) : (
         <>
-          <Database className="w-3.5 h-3.5 text-content-tertiary" />
-          <span className="hidden md:inline text-[11px] font-medium text-content-tertiary">Local</span>
+          <Database className="w-3.5 h-3.5 text-amber-400" />
+          <span className="text-[11px] font-semibold text-amber-300">Sign In to Sync</span>
         </>
       )}
     </button>

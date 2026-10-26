@@ -67,25 +67,49 @@ export function registerDexieSyncHooks(database: NemoDatabase) {
   for (const { table, entityType } of syncableTables) {
     if (!table) continue;
 
-    table.hook('creating', (primKey: any, obj: any) => {
+    const safelyRecordMutation = (
+      entityType: SyncEntityType,
+      entityId: string,
+      operation: SyncMutation['operation'],
+      payload: Record<string, unknown>
+    ) => {
       if (syncEngine.isIngestingRemote()) return;
+      const mutation = createMutation(entityType, entityId, operation, payload);
+
+      const currentTx = Dexie.currentTransaction;
+      const isSyncMutationsInTx =
+        Boolean(currentTx &&
+        currentTx.db === database &&
+        (currentTx.storeNames?.includes('syncMutations') || (currentTx as any).tables?.['syncMutations']));
+
+      if (isSyncMutationsInTx) {
+        void database.syncMutations.put(mutation);
+        syncEngine.onLocalMutation();
+      } else {
+        setTimeout(async () => {
+          try {
+            await database.syncMutations.put(mutation);
+            syncEngine.onLocalMutation();
+          } catch (err) {
+            console.warn('Failed to enqueue deferred sync mutation:', err);
+          }
+        }, 0);
+      }
+    };
+
+    table.hook('creating', (primKey: any, obj: any) => {
       const entityId = obj?.id || String(primKey);
-      void database.syncMutations.put(createMutation(entityType, entityId, 'UPSERT', { ...obj }));
-      syncEngine.onLocalMutation();
+      safelyRecordMutation(entityType, entityId, 'UPSERT', { ...obj });
     });
 
     table.hook('updating', (modifications: any, primKey: any, obj: any) => {
-      if (syncEngine.isIngestingRemote()) return;
       const entityId = obj?.id || String(primKey);
-      void database.syncMutations.put(createMutation(entityType, entityId, 'UPSERT', { ...obj, ...modifications }));
-      syncEngine.onLocalMutation();
+      safelyRecordMutation(entityType, entityId, 'UPSERT', { ...obj, ...modifications });
     });
 
     table.hook('deleting', (primKey: any) => {
-      if (syncEngine.isIngestingRemote()) return;
       const entityId = String(primKey);
-      void database.syncMutations.put(createMutation(entityType, entityId, 'DELETE', { id: entityId }));
-      syncEngine.onLocalMutation();
+      safelyRecordMutation(entityType, entityId, 'DELETE', { id: entityId });
     });
 
     // A direct table write creates a transaction with only that table. Wrap it

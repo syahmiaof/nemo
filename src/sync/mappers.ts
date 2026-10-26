@@ -809,6 +809,7 @@ export const mappers = {
         quran_last_ayah: local.quranLastAyah ?? null,
         dhikr_count: local.dhikrCount ?? 0,
         sedekah_subuh_done: local.sedekahDone ?? false,
+        fasting_status: (local as any).fastingStatus || 'none',
         daily_reflection: local.notes || null,
         version: 1,
         is_deleted: false,

@@ -814,7 +814,7 @@ export async function atomicRecordDebtPayment(
   database: NemoDatabase,
   entry: Omit<DebtPayment, 'id' | 'paidAt'> & { id?: string; paidAt?: string }
 ): Promise<DebtPayment> {
-  return await database.transaction('rw', [database.debts, database.debtPayments], async () => {
+  return await database.transaction('rw', [database.debts, database.debtPayments, database.syncMutations], async () => {
     const debt = await database.debts.get(entry.debtId);
     if (!debt) {
       throw new Error(`Debt with ID "${entry.debtId}" does not exist.`);
@@ -849,7 +849,7 @@ export async function atomicUpdateDebt(
   debtId: string,
   updates: Partial<Omit<DebtItem, 'id' | 'createdAt'>>
 ): Promise<DebtItem> {
-  return await database.transaction('rw', [database.debts], async () => {
+  return await database.transaction('rw', [database.debts, database.syncMutations], async () => {
     const existing = await database.debts.get(debtId);
     if (!existing) {
       throw new Error(`Debt with ID "${debtId}" does not exist.`);
@@ -879,7 +879,7 @@ export async function atomicUpdateDebtPayment(
     note?: string;
   }
 ): Promise<DebtPayment> {
-  return await database.transaction('rw', [database.debts, database.debtPayments], async () => {
+  return await database.transaction('rw', [database.debts, database.debtPayments, database.syncMutations], async () => {
     const payment = await database.debtPayments.get(paymentId);
     if (!payment) {
       throw new Error(`Debt payment with ID "${paymentId}" does not exist.`);
@@ -920,7 +920,7 @@ export async function atomicDeleteDebtPayment(
   database: NemoDatabase,
   paymentId: string
 ): Promise<void> {
-  await database.transaction('rw', [database.debts, database.debtPayments], async () => {
+  await database.transaction('rw', [database.debts, database.debtPayments, database.syncMutations], async () => {
     const payment = await database.debtPayments.get(paymentId);
     if (!payment) return;
 
@@ -941,7 +941,7 @@ export async function atomicDeleteDebtPayment(
  * Atomically deletes a debt and all its associated payment records.
  */
 export async function atomicDeleteDebt(database: NemoDatabase, debtId: string): Promise<void> {
-  await database.transaction('rw', [database.debts, database.debtPayments], async () => {
+  await database.transaction('rw', [database.debts, database.debtPayments, database.syncMutations], async () => {
     await database.debts.delete(debtId);
     const payments = await database.debtPayments.where('debtId').equals(debtId).toArray();
     for (const p of payments) {
@@ -1002,7 +1002,7 @@ export async function atomicConvertWishlistToSavings(
   wishlistId: string,
   goalOptions?: { color?: string; category?: SavingsGoal['category']; targetDate?: string }
 ): Promise<SavingsGoal> {
-  return await database.transaction('rw', [database.wishlistItems, database.savingsGoals], async () => {
+  return await database.transaction('rw', [database.wishlistItems, database.savingsGoals, database.syncMutations], async () => {
     const wish = await database.wishlistItems.get(wishlistId);
     if (!wish) {
       throw new Error(`Wishlist item "${wishlistId}" not found.`);
@@ -1072,7 +1072,7 @@ export async function atomicRecordSavingsDeposit(
   database: NemoDatabase,
   entry: Omit<SavingsDeposit, 'id' | 'loggedAt'> & { id?: string; loggedAt?: string }
 ): Promise<SavingsDeposit> {
-  return await database.transaction('rw', [database.savingsGoals, database.savingsDeposits], async () => {
+  return await database.transaction('rw', [database.savingsGoals, database.savingsDeposits, database.syncMutations], async () => {
     const goal = await database.savingsGoals.get(entry.savingsGoalId);
     if (!goal) {
       throw new Error(`Savings goal "${entry.savingsGoalId}" not found.`);
@@ -1106,7 +1106,7 @@ export async function atomicRecordSavingsDeposit(
  * Atomically deletes a savings goal, its deposit logs, and unlinks related wishlist items.
  */
 export async function atomicDeleteSavingsGoal(database: NemoDatabase, goalId: string): Promise<void> {
-  await database.transaction('rw', [database.savingsGoals, database.savingsDeposits, database.wishlistItems], async () => {
+  await database.transaction('rw', [database.savingsGoals, database.savingsDeposits, database.wishlistItems, database.syncMutations], async () => {
     await database.savingsGoals.delete(goalId);
     const deposits = await database.savingsDeposits.where('savingsGoalId').equals(goalId).toArray();
     for (const d of deposits) {
@@ -1189,7 +1189,7 @@ export async function atomicUpdateQadhaPrayer(
 ): Promise<QadhaPrayerItem> {
   const id = `qp_${prayerType}`;
   const now = new Date().toISOString();
-  return await database.transaction('rw', database.qadhaPrayers, async () => {
+  return await database.transaction('rw', [database.qadhaPrayers, database.syncMutations], async () => {
     const existing = await database.qadhaPrayers.get(id);
     const totalMissed = Math.max(0, (existing?.totalMissed ?? 0) + deltaTotalMissed);
     const completedCount = Math.max(0, Math.min(totalMissed, (existing?.completedCount ?? 0) + deltaCompleted));
@@ -1221,7 +1221,7 @@ export async function atomicSetQadhaPrayerRemaining(
 ): Promise<QadhaPrayerItem> {
   const id = `qp_${prayerType}`;
   const now = new Date().toISOString();
-  return await database.transaction('rw', database.qadhaPrayers, async () => {
+  return await database.transaction('rw', [database.qadhaPrayers, database.syncMutations], async () => {
     const existing = await database.qadhaPrayers.get(id);
     const validRemaining = Math.max(0, Math.floor(remainingCount));
     const validCompleted = completedCount !== undefined
@@ -1252,7 +1252,7 @@ export async function atomicBulkSetQadhaPrayers(
   records: Array<{ prayerType: PrayerTimeName; remainingCount: number; completedCount?: number }>
 ): Promise<QadhaPrayerItem[]> {
   const now = new Date().toISOString();
-  return await database.transaction('rw', database.qadhaPrayers, async () => {
+  return await database.transaction('rw', [database.qadhaPrayers, database.syncMutations], async () => {
     const results: QadhaPrayerItem[] = [];
     for (const rec of records) {
       const id = `qp_${rec.prayerType}`;
