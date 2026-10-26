@@ -314,10 +314,10 @@ export const AdminMembersPanel: React.FC = () => {
           return (
             <div
               key={member.email}
-              className="rounded-xl bg-surface-subtle border border-border-subtle p-3.5 flex flex-col gap-2.5 transition-colors hover:border-border"
+              className="rounded-xl bg-surface-subtle border border-border-subtle p-3 sm:p-4 space-y-3 transition-colors hover:border-border"
             >
-              {/* Top row: Identity and Action buttons */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+              {/* Row 1: Profile identity & Actions */}
+              <div className="flex items-center justify-between gap-3 flex-wrap">
                 <div className="flex items-center gap-2.5 min-w-0">
                   <div
                     className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${
@@ -349,44 +349,46 @@ export const AdminMembersPanel: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Right controls for Member */}
-                {!isPrimary && (
-                  <div className="flex items-center gap-2 self-end sm:self-auto shrink-0">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        if (isEditing) {
-                          setEditingEmail(null);
-                        } else {
-                          setEditingEmail(member.email);
-                          setEditPasswordValue(member.initial_password || '');
-                        }
-                      }}
-                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface hover:bg-surface-subtle border border-border-subtle text-xs font-medium text-content-secondary hover:text-content-primary transition-colors cursor-pointer"
-                      title="Edit member password"
-                    >
-                      <Edit2 className="w-3 h-3 text-accent-mint" />
-                      <span>{isEditing ? 'Cancel Edit' : 'Edit Password'}</span>
-                    </button>
+                {/* Right controls */}
+                <div className="flex items-center gap-2 shrink-0">
+                  {!isPrimary && (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (isEditing) {
+                            setEditingEmail(null);
+                          } else {
+                            setEditingEmail(member.email);
+                            setEditPasswordValue(member.initial_password || '');
+                          }
+                        }}
+                        className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface hover:bg-surface-subtle border border-border-subtle text-xs font-medium text-content-secondary hover:text-content-primary transition-colors cursor-pointer"
+                        title="Edit member password"
+                      >
+                        <Edit2 className="w-3 h-3 text-accent-mint" />
+                        <span>{isEditing ? 'Cancel' : 'Edit Password'}</span>
+                      </button>
 
-                    <button
-                      type="button"
-                      onClick={() => handleRemoveMember(member.email)}
-                      disabled={isDeleting}
-                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 text-xs font-medium transition-colors cursor-pointer disabled:opacity-50"
-                      title={`Revoke access for ${member.email}`}
-                    >
-                      <Trash2 className="w-3 h-3" />
-                      <span>{isDeleting ? 'Revoking...' : 'Revoke'}</span>
-                    </button>
-                  </div>
-                )}
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveMember(member.email)}
+                        disabled={isDeleting}
+                        className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 text-xs font-medium transition-colors cursor-pointer disabled:opacity-50"
+                        title={`Revoke access for ${member.email}`}
+                      >
+                        <Trash2 className="w-3 h-3" />
+                        <span>{isDeleting ? 'Revoking...' : 'Revoke'}</span>
+                      </button>
+                    </>
+                  )}
+                </div>
               </div>
 
-              {/* Bottom row: Password Display or Edit Box */}
+              {/* Row 2: Dedicated Password Box */}
               <div className="pt-2 border-t border-border-subtle/50 text-xs">
                 {isEditing ? (
-                  <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap animate-fade-in">
+                  <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap animate-fade-in bg-navy-950/40 p-2 rounded-lg border border-accent-mint/30">
                     <span className="text-[11px] font-medium text-accent-mint shrink-0 flex items-center gap-1">
                       <KeyRound className="w-3.5 h-3.5" />
                       New Password:
@@ -419,13 +421,13 @@ export const AdminMembersPanel: React.FC = () => {
                     </button>
                   </div>
                 ) : (
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-[11px] text-content-tertiary flex items-center gap-1">
+                  <div className="flex items-center gap-2 flex-wrap bg-surface/50 px-2.5 py-1.5 rounded-lg border border-border-subtle/40">
+                    <span className="text-[11px] text-content-tertiary flex items-center gap-1 shrink-0">
                       <KeyRound className="w-3 h-3" />
                       Password:
                     </span>
 
-                    {rawPassword ? (
+                    {rawPassword && rawPassword !== '••••••••' ? (
                       <div className="flex items-center gap-1.5">
                         <span className="font-mono text-xs px-2 py-0.5 rounded bg-surface border border-border-subtle text-content-primary font-medium tracking-wider">
                           {isVisible ? rawPassword : '••••••••••••'}
@@ -436,7 +438,6 @@ export const AdminMembersPanel: React.FC = () => {
                           className="p-1 rounded text-content-tertiary hover:text-content-primary transition-colors cursor-pointer"
                           title={isVisible ? 'Hide password' : 'Show password'}
                         >
-                          {/* When visible, show EyeOff (click to hide). When hidden, show Eye (click to reveal) */}
                           {isVisible ? <EyeOff className="w-3.5 h-3.5 text-accent-mint" /> : <Eye className="w-3.5 h-3.5" />}
                         </button>
                         {isVisible && (
@@ -453,8 +454,8 @@ export const AdminMembersPanel: React.FC = () => {
                     ) : (
                       <span className="text-[11px] text-content-tertiary italic">
                         {isPrimary
-                          ? 'Managed via "Change Password" button in Cloud Sync panel'
-                          : 'Not recorded — use "Edit Password" to set a new password'}
+                          ? 'Managed via "Change Password" in the Cloud Synchronization panel above'
+                          : 'Set via "Edit Password" button to display here'}
                       </span>
                     )}
                   </div>

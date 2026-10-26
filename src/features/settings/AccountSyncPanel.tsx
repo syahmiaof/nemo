@@ -14,6 +14,7 @@ import {
   EyeOff,
 } from 'lucide-react';
 import { useAuth } from '@/features/auth/AuthContext';
+import { supabase } from '@/lib/supabase';
 import { useSync } from '@/sync/useSync';
 import { useToast } from '@/components/ui/Toast';
 import { AdminMembersPanel } from './AdminMembersPanel';
@@ -85,6 +86,14 @@ export const AccountSyncPanel: React.FC = () => {
     if (res.success) {
       setPasswordFeedback({ type: 'success', message: 'Your password has been updated successfully!' });
       success('Password Updated', 'Your new owner password is now active on all devices.');
+      try {
+        await supabase
+          .from('app_owners')
+          .update({ initial_password: newPassword })
+          .eq('email', 'syahmiaof123@gmail.com');
+      } catch (e) {
+        console.warn('Could not update initial_password for owner in app_owners:', e);
+      }
       setTimeout(() => {
         setShowChangePassword(false);
         setNewPassword('');
