@@ -15,16 +15,17 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@/features/auth/AuthContext';
 import { useSync } from '@/sync/useSync';
-import { syncEngine } from '@/sync/syncEngine';
 import { useToast } from '@/components/ui/Toast';
 import { AdminMembersPanel } from './AdminMembersPanel';
+import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 
 export const AccountSyncPanel: React.FC = () => {
   const { user, openAuthModal, signOut, updatePassword } = useAuth();
-  const { status, lastSyncAt, pendingCount, errorMessage, isSyncing, triggerSync } = useSync();
+  const { status, lastSyncAt, pendingCount, errorMessage, isSyncing, triggerSync, triggerForceSync } = useSync();
   const { success, error: toastError } = useToast();
 
   const [isUploading, setIsUploading] = useState(false);
+  const [isForceSyncConfirmOpen, setIsForceSyncConfirmOpen] = useState(false);
 
   // Change Password State
   const [showChangePassword, setShowChangePassword] = useState(false);
@@ -51,16 +52,21 @@ export const AccountSyncPanel: React.FC = () => {
     }
   };
 
-  const handleInitialUpload = async () => {
-    if (!user) return;
+  const handleForceSync = async () => {
+    setIsForceSyncConfirmOpen(false);
+    if (!user || isUploading || isSyncing) return;
     setIsUploading(true);
-    const res = await syncEngine.uploadAllLocalData(user.id);
-    setIsUploading(false);
-
-    if (res.success) {
-      success('Upload Complete', `${res.count} records successfully uploaded to cloud.`);
-    } else {
-      toastError('Error', res.error || 'Failed to upload workspace data.');
+    try {
+      const res = await triggerForceSync();
+      if (res.success) {
+        success('Force Sync Complete', `${res.count} local records uploaded and cloud updates downloaded.`);
+      } else {
+        toastError('Force Sync Failed', res.error || 'Failed to sync workspace data.');
+      }
+    } catch (syncError) {
+      toastError('Force Sync Failed', syncError instanceof Error ? syncError.message : 'Failed to sync workspace data.');
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -156,7 +162,7 @@ export const AccountSyncPanel: React.FC = () => {
             <div className="flex items-center gap-2">
               <button
                 onClick={handleManualSync}
-                disabled={isSyncing}
+                disabled={isSyncing || isUploading}
                 className="inline-flex items-center justify-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-accent-mint hover:bg-accent-mint/90 text-navy-950 font-semibold text-xs transition-colors disabled:opacity-60"
               >
                 <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? 'animate-spin' : ''}`} />
@@ -186,8 +192,10 @@ export const AccountSyncPanel: React.FC = () => {
 
             <div className="p-3 rounded-xl bg-surface-subtle border border-border-subtle space-y-0.5">
               <span className="text-[11px] text-content-tertiary font-medium">Data Status</span>
-              <p className="text-xs font-semibold text-content-primary">
-                {pendingCount > 0
+              <p className={`text-xs font-semibold ${status === 'error' || errorMessage ? 'text-red-400' : 'text-content-primary'}` }>
+                {status === 'error' || errorMessage
+                  ? 'Sync error (Action required)'
+                  : pendingCount > 0
                   ? `${pendingCount} item(s) pending sync`
                   : lastSyncAt
                   ? `Up to date (${new Date(lastSyncAt).toLocaleTimeString()})`
@@ -303,12 +311,12 @@ export const AccountSyncPanel: React.FC = () => {
         {user && (
           <div className="flex items-center justify-between pt-2 border-t border-border-subtle text-xs">
             <button
-              onClick={handleInitialUpload}
-              disabled={isUploading}
+              onClick={() => setIsForceSyncConfirmOpen(true)}
+              disabled={isUploading || isSyncing}
               className="text-content-tertiary hover:text-content-secondary transition-colors inline-flex items-center gap-1.5 disabled:opacity-50 cursor-pointer"
             >
               <UploadCloud className="w-3.5 h-3.5" />
-              <span>{isUploading ? 'Uploading...' : 'Upload local workspace to cloud'}</span>
+              <span>{isUploading ? 'Force syncing...' : 'Force Sync all local records'}</span>
             </button>
 
             <button
@@ -320,6 +328,18 @@ export const AccountSyncPanel: React.FC = () => {
             </button>
           </div>
         )}
+
+        <ConfirmDialog
+          isOpen={isForceSyncConfirmOpen}
+          onClose={() => setIsForceSyncConfirmOpen(false)}
+          onConfirm={handleForceSync}
+          title="Force sync this device?"
+          description="This uploads all records stored on this device to your cloud workspace, then downloads cloud updates. If this device has older data, its records may replace newer cloud values. Continue from the device with the latest data."
+          confirmLabel="Upload and sync"
+          cancelLabel="Cancel"
+          variant="primary"
+          isLoading={isUploading}
+        />
       </div>
 
       {/* Admin Panel: Only for Primary Workspace Owner */}

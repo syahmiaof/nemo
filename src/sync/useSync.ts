@@ -16,14 +16,26 @@ export function useSync() {
 
   const triggerSync = async () => {
     setIsSyncing(true);
-    const result = await syncEngine.syncNow();
-    setIsSyncing(false);
-    return result;
+    try {
+      return await syncEngine.syncNow();
+    } finally {
+      setIsSyncing(syncEngine.getState().status === 'syncing');
+    }
+  };
+
+  const triggerForceSync = async () => {
+    setIsSyncing(true);
+    try {
+      return await syncEngine.forceSync();
+    } finally {
+      setIsSyncing(syncEngine.getState().status === 'syncing');
+    }
   };
 
   return {
     ...syncState,
     isSyncing,
     triggerSync,
+    triggerForceSync,
   };
 }

@@ -25,6 +25,7 @@ import type {
   VisionItem,
   MonthlyRoadmapItem,
   IncomeItem,
+  IncomeStreamType,
   IbadahDailyLog,
   QadhaPrayerItem,
   QadhaFastingRecord,
@@ -782,11 +783,24 @@ export const mappers = {
       };
     },
     toLocal(remote: any): IncomeItem {
+      // Backward-compatible mapping from legacy DB types to domain types
+      const typeMap: Record<string, IncomeStreamType> = {
+        salary_fixed: 'monthly_salary',
+        freelance_project: 'freelance_project',
+        passive_investment: 'passive_other',
+        business: 'business_sales',
+        other: 'passive_other',
+        monthly_salary: 'monthly_salary',
+        business_sales: 'business_sales',
+        passive_other: 'passive_other',
+      };
+      const normalizedType: IncomeStreamType = typeMap[remote.type] || 'monthly_salary';
+
       return {
         id: remote.id,
         title: remote.title,
         amount: Number(remote.amount),
-        type: remote.type,
+        type: normalizedType,
         isRecurring: Boolean(remote.is_recurring),
         dateReceived: remote.date_received || undefined,
         sourceNotes: remote.notes || remote.source_notes || undefined,

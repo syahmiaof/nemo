@@ -195,6 +195,85 @@ class SyncEngine {
     return await this.executeSyncCycle();
   }
 
+  /** Reconcile every local workspace table with the authenticated cloud account. */
+  public async forceSync(): Promise<{ success: boolean; count: number; error?: string }> {
+    const userId = this.currentUserId;
+    if (!userId) return { success: false, count: 0, error: 'Sign in before forcing a cloud sync.' };
+    if (typeof navigator !== 'undefined' && !navigator.onLine) {
+      this.updateState({ status: 'offline' });
+      return { success: false, count: 0, error: 'You are offline. Local data is still saved on this device.' };
+    }
+    if (this.isProcessing) {
+      return { success: false, count: 0, error: 'A sync is already running. Try again when it finishes.' };
+    }
+
+    const run = async () => {
+      if (this.currentUserId !== userId) {
+        return { success: false, count: 0, error: 'The signed-in account changed. Sign in again and retry.' };
+      }
+      if (this.isProcessing) {
+        return { success: false, count: 0, error: 'A sync is already running. Try again when it finishes.' };
+      }
+
+      this.isProcessing = true;
+      this.updateState({ status: 'syncing', errorMessage: undefined });
+      let count = 0;
+      try {
+        await this.migrateLegacyOutbox();
+        await this.pushPendingMutations();
+
+        if (this.currentUserId !== userId) {
+          throw new Error('The signed-in account changed before the local upload started. Sign in again and retry.');
+        }
+        const upload = await this.uploadAllLocalData(userId);
+        count = upload.count;
+        if (!upload.success) throw new Error(upload.error || 'The full local upload failed.');
+        if (this.currentUserId !== userId) {
+          throw new Error('The signed-in account changed during upload. Some records may have synced; sign in again to finish.');
+        }
+
+        this.hasReconciledOnLogin = true;
+        this.isIngesting = true;
+        try {
+          await this.pullRemoteDelta();
+        } finally {
+          this.isIngesting = false;
+        }
+        if (this.currentUserId !== userId) {
+          throw new Error('The signed-in account changed during download. Sign in again to finish syncing.');
+        }
+
+        const lastSyncAt = new Date().toISOString();
+        const remainingPending = await this.updatePendingCount();
+        if (remainingPending > 0) {
+          throw new Error(`Force upload finished, but ${remainingPending} queued change(s) still need to sync.`);
+        }
+        this.updateState({ status: 'up_to_date', lastSyncAt, errorMessage: undefined });
+        return { success: true, count };
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : 'Force sync failed.';
+        console.error('Nemo force sync error:', err);
+        await this.updatePendingCount();
+        if (this.currentUserId === userId) {
+          this.updateState({ status: 'error', errorMessage: message });
+        }
+        return { success: false, count, error: message };
+      } finally {
+        this.isProcessing = false;
+      }
+    };
+
+    if (typeof navigator !== 'undefined' && 'locks' in navigator) {
+      return navigator.locks.request('nemo_sync_mutex', { ifAvailable: true }, async (lock) => {
+        if (!lock) {
+          return { success: false, count: 0, error: 'Another tab is syncing this workspace. Wait for it to finish, then retry.' };
+        }
+        return run();
+      });
+    }
+    return run();
+  }
+
   private async executeSyncCycle(): Promise<{ success: boolean; error?: string }> {
     this.isProcessing = true;
     this.updateState({ status: 'syncing', errorMessage: undefined });
@@ -1027,6 +1106,9 @@ class SyncEngine {
       ]);
 
       const upsert = async (table: string, rows: Record<string, unknown>[], label: string) => {
+        if (this.currentUserId !== userId) {
+          throw new Error('The signed-in account changed during upload. The remaining local tables were not sent.');
+        }
         const { error } = await supabase.from(table as any).upsert(rows);
         if (error) throw new Error(`Upload ${label} failed: ${error.message}`);
         uploadCount += rows.length;
