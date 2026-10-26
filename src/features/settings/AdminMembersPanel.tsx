@@ -42,7 +42,7 @@ export const AdminMembersPanel: React.FC = () => {
   // Password visibility map (email -> boolean)
   const [visiblePasswords, setVisiblePasswords] = useState<Record<string, boolean>>({});
 
-  // Edit Password modal / inline state
+  // Edit Password inline state
   const [editingEmail, setEditingEmail] = useState<string | null>(null);
   const [editPasswordValue, setEditPasswordValue] = useState('');
   const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
@@ -303,19 +303,20 @@ export const AdminMembersPanel: React.FC = () => {
       )}
 
       {/* Members List */}
-      <div className="space-y-2">
+      <div className="space-y-3">
         {members.map((member) => {
           const isPrimary = member.email.toLowerCase() === 'syahmiaof123@gmail.com';
           const isDeleting = deletingEmail === member.email;
           const isEditing = editingEmail === member.email;
           const isVisible = visiblePasswords[member.email] || false;
-          const pwd = member.initial_password || '••••••••';
+          const rawPassword = member.initial_password;
 
           return (
             <div
               key={member.email}
-              className="p-3.5 rounded-xl bg-surface-subtle border border-border-subtle flex flex-col gap-3"
+              className="rounded-xl bg-surface-subtle border border-border-subtle p-3.5 flex flex-col gap-2.5 transition-colors hover:border-border"
             >
+              {/* Top row: Identity and Action buttons */}
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
                 <div className="flex items-center gap-2.5 min-w-0">
                   <div
@@ -328,16 +329,16 @@ export const AdminMembersPanel: React.FC = () => {
                     <Shield className="w-4 h-4" />
                   </div>
                   <div className="min-w-0">
-                    <div className="flex items-center gap-2">
-                      <p className="text-xs font-semibold text-content-primary truncate">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <p className="text-xs font-semibold text-content-primary break-all">
                         {member.email}
                       </p>
                       {isPrimary ? (
-                        <span className="px-1.5 py-0.2 rounded text-[9px] font-semibold bg-accent-mint/15 text-accent-mint border border-accent-mint/30">
+                        <span className="px-1.5 py-0.5 rounded text-[9px] font-semibold bg-accent-mint/15 text-accent-mint border border-accent-mint/30">
                           Primary Owner
                         </span>
                       ) : (
-                        <span className="px-1.5 py-0.2 rounded text-[9px] font-semibold bg-blue-500/15 text-blue-400 border border-blue-500/30">
+                        <span className="px-1.5 py-0.5 rounded text-[9px] font-semibold bg-blue-500/15 text-blue-400 border border-blue-500/30">
                           Approved Member
                         </span>
                       )}
@@ -348,46 +349,44 @@ export const AdminMembersPanel: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Right controls */}
-                <div className="flex items-center gap-2 self-end sm:self-auto">
-                  {!isPrimary && (
-                    <>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          if (isEditing) {
-                            setEditingEmail(null);
-                          } else {
-                            setEditingEmail(member.email);
-                            setEditPasswordValue(member.initial_password || '');
-                          }
-                        }}
-                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-surface hover:bg-surface-subtle border border-border-subtle text-xs font-medium text-content-secondary hover:text-content-primary transition-colors cursor-pointer"
-                        title="Edit member password"
-                      >
-                        <Edit2 className="w-3 h-3 text-accent-mint" />
-                        <span>{isEditing ? 'Cancel Edit' : 'Edit Password'}</span>
-                      </button>
+                {/* Right controls for Member */}
+                {!isPrimary && (
+                  <div className="flex items-center gap-2 self-end sm:self-auto shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (isEditing) {
+                          setEditingEmail(null);
+                        } else {
+                          setEditingEmail(member.email);
+                          setEditPasswordValue(member.initial_password || '');
+                        }
+                      }}
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface hover:bg-surface-subtle border border-border-subtle text-xs font-medium text-content-secondary hover:text-content-primary transition-colors cursor-pointer"
+                      title="Edit member password"
+                    >
+                      <Edit2 className="w-3 h-3 text-accent-mint" />
+                      <span>{isEditing ? 'Cancel Edit' : 'Edit Password'}</span>
+                    </button>
 
-                      <button
-                        type="button"
-                        onClick={() => handleRemoveMember(member.email)}
-                        disabled={isDeleting}
-                        className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 text-xs font-medium transition-colors cursor-pointer disabled:opacity-50"
-                        title={`Revoke access for ${member.email}`}
-                      >
-                        <Trash2 className="w-3 h-3" />
-                        <span>{isDeleting ? 'Revoking...' : 'Revoke'}</span>
-                      </button>
-                    </>
-                  )}
-                </div>
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveMember(member.email)}
+                      disabled={isDeleting}
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 text-xs font-medium transition-colors cursor-pointer disabled:opacity-50"
+                      title={`Revoke access for ${member.email}`}
+                    >
+                      <Trash2 className="w-3 h-3" />
+                      <span>{isDeleting ? 'Revoking...' : 'Revoke'}</span>
+                    </button>
+                  </div>
+                )}
               </div>
 
-              {/* Password Display / Edit Row */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-2 border-t border-border-subtle/60 text-xs">
+              {/* Bottom row: Password Display or Edit Box */}
+              <div className="pt-2 border-t border-border-subtle/50 text-xs">
                 {isEditing ? (
-                  <div className="flex items-center gap-2 w-full animate-fade-in">
+                  <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap animate-fade-in">
                     <span className="text-[11px] font-medium text-accent-mint shrink-0 flex items-center gap-1">
                       <KeyRound className="w-3.5 h-3.5" />
                       New Password:
@@ -420,31 +419,43 @@ export const AdminMembersPanel: React.FC = () => {
                     </button>
                   </div>
                 ) : (
-                  <div className="flex items-center gap-2 text-content-secondary">
+                  <div className="flex items-center gap-2 flex-wrap">
                     <span className="text-[11px] text-content-tertiary flex items-center gap-1">
                       <KeyRound className="w-3 h-3" />
                       Password:
                     </span>
-                    <span className="font-mono px-2 py-0.5 rounded bg-surface border border-border-subtle text-content-primary font-medium tracking-wider">
-                      {isVisible ? pwd : '••••••••'}
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => togglePasswordVisibility(member.email)}
-                      className="p-1 rounded text-content-tertiary hover:text-content-primary transition-colors cursor-pointer"
-                      title={isVisible ? 'Hide password' : 'Show password'}
-                    >
-                      {isVisible ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
-                    </button>
-                    {isVisible && pwd !== '••••••••' && (
-                      <button
-                        type="button"
-                        onClick={() => copyToClipboard(pwd, 'Password')}
-                        className="p-1 rounded text-content-tertiary hover:text-accent-mint transition-colors cursor-pointer"
-                        title="Copy password"
-                      >
-                        <Copy className="w-3.5 h-3.5" />
-                      </button>
+
+                    {rawPassword ? (
+                      <div className="flex items-center gap-1.5">
+                        <span className="font-mono text-xs px-2 py-0.5 rounded bg-surface border border-border-subtle text-content-primary font-medium tracking-wider">
+                          {isVisible ? rawPassword : '••••••••••••'}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => togglePasswordVisibility(member.email)}
+                          className="p-1 rounded text-content-tertiary hover:text-content-primary transition-colors cursor-pointer"
+                          title={isVisible ? 'Hide password' : 'Show password'}
+                        >
+                          {/* When visible, show EyeOff (click to hide). When hidden, show Eye (click to reveal) */}
+                          {isVisible ? <EyeOff className="w-3.5 h-3.5 text-accent-mint" /> : <Eye className="w-3.5 h-3.5" />}
+                        </button>
+                        {isVisible && (
+                          <button
+                            type="button"
+                            onClick={() => copyToClipboard(rawPassword, 'Password')}
+                            className="p-1 rounded text-content-tertiary hover:text-accent-mint transition-colors cursor-pointer"
+                            title="Copy password"
+                          >
+                            <Copy className="w-3.5 h-3.5" />
+                          </button>
+                        )}
+                      </div>
+                    ) : (
+                      <span className="text-[11px] text-content-tertiary italic">
+                        {isPrimary
+                          ? 'Managed via "Change Password" button in Cloud Sync panel'
+                          : 'Not recorded — use "Edit Password" to set a new password'}
+                      </span>
                     )}
                   </div>
                 )}
