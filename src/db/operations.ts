@@ -1210,6 +1210,76 @@ export async function atomicUpdateQadhaPrayer(
   });
 }
 
+/**
+ * Atomically sets the exact remaining missed count (and optional completed count) for a single prayer.
+ */
+export async function atomicSetQadhaPrayerRemaining(
+  database: NemoDatabase,
+  prayerType: PrayerTimeName,
+  remainingCount: number,
+  completedCount?: number
+): Promise<QadhaPrayerItem> {
+  const id = `qp_${prayerType}`;
+  const now = new Date().toISOString();
+  return await database.transaction('rw', database.qadhaPrayers, async () => {
+    const existing = await database.qadhaPrayers.get(id);
+    const validRemaining = Math.max(0, Math.floor(remainingCount));
+    const validCompleted = completedCount !== undefined
+      ? Math.max(0, Math.floor(completedCount))
+      : (existing?.completedCount ?? 0);
+    const totalMissed = validRemaining + validCompleted;
+
+    const updated: QadhaPrayerItem = {
+      id,
+      prayerType,
+      totalMissed,
+      completedCount: validCompleted,
+      remainingCount: validRemaining,
+      notes: existing?.notes,
+      createdAt: existing?.createdAt || now,
+      updatedAt: now,
+    };
+    await database.qadhaPrayers.put(updated);
+    return updated;
+  });
+}
+
+/**
+ * Atomically sets remaining missed prayer counts across multiple or all 5 prayers at once.
+ */
+export async function atomicBulkSetQadhaPrayers(
+  database: NemoDatabase,
+  records: Array<{ prayerType: PrayerTimeName; remainingCount: number; completedCount?: number }>
+): Promise<QadhaPrayerItem[]> {
+  const now = new Date().toISOString();
+  return await database.transaction('rw', database.qadhaPrayers, async () => {
+    const results: QadhaPrayerItem[] = [];
+    for (const rec of records) {
+      const id = `qp_${rec.prayerType}`;
+      const existing = await database.qadhaPrayers.get(id);
+      const validRemaining = Math.max(0, Math.floor(rec.remainingCount));
+      const validCompleted = rec.completedCount !== undefined
+        ? Math.max(0, Math.floor(rec.completedCount))
+        : (existing?.completedCount ?? 0);
+      const totalMissed = validRemaining + validCompleted;
+
+      const updated: QadhaPrayerItem = {
+        id,
+        prayerType: rec.prayerType,
+        totalMissed,
+        completedCount: validCompleted,
+        remainingCount: validRemaining,
+        notes: existing?.notes,
+        createdAt: existing?.createdAt || now,
+        updatedAt: now,
+      };
+      await database.qadhaPrayers.put(updated);
+      results.push(updated);
+    }
+    return results;
+  });
+}
+
 export async function atomicUpsertQadhaFastingRecord(
   database: NemoDatabase,
   record: Omit<QadhaFastingRecord, 'createdAt' | 'updatedAt'>

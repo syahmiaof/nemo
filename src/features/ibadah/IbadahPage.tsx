@@ -6,6 +6,8 @@ import { db } from '@/db/nemoDb';
 import {
   atomicSaveIbadahDailyLog,
   atomicUpdateQadhaPrayer,
+  atomicSetQadhaPrayerRemaining,
+  atomicBulkSetQadhaPrayers,
   atomicUpsertQadhaFastingRecord,
   atomicDeleteQadhaFastingRecord,
 } from '@/db/operations';
@@ -155,13 +157,21 @@ export const IbadahPage: React.FC = () => {
     });
   };
 
-  // Qadha Prayer handler
+  // Qadha Prayer handlers
   const handleUpdateQadhaPrayerCount = async (prayerType: PrayerTimeName, deltaCompleted: number) => {
     await atomicUpdateQadhaPrayer(db, prayerType, deltaCompleted, 0);
   };
 
   const handleAdjustTotalMissedPrayer = async (prayerType: PrayerTimeName, deltaTotal: number) => {
     await atomicUpdateQadhaPrayer(db, prayerType, 0, deltaTotal);
+  };
+
+  const handleSetPrayerRemaining = async (prayerType: PrayerTimeName, count: number) => {
+    await atomicSetQadhaPrayerRemaining(db, prayerType, count);
+  };
+
+  const handleBulkSetPrayers = async (records: Array<{ prayerType: PrayerTimeName; remainingCount: number }>) => {
+    await atomicBulkSetQadhaPrayers(db, records);
   };
 
   // Qadha Fasting handler
@@ -305,6 +315,8 @@ export const IbadahPage: React.FC = () => {
               items={qadhaPrayers}
               onUpdatePrayerCount={handleUpdateQadhaPrayerCount}
               onAdjustTotalMissed={handleAdjustTotalMissedPrayer}
+              onSetPrayerRemaining={handleSetPrayerRemaining}
+              onBulkSetPrayers={handleBulkSetPrayers}
             />
           </div>
         )}
