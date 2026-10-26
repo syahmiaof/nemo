@@ -842,6 +842,102 @@ export async function atomicRecordDebtPayment(
 }
 
 /**
+ * Atomically updates a debt's properties and sets updatedAt.
+ */
+export async function atomicUpdateDebt(
+  database: NemoDatabase,
+  debtId: string,
+  updates: Partial<Omit<DebtItem, 'id' | 'createdAt'>>
+): Promise<DebtItem> {
+  return await database.transaction('rw', [database.debts], async () => {
+    const existing = await database.debts.get(debtId);
+    if (!existing) {
+      throw new Error(`Debt with ID "${debtId}" does not exist.`);
+    }
+    const updated: DebtItem = {
+      ...existing,
+      ...updates,
+      title: updates.title !== undefined ? updates.title.trim() : existing.title,
+      creditor: updates.creditor !== undefined ? updates.creditor.trim() : existing.creditor,
+      notes: updates.notes !== undefined ? (updates.notes.trim() || undefined) : existing.notes,
+      updatedAt: new Date().toISOString(),
+    };
+    await database.debts.put(updated);
+    return updated;
+  });
+}
+
+/**
+ * Atomically updates a debt payment and recalibrates the remaining debt balance.
+ */
+export async function atomicUpdateDebtPayment(
+  database: NemoDatabase,
+  paymentId: string,
+  updates: {
+    amount?: number;
+    paidAt?: string;
+    note?: string;
+  }
+): Promise<DebtPayment> {
+  return await database.transaction('rw', [database.debts, database.debtPayments], async () => {
+    const payment = await database.debtPayments.get(paymentId);
+    if (!payment) {
+      throw new Error(`Debt payment with ID "${paymentId}" does not exist.`);
+    }
+    const debt = await database.debts.get(payment.debtId);
+    if (!debt) {
+      throw new Error(`Debt with ID "${payment.debtId}" does not exist.`);
+    }
+
+    const oldAmount = payment.amount;
+    const newAmount = updates.amount !== undefined ? updates.amount : oldAmount;
+    const delta = newAmount - oldAmount;
+
+    const updatedPayment: DebtPayment = {
+      ...payment,
+      amount: newAmount,
+      paidAt: updates.paidAt || payment.paidAt,
+      note: updates.note !== undefined ? (updates.note.trim() || undefined) : payment.note,
+    };
+    await database.debtPayments.put(updatedPayment);
+
+    if (delta !== 0) {
+      const newBalance = Math.max(0, debt.currentBalance - delta);
+      await database.debts.update(debt.id, {
+        currentBalance: newBalance,
+        updatedAt: new Date().toISOString(),
+      });
+    }
+
+    return updatedPayment;
+  });
+}
+
+/**
+ * Atomically deletes a debt payment and restores the remaining debt balance.
+ */
+export async function atomicDeleteDebtPayment(
+  database: NemoDatabase,
+  paymentId: string
+): Promise<void> {
+  await database.transaction('rw', [database.debts, database.debtPayments], async () => {
+    const payment = await database.debtPayments.get(paymentId);
+    if (!payment) return;
+
+    const debt = await database.debts.get(payment.debtId);
+    if (debt) {
+      const restoredBalance = Math.min(debt.originalPrincipal, debt.currentBalance + payment.amount);
+      await database.debts.update(debt.id, {
+        currentBalance: restoredBalance,
+        updatedAt: new Date().toISOString(),
+      });
+    }
+
+    await database.debtPayments.delete(paymentId);
+  });
+}
+
+/**
  * Atomically deletes a debt and all its associated payment records.
  */
 export async function atomicDeleteDebt(database: NemoDatabase, debtId: string): Promise<void> {

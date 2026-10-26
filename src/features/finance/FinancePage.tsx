@@ -11,6 +11,9 @@ import {
   atomicDeleteCommitment,
   atomicAddDebt,
   atomicRecordDebtPayment,
+  atomicUpdateDebt,
+  atomicUpdateDebtPayment,
+  atomicDeleteDebtPayment,
   atomicDeleteDebt,
   atomicAddWishlistItem,
   atomicToggleWishlistBought,
@@ -433,8 +436,17 @@ export const FinancePage: React.FC = () => {
               onAddDebt={async (data) => {
                 await atomicAddDebt(db, data);
               }}
+              onUpdateDebt={async (id, data) => {
+                await atomicUpdateDebt(db, id, data);
+              }}
               onRecordPayment={async (data) => {
                 await atomicRecordDebtPayment(db, data);
+              }}
+              onUpdatePayment={async (paymentId, data) => {
+                await atomicUpdateDebtPayment(db, paymentId, data);
+              }}
+              onDeletePayment={async (paymentId) => {
+                await atomicDeleteDebtPayment(db, paymentId);
               }}
               onDeleteDebt={async (id) => {
                 await atomicDeleteDebt(db, id);

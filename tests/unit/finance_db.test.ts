@@ -7,6 +7,9 @@ import {
   atomicDeleteCommitment,
   atomicAddDebt,
   atomicRecordDebtPayment,
+  atomicUpdateDebt,
+  atomicUpdateDebtPayment,
+  atomicDeleteDebtPayment,
   atomicDeleteDebt,
   atomicAddWishlistItem,
   atomicToggleWishlistBought,
@@ -131,6 +134,71 @@ describe('Finance & Wealth Database Operations (Dexie v4)', () => {
       expect(await testDb.debts.get(debt.id)).toBeUndefined();
       const remainingPayments = await testDb.debtPayments.where('debtId').equals(debt.id).toArray();
       expect(remainingPayments.length).toBe(0);
+    });
+
+    it('updates debt parameters and repairs mistakes in current balance or installment', async () => {
+      const debt = await atomicAddDebt(testDb, {
+        title: 'Tekun Loan',
+        creditor: 'TEKUN',
+        originalPrincipal: 10000,
+        currentBalance: 5359,
+        monthlyInstallment: 50,
+      });
+
+      const updated = await atomicUpdateDebt(testDb, debt.id, {
+        title: 'Tekun Microfinance',
+        currentBalance: 5300,
+        monthlyInstallment: 70,
+        notes: 'Refinanced tenure',
+      });
+
+      expect(updated.title).toBe('Tekun Microfinance');
+      expect(updated.currentBalance).toBe(5300);
+      expect(updated.monthlyInstallment).toBe(70);
+      expect(updated.notes).toBe('Refinanced tenure');
+
+      const saved = await testDb.debts.get(debt.id);
+      expect(saved?.currentBalance).toBe(5300);
+    });
+
+    it('updates and deletes debt payments with automatic debt balance recalibration', async () => {
+      const debt = await atomicAddDebt(testDb, {
+        title: 'Kereta X50',
+        creditor: 'Affin Bank',
+        originalPrincipal: 110000,
+        currentBalance: 77552,
+        monthlyInstallment: 800,
+      });
+
+      // Record an erroneous payment (user entered 8000 instead of 800)
+      const wrongPayment = await atomicRecordDebtPayment(testDb, {
+        debtId: debt.id,
+        amount: 8000,
+        note: 'Accidental typo',
+      });
+
+      let currentDebt = await testDb.debts.get(debt.id);
+      expect(currentDebt?.currentBalance).toBe(69552);
+
+      // User repairs payment: changes amount to 800
+      const correctedPayment = await atomicUpdateDebtPayment(testDb, wrongPayment.id, {
+        amount: 800,
+        note: 'Corrected monthly installment',
+      });
+
+      expect(correctedPayment.amount).toBe(800);
+      currentDebt = await testDb.debts.get(debt.id);
+      // Delta was (800 - 8000 = -7200), so balance is adjusted by -(-7200) = +7200 -> 76752
+      expect(currentDebt?.currentBalance).toBe(76752);
+
+      // User deletes the payment altogether to undo
+      await atomicDeleteDebtPayment(testDb, wrongPayment.id);
+      currentDebt = await testDb.debts.get(debt.id);
+      // Balance restored by +800 -> 77552
+      expect(currentDebt?.currentBalance).toBe(77552);
+
+      const deletedPayment = await testDb.debtPayments.get(wrongPayment.id);
+      expect(deletedPayment).toBeUndefined();
     });
   });
 
