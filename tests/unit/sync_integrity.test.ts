@@ -292,4 +292,83 @@ describe('Sprint 5.4 sync integrity', () => {
     expect(await db.tasks.get('rolled-back-task')).toBeUndefined();
     expect(await db.syncMutations.where('entityId').equals('rolled-back-task').count()).toBe(0);
   });
+
+  it('prevents resurrection of locally deleted task when remote pull runs before push', async () => {
+    syncEngine.setAuthenticatedUser('account-a', 'a@example.test');
+    stopScheduledSync();
+
+    await seedLocal(db.tasks, {
+      id: 'task-to-delete',
+      title: 'Do not resurrect me',
+      status: 'todo',
+      priority: 'high',
+      tags: [],
+      createdAt: '2026-10-27T01:00:00.000Z',
+      updatedAt: '2026-10-27T01:00:00.000Z',
+    });
+    remote.rows.tasks = [{
+      id: 'task-to-delete',
+      user_id: 'account-a',
+      title: 'Do not resurrect me',
+      status: 'todo',
+      priority: 'high',
+      is_deleted: false,
+      created_at: '2026-10-27T01:00:00.000Z',
+      updated_at: '2026-10-27T01:00:00.000Z',
+    }];
+
+    await db.tasks.delete('task-to-delete');
+    await db.syncMutations.put({
+      id: 'mut-del-1',
+      ownerUserId: 'account-a',
+      entityType: 'task',
+      entityId: 'task-to-delete',
+      operation: 'DELETE',
+      payload: { id: 'task-to-delete' },
+      clientTimestamp: '2026-10-27T02:00:00.000Z',
+      status: 'pending',
+      retryCount: 0,
+      createdAt: '2026-10-27T02:00:00.000Z',
+    });
+
+    (syncEngine as any).isIngesting = true;
+    try {
+      await (syncEngine as any).pullRemoteDelta();
+    } finally {
+      (syncEngine as any).isIngesting = false;
+    }
+
+    expect(await db.tasks.get('task-to-delete')).toBeUndefined();
+  });
+
+  it('correctly applies tombstone even when local timestamp format has T and remote has space or microsecond offset', async () => {
+    syncEngine.setAuthenticatedUser('account-a', 'a@example.test');
+    stopScheduledSync();
+
+    await seedLocal(db.tasks, {
+      id: 'tombstone-test-task',
+      title: 'Delete via tombstone',
+      status: 'todo',
+      priority: 'medium',
+      tags: [],
+      createdAt: '2026-10-27T05:54:00.000Z',
+      updatedAt: '2026-10-27T05:54:00.000Z',
+    });
+
+    remote.rows.tasks = [{
+      id: 'tombstone-test-task',
+      user_id: 'account-a',
+      is_deleted: true,
+      updated_at: '2026-10-27 05:59:05.716997+00',
+    }];
+
+    (syncEngine as any).isIngesting = true;
+    try {
+      await (syncEngine as any).pullRemoteDelta();
+    } finally {
+      (syncEngine as any).isIngesting = false;
+    }
+
+    expect(await db.tasks.get('tombstone-test-task')).toBeUndefined();
+  });
 });

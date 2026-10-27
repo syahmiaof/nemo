@@ -437,8 +437,71 @@ class SyncEngine {
    * IndexedDB operation cannot create or delete a remote record by itself.
    */
   private async isMutationCurrent(mut: SyncMutation): Promise<boolean> {
+    if (mut.operation === 'DELETE') {
+      // Check if there is a strictly newer pending UPSERT mutation for this same entity in the queue
+      if (this.currentUserId) {
+        const newerUpsert = await db.syncMutations
+          .where('[ownerUserId+status]')
+          .equals([this.currentUserId, 'pending'])
+          .filter(
+            (m) =>
+              m.id !== mut.id &&
+              m.entityType === mut.entityType &&
+              m.entityId === mut.entityId &&
+              m.operation === 'UPSERT' &&
+              m.createdAt > mut.createdAt
+          )
+          .count();
+
+        if (newerUpsert > 0) return false;
+      }
+
+      // If local record still exists (e.g. resurrected by concurrent remote pull), ensure it is wiped locally
+      const current = await this.getEntityRecord(mut.entityType, mut.entityId);
+      if (current !== undefined) {
+        const tables: Record<SyncEntityType, any> = {
+          project: db.projects,
+          task: db.tasks,
+          milestone: db.milestones,
+          semester: db.semesters,
+          subject: db.subjects,
+          assignment: db.assignments,
+          calendarEvent: db.calendarEvents,
+          goal: db.goals,
+          goalTaskLink: db.goalTaskLinks,
+          focusSelection: db.focusSelections,
+          settings: db.settings,
+          assetBlob: db.assetBlobs,
+          hydrationLog: db.hydrationLogs,
+          dietLog: db.dietLogs,
+          workoutLog: db.workoutLogs,
+          bodyMetric: db.bodyMetrics,
+          financialProfile: db.financialProfiles,
+          financialCommitment: db.financialCommitments,
+          debtItem: db.debts,
+          debtPayment: db.debtPayments,
+          wishlistItem: db.wishlistItems,
+          savingsGoal: db.savingsGoals,
+          savingsDeposit: db.savingsDeposits,
+          visionItem: db.visionItems,
+          monthlyRoadmap: db.monthlyRoadmaps,
+          incomeItem: db.incomeItems,
+          ibadahDailyLog: db.ibadahDailyLogs,
+          qadhaPrayer: db.qadhaPrayers,
+          qadhaFasting: db.qadhaFastings,
+        };
+        const table = tables[mut.entityType];
+        if (table) await table.delete(mut.entityId);
+        if (mut.entityType === 'task') {
+          await db.focusSelections.where('taskId').equals(mut.entityId).delete();
+          await db.goalTaskLinks.where('taskId').equals(mut.entityId).delete();
+        }
+      }
+
+      return true;
+    }
+
     const current = await this.getEntityRecord(mut.entityType, mut.entityId);
-    if (mut.operation === 'DELETE') return current === undefined;
     if (!current || typeof current !== 'object') return false;
 
     // Check if there is a strictly newer pending mutation for this same entity in the queue
@@ -544,9 +607,30 @@ class SyncEngine {
     if (!this.currentUserId) return;
     const userId = this.currentUserId;
 
+    // Build set of entities currently pending local deletion to prevent remote resurrection
+    const pendingDeleteKeys = new Set<string>();
+    try {
+      const pendingMutations = await db.syncMutations
+        .where('status')
+        .equals('pending')
+        .toArray();
+      for (const m of pendingMutations) {
+        if (m.operation === 'DELETE') {
+          pendingDeleteKeys.add(`${m.entityType}:${m.entityId}`);
+        }
+      }
+    } catch {
+      // Non-blocking fallback
+    }
+
+    const isPendingDelete = (type: SyncEntityType, id: string): boolean => {
+      return pendingDeleteKeys.has(`${type}:${id}`);
+    };
+
     // Pull tasks
     const remoteTasks = await this.fetchRemoteRows('tasks', userId);
     for (const remoteRow of remoteTasks) {
+      if (isPendingDelete('task', remoteRow.id)) continue;
       if (remoteRow.is_deleted === true) {
         await this.applyRemoteTombstone('task', remoteRow);
         continue;
@@ -566,6 +650,7 @@ class SyncEngine {
     // Pull projects
     const remoteProjects = await this.fetchRemoteRows('projects', userId);
     for (const remoteRow of remoteProjects) {
+      if (isPendingDelete('project', remoteRow.id)) continue;
       if (remoteRow.is_deleted === true) {
         await this.applyRemoteTombstone('project', remoteRow);
         continue;
@@ -584,6 +669,7 @@ class SyncEngine {
     // Pull milestones
     const remoteMilestones = await this.fetchRemoteRows('milestones', userId);
     for (const row of remoteMilestones) {
+      if (isPendingDelete('milestone', row.id)) continue;
       if (row.is_deleted === true) await this.applyRemoteTombstone('milestone', row);
       else {
         await db.milestones.put(mappers.milestone.toLocal(row));
@@ -593,6 +679,7 @@ class SyncEngine {
     // Pull academics (semesters, subjects, assignments)
     const remoteSemesters = await this.fetchRemoteRows('semesters', userId);
     for (const row of remoteSemesters) {
+      if (isPendingDelete('semester', row.id)) continue;
       if (row.is_deleted === true) await this.applyRemoteTombstone('semester', row);
       else {
         await db.semesters.put(mappers.semester.toLocal(row));
@@ -601,6 +688,7 @@ class SyncEngine {
 
     const remoteSubjects = await this.fetchRemoteRows('subjects', userId);
     for (const row of remoteSubjects) {
+      if (isPendingDelete('subject', row.id)) continue;
       if (row.is_deleted === true) await this.applyRemoteTombstone('subject', row);
       else {
         await db.subjects.put(mappers.subject.toLocal(row));
@@ -609,6 +697,7 @@ class SyncEngine {
 
     const remoteAssignments = await this.fetchRemoteRows('assignments', userId);
     for (const row of remoteAssignments) {
+      if (isPendingDelete('assignment', row.id)) continue;
       if (row.is_deleted === true) await this.applyRemoteTombstone('assignment', row);
       else {
         await db.assignments.put(mappers.assignment.toLocal(row));
@@ -618,6 +707,7 @@ class SyncEngine {
     // Pull calendar events
     const remoteEvents = await this.fetchRemoteRows('calendar_events', userId);
     for (const row of remoteEvents) {
+      if (isPendingDelete('calendarEvent', row.id)) continue;
       if (row.is_deleted === true) await this.applyRemoteTombstone('calendarEvent', row);
       else {
         await db.calendarEvents.put(mappers.calendarEvent.toLocal(row));
@@ -627,6 +717,7 @@ class SyncEngine {
     // Pull goals & links
     const remoteGoals = await this.fetchRemoteRows('goals', userId);
     for (const row of remoteGoals) {
+      if (isPendingDelete('goal', row.id)) continue;
       if (row.is_deleted === true) await this.applyRemoteTombstone('goal', row);
       else {
         await db.goals.put(mappers.goal.toLocal(row));
@@ -635,6 +726,7 @@ class SyncEngine {
 
     const remoteLinks = await this.fetchRemoteRows('goal_task_links', userId);
     for (const row of remoteLinks) {
+      if (isPendingDelete('goalTaskLink', row.id)) continue;
       if (row.is_deleted === true) await this.applyRemoteTombstone('goalTaskLink', row);
       else {
         await db.goalTaskLinks.put(mappers.goalTaskLink.toLocal(row));
@@ -643,6 +735,7 @@ class SyncEngine {
 
     const remoteFocusSelections = await this.fetchRemoteRows('focus_selections', userId);
     for (const row of remoteFocusSelections) {
+      if (isPendingDelete('focusSelection', row.id)) continue;
       if (row.is_deleted === true) await this.applyRemoteTombstone('focusSelection', row);
       else await db.focusSelections.put(mappers.focusSelection.toLocal(row));
     }
@@ -650,6 +743,7 @@ class SyncEngine {
     // Pull workspace assets (covers, screenshots, attachments)
     const remoteAssets = await this.fetchRemoteRows('workspace_assets', userId);
     for (const row of remoteAssets) {
+      if (isPendingDelete('assetBlob', row.id)) continue;
       if (row.is_deleted === true) {
         await this.applyRemoteTombstone('assetBlob', row);
         continue;
@@ -661,6 +755,7 @@ class SyncEngine {
     // Pull health logs (hydration, diet, workout, body metrics)
     const remoteHydration = await this.fetchRemoteRows('hydration_logs', userId);
     for (const row of remoteHydration) {
+      if (isPendingDelete('hydrationLog', row.id)) continue;
       if (row.is_deleted === true) await this.applyRemoteTombstone('hydrationLog', row);
       else {
         const local = await db.hydrationLogs.get(row.id);
@@ -675,6 +770,7 @@ class SyncEngine {
 
     const remoteDiet = await this.fetchRemoteRows('diet_logs', userId);
     for (const row of remoteDiet) {
+      if (isPendingDelete('dietLog', row.id)) continue;
       if (row.is_deleted === true) await this.applyRemoteTombstone('dietLog', row);
       else {
         const local = await db.dietLogs.get(row.id);
@@ -689,6 +785,7 @@ class SyncEngine {
 
     const remoteWorkouts = await this.fetchRemoteRows('workout_logs', userId);
     for (const row of remoteWorkouts) {
+      if (isPendingDelete('workoutLog', row.id)) continue;
       if (row.is_deleted === true) await this.applyRemoteTombstone('workoutLog', row);
       else {
         const local = await db.workoutLogs.get(row.id);
@@ -703,6 +800,7 @@ class SyncEngine {
 
     const remoteBodyMetrics = await this.fetchRemoteRows('body_metrics', userId);
     for (const row of remoteBodyMetrics) {
+      if (isPendingDelete('bodyMetric', row.id)) continue;
       if (row.is_deleted === true) await this.applyRemoteTombstone('bodyMetric', row);
       else {
         const local = await db.bodyMetrics.get(row.id);
@@ -718,6 +816,7 @@ class SyncEngine {
     // Pull finance tables
     const remoteFinProfiles = await this.fetchRemoteRows('financial_profiles', userId);
     for (const row of remoteFinProfiles) {
+      if (isPendingDelete('financialProfile', row.id)) continue;
       if (row.is_deleted === true) await this.applyRemoteTombstone('financialProfile', row);
       else {
         const local = await db.financialProfiles.get(row.id);
@@ -732,6 +831,7 @@ class SyncEngine {
 
     const remoteCommitments = await this.fetchRemoteRows('financial_commitments', userId);
     for (const row of remoteCommitments) {
+      if (isPendingDelete('financialCommitment', row.id)) continue;
       if (row.is_deleted === true) await this.applyRemoteTombstone('financialCommitment', row);
       else {
         const local = await db.financialCommitments.get(row.id);
@@ -747,6 +847,7 @@ class SyncEngine {
 
     const remoteDebts = await this.fetchRemoteRows('debts', userId);
     for (const row of remoteDebts) {
+      if (isPendingDelete('debtItem', row.id)) continue;
       if (row.is_deleted === true) await this.applyRemoteTombstone('debtItem', row);
       else {
         const local = await db.debts.get(row.id);
@@ -761,6 +862,7 @@ class SyncEngine {
 
     const remoteDebtPayments = await this.fetchRemoteRows('debt_payments', userId);
     for (const row of remoteDebtPayments) {
+      if (isPendingDelete('debtPayment', row.id)) continue;
       if (row.is_deleted === true) await this.applyRemoteTombstone('debtPayment', row);
       else {
         const local = await db.debtPayments.get(row.id);
@@ -775,6 +877,7 @@ class SyncEngine {
 
     const remoteWishlist = await this.fetchRemoteRows('wishlist_items', userId);
     for (const row of remoteWishlist) {
+      if (isPendingDelete('wishlistItem', row.id)) continue;
       if (row.is_deleted === true) await this.applyRemoteTombstone('wishlistItem', row);
       else {
         const local = await db.wishlistItems.get(row.id);
@@ -789,6 +892,7 @@ class SyncEngine {
 
     const remoteSavingsGoals = await this.fetchRemoteRows('savings_goals', userId);
     for (const row of remoteSavingsGoals) {
+      if (isPendingDelete('savingsGoal', row.id)) continue;
       if (row.is_deleted === true) await this.applyRemoteTombstone('savingsGoal', row);
       else {
         const local = await db.savingsGoals.get(row.id);
@@ -803,6 +907,7 @@ class SyncEngine {
 
     const remoteSavingsDeposits = await this.fetchRemoteRows('savings_deposits', userId);
     for (const row of remoteSavingsDeposits) {
+      if (isPendingDelete('savingsDeposit', row.id)) continue;
       if (row.is_deleted === true) await this.applyRemoteTombstone('savingsDeposit', row);
       else {
         const local = await db.savingsDeposits.get(row.id);
@@ -818,6 +923,7 @@ class SyncEngine {
     // Pull vision board items
     const remoteVisionItems = await this.fetchRemoteRows('vision_items', userId);
     for (const row of remoteVisionItems) {
+      if (isPendingDelete('visionItem', row.id)) continue;
       if (row.is_deleted === true) await this.applyRemoteTombstone('visionItem', row);
       else {
         const local = await db.visionItems.get(row.id);
@@ -834,6 +940,7 @@ class SyncEngine {
     // Pull monthly roadmap items
     const remoteRoadmaps = await this.fetchRemoteRows('monthly_roadmaps', userId);
     for (const row of remoteRoadmaps) {
+      if (isPendingDelete('monthlyRoadmap', row.id)) continue;
       if (row.is_deleted === true) await this.applyRemoteTombstone('monthlyRoadmap', row);
       else {
         const local = await db.monthlyRoadmaps.get(row.id);
@@ -850,6 +957,7 @@ class SyncEngine {
     // Pull income items
     const remoteIncomes = await this.fetchRemoteRows('income_items', userId);
     for (const row of remoteIncomes) {
+      if (isPendingDelete('incomeItem', row.id)) continue;
       if (row.is_deleted === true) await this.applyRemoteTombstone('incomeItem', row);
       else {
         const local = await db.incomeItems.get(row.id);
@@ -866,6 +974,7 @@ class SyncEngine {
     // Pull ibadah daily logs
     const remoteIbadah = await this.fetchRemoteRows('ibadah_daily_logs', userId);
     for (const row of remoteIbadah) {
+      if (isPendingDelete('ibadahDailyLog', row.id)) continue;
       if (row.is_deleted === true) await this.applyRemoteTombstone('ibadahDailyLog', row);
       else {
         const local = await db.ibadahDailyLogs.get(row.id);
@@ -882,6 +991,7 @@ class SyncEngine {
     // Pull qadha prayers
     const remoteQadhaPrayers = await this.fetchRemoteRows('qadha_prayers', userId);
     for (const row of remoteQadhaPrayers) {
+      if (isPendingDelete('qadhaPrayer', row.id)) continue;
       if (row.is_deleted === true) await this.applyRemoteTombstone('qadhaPrayer', row);
       else {
         const local = await db.qadhaPrayers.get(row.id);
@@ -898,6 +1008,7 @@ class SyncEngine {
     // Pull qadha fastings
     const remoteQadhaFastings = await this.fetchRemoteRows('qadha_fastings', userId);
     for (const row of remoteQadhaFastings) {
+      if (isPendingDelete('qadhaFasting', row.id)) continue;
       if (row.is_deleted === true) await this.applyRemoteTombstone('qadhaFasting', row);
       else {
         const local = await db.qadhaFastings.get(row.id);
@@ -1028,16 +1139,28 @@ class SyncEngine {
       qadhaFasting: db.qadhaFastings,
     };
     const table = tables[entityType];
+    if (!table) return;
+
     const local = await table.get(row.id);
     if (local && typeof local === 'object') {
       const localRecord = local as Record<string, unknown>;
-      const localTimestamp = typeof localRecord.updatedAt === 'string'
-        ? localRecord.updatedAt
-        : typeof localRecord.createdAt === 'string' ? localRecord.createdAt : undefined;
-      const remoteTimestamp = typeof row.updated_at === 'string' ? row.updated_at : undefined;
-      if (localTimestamp && remoteTimestamp && localTimestamp > remoteTimestamp) return;
+      const localTime = new Date(
+        typeof localRecord.updatedAt === 'string'
+          ? localRecord.updatedAt
+          : typeof localRecord.createdAt === 'string'
+          ? localRecord.createdAt
+          : 0
+      ).getTime();
+      const remoteTime = new Date(typeof row.updated_at === 'string' ? row.updated_at : 0).getTime();
+      if (Number.isFinite(localTime) && Number.isFinite(remoteTime) && localTime > remoteTime) {
+        return;
+      }
     }
     await table.delete(row.id);
+    if (entityType === 'task') {
+      await db.focusSelections.where('taskId').equals(row.id).delete();
+      await db.goalTaskLinks.where('taskId').equals(row.id).delete();
+    }
   }
 
   /**
