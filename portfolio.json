@@ -1,0 +1,10 @@
+{
+  "slug": "nemo",
+  "title": "Nemo",
+  "subtitle": "Track it, finish it. Premium local-first productivity workspace.",
+  "status": "active",
+  "description": "A high-performance local-first productivity workspace featuring offline state management, real-time Supabase sync, Dexie IndexedDB storage, and fluid GSAP interactions.",
+  "stack": ["React", "TypeScript", "Vite", "Supabase", "Dexie", "GSAP", "Tailwind CSS"],
+  "liveUrl": "https://nemo.syahmiaof.my/",
+  "image": "public/brand/nemo-og.png"
+}
