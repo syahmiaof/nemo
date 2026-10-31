@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { DebtItem, DebtPayment, DebtPriority, DebtType } from '@/domain/types';
-import { formatRM, calculateDebtPayoffProjection } from './financeUtils';
+import { formatRM, calculateDebtPayoffProjection, getLocalYearMonth, getLocalDateString, isPaymentInLocalMonth } from './financeUtils';
 import { Modal } from '@/components/ui/Modal';
 import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
@@ -138,13 +138,13 @@ export const DebtsManagerCard: React.FC<DebtsManagerCardProps> = ({
 
   // Payment Form State
   const [paymentAmount, setPaymentAmount] = useState('');
-  const [paymentDate, setPaymentDate] = useState(() => new Date().toISOString().split('T')[0]);
+  const [paymentDate, setPaymentDate] = useState(() => getLocalDateString());
   const [paymentNote, setPaymentNote] = useState('');
   const [paymentError, setPaymentError] = useState<string | null>(null);
   const [isPaying, setIsPaying] = useState(false);
 
-  // Current Cycle Meta
-  const currentMonthPrefix = new Date().toISOString().slice(0, 7); // e.g. '2026-10'
+  // Current Cycle Meta (computed in user local timezone)
+  const currentMonthPrefix = getLocalYearMonth(); // e.g. '2026-11'
   const currentMonthName = new Date().toLocaleDateString('en-US', { month: 'short' });
 
   // Totals: only installment debts count toward monthly recurring burn
@@ -339,7 +339,7 @@ export const DebtsManagerCard: React.FC<DebtsManagerCardProps> = ({
     } else {
       setPaymentAmount(debt.monthlyInstallment.toString());
     }
-    setPaymentDate(new Date().toISOString().split('T')[0]);
+    setPaymentDate(getLocalDateString());
     setPaymentNote('');
     setPaymentError(null);
   };
@@ -356,10 +356,13 @@ export const DebtsManagerCard: React.FC<DebtsManagerCardProps> = ({
 
     try {
       setIsPaying(true);
+      const safePaidAt = paymentDate
+        ? new Date(`${paymentDate}T12:00:00`).toISOString()
+        : new Date().toISOString();
       await onRecordPayment({
         debtId: paymentDebtId,
         amount: amtNum,
-        paidAt: new Date(paymentDate).toISOString(),
+        paidAt: safePaidAt,
         note: paymentNote.trim() || undefined,
       });
       setPaymentDebtId(null);
@@ -374,7 +377,19 @@ export const DebtsManagerCard: React.FC<DebtsManagerCardProps> = ({
   const handleStartEditPayment = (payment: DebtPayment) => {
     setEditingPayment(payment);
     setEditPaymentAmount(payment.amount.toString());
-    setEditPaymentDate(payment.paidAt ? payment.paidAt.split('T')[0] : new Date().toISOString().split('T')[0]);
+    let initialDate = getLocalDateString();
+    if (payment.paidAt) {
+      const trimmed = payment.paidAt.trim();
+      if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) {
+        initialDate = trimmed;
+      } else {
+        const d = new Date(trimmed);
+        if (!isNaN(d.getTime())) {
+          initialDate = getLocalDateString(d);
+        }
+      }
+    }
+    setEditPaymentDate(initialDate);
     setEditPaymentNote(payment.note || '');
     setPaymentActionError(null);
   };
@@ -391,9 +406,12 @@ export const DebtsManagerCard: React.FC<DebtsManagerCardProps> = ({
 
     try {
       setIsUpdatingPayment(true);
+      const safePaidAt = editPaymentDate
+        ? new Date(`${editPaymentDate}T12:00:00`).toISOString()
+        : new Date().toISOString();
       await onUpdatePayment(editingPayment.id, {
         amount: amtNum,
-        paidAt: new Date(editPaymentDate).toISOString(),
+        paidAt: safePaidAt,
         note: editPaymentNote.trim() || undefined,
       });
       setEditingPayment(null);
@@ -510,9 +528,9 @@ export const DebtsManagerCard: React.FC<DebtsManagerCardProps> = ({
             const PriorityIcon = PriorityMeta.icon;
             const debtPayments = payments.filter((p) => p.debtId === debt.id);
 
-            // Monthly Cycle Calculation
+            // Monthly Cycle Calculation in local timezone
             const paymentsThisMonth = debtPayments.filter((p) =>
-              (p.paidAt || '').startsWith(currentMonthPrefix)
+              isPaymentInLocalMonth(p.paidAt, currentMonthPrefix)
             );
             const totalPaidThisMonth = paymentsThisMonth.reduce((sum, p) => sum + (p.amount || 0), 0);
             const isPaidThisMonth =

@@ -130,3 +130,45 @@ export function calculateMonthlySavingsPace(goal: SavingsGoal): {
 
   return { suggestedMonthly, monthsRemaining };
 }
+
+/**
+ * Returns the local Year-Month string ('YYYY-MM') for a given Date or current local time.
+ */
+export function getLocalYearMonth(date: Date = new Date()): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  return `${year}-${month}`;
+}
+
+/**
+ * Returns the local Date string ('YYYY-MM-DD') for a given Date or current local time.
+ */
+export function getLocalDateString(date: Date = new Date()): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+/**
+ * Checks whether a payment's paidAt timestamp/string belongs to the specified 'YYYY-MM' local month.
+ * Handles both plain 'YYYY-MM-DD' calendar strings and full ISO/timestamptz timestamps in local timezone.
+ */
+export function isPaymentInLocalMonth(paidAt: string | undefined | null, targetYearMonth: string): boolean {
+  if (!paidAt) return false;
+
+  const trimmed = paidAt.trim();
+  // Plain calendar date format 'YYYY-MM-DD'
+  if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) {
+    return trimmed.startsWith(targetYearMonth);
+  }
+
+  // Parse ISO 8601 or Postgres timestamptz into local Date
+  const dateObj = new Date(trimmed);
+  if (isNaN(dateObj.getTime())) {
+    return trimmed.startsWith(targetYearMonth);
+  }
+
+  return getLocalYearMonth(dateObj) === targetYearMonth;
+}
+

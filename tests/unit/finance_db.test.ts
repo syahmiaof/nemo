@@ -20,6 +20,11 @@ import {
   atomicDeleteSavingsGoal,
 } from '@/db/operations';
 import { exportWorkspaceBackup, importWorkspaceBackup } from '@/db/nemoDb';
+import {
+  getLocalYearMonth,
+  getLocalDateString,
+  isPaymentInLocalMonth,
+} from '@/features/finance/financeUtils';
 
 describe('Finance & Wealth Database Operations (Dexie v4)', () => {
   let testDb: NemoDatabase;
@@ -369,4 +374,43 @@ describe('Finance & Wealth Database Operations (Dexie v4)', () => {
       expect(restoredGoals[0].title).toBe('Emergency 3-Months');
     });
   });
+
+  describe('Monthly Cycle & Timezone Resiliency', () => {
+    it('accurately distinguishes payments between October and November without UTC skew', () => {
+      // User real scenario: paid on 2026-10-26 and 2026-10-27 in Supabase
+      const octPayment1 = '2026-10-26 01:10:22.632+00';
+      const octPayment2 = '2026-10-27 06:05:20.121+00';
+
+      // October cycle checks
+      expect(isPaymentInLocalMonth(octPayment1, '2026-10')).toBe(true);
+      expect(isPaymentInLocalMonth(octPayment2, '2026-10')).toBe(true);
+
+      // November cycle checks: MUST BE FALSE on November 1st!
+      expect(isPaymentInLocalMonth(octPayment1, '2026-11')).toBe(false);
+      expect(isPaymentInLocalMonth(octPayment2, '2026-11')).toBe(false);
+    });
+
+    it('handles early morning payments on the 1st of month across UTC and local timezones', () => {
+      // In Malaysia (UTC+8), 6:30 AM on Nov 1 is 2026-10-31T22:30:00Z in UTC
+      const localNov1Date = new Date(2026, 10, 1, 6, 30, 0); // month index 10 = November
+      const utcIsoEarlyMorning = localNov1Date.toISOString();
+
+      // In local time, it is November
+      expect(getLocalYearMonth(localNov1Date)).toBe('2026-11');
+      expect(getLocalDateString(localNov1Date)).toBe('2026-11-01');
+
+      // isPaymentInLocalMonth parses in local timezone so it recognizes the payment as November!
+      expect(isPaymentInLocalMonth(utcIsoEarlyMorning, '2026-11')).toBe(true);
+      expect(isPaymentInLocalMonth(utcIsoEarlyMorning, '2026-10')).toBe(false);
+    });
+
+    it('correctly handles plain YYYY-MM-DD date strings from date pickers', () => {
+      expect(isPaymentInLocalMonth('2026-11-01', '2026-11')).toBe(true);
+      expect(isPaymentInLocalMonth('2026-11-15', '2026-11')).toBe(true);
+      expect(isPaymentInLocalMonth('2026-10-31', '2026-11')).toBe(false);
+      expect(isPaymentInLocalMonth(null, '2026-11')).toBe(false);
+      expect(isPaymentInLocalMonth('', '2026-11')).toBe(false);
+    });
+  });
+
 });

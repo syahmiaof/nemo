@@ -25,7 +25,7 @@ import {
   atomicAddIncomeItem,
   atomicDeleteIncomeItem,
 } from '@/db/operations';
-import { formatRM, calculateSafeToSpend } from './financeUtils';
+import { formatRM, calculateSafeToSpend, getLocalYearMonth } from './financeUtils';
 import { FinancialProfileModal } from './FinancialProfileModal';
 import { IncomeStreamsCard } from './IncomeStreamsCard';
 import { MonthlyCommitmentsCard } from './MonthlyCommitmentsCard';
@@ -70,7 +70,7 @@ export const FinancePage: React.FC = () => {
   const profile = profiles[0] ?? null;
 
   // Monthly income: calculate from itemized streams if provided, otherwise fallback to baseline profile income
-  const currentMonthPrefix = `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}`;
+  const currentMonthPrefix = getLocalYearMonth();
   const totalItemizedRecurring = incomeItems.filter((i) => i.isRecurring).reduce((sum, i) => sum + (i.amount || 0), 0);
   const totalItemizedOneOffThisMonth = incomeItems
     .filter((i) => !i.isRecurring && (!i.dateReceived || i.dateReceived.startsWith(currentMonthPrefix)))

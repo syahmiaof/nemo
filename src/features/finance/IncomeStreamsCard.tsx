@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { IncomeItem, IncomeStreamType } from '@/domain/types';
-import { formatRM } from './financeUtils';
+import { formatRM, getLocalDateString, getLocalYearMonth } from './financeUtils';
 import { Modal } from '@/components/ui/Modal';
 import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
@@ -77,13 +77,13 @@ export const IncomeStreamsCard: React.FC<IncomeStreamsCardProps> = ({
   const [amount, setAmount] = useState('');
   const [type, setType] = useState<IncomeStreamType>('monthly_salary');
   const [isRecurring, setIsRecurring] = useState(true);
-  const [dateReceived, setDateReceived] = useState(() => new Date().toISOString().split('T')[0]);
+  const [dateReceived, setDateReceived] = useState(() => getLocalDateString());
   const [sourceNotes, setSourceNotes] = useState('');
   const [formError, setFormError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Calculation for current month
-  const currentMonthPrefix = `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}`;
+  const currentMonthPrefix = getLocalYearMonth();
 
   const recurringIncomes = incomes.filter((inc) => inc.isRecurring);
   const oneOffIncomesThisMonth = incomes.filter(
@@ -99,7 +99,7 @@ export const IncomeStreamsCard: React.FC<IncomeStreamsCardProps> = ({
     setAmount('');
     setType('monthly_salary');
     setIsRecurring(true);
-    setDateReceived(new Date().toISOString().split('T')[0]);
+    setDateReceived(getLocalDateString());
     setSourceNotes('');
     setFormError(null);
     setIsAddModalOpen(true);
