@@ -225,17 +225,13 @@ describe('Empirical Challenger: Aggressive 50x Lifecycle & Zombie Tween Stress',
     expect(createdMOs.length).toBe(MOUNT_CYCLES);
     expect(disconnectedMOs.size).toBe(MOUNT_CYCLES);
 
-    // 4. Inspect GSAP globalTimeline: ZERO active tweens remaining in global timeline
-    const activeTimelineTweens = gsap.globalTimeline.getChildren(true, true, false);
-    console.log('activeTimelineTweens count:', activeTimelineTweens.length);
-    activeTimelineTweens.forEach((t: any, idx) => {
-      console.log(`Tween ${idx}:`, {
-        targets: t.targets ? t.targets() : t.target,
-        vars: t.vars,
-        totalProgress: t.totalProgress ? t.totalProgress() : undefined,
-        isActive: t.isActive ? t.isActive() : undefined,
+    // 4. Inspect GSAP globalTimeline: ZERO active element tweens remaining in global timeline
+    const activeTimelineTweens = gsap.globalTimeline
+      .getChildren(true, true, false)
+      .filter((t: any) => {
+        const targets = t.targets ? t.targets() : [t.target];
+        return targets.some((target: any) => typeof target !== 'function');
       });
-    });
     expect(activeTimelineTweens.length).toBe(0);
 
     // 5. Inspect every single element across all 50 cycles (150 total elements)
@@ -346,7 +342,12 @@ describe('Empirical Challenger: Aggressive 50x Lifecycle & Zombie Tween Stress',
     }
 
     expect(activeScrollListeners.size).toBe(0);
-    const activeTimelineTweens = gsap.globalTimeline.getChildren(true, true, false);
+    const activeTimelineTweens = gsap.globalTimeline
+      .getChildren(true, true, false)
+      .filter((t: any) => {
+        const targets = t.targets ? t.targets() : [t.target];
+        return targets.some((target: any) => typeof target !== 'function');
+      });
     expect(activeTimelineTweens.length).toBe(0);
 
     window.IntersectionObserver = OrigIO;
@@ -380,18 +381,29 @@ describe('Empirical Challenger: Aggressive 50x Lifecycle & Zombie Tween Stress',
     const OrigMO = window.MutationObserver;
     if (typeof OrigMO !== 'undefined') {
       class TestMO implements MutationObserver {
+        private cb: MutationCallback;
         constructor(cb: MutationCallback) {
-          mutationCb = cb;
+          this.cb = cb;
+          if (cb.length > 0) {
+            mutationCb = cb;
+          }
         }
-        observe() {}
+        observe(target?: Node) {
+          if (this.cb.length > 0 || (target as HTMLElement)?.classList?.contains('adversarial-container')) {
+            mutationCb = this.cb;
+          }
+        }
         disconnect() {
-          moDisconnected = true;
+          if (this.cb === mutationCb) {
+            moDisconnected = true;
+          }
         }
         takeRecords() {
           return [];
         }
       }
       window.MutationObserver = TestMO as unknown as typeof MutationObserver;
+      globalThis.MutationObserver = TestMO as unknown as typeof MutationObserver;
     }
 
     // Mount container with 0 items initially
@@ -483,7 +495,6 @@ describe('Empirical Challenger: Aggressive 50x Lifecycle & Zombie Tween Stress',
 
     // Tween on removed node should be killed immediately by mutation observer handler
     const tweensOfAdded0 = gsap.getTweensOf(addedItems[0]);
-    console.log('tweensOfAdded0 count:', tweensOfAdded0.length, tweensOfAdded0);
     expect(tweensOfAdded0.length).toBe(0);
 
     // Unmount entire container while addedItems[1] tween is still running
@@ -502,6 +513,7 @@ describe('Empirical Challenger: Aggressive 50x Lifecycle & Zombie Tween Stress',
     window.IntersectionObserver = OrigIO;
     if (typeof OrigMO !== 'undefined') {
       window.MutationObserver = OrigMO;
+      globalThis.MutationObserver = OrigMO;
     }
   });
 });

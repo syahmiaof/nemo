@@ -255,58 +255,76 @@ export function useScrollMotion<T extends HTMLElement = HTMLDivElement>(
 
       // Observe dynamically added elements (e.g. async Dexie live queries)
       let mutationObserver: MutationObserver | null = null;
-      if (selector && typeof MutationObserver !== 'undefined') {
-        mutationObserver = new MutationObserver((mutations) => {
+      const MutationObserverClass =
+        typeof window !== 'undefined' && window.MutationObserver
+          ? window.MutationObserver
+          : typeof MutationObserver !== 'undefined'
+          ? MutationObserver
+          : undefined;
+
+      if (selector && MutationObserverClass) {
+        mutationObserver = new MutationObserverClass((mutations) => {
           if (!containerRef.current) return;
 
-          // Clean up removed nodes
+          // Clean up removed nodes: only act if element is genuinely disconnected from container
           mutations.forEach((mutation) => {
             mutation.removedNodes.forEach((node) => {
-              if (node instanceof HTMLElement && trackedElements.has(node)) {
+              if (
+                node instanceof HTMLElement &&
+                containerRef.current &&
+                !containerRef.current.contains(node)
+              ) {
                 gsap.killTweensOf(node);
                 gsap.getTweensOf(node).forEach((t) => t.kill());
                 observer.unobserve(node);
                 trackedElements.delete(node);
+                stateMap.delete(node);
               }
             });
           });
 
-          const currentTargets = Array.from(
-            containerRef.current.querySelectorAll<HTMLElement>(selector)
-          );
-          currentTargets.forEach((el) => {
-            if (!stateMap.has(el)) {
-              stateMap.set(el, { isVisible: false, hasEntered: false });
+          // Handle dynamically added nodes
+          const candidates: HTMLElement[] = [];
+          mutations.forEach((mutation) => {
+            mutation.addedNodes.forEach((node) => {
+              if (node instanceof HTMLElement && containerRef.current?.contains(node)) {
+                if (node.matches(selector)) {
+                  candidates.push(node);
+                }
+                candidates.push(
+                  ...Array.from(node.querySelectorAll<HTMLElement>(selector))
+                );
+              }
+            });
+          });
+
+          if (candidates.length > 0) {
+            candidates.forEach((el) => {
+              if (trackedElements.has(el)) return;
               trackedElements.add(el);
+
               const rect = el.getBoundingClientRect();
               const inInitialView =
                 rect.top < window.innerHeight && rect.bottom > 0 && rect.height > 0;
+
               if (!inInitialView) {
                 stateMap.set(el, { isVisible: false, hasEntered: false });
-                gsap.set(el, { opacity: 0, y: distance, scale });
+                gsap.set(el, {
+                  opacity: 0,
+                  y: distance,
+                  scale,
+                });
               } else {
-                stateMap.set(el, { isVisible: true, hasEntered: true });
-                gsap.fromTo(
-                  el,
-                  {
-                    opacity: 0,
-                    y: Math.min(distance, 14),
-                    scale: Math.max(scale, 0.99),
-                  },
-                  {
-                    opacity: 1,
-                    y: 0,
-                    scale: 1,
-                    duration: 0.45,
-                    ease,
-                    overwrite: 'auto',
-                    clearProps: 'transform,opacity,clipPath',
-                  }
-                );
+                stateMap.set(el, { isVisible: false, hasEntered: false });
+                gsap.set(el, {
+                  opacity: 0,
+                  y: Math.min(distance, 12),
+                  scale: Math.max(scale, 0.99),
+                });
               }
               observer.observe(el);
-            }
-          });
+            });
+          }
         });
 
         mutationObserver.observe(container, {

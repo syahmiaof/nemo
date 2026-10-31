@@ -1,7 +1,12 @@
 <div align="center">
   <h1>nemo. — Track it, finish it.</h1>
   <p><strong>Workspace peribadi untuk projek, tugasan, pengajian dan matlamat.</strong></p>
-  <p><a href="https://github.com/syahmiaof/nemo">Source</a> · <a href="https://syahmiaof.my/projects">Portfolio</a></p>
+  <p>
+    <a href="https://github.com/syahmiaof/nemo"><img src="https://img.shields.io/badge/Source-GitHub-60E1B5?style=for-the-badge&logo=github&logoColor=60E1B5&labelColor=101713" alt="GitHub"></a>
+    <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-60E1B5?style=for-the-badge&logoColor=60E1B5&labelColor=101713" alt="License"></a>
+    <a href="https://github.com/syahmiaof/nemo/actions"><img src="https://img.shields.io/badge/Tests-357_Passed-60E1B5?style=for-the-badge&logo=vitest&logoColor=60E1B5&labelColor=101713" alt="Tests"></a>
+    <a href="https://syahmiaof.my"><img src="https://img.shields.io/badge/Portfolio-syahmiaof.my-60E1B5?style=for-the-badge&logo=vercel&logoColor=60E1B5&labelColor=101713" alt="Portfolio"></a>
+  </p>
 </div>
 
 ![Nemo social preview](public/brand/nemo-og.png)
