@@ -16,7 +16,6 @@ import { PageHeading, AnimatedNumber } from '@/components/ui/PageHeading';
 import { QuickAddModal } from '@/app/QuickAddModal';
 import { SparkOfFocusCard } from './components/SparkOfFocusCard';
 import { FocusSlotsSection } from './components/FocusSlotsSection';
-import { GoalsInMotionSection } from './components/GoalsInMotionSection';
 import { MonthlyJourneySection } from './components/roadmap/MonthlyJourneySection';
 import { getTodayLocalDateString, parseLocalDateString } from '@/lib/dates';
 import type { Task } from '@/domain/types';
@@ -37,9 +36,7 @@ export function OverviewPage() {
 
   const tasks = useLiveQuery(() => db.tasks.toArray(), []) || [];
   const projects = useLiveQuery(() => db.projects.toArray(), []) || [];
-  const milestones = useLiveQuery(() => db.milestones.toArray(), []) || [];
   const assignments = useLiveQuery(() => db.assignments.toArray(), []) || [];
-  const goals = useLiveQuery(() => db.goals.toArray(), []) || [];
   const selections =
     useLiveQuery(
       () => db.focusSelections.where('effectiveLocalDate').equals(today).toArray(),
@@ -115,26 +112,6 @@ export function OverviewPage() {
     return { current, previous, labels, total, last };
   }, [projects, today]);
 
-  // Derived goal progress for motivational visual cards
-  const goalStats = useMemo(() => {
-    const activeGoals = goals.filter((g) => g.status === 'active');
-    const completedGoals = goals.filter((g) => g.status === 'achieved');
-    const goalMilestones = milestones.filter((m) => m.ownerType === 'goal');
-    const doneMilestones = goalMilestones.filter((m) => !!m.completedAt);
-    const milestoneRate =
-      goalMilestones.length > 0
-        ? Math.round((doneMilestones.length / goalMilestones.length) * 100)
-        : activeGoals.length > 0 ? 0 : 100;
-
-    return {
-      activeGoals,
-      completedGoals,
-      goalMilestones,
-      doneMilestones,
-      milestoneRate,
-    };
-  }, [goals, milestones]);
-
   // Recalculate ScrollTriggers when live query data changes
   useGSAP(
     () => {
@@ -143,7 +120,7 @@ export function OverviewPage() {
     },
     {
       scope: pageContainerRef,
-      dependencies: [tasks.length, projects.length, assignments.length, goals.length],
+      dependencies: [tasks.length, projects.length, assignments.length],
     }
   );
 
@@ -292,12 +269,6 @@ export function OverviewPage() {
         {/* Right Inspirational Panel: Spark of Focus */}
         <SparkOfFocusCard />
       </div>
-
-      {/* Motivational Goals in Motion Visual Section */}
-      <GoalsInMotionSection
-        goalStats={goalStats}
-        milestones={milestones}
-      />
 
       {/* Lively Monthly Journey Roadmap (6-Month Partitioned Timeline) */}
       <MonthlyJourneySection />
