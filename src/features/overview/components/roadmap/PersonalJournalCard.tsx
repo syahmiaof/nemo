@@ -53,7 +53,7 @@ export const PersonalJournalCard: React.FC<PersonalJournalCardProps> = ({
                 <h3 className="text-base sm:text-lg font-bold text-white tracking-tight group-hover:text-sky-300 transition-colors">
                   Journal
                 </h3>
-                <p className="text-xs text-white/50">Diari & visi peribadi yang sentiasa ada</p>
+                <p className="text-xs text-white/50">diari dan manifesto janji aku pada diri sendiri</p>
               </div>
             </div>
 

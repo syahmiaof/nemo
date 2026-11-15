@@ -108,7 +108,7 @@ export const PersonalJournalModal: React.FC<PersonalJournalModalProps> = ({
                 Personal Journal & Manifesto
               </h2>
               <p className="text-xs sm:text-sm text-white/50">
-                Satu lembaran diari peribadi sentiasa ada & boleh dikemaskini pada bila-bila masa.
+                Diari dan manifesto janji aku pada diri sendiri
               </p>
             </div>
           </div>

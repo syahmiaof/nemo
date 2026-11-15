@@ -54,8 +54,8 @@ export const BestVersionCalendarCard: React.FC<BestVersionCalendarCardProps> = (
               <h3 className="text-base sm:text-lg font-bold text-white tracking-tight">
                 I Be My Best Version
               </h3>
-              <p className="text-xs text-white/50">
-                Tick tarikh untuk rekod konsistensi harian anda ({monthName} {year})
+              <p className="text-xs font-mono text-white/50">
+                {monthName} {year}
               </p>
             </div>
           </div>
