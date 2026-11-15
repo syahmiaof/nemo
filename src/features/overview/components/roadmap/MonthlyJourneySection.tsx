@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from '@/db/nemoDb';
 import { MonthlyFocusCard } from './MonthlyFocusCard';
@@ -30,6 +30,33 @@ export const MonthlyJourneySection: React.FC = () => {
     [targetId]
   );
 
+  // Clean out legacy seeded dummy blueprints from Dexie so only user-authored months exist
+  useEffect(() => {
+    const purgeDummyRoadmaps = async () => {
+      try {
+        const all = await db.monthlyRoadmaps.toArray();
+        const dummyIds: string[] = [];
+        for (const item of all) {
+          if (item.id === 'rm_2026_11') continue;
+          const parsed = parseRoadmapNotes(item.notes);
+          if (
+            !parsed.rawAchieved &&
+            !parsed.rawWant &&
+            (!parsed.bestVersionDays || parsed.bestVersionDays.length === 0)
+          ) {
+            dummyIds.push(item.id);
+          }
+        }
+        if (dummyIds.length > 0) {
+          await db.monthlyRoadmaps.bulkDelete(dummyIds);
+        }
+      } catch (err) {
+        console.warn('Failed to clean dummy roadmaps:', err);
+      }
+    };
+    void purgeDummyRoadmaps();
+  }, []);
+
   // Hook for the continuous, persistent Personal Journal
   const { diaryText, lastUpdatedAt, saveDiary } = usePersonalDiary(
     selectedYear,
@@ -51,13 +78,19 @@ export const MonthlyJourneySection: React.FC = () => {
 
   const achievedText = useMemo(() => {
     if (parsedNotes.rawAchieved !== undefined) return parsedNotes.rawAchieved;
-    return activeRoadmapItem?.strategy === '-' ? '' : activeRoadmapItem?.strategy || '';
-  }, [parsedNotes.rawAchieved, activeRoadmapItem?.strategy]);
+    if (targetId === 'rm_2026_11') {
+      return activeRoadmapItem?.strategy === '-' ? '' : activeRoadmapItem?.strategy || '';
+    }
+    return '';
+  }, [parsedNotes.rawAchieved, activeRoadmapItem?.strategy, targetId]);
 
   const wantAchieveText = useMemo(() => {
     if (parsedNotes.rawWant !== undefined) return parsedNotes.rawWant;
-    return activeRoadmapItem?.primaryGoal === '-' ? '' : activeRoadmapItem?.primaryGoal || '';
-  }, [parsedNotes.rawWant, activeRoadmapItem?.primaryGoal]);
+    if (targetId === 'rm_2026_11') {
+      return activeRoadmapItem?.primaryGoal === '-' ? '' : activeRoadmapItem?.primaryGoal || '';
+    }
+    return '';
+  }, [parsedNotes.rawWant, activeRoadmapItem?.primaryGoal, targetId]);
 
   // Navigate months
   const handlePrevMonth = () => {
