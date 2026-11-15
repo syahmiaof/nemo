@@ -14,10 +14,9 @@ interface MonthlyFocusCardProps {
   year: number;
   month: number;
   monthName: string;
-  smartGoal: string;
   achievedText: string;
   wantAchieveText: string;
-  onSave: (data: { smartGoal: string; achievedText: string; wantAchieveText: string }) => Promise<void>;
+  onSave: (data: { achievedText: string; wantAchieveText: string }) => Promise<void>;
   onPrevMonth: () => void;
   onNextMonth: () => void;
   onResetToCurrentMonth: () => void;
@@ -28,7 +27,6 @@ export const MonthlyFocusCard: React.FC<MonthlyFocusCardProps> = ({
   year,
   month,
   monthName,
-  smartGoal,
   achievedText,
   wantAchieveText,
   onSave,
@@ -37,7 +35,6 @@ export const MonthlyFocusCard: React.FC<MonthlyFocusCardProps> = ({
   onResetToCurrentMonth,
   isCurrentMonth,
 }) => {
-  const [goalInput, setGoalInput] = useState(smartGoal);
   const [achievedInput, setAchievedInput] = useState(achievedText);
   const [wantInput, setWantInput] = useState(wantAchieveText);
   const [isSaving, setIsSaving] = useState(false);
@@ -46,17 +43,15 @@ export const MonthlyFocusCard: React.FC<MonthlyFocusCardProps> = ({
 
   // Synchronize inputs when year or month changes
   useEffect(() => {
-    setGoalInput(smartGoal);
     setAchievedInput(achievedText);
     setWantInput(wantAchieveText);
     setIsDirty(false);
-  }, [year, month, smartGoal, achievedText, wantAchieveText]);
+  }, [year, month, achievedText, wantAchieveText]);
 
   const handleSave = async () => {
     setIsSaving(true);
     try {
       await onSave({
-        smartGoal: goalInput,
         achievedText: achievedInput,
         wantAchieveText: wantInput,
       });
@@ -76,35 +71,30 @@ export const MonthlyFocusCard: React.FC<MonthlyFocusCardProps> = ({
       <div className="absolute bottom-0 left-1/4 w-72 h-72 bg-sky-500/5 rounded-full blur-3xl pointer-events-none" />
 
       {/* Header: Title and Month Navigation */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-white/[0.08] relative z-10">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 sm:pb-5 border-b border-white/[0.08] relative z-10">
         <div className="flex items-center gap-3">
           <div className="w-11 h-11 rounded-2xl bg-accent-mint/10 border border-accent-mint/25 flex items-center justify-center text-accent-mint shadow-[0_0_16px_rgba(52,211,153,0.15)] shrink-0">
             <Compass size={22} />
           </div>
-          <div>
-            <div className="flex items-center gap-2 flex-wrap">
-              <h2 className="text-lg sm:text-xl font-bold tracking-tight text-white">
-                Monthly Focus & Momentum
-              </h2>
-              {isCurrentMonth ? (
-                <span className="text-[11px] font-mono font-medium px-2.5 py-0.5 rounded-full bg-accent-mint/15 text-accent-mint border border-accent-mint/30">
-                  Bulan Semasa
-                </span>
-              ) : (
-                <button
-                  type="button"
-                  onClick={onResetToCurrentMonth}
-                  className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-white/[0.06] hover:bg-white/10 text-white/70 hover:text-white border border-white/10 flex items-center gap-1 transition-all"
-                  title="Kembali ke bulan semasa"
-                >
-                  <RotateCcw size={11} />
-                  <span>Kembali ke Sekarang</span>
-                </button>
-              )}
-            </div>
-            <p className="text-xs sm:text-sm text-white/50">
-              Rekod pencapaian vs sasaran bulanan serta SMART goal utama anda.
-            </p>
+          <div className="flex items-center gap-2.5 flex-wrap">
+            <h2 className="text-lg sm:text-xl font-bold tracking-tight text-white">
+              Monthly Focus
+            </h2>
+            {isCurrentMonth ? (
+              <span className="text-[11px] font-mono font-medium px-2.5 py-0.5 rounded-full bg-accent-mint/15 text-accent-mint border border-accent-mint/30">
+                Bulan Semasa
+              </span>
+            ) : (
+              <button
+                type="button"
+                onClick={onResetToCurrentMonth}
+                className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-white/[0.06] hover:bg-white/10 text-white/70 hover:text-white border border-white/10 flex items-center gap-1 transition-all"
+                title="Kembali ke bulan semasa"
+              >
+                <RotateCcw size={11} />
+                <span>Kembali ke Sekarang</span>
+              </button>
+            )}
           </div>
         </div>
 
@@ -138,31 +128,8 @@ export const MonthlyFocusCard: React.FC<MonthlyFocusCardProps> = ({
         </div>
       </div>
 
-      {/* SMART Goal Section */}
-      <div className="mt-5 relative z-10">
-        <label className="flex items-center gap-2 text-xs sm:text-sm font-semibold text-white/90 mb-2">
-          <Target size={16} className="text-accent-mint" />
-          <span>SMART Goal Bulan Ini</span>
-          <span className="text-xs font-normal text-white/40">
-            (Matlamat utama yang wajib dicapai bulan ini)
-          </span>
-        </label>
-        <div className="relative">
-          <input
-            type="text"
-            value={goalInput}
-            onChange={(e) => {
-              setGoalInput(e.target.value);
-              setIsDirty(true);
-            }}
-            placeholder="Contoh: Capai RM 10,000 simpanan kecemasan & siapkan portfolio v1..."
-            className="w-full px-4 py-3 rounded-2xl bg-white/[0.03] border border-white/10 focus:border-accent-mint/50 focus:bg-white/[0.06] focus:outline-none text-white text-sm sm:text-base placeholder:text-white/25 transition-all font-sans"
-          />
-        </div>
-      </div>
-
       {/* 2-Column "VS" Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-6 mt-6 relative z-10">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-6 mt-5 sm:mt-6 relative z-10">
         {/* Left Column: What I Have Achieved */}
         <div className="flex flex-col rounded-2xl bg-white/[0.02] border border-emerald-500/20 p-4 sm:p-5 relative overflow-hidden group hover:border-emerald-500/40 transition-all">
           <div className="flex items-center justify-between gap-2 mb-3">

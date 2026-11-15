@@ -49,11 +49,6 @@ export const MonthlyJourneySection: React.FC = () => {
     return parsedNotes.bestVersionDays || [];
   }, [parsedNotes]);
 
-  const smartGoal = useMemo(() => {
-    if (parsedNotes.rawSmartGoal !== undefined) return parsedNotes.rawSmartGoal;
-    return activeRoadmapItem?.theme === '-' ? '' : activeRoadmapItem?.theme || '';
-  }, [parsedNotes.rawSmartGoal, activeRoadmapItem?.theme]);
-
   const achievedText = useMemo(() => {
     if (parsedNotes.rawAchieved !== undefined) return parsedNotes.rawAchieved;
     return activeRoadmapItem?.strategy === '-' ? '' : activeRoadmapItem?.strategy || '';
@@ -132,21 +127,19 @@ export const MonthlyJourneySection: React.FC = () => {
     }
   };
 
-  // Save Monthly Focus (SMART Goal, Achieved, Want to Achieve)
+  // Save Monthly Focus (Achieved, Want to Achieve)
   const handleSaveFocus = async (data: {
-    smartGoal: string;
     achievedText: string;
     wantAchieveText: string;
   }) => {
     const now = new Date().toISOString();
     const updatedNotes = serializeRoadmapNotes({
       ...parsedNotes,
-      rawSmartGoal: data.smartGoal,
       rawAchieved: data.achievedText,
       rawWant: data.wantAchieveText,
     });
 
-    const theme = data.smartGoal.trim() || '-';
+    const theme = activeRoadmapItem?.theme || '-';
     const strategy = data.achievedText.trim() || '-';
     const primaryGoal = data.wantAchieveText.trim() || '-';
 
@@ -178,12 +171,11 @@ export const MonthlyJourneySection: React.FC = () => {
 
   return (
     <div className="mt-6 sm:mt-8 flex flex-col gap-6" data-enter>
-      {/* Part 1: Minimalist Monthly Focus (SMART Goal & 2-Column VS Layout) */}
+      {/* Part 1: Minimalist Monthly Focus (2-Column VS Layout) */}
       <MonthlyFocusCard
         year={selectedYear}
         month={selectedMonth}
         monthName={monthName}
-        smartGoal={smartGoal}
         achievedText={achievedText}
         wantAchieveText={wantAchieveText}
         onSave={handleSaveFocus}
