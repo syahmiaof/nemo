@@ -10,6 +10,7 @@ import {
   atomicLogWorkout,
   atomicDeleteWorkout,
   atomicLogBodyMetric,
+  atomicUpdateBodyMetric,
   atomicDeleteBodyMetric,
   auditDatabaseIntegrity,
 } from '@/db/operations';
@@ -586,6 +587,30 @@ describe('Health & Wellness — Key-In Data & Aggregations Suite', () => {
       const heavyBurnCalories = 2200;
       const deficitNet = dietCalories - heavyBurnCalories;
       expect(deficitNet).toBe(-320); // In caloric deficit
+    });
+
+    it('updates a body metric entry via atomicUpdateBodyMetric', async () => {
+      const entry = await atomicLogBodyMetric(db, {
+        date: '2026-10-18',
+        weightKg: 73.9,
+        bodyFatPercent: 16.5,
+      });
+
+      const updated = await atomicUpdateBodyMetric(db, entry.id, {
+        weightKg: 72.5,
+        bodyFatPercent: 15.9,
+        date: '2026-10-19',
+      });
+
+      expect(updated).toBeDefined();
+      expect(updated?.weightKg).toBe(72.5);
+      expect(updated?.bodyFatPercent).toBe(15.9);
+      expect(updated?.date).toBe('2026-10-19');
+
+      const fetched = await db.bodyMetrics.get(entry.id);
+      expect(fetched?.weightKg).toBe(72.5);
+      expect(fetched?.bodyFatPercent).toBe(15.9);
+      expect(fetched?.date).toBe('2026-10-19');
     });
 
     it('deletes a body metric entry via atomicDeleteBodyMetric', async () => {

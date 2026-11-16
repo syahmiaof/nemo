@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import type { BodyMetric } from '@/domain/types';
-import { Scale, Plus, Trash2, TrendingDown, TrendingUp, Minus, Flame } from 'lucide-react';
+import { Scale, Plus, Pencil, Trash2, TrendingDown, TrendingUp, Minus, Flame } from 'lucide-react';
 import { TavolaSplineChart } from '@/components/ui/TavolaSplineChart';
 import { Modal } from '@/components/ui/Modal';
 
@@ -8,6 +8,7 @@ interface BodyMetricsCardProps {
   metrics: BodyMetric[];
   todayStr: string;
   onLogWeight: (entry: Omit<BodyMetric, 'id'>) => Promise<void>;
+  onUpdateMetric?: (id: string, entry: { weightKg: number; bodyFatPercent?: number; date?: string }) => Promise<void>;
   onDeleteMetric: (id: string) => Promise<void>;
   todayDietCalories: number;
   todayBurnedCalories: number;
@@ -17,13 +18,16 @@ export const BodyMetricsCard: React.FC<BodyMetricsCardProps> = ({
   metrics,
   todayStr,
   onLogWeight,
+  onUpdateMetric,
   onDeleteMetric,
   todayDietCalories,
   todayBurnedCalories,
 }) => {
   const [modalOpen, setModalOpen] = useState(false);
+  const [editingMetric, setEditingMetric] = useState<BodyMetric | null>(null);
   const [weightKg, setWeightKg] = useState('');
   const [bodyFatPercent, setBodyFatPercent] = useState('');
+  const [entryDate, setEntryDate] = useState(todayStr);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Sort metrics chronologically
@@ -44,7 +48,7 @@ export const BodyMetricsCard: React.FC<BodyMetricsCardProps> = ({
   const chartLabels: string[] = [];
   const chartValues: number[] = [];
 
-  // Group by date or take the last 7 recorded entries
+  // Group by date or take the last 14 recorded entries
   const recentEntries = sortedMetrics.slice(-14);
   if (recentEntries.length === 0) {
     chartLabels.push('Today');
@@ -52,10 +56,31 @@ export const BodyMetricsCard: React.FC<BodyMetricsCardProps> = ({
   } else {
     for (const m of recentEntries) {
       const parts = m.date.split('-');
-      chartLabels.push(`${parts[1]}/${parts[2]}`);
+      if (parts.length === 3) {
+        // Day/Month format (e.g. 16/11)
+        chartLabels.push(`${parts[2]}/${parts[1]}`);
+      } else {
+        chartLabels.push(m.date);
+      }
       chartValues.push(m.weightKg);
     }
   }
+
+  const handleOpenAddModal = () => {
+    setEditingMetric(null);
+    setWeightKg(currentWeight.toFixed(1));
+    setBodyFatPercent('');
+    setEntryDate(todayStr);
+    setModalOpen(true);
+  };
+
+  const handleStartEdit = (metric: BodyMetric) => {
+    setEditingMetric(metric);
+    setWeightKg(metric.weightKg.toString());
+    setBodyFatPercent(metric.bodyFatPercent !== undefined ? metric.bodyFatPercent.toString() : '');
+    setEntryDate(metric.date);
+    setModalOpen(true);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -64,13 +89,24 @@ export const BodyMetricsCard: React.FC<BodyMetricsCardProps> = ({
 
     setIsSubmitting(true);
     try {
-      await onLogWeight({
-        date: todayStr,
-        weightKg: w,
-        bodyFatPercent: bodyFatPercent ? parseFloat(bodyFatPercent) : undefined,
-        loggedAt: new Date().toISOString(),
-      });
+      if (editingMetric) {
+        if (onUpdateMetric) {
+          await onUpdateMetric(editingMetric.id, {
+            weightKg: w,
+            bodyFatPercent: bodyFatPercent ? parseFloat(bodyFatPercent) : undefined,
+            date: entryDate || editingMetric.date,
+          });
+        }
+      } else {
+        await onLogWeight({
+          date: entryDate || todayStr,
+          weightKg: w,
+          bodyFatPercent: bodyFatPercent ? parseFloat(bodyFatPercent) : undefined,
+          loggedAt: new Date().toISOString(),
+        });
+      }
       setModalOpen(false);
+      setEditingMetric(null);
       setWeightKg('');
       setBodyFatPercent('');
     } finally {
@@ -102,10 +138,7 @@ export const BodyMetricsCard: React.FC<BodyMetricsCardProps> = ({
 
         <button
           type="button"
-          onClick={() => {
-            setWeightKg(currentWeight.toFixed(1));
-            setModalOpen(true);
-          }}
+          onClick={handleOpenAddModal}
           className="px-3.5 py-2 rounded-xl bg-sky-500/20 hover:bg-sky-500/30 border border-sky-400/35 text-sky-300 text-xs font-semibold flex items-center gap-1.5 transition-all active:scale-95 shadow-[0_0_12px_rgba(14,165,233,0.2)]"
         >
           <Plus className="w-4 h-4" /> Log Weight
@@ -213,34 +246,67 @@ export const BodyMetricsCard: React.FC<BodyMetricsCardProps> = ({
             {sortedMetrics
               .slice(-8)
               .reverse()
-              .map((metric) => (
-                <div
-                  key={metric.id}
-                  className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/[0.03] border border-white/[0.07] text-xs text-content-secondary group hover:border-sky-400/30 transition-colors"
-                >
-                  <span className="font-mono font-medium text-sky-300">{metric.weightKg.toFixed(1)} kg</span>
-                  {metric.bodyFatPercent && (
-                    <span className="text-[10px] text-teal-300 font-mono">({metric.bodyFatPercent}%)</span>
-                  )}
-                  <span className="text-[10px] opacity-60">{metric.date}</span>
-                  <button
-                    type="button"
-                    onClick={() => onDeleteMetric(metric.id)}
-                    title="Remove entry"
-                    aria-label="Remove weight entry"
-                    className="opacity-0 group-hover:opacity-100 hover:text-red-400 p-0.5 rounded transition-all"
+              .map((metric) => {
+                const parts = metric.date.split('-');
+                const formattedDate = parts.length === 3 ? `${parts[2]}/${parts[1]}/${parts[0]}` : metric.date;
+                return (
+                  <div
+                    key={metric.id}
+                    className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/[0.03] border border-white/[0.07] text-xs text-content-secondary group hover:border-sky-400/30 transition-colors"
                   >
-                    <Trash2 className="w-3 h-3" />
-                  </button>
-                </div>
-              ))}
+                    <span className="font-mono font-medium text-sky-300">{metric.weightKg.toFixed(1)} kg</span>
+                    {metric.bodyFatPercent && (
+                      <span className="text-[10px] text-teal-300 font-mono">({metric.bodyFatPercent}%)</span>
+                    )}
+                    <span className="text-[10px] opacity-60 font-mono">{formattedDate}</span>
+                    <div className="flex items-center gap-1 ml-1">
+                      <button
+                        type="button"
+                        onClick={() => handleStartEdit(metric)}
+                        title="Edit rekod"
+                        aria-label="Edit rekod berat"
+                        className="text-content-secondary hover:text-sky-300 p-0.5 rounded transition-all"
+                      >
+                        <Pencil className="w-3 h-3" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => onDeleteMetric(metric.id)}
+                        title="Padam rekod"
+                        aria-label="Padam rekod berat"
+                        className="text-content-secondary hover:text-red-400 p-0.5 rounded transition-all"
+                      >
+                        <Trash2 className="w-3 h-3" />
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
           </div>
         </div>
       )}
 
-      {/* Log Weight Modal */}
-      <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} title="Log Body Metrics">
+      {/* Log / Edit Weight Modal */}
+      <Modal
+        isOpen={modalOpen}
+        onClose={() => {
+          setModalOpen(false);
+          setEditingMetric(null);
+        }}
+        title={editingMetric ? 'Edit Rekod Berat Badan' : 'Log Body Metrics'}
+      >
         <form onSubmit={handleSubmit} className="space-y-4 pt-2">
+          <div>
+            <label className="block text-xs font-medium text-content-secondary mb-1">Tarikh Rekod</label>
+            <input
+              type="date"
+              required
+              value={entryDate}
+              onChange={(e) => setEntryDate(e.target.value)}
+              className="w-full rounded-xl bg-white/[0.04] border border-white/[0.1] px-3.5 py-2.5 text-xs text-content-primary focus:outline-none focus:border-sky-400/50"
+            />
+          </div>
+
           <div>
             <label className="block text-xs font-medium text-content-secondary mb-1">Body Weight (kg) *</label>
             <input
@@ -273,7 +339,10 @@ export const BodyMetricsCard: React.FC<BodyMetricsCardProps> = ({
           <div className="flex items-center justify-end gap-2 pt-2">
             <button
               type="button"
-              onClick={() => setModalOpen(false)}
+              onClick={() => {
+                setModalOpen(false);
+                setEditingMetric(null);
+              }}
               className="px-4 py-2 rounded-xl border border-white/[0.08] text-content-secondary hover:text-content-primary text-xs"
             >
               Cancel
@@ -283,7 +352,15 @@ export const BodyMetricsCard: React.FC<BodyMetricsCardProps> = ({
               disabled={isSubmitting || !weightKg}
               className="px-4 py-2 rounded-xl bg-sky-500/25 hover:bg-sky-500/35 border border-sky-400/40 text-sky-200 font-semibold text-xs flex items-center gap-1.5 transition-all disabled:opacity-50"
             >
-              <Plus className="w-3.5 h-3.5" /> Save Entry
+              {editingMetric ? (
+                <>
+                  <Pencil className="w-3.5 h-3.5" /> Kemaskini Rekod
+                </>
+              ) : (
+                <>
+                  <Plus className="w-3.5 h-3.5" /> Save Entry
+                </>
+              )}
             </button>
           </div>
         </form>

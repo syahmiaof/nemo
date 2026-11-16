@@ -681,6 +681,21 @@ export async function atomicLogBodyMetric(
   return log;
 }
 
+export async function atomicUpdateBodyMetric(
+  database: NemoDatabase,
+  id: string,
+  updates: Partial<Omit<BodyMetric, 'id'>>
+): Promise<BodyMetric | undefined> {
+  const existing = await database.bodyMetrics.get(id);
+  if (!existing) return undefined;
+  const updated: BodyMetric = {
+    ...existing,
+    ...updates,
+  };
+  await database.bodyMetrics.put(updated);
+  return updated;
+}
+
 export async function atomicDeleteBodyMetric(database: NemoDatabase, id: string): Promise<void> {
   await database.bodyMetrics.delete(id);
 }

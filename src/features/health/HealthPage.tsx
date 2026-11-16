@@ -10,6 +10,7 @@ import {
   atomicLogWorkout,
   atomicDeleteWorkout,
   atomicLogBodyMetric,
+  atomicUpdateBodyMetric,
   atomicDeleteBodyMetric,
 } from '@/db/operations';
 import { HydrationCard } from './HydrationCard';
@@ -237,6 +238,9 @@ export const HealthPage: React.FC = () => {
               todayBurnedCalories={todayBurnedCalories}
               onLogWeight={async (entry) => {
                 await atomicLogBodyMetric(db, entry);
+              }}
+              onUpdateMetric={async (id, entry) => {
+                await atomicUpdateBodyMetric(db, id, entry);
               }}
               onDeleteMetric={async (id) => {
                 await atomicDeleteBodyMetric(db, id);
