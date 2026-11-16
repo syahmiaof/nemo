@@ -810,4 +810,64 @@ describe('Health & Wellness — Key-In Data & Aggregations Suite', () => {
       expect(auditAfter.stats.bodyMetrics).toBe(2);
     });
   });
+
+  // ==========================================================================
+  // 5. 3 BIG BOTTLES (1.5L EACH) HYDRATION SYSTEM
+  // ==========================================================================
+  describe('5. 3 Big Bottles (1.5L Each) Tracking System', () => {
+    it('tracks daily hydration through 3 big bottles: 1.5L -> 3.0L (minimum mandatory) -> 4.5L (maximum)', async () => {
+      const today = '2026-11-16';
+
+      // 1. Tick Bottle 1 (1.5L)
+      const b1 = await atomicAddHydration(db, {
+        id: `hyd_${today}_b1`,
+        date: today,
+        amountMl: 1500,
+      });
+      expect(b1.id).toBe(`hyd_${today}_b1`);
+      expect(b1.amountMl).toBe(1500);
+
+      let todayLogs = await db.hydrationLogs.where('date').equals(today).toArray();
+      let totalMl = todayLogs.reduce((sum, l) => sum + l.amountMl, 0);
+      expect(totalMl).toBe(1500);
+      expect(totalMl >= 3000).toBe(false); // Minimum mandatory not reached yet
+
+      // 2. Tick Bottle 2 (1.5L) -> 3.0L minimum mandatory goal reached
+      const b2 = await atomicAddHydration(db, {
+        id: `hyd_${today}_b2`,
+        date: today,
+        amountMl: 1500,
+      });
+      expect(b2.id).toBe(`hyd_${today}_b2`);
+
+      todayLogs = await db.hydrationLogs.where('date').equals(today).toArray();
+      totalMl = todayLogs.reduce((sum, l) => sum + l.amountMl, 0);
+      expect(totalMl).toBe(3000);
+      expect(totalMl >= 3000).toBe(true); // Wajib 3.0L achieved!
+
+      // 3. Tick Bottle 3 (1.5L) -> 4.5L maximum hydration achieved
+      const b3 = await atomicAddHydration(db, {
+        id: `hyd_${today}_b3`,
+        date: today,
+        amountMl: 1500,
+      });
+      expect(b3.id).toBe(`hyd_${today}_b3`);
+
+      todayLogs = await db.hydrationLogs.where('date').equals(today).toArray();
+      totalMl = todayLogs.reduce((sum, l) => sum + l.amountMl, 0);
+      expect(totalMl).toBe(4500);
+
+      // 4. Untick Bottle 3 -> drops back to 3.0L
+      await atomicDeleteHydration(db, b3.id);
+      todayLogs = await db.hydrationLogs.where('date').equals(today).toArray();
+      totalMl = todayLogs.reduce((sum, l) => sum + l.amountMl, 0);
+      expect(totalMl).toBe(3000);
+
+      // 5. Reset today -> removes remaining bottles
+      await atomicDeleteHydration(db, b1.id);
+      await atomicDeleteHydration(db, b2.id);
+      todayLogs = await db.hydrationLogs.where('date').equals(today).toArray();
+      expect(todayLogs).toHaveLength(0);
+    });
+  });
 });

@@ -175,7 +175,7 @@ export const InsightsPage: React.FC = () => {
     );
     const past7HydrationTotal = past7HydrationLogs.reduce((sum, l) => sum + (l.amountMl || 0), 0);
     const avgHydrationMl = Math.round(past7HydrationTotal / 7);
-    const hydrationDailyGoal = 2500;
+    const hydrationDailyGoal = 3000;
     const hydrationAdherenceRate = Math.round((avgHydrationMl / hydrationDailyGoal) * 100);
     const hasHydrationData = past7HydrationLogs.length > 0;
 

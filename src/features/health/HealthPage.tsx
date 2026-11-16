@@ -36,9 +36,15 @@ export const HealthPage: React.FC = () => {
   const [dailyGoalMl, setDailyGoalMl] = useState<number>(() => {
     try {
       const saved = localStorage.getItem('nemo_hydration_goal_ml');
-      return saved ? parseInt(saved, 10) || 2500 : 2500;
+      if (saved) {
+        const val = parseInt(saved, 10);
+        // Automatically upgrade legacy 2500 to the 3000ml mandatory minimum
+        if (val === 2500) return 3000;
+        return val || 3000;
+      }
+      return 3000;
     } catch {
-      return 2500;
+      return 3000;
     }
   });
   const containerRef = useRef<HTMLDivElement>(null);
@@ -94,7 +100,7 @@ export const HealthPage: React.FC = () => {
         title="Health & Wellness"
         description="Hydration velocity, nutritional macros, active training, and body composition"
         stats={[
-          { label: 'Water (ml)', value: todayHydrationMl, icon: Droplet, note: `of ${dailyGoalMl}ml` },
+          { label: 'Water (ml)', value: todayHydrationMl, icon: Droplet, note: `of ${dailyGoalMl}ml (Min Wajib)` },
           { label: 'Intake (kcal)', value: todayDietCalories, icon: Utensils },
           { label: 'Active Burn (kcal)', value: todayBurnedCalories, icon: Activity },
           { label: 'Weight (kg)', value: Math.round(latestWeight * 10) / 10, icon: Scale },
@@ -172,8 +178,9 @@ export const HealthPage: React.FC = () => {
               logs={hydrationLogs}
               todayStr={todayStr}
               dailyGoalMl={dailyGoalMl}
-              onAddWater={async (amountMl) => {
+              onAddWater={async (amountMl, customId) => {
                 await atomicAddHydration(db, {
+                  id: customId,
                   date: todayStr,
                   amountMl,
                   loggedAt: new Date().toISOString(),
