@@ -7,15 +7,13 @@ import {
   atomicAddHydration,
   atomicUpdateHydration,
   atomicDeleteHydration,
-  atomicLogDiet,
-  atomicDeleteDiet,
   atomicLogWorkout,
   atomicDeleteWorkout,
   atomicLogBodyMetric,
   atomicDeleteBodyMetric,
 } from '@/db/operations';
 import { HydrationCard } from './HydrationCard';
-import { DietNutritionCard } from './DietNutritionCard';
+import { FoodStockCard } from './FoodStockCard';
 import { WorkoutSection } from './WorkoutSection';
 import { BodyMetricsCard } from './BodyMetricsCard';
 import { PageHeading } from '@/components/ui/PageHeading';
@@ -50,6 +48,7 @@ export const HealthPage: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const reducedMotion = useReducedMotion();
   const todayStr = getTodayLocalDate();
+  const [foodStockStats, setFoodStockStats] = useState<{ inStock: number; total: number }>({ inStock: 18, total: 18 });
 
   // Live queries from Dexie
   const hydrationLogs = useLiveQuery(() => db.hydrationLogs.toArray(), []) ?? [];
@@ -101,7 +100,7 @@ export const HealthPage: React.FC = () => {
         description="Hydration velocity, nutritional macros, active training, and body composition"
         stats={[
           { label: 'Water (ml)', value: todayHydrationMl, icon: Droplet, note: `of ${dailyGoalMl}ml (Min Wajib)` },
-          { label: 'Intake (kcal)', value: todayDietCalories, icon: Utensils },
+          { label: 'Stok Makanan', value: foodStockStats.inStock, icon: Utensils, note: `of ${foodStockStats.total} ada` },
           { label: 'Active Burn (kcal)', value: todayBurnedCalories, icon: Activity },
           { label: 'Weight (kg)', value: Math.round(latestWeight * 10) / 10, icon: Scale },
         ]}
@@ -142,7 +141,7 @@ export const HealthPage: React.FC = () => {
               : 'text-content-secondary hover:text-emerald-300 hover:bg-emerald-500/10 border border-transparent'
           }`}
         >
-          <Utensils className="w-3.5 h-3.5 text-emerald-400" /> Diet & Nutrition
+          <Utensils className="w-3.5 h-3.5 text-emerald-400" /> Stok Makanan
         </button>
 
         <button
@@ -206,15 +205,8 @@ export const HealthPage: React.FC = () => {
 
         {(activeTab === 'all' || activeTab === 'nutrition') && (
           <div className="health-card-anim">
-            <DietNutritionCard
-              logs={dietLogs}
-              todayStr={todayStr}
-              onLogMeal={async (meal) => {
-                await atomicLogDiet(db, meal);
-              }}
-              onDeleteMeal={async (id) => {
-                await atomicDeleteDiet(db, id);
-              }}
+            <FoodStockCard
+              onCountChange={(inStock, total) => setFoodStockStats({ inStock, total })}
             />
           </div>
         )}
