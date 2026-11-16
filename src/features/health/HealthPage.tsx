@@ -14,7 +14,7 @@ import {
 } from '@/db/operations';
 import { HydrationCard } from './HydrationCard';
 import { FoodStockCard } from './FoodStockCard';
-import { WorkoutSection } from './WorkoutSection';
+import { WeeklyWorkoutCard } from './WeeklyWorkoutCard';
 import { BodyMetricsCard } from './BodyMetricsCard';
 import { PageHeading } from '@/components/ui/PageHeading';
 import { useReducedMotion } from '@/design/useReducedMotion';
@@ -49,6 +49,7 @@ export const HealthPage: React.FC = () => {
   const reducedMotion = useReducedMotion();
   const todayStr = getTodayLocalDate();
   const [foodStockStats, setFoodStockStats] = useState<{ inStock: number; total: number }>({ inStock: 18, total: 18 });
+  const [weeklyWorkoutCount, setWeeklyWorkoutCount] = useState<number>(0);
 
   // Live queries from Dexie
   const hydrationLogs = useLiveQuery(() => db.hydrationLogs.toArray(), []) ?? [];
@@ -101,7 +102,7 @@ export const HealthPage: React.FC = () => {
         stats={[
           { label: 'Water (ml)', value: todayHydrationMl, icon: Droplet, note: `of ${dailyGoalMl}ml (Min Wajib)` },
           { label: 'Stok Makanan', value: foodStockStats.inStock, icon: Utensils, note: `of ${foodStockStats.total} ada` },
-          { label: 'Active Burn (kcal)', value: todayBurnedCalories, icon: Activity },
+          { label: 'Workout Minggu Ini', value: weeklyWorkoutCount, icon: Activity, note: 'of 7 hari selesai' },
           { label: 'Weight (kg)', value: Math.round(latestWeight * 10) / 10, icon: Scale },
         ]}
       />
@@ -213,15 +214,16 @@ export const HealthPage: React.FC = () => {
 
         {(activeTab === 'all' || activeTab === 'workouts') && (
           <div className="health-card-anim">
-            <WorkoutSection
-              logs={workoutLogs}
+            <WeeklyWorkoutCard
               todayStr={todayStr}
+              logs={workoutLogs}
               onLogWorkout={async (entry) => {
                 await atomicLogWorkout(db, entry);
               }}
               onDeleteWorkout={async (id) => {
                 await atomicDeleteWorkout(db, id);
               }}
+              onWeeklyCountChange={(count) => setWeeklyWorkoutCount(count)}
             />
           </div>
         )}

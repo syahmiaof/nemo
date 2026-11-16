@@ -4,7 +4,6 @@ import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { db } from '@/db/nemoDb';
 import {
-  atomicSaveIbadahDailyLog,
   atomicUpdateQadhaPrayer,
   atomicSetQadhaPrayerRemaining,
   atomicBulkSetQadhaPrayers,
@@ -13,46 +12,36 @@ import {
 } from '@/db/operations';
 import { PageHeading } from '@/components/ui/PageHeading';
 import { useReducedMotion } from '@/design/useReducedMotion';
-import { PrayerTrackerCard } from './components/PrayerTrackerCard';
-import { QuranTrackerCard } from './components/QuranTrackerCard';
+import { IbadahChecklistCard } from './components/IbadahChecklistCard';
 import { QadhaPrayerSection } from './components/QadhaPrayerSection';
 import { QadhaFastingSection } from './components/QadhaFastingSection';
-import { DhikrSedekahCard } from './components/DhikrSedekahCard';
-import { IslamicMotivationCard } from './components/IslamicMotivationCard';
 import {
   Moon,
-  Clock,
-  BookOpen,
   Sparkles,
   Flame,
   LayoutGrid,
+  CheckCircle2,
 } from 'lucide-react';
-import {
-  PrayerTimeName,
-  DailyPrayerRecord,
-  DailySunnahPrayers,
-} from '@/domain/types';
+import { PrayerTimeName } from '@/domain/types';
 
 gsap.registerPlugin(useGSAP);
 
-type IbadahTab = 'all' | 'daily' | 'qadha_solat' | 'qadha_puasa' | 'motivation';
+type IbadahTab = 'all' | 'daily' | 'qadha_solat' | 'qadha_puasa';
 
 export const IbadahPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<IbadahTab>('all');
+  const [ibadahStats, setIbadahStats] = useState<{ completed: number; total: number }>({
+    completed: 0,
+    total: 15,
+  });
   const containerRef = useRef<HTMLDivElement>(null);
   const reducedMotion = useReducedMotion();
 
   const todayStr = new Date().toISOString().split('T')[0];
 
-  // Reactive Dexie queries
-  const todayLogs = useLiveQuery(
-    () => db.ibadahDailyLogs.where('date').equals(todayStr).toArray(),
-    [todayStr]
-  ) ?? [];
+  // Reactive Dexie queries for Qadha debts
   const qadhaPrayers = useLiveQuery(() => db.qadhaPrayers.toArray(), []) ?? [];
   const qadhaFastings = useLiveQuery(() => db.qadhaFastings.toArray(), []) ?? [];
-
-  const currentLog = todayLogs[0] ?? undefined;
 
   // Staggered GSAP entrance animation
   useGSAP(
@@ -73,89 +62,6 @@ export const IbadahPage: React.FC = () => {
     },
     { scope: containerRef, dependencies: [activeTab, reducedMotion] }
   );
-
-  // Solat handler
-  const handleUpdatePrayers = async (prayers: Record<PrayerTimeName, DailyPrayerRecord>) => {
-    await atomicSaveIbadahDailyLog(db, {
-      id: currentLog?.id || `ibd_${todayStr}`,
-      date: todayStr,
-      prayers,
-      sunnahPrayers: currentLog?.sunnahPrayers || {},
-      quranPagesRead: currentLog?.quranPagesRead || 0,
-      quranLastSurah: currentLog?.quranLastSurah,
-      quranLastAyah: currentLog?.quranLastAyah,
-      dhikrCount: currentLog?.dhikrCount || 0,
-      sedekahDone: currentLog?.sedekahDone || false,
-      notes: currentLog?.notes,
-    });
-  };
-
-  const handleUpdateSunnah = async (sunnahPrayers: DailySunnahPrayers) => {
-    await atomicSaveIbadahDailyLog(db, {
-      id: currentLog?.id || `ibd_${todayStr}`,
-      date: todayStr,
-      prayers: currentLog?.prayers || ({} as Record<PrayerTimeName, DailyPrayerRecord>),
-      sunnahPrayers,
-      quranPagesRead: currentLog?.quranPagesRead || 0,
-      quranLastSurah: currentLog?.quranLastSurah,
-      quranLastAyah: currentLog?.quranLastAyah,
-      dhikrCount: currentLog?.dhikrCount || 0,
-      sedekahDone: currentLog?.sedekahDone || false,
-      notes: currentLog?.notes,
-    });
-  };
-
-  // Quran handler
-  const handleUpdateQuran = async (data: {
-    quranPagesRead: number;
-    quranLastSurah?: string;
-    quranLastAyah?: number;
-    notes?: string;
-  }) => {
-    await atomicSaveIbadahDailyLog(db, {
-      id: currentLog?.id || `ibd_${todayStr}`,
-      date: todayStr,
-      prayers: currentLog?.prayers || ({} as Record<PrayerTimeName, DailyPrayerRecord>),
-      sunnahPrayers: currentLog?.sunnahPrayers || {},
-      quranPagesRead: data.quranPagesRead,
-      quranLastSurah: data.quranLastSurah,
-      quranLastAyah: data.quranLastAyah,
-      dhikrCount: currentLog?.dhikrCount || 0,
-      sedekahDone: currentLog?.sedekahDone || false,
-      notes: data.notes ?? currentLog?.notes,
-    });
-  };
-
-  // Dhikr & Sedekah handler
-  const handleUpdateDhikr = async (count: number) => {
-    await atomicSaveIbadahDailyLog(db, {
-      id: currentLog?.id || `ibd_${todayStr}`,
-      date: todayStr,
-      prayers: currentLog?.prayers || ({} as Record<PrayerTimeName, DailyPrayerRecord>),
-      sunnahPrayers: currentLog?.sunnahPrayers || {},
-      quranPagesRead: currentLog?.quranPagesRead || 0,
-      quranLastSurah: currentLog?.quranLastSurah,
-      quranLastAyah: currentLog?.quranLastAyah,
-      dhikrCount: count,
-      sedekahDone: currentLog?.sedekahDone || false,
-      notes: currentLog?.notes,
-    });
-  };
-
-  const handleToggleSedekah = async (done: boolean) => {
-    await atomicSaveIbadahDailyLog(db, {
-      id: currentLog?.id || `ibd_${todayStr}`,
-      date: todayStr,
-      prayers: currentLog?.prayers || ({} as Record<PrayerTimeName, DailyPrayerRecord>),
-      sunnahPrayers: currentLog?.sunnahPrayers || {},
-      quranPagesRead: currentLog?.quranPagesRead || 0,
-      quranLastSurah: currentLog?.quranLastSurah,
-      quranLastAyah: currentLog?.quranLastAyah,
-      dhikrCount: currentLog?.dhikrCount || 0,
-      sedekahDone: done,
-      notes: currentLog?.notes,
-    });
-  };
 
   // Qadha Prayer handlers
   const handleUpdateQadhaPrayerCount = async (prayerType: PrayerTimeName, deltaCompleted: number) => {
@@ -225,10 +131,7 @@ export const IbadahPage: React.FC = () => {
     await atomicDeleteQadhaFastingRecord(db, id);
   };
 
-  // KPI Calculations
-  const completedFardhuCount = currentLog?.prayers
-    ? Object.values(currentLog.prayers).filter((p) => p.completed || (p.status && p.status !== 'missed')).length
-    : 0;
+  // Debt Calculations
   const totalQadhaPrayersRemaining = qadhaPrayers.reduce((s, p) => s + (p.remainingCount || 0), 0);
   const totalQadhaFastingRemaining = qadhaFastings.reduce((s, f) => s + (f.remainingDays || 0), 0);
 
@@ -237,28 +140,36 @@ export const IbadahPage: React.FC = () => {
       {/* Page Heading */}
       <PageHeading
         title="Ibadah & Spiritual Hub"
-        description="Track daily 5 obligatory prayers, Quran recitation, missed prayer makeup ledger, compounding fasting fidyah calculator, and spiritual habits."
+        description="Checklist amalan harian, rekod qadha solat fardhu, dan kiraan qadha puasa & fidyah."
         stats={[
-          { label: 'Fardhu Prayers', value: completedFardhuCount, icon: Clock, note: 'out of 5 daily' },
-          { label: "Today's Quran", value: currentLog?.quranPagesRead || 0, icon: BookOpen, note: 'pages read' },
-          { label: 'Qadha Prayers Debt', value: totalQadhaPrayersRemaining, icon: Flame, note: 'prayers left' },
-          { label: 'Missed Fasting Debt', value: totalQadhaFastingRemaining, icon: Moon, note: 'days left' },
+          {
+            label: 'Checklist Harian',
+            value: ibadahStats.completed,
+            icon: Moon,
+            note: `of ${ibadahStats.total} selesai`,
+          },
+          {
+            label: 'Qadha Solat Debt',
+            value: totalQadhaPrayersRemaining,
+            icon: Flame,
+            note: 'waktu tinggal',
+          },
+          {
+            label: 'Missed Fasting Debt',
+            value: totalQadhaFastingRemaining,
+            icon: Sparkles,
+            note: 'hari tinggal',
+          },
         ]}
       />
-
-      {/* Daily Motivation Banner */}
-      <div className="ibadah-card-anim">
-        <IslamicMotivationCard />
-      </div>
 
       {/* Sub-Navigation Tabs */}
       <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
         {[
           { key: 'all', label: 'All Sections', icon: LayoutGrid },
-          { key: 'daily', label: 'Daily Habits & Prayers', icon: Clock },
+          { key: 'daily', label: `Checklist Harian (${ibadahStats.completed}/${ibadahStats.total})`, icon: CheckCircle2 },
           { key: 'qadha_solat', label: `Missed Prayers (${totalQadhaPrayersRemaining})`, icon: Flame },
-          { key: 'qadha_puasa', label: `Fasting & Fidyah (${totalQadhaFastingRemaining}d)`, icon: Moon },
-          { key: 'motivation', label: 'Spiritual Reflections', icon: Sparkles },
+          { key: 'qadha_puasa', label: `Fasting & Fidyah (${totalQadhaFastingRemaining}d)`, icon: Sparkles },
         ].map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.key;
@@ -267,7 +178,7 @@ export const IbadahPage: React.FC = () => {
               key={tab.key}
               type="button"
               onClick={() => setActiveTab(tab.key as IbadahTab)}
-              className={`px-4 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all whitespace-nowrap ${
+              className={`px-4 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all whitespace-nowrap cursor-pointer ${
                 isActive
                   ? 'bg-white/[0.08] border border-white/[0.15] text-white shadow-[0_0_15px_rgba(255,255,255,0.06)]'
                   : 'text-content-secondary hover:text-content-primary hover:bg-white/[0.03] border border-transparent'
@@ -283,30 +194,12 @@ export const IbadahPage: React.FC = () => {
       {/* Main Content Sections */}
       <div className="space-y-6">
         {(activeTab === 'all' || activeTab === 'daily') && (
-          <>
-            <div className="ibadah-card-anim">
-              <PrayerTrackerCard
-                currentLog={currentLog}
-                onUpdatePrayers={handleUpdatePrayers}
-                onUpdateSunnah={handleUpdateSunnah}
-              />
-            </div>
-
-            <div className="ibadah-card-anim">
-              <QuranTrackerCard
-                currentLog={currentLog}
-                onUpdateQuran={handleUpdateQuran}
-              />
-            </div>
-
-            <div className="ibadah-card-anim">
-              <DhikrSedekahCard
-                currentLog={currentLog}
-                onUpdateDhikr={handleUpdateDhikr}
-                onToggleSedekah={handleToggleSedekah}
-              />
-            </div>
-          </>
+          <div className="ibadah-card-anim">
+            <IbadahChecklistCard
+              todayStr={todayStr}
+              onCountChange={(completed, total) => setIbadahStats({ completed, total })}
+            />
+          </div>
         )}
 
         {(activeTab === 'all' || activeTab === 'qadha_solat') && (
